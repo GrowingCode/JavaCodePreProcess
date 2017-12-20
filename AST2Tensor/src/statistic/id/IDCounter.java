@@ -63,6 +63,7 @@ public class IDCounter {
 			String[] tcs = sk.split("#");
 			im.GetContentID(tcs[0], tcs[1]);
 		}
+		im.EnsureDefaultValue();
 	}
 	
 }

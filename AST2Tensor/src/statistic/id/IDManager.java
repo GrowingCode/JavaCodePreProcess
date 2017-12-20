@@ -1,6 +1,7 @@
 package statistic.id;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -14,31 +15,23 @@ import net.sf.json.JSONObject;
 import util.FileUtil;
 
 public class IDManager {
-	
+
+	// non-leaf
 	public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
-	public static String SimpleNameLeafDefault = "S";
+	// leaf
+	public static String SimpleNameLeafDefault = "SNDefault";
 	public static String NumberLiteralLeafDefault = "100";
 	public static String CharacterLiteralLeafDefault = '~' + "";
 	public static String StringLiteralLeafDefault = "@str!";
 	public static String NullLiteralLeafDefault = "null";
 
 	private TreeMap<String, Integer> ast_type_id_map = new TreeMap<String, Integer>();
-	
+
 	private TreeMap<Integer, TreeMap<String, Integer>> ast_type_content_id_map = new TreeMap<Integer, TreeMap<String, Integer>>();
 
 	public IDManager() {
-		// non leaf
-		GetTypeID(PrimordialNonLeafASTType);
-		// leaf
-		GetTypeID(SimpleName.class.getSimpleName());
-		GetTypeID(NumberLiteral.class.getSimpleName());
-		GetTypeID(CharacterLiteral.class.getSimpleName());
-		GetTypeID(StringLiteral.class.getSimpleName());
-		GetTypeID(NullLiteral.class.getSimpleName());
-		
-		GetContentID(SimpleName.class.getSimpleName(), SimpleNameLeafDefault);
 	}
-	
+
 	public int GetTypeID(String type) {
 		Integer id = ast_type_id_map.get(type);
 		if (id == null) {
@@ -67,7 +60,35 @@ public class IDManager {
 		}
 		return cnt_id;
 	}
-	
+
+	public void EnsureDefaultValue() {
+		// non leaf
+		GetTypeID(PrimordialNonLeafASTType);
+		// leaf
+		GetTypeID(SimpleName.class.getSimpleName());
+		GetTypeID(NumberLiteral.class.getSimpleName());
+		GetTypeID(CharacterLiteral.class.getSimpleName());
+		GetTypeID(StringLiteral.class.getSimpleName());
+		GetTypeID(NullLiteral.class.getSimpleName());
+
+		GetContentID(SimpleName.class.getSimpleName(), SimpleNameLeafDefault);
+		GetContentID(NumberLiteral.class.getSimpleName(), NumberLiteralLeafDefault);
+		GetContentID(CharacterLiteral.class.getSimpleName(), CharacterLiteralLeafDefault);
+		GetContentID(StringLiteral.class.getSimpleName(), StringLiteralLeafDefault);
+		GetContentID(NullLiteral.class.getSimpleName(), NullLiteralLeafDefault);
+		
+		Set<String> akeys = ast_type_id_map.keySet();
+		Iterator<String> aitr = akeys.iterator();
+		while (aitr.hasNext()) {
+			String ak = aitr.next();
+			Integer aid = ast_type_id_map.get(ak);
+			TreeMap<String, Integer> cidm = ast_type_content_id_map.get(aid);
+			if (!cidm.containsKey(ak + SimpleNameLeafDefault)) {
+				GetContentID(ak, ak + SimpleNameLeafDefault);
+			}
+		}
+	}
+
 	public void SaveToDirectory(String dir) {
 		TreeMap<String, Integer> ati = ast_type_id_map;
 		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
@@ -81,5 +102,5 @@ public class IDManager {
 			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
 		}
 	}
-	
+
 }
