@@ -71,7 +71,7 @@ public class IDManager {
 		GetTypeID(StringLiteral.class.getSimpleName());
 		GetTypeID(NullLiteral.class.getSimpleName());
 
-		GetContentID(SimpleName.class.getSimpleName(), SimpleNameLeafDefault);
+		GetContentID(SimpleName.class.getSimpleName(), SimpleName.class.getSimpleName() + SimpleNameLeafDefault);
 		GetContentID(NumberLiteral.class.getSimpleName(), NumberLiteralLeafDefault);
 		GetContentID(CharacterLiteral.class.getSimpleName(), CharacterLiteralLeafDefault);
 		GetContentID(StringLiteral.class.getSimpleName(), StringLiteralLeafDefault);

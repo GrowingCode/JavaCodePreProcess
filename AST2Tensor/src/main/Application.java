@@ -63,11 +63,17 @@ public class Application implements IApplication {
 			SaveIDMapToFile.SaveIDMaps(im, ".");
 		}
 		{
+			File f = new File("all_data.txt");
+			if (f.exists()) {
+				f.delete();
+			}
+			f.createNewFile();
+			
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 			Iterator<String> pitr = proj_paths.iterator();
 			while (pitr.hasNext()) {
 				String proj_path = pitr.next();
-				TranslateOneProject(proj_path);
+				TranslateOneProject(proj_path, im, f);
 			}
 		}
 		SystemUtil.Flush();
@@ -103,13 +109,13 @@ public class Application implements IApplication {
 		// DebugLogger.Log("Force Stop is invoked!");
 	}
 
-	private void TranslateOneProject(String proj_path) {
+	private void TranslateOneProject(String proj_path, IDManager im, File dest) {
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			SystemUtil.Delay(1000);
-			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(java_project);
+			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(java_project, im);
 			TensorForProject one_project_tensor = irgfop.GenerateForOneProject();
-			SaveTensorToFile.SaveTensors(one_project_tensor);
+			SaveTensorToFile.SaveTensors(one_project_tensor, dest);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
