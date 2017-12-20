@@ -10,14 +10,14 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
-import statistic.id.IDManager;
+import statistic.id.IDCounter;
 
 public class IDGeneratorForProject {
 	
 	IJavaProject java_project = null;
-	IDManager im = null;
+	IDCounter im = null;
 	
-	public IDGeneratorForProject(IJavaProject java_project, IDManager im) {
+	public IDGeneratorForProject(IJavaProject java_project, IDCounter im) {
 		this.java_project = java_project;
 		this.im = im;
 	}

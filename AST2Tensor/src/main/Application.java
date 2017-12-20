@@ -16,6 +16,7 @@ import eclipse.project.AnalysisEnvironment;
 import eclipse.project.ProjectLoader;
 import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
+import statistic.id.IDCounter;
 import statistic.id.IDManager;
 import statistic.id.serialize.SaveIDMapToFile;
 import translation.TensorGeneratorForProject;
@@ -41,23 +42,25 @@ public class Application implements IApplication {
 		// load and execute the project.
 		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 		String all_proj_paths = args[0];
-		IDManager im = new IDManager();
+		IDCounter ic = new IDCounter();
 		{
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 			Iterator<String> pitr = proj_paths.iterator();
 			int all_size = 0;
 			while (pitr.hasNext()) {
 				String proj_path = pitr.next();
-				all_size += CountOneProject(proj_path, im);
+				all_size += CountOneProject(proj_path, ic);
 				if (all_size >= RefinePeriod) {
-					RefineAllStatistics(im);
+					RefineAllStatistics(ic);
 					all_size %= RefinePeriod;
 				}
 			}
 		}
+		IDManager im = new IDManager();
 		{
-			RefineAllStatistics(im);
-			SaveIDMapToFile.SaveIDMaps(im);
+			RefineAllStatistics(ic);
+			ic.FullFillIDManager(im);
+			SaveIDMapToFile.SaveIDMaps(im, ".");
 		}
 		{
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
@@ -72,11 +75,11 @@ public class Application implements IApplication {
 		return IApplication.EXIT_OK;
 	}
 
-	private void RefineAllStatistics(IDManager im) {
+	private void RefineAllStatistics(IDCounter im) {
 		im.RefineAllStatistics(MinSupport, MaxCapacity);
 	}
 
-	private int CountOneProject(String proj_path, IDManager im) {
+	private int CountOneProject(String proj_path, IDCounter im) {
 		int project_size = 0;
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);

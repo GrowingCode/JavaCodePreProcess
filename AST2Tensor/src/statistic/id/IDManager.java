@@ -1,6 +1,6 @@
 package statistic.id;
 
-import java.util.Iterator;
+import java.io.File;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -10,23 +10,21 @@ import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 
+import net.sf.json.JSONObject;
+import util.FileUtil;
+
 public class IDManager {
-
-	// private static IDManager unique = new IDManager();
-	//
-	// public static IDManager Instance() {
-	// return unique;
-	// }
-
-	public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
 	
+	public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
+	public static String SimpleNameLeafDefault = "S";
+	public static String NumberLiteralLeafDefault = "100";
+	public static String CharacterLiteralLeafDefault = '~' + "";
+	public static String StringLiteralLeafDefault = "@str!";
+	public static String NullLiteralLeafDefault = "null";
+
 	private TreeMap<String, Integer> ast_type_id_map = new TreeMap<String, Integer>();
-
+	
 	private TreeMap<Integer, TreeMap<String, Integer>> ast_type_content_id_map = new TreeMap<Integer, TreeMap<String, Integer>>();
-
-	private TreeMap<String, Integer> safe = new TreeMap<String, Integer>();
-
-	private TreeMap<String, Integer> count = new TreeMap<String, Integer>();
 
 	public IDManager() {
 		// non leaf
@@ -37,8 +35,10 @@ public class IDManager {
 		GetTypeID(CharacterLiteral.class.getSimpleName());
 		GetTypeID(StringLiteral.class.getSimpleName());
 		GetTypeID(NullLiteral.class.getSimpleName());
+		
+		GetContentID(SimpleName.class.getSimpleName(), SimpleNameLeafDefault);
 	}
-
+	
 	public int GetTypeID(String type) {
 		Integer id = ast_type_id_map.get(type);
 		if (id == null) {
@@ -67,51 +67,19 @@ public class IDManager {
 		}
 		return cnt_id;
 	}
-
-	public void EncounterANode(String type, String content) {
-		String cc = type + "#" + content;
-		Integer sc = safe.get(cc);
-		if (sc != null) {
-			sc++;
-			safe.put(cc, sc);
-		} else {
-			Integer c = count.get(cc);
-			if (c == null) {
-				c = 0;
-			}
-			c++;
-			count.put(cc, c);
-		}
-	}
-
-	public void RefineAllStatistics(int minsupport, int maxcapacity) {
-		if (count.size() + safe.size() <= maxcapacity) {
-			return;
-		}
-		Set<String> ckeys = count.keySet();
-		Iterator<String> ckitr = ckeys.iterator();
-		while (ckitr.hasNext()) {
-			String ck = ckitr.next();
-			int ct = count.get(ck);
-			if (ct >= minsupport || ck.startsWith("PrimordialNonLeafASTType#")) {
-				String[] tcs = ck.split("#");
-				GetContentID(tcs[0], tcs[1]);
-				safe.put(ck, ct);
-			}
-			count.remove(ck);
-		}
-	}
 	
-	public boolean IsRefined() {
-		return count.isEmpty();
-	}
-	
-	public TreeMap<String, Integer> GetAstTypeIDMap() {
-		return ast_type_id_map;
-	}
-	
-	public TreeMap<Integer, TreeMap<String, Integer>> GetAstTypeContentIDMap() {
-		return ast_type_content_id_map;
+	public void SaveToDirectory(String dir) {
+		TreeMap<String, Integer> ati = ast_type_id_map;
+		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
+		JSONObject type_id_json = JSONObject.fromObject(ati);
+		FileUtil.WriteToFile(new File(dir + "/" + "type_id.json"), type_id_json.toString());
+		Set<String> akeys = ati.keySet();
+		for (String ak : akeys) {
+			Integer tcid = ati.get(ak);
+			TreeMap<String, Integer> tci = atci.get(tcid);
+			JSONObject type_content_id_json = JSONObject.fromObject(tci);
+			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
+		}
 	}
 	
 }

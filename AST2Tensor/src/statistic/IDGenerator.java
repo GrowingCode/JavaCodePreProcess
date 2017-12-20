@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 
+import statistic.id.IDCounter;
 import statistic.id.IDManager;
 
 public class IDGenerator extends ASTVisitor {
@@ -18,19 +19,19 @@ public class IDGenerator extends ASTVisitor {
 	IJavaProject java_project = null;
 	ICompilationUnit icu = null;
 	CompilationUnit cu = null;
-	IDManager im = null;
+	IDCounter ic = null;
 	
-	public IDGenerator(IJavaProject java_project, ICompilationUnit icu, CompilationUnit cu, IDManager im) {
+	public IDGenerator(IJavaProject java_project, ICompilationUnit icu, CompilationUnit cu, IDCounter ic) {
 		this.java_project = java_project;
 		this.icu = icu;
 		this.cu = cu;
-		this.im = im;
+		this.ic = ic;
 	}
 	
 	@Override
 	public boolean preVisit2(ASTNode node) {
 		if (!IsLeafNode(node)) {
-			im.EncounterANode(IDManager.PrimordialNonLeafASTType, node.getClass().getSimpleName());
+			ic.EncounterANode(IDManager.PrimordialNonLeafASTType, node.getClass().getSimpleName());
 		}
 		return super.preVisit2(node);
 	}
@@ -46,7 +47,7 @@ public class IDGenerator extends ASTVisitor {
 	public boolean visit(SimpleName node) {
 		String type = node.getClass().getSimpleName();
 		String content = node.getIdentifier();
-		im.EncounterANode(type, content);
+		ic.EncounterANode(type, content);
 		return super.visit(node);
 	}
 	
@@ -54,7 +55,7 @@ public class IDGenerator extends ASTVisitor {
 	public boolean visit(NumberLiteral node) {
 		String type = node.getClass().getSimpleName();
 		String content = node.getToken();
-		im.EncounterANode(type, content);
+		ic.EncounterANode(type, content);
 		return super.visit(node);
 	}
 	
@@ -62,7 +63,7 @@ public class IDGenerator extends ASTVisitor {
 	public boolean visit(CharacterLiteral node) {
 		String type = node.getClass().getSimpleName();
 		String content = node.getEscapedValue();
-		im.EncounterANode(type, content);
+		ic.EncounterANode(type, content);
 		return super.visit(node);
 	}
 	
@@ -70,7 +71,7 @@ public class IDGenerator extends ASTVisitor {
 	public boolean visit(StringLiteral node) {
 		String type = node.getClass().getSimpleName();
 		String content = node.getEscapedValue();
-		im.EncounterANode(type, content);
+		ic.EncounterANode(type, content);
 		return super.visit(node);
 	}
 	
@@ -78,7 +79,7 @@ public class IDGenerator extends ASTVisitor {
 	public boolean visit(NullLiteral node) {
 		String type = node.getClass().getSimpleName();
 		String content = node.toString();
-		im.EncounterANode(type, content);
+		ic.EncounterANode(type, content);
 		return super.visit(node);
 	}
 	

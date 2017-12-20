@@ -11,6 +11,8 @@ public class TensorGenerator extends ASTVisitor {
 	ICompilationUnit icu = null;
 	CompilationUnit cu = null;
 	
+	
+	
 	public TensorGenerator(IJavaProject java_project, ICompilationUnit icu, CompilationUnit cu) {
 		this.java_project = java_project;
 		this.icu = icu;
