@@ -92,20 +92,6 @@ public class IDManager {
 		}
 	}
 
-	public void SaveToDirectory(String dir) {
-		TreeMap<String, Integer> ati = ast_type_id_map;
-		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
-		JSONObject type_id_json = JSONObject.fromObject(ati);
-		FileUtil.WriteToFile(new File(dir + "/" + "type_id.json"), type_id_json.toString());
-		Set<String> akeys = ati.keySet();
-		for (String ak : akeys) {
-			Integer tcid = ati.get(ak);
-			TreeMap<String, Integer> tci = atci.get(tcid);
-			JSONObject type_content_id_json = JSONObject.fromObject(tci);
-			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
-		}
-	}
-
 	public int GetTypeID(String type) {
 		Integer id = ast_type_id_map.get(type);
 		if (id != null) {
@@ -122,6 +108,20 @@ public class IDManager {
 			return id;
 		}
 		return 0;
+	}
+	
+	public void SaveToDirectory(String dir) {
+		TreeMap<String, Integer> ati = ast_type_id_map;
+		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
+		JSONObject type_id_json = JSONObject.fromObject(ati);
+		FileUtil.WriteToFile(new File(dir + "/" + "type_id.json"), type_id_json.toString());
+		Set<String> akeys = ati.keySet();
+		for (String ak : akeys) {
+			Integer tcid = ati.get(ak);
+			TreeMap<String, Integer> tci = atci.get(tcid);
+			JSONObject type_content_id_json = JSONObject.fromObject(tci);
+			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
+		}
 	}
 
 }
