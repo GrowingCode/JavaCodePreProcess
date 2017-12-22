@@ -10,11 +10,9 @@ import org.eclipse.equinox.app.IApplicationContext;
 // import org.eclipse.jdt.core.IJavaProject;
 // import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.ui.PlatformUI;
 
 import eclipse.project.AnalysisEnvironment;
 import eclipse.project.ProjectLoader;
-import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
 import statistic.id.IDCounter;
 import statistic.id.IDManager;
@@ -35,10 +33,10 @@ public class Application implements IApplication {
 	public Object start(IApplicationContext context) throws Exception {
 		// DebugLogger.Log("Start is invoked!");
 		// SystemUtil.Delay(1000);
-		while (!PlatformUI.isWorkbenchRunning()) {
-			DebugLogger.Log("Waiting the creation of the workbench.");
-			SystemUtil.Delay(1000);
-		}
+//		while (!PlatformUI.isWorkbenchRunning()) {
+//			DebugLogger.Log("Waiting the creation of the workbench.");
+//			SystemUtil.Delay(1000);
+//		}
 		// load and execute the project.
 		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 		String all_proj_paths = args[0];
