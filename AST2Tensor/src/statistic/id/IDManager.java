@@ -11,7 +11,8 @@ import util.FileUtil;
 import util.MapUtil;
 
 public class IDManager {
-
+	
+	public static String Default = "@Default";
 	// non-leaf type
 	public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
 	// leaf type
@@ -29,7 +30,7 @@ public class IDManager {
 	private TreeMap<Integer, TreeMap<String, Integer>> ast_type_content_id_map = new TreeMap<Integer, TreeMap<String, Integer>>();
 
 	public IDManager() {
-		RegistTypeID("Default");
+		RegistTypeID(Default);
 	}
 
 	public int RegistTypeID(String type) {
@@ -40,7 +41,7 @@ public class IDManager {
 			TreeMap<String, Integer> content_id_map = ast_type_content_id_map.get(id);
 			if (content_id_map == null) {
 				content_id_map = new TreeMap<String, Integer>();
-				content_id_map.put("Default", 0);
+				content_id_map.put(Default, 0);
 				ast_type_content_id_map.put(id, content_id_map);
 			}
 		}
