@@ -60,10 +60,10 @@ public class Application implements IApplication {
 		{
 			RefineAllStatistics(ic);
 			ic.FullFillIDManager(im);
-			SaveIDMapToFile.SaveIDMaps(im, DataMeta.DataDirectory);
+			SaveIDMapToFile.SaveIDMaps(im, Meta.DataDirectory);
 		}
 		{
-			File f = new File(DataMeta.DataDirectory + "/all_data.txt");
+			File f = new File(Meta.DataDirectory + "/all_data.txt");
 			if (f.exists()) {
 				f.delete();
 			}
