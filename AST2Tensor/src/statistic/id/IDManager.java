@@ -2,9 +2,13 @@ package statistic.id;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sf.json.JSONObject;
 import util.FileUtil;
@@ -114,7 +118,9 @@ public class IDManager {
 	}
 	
 	public void SaveToDirectory(String dir) {
+		List<Integer> summary = new LinkedList<Integer>();
 		TreeMap<String, Integer> ati = ast_type_id_map;
+		summary.add(ati.size());
 		Map<Object, Object> ati_out = MapUtil.ReverseKeyValueInMap(ati);
 		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
 		JSONObject type_id_json = JSONObject.fromObject(ati_out);
@@ -123,10 +129,12 @@ public class IDManager {
 		for (String ak : akeys) {
 			Integer tcid = ati.get(ak);
 			TreeMap<String, Integer> tci = atci.get(tcid);
+			summary.add(tci.size());
 			Map<Object, Object> tci_out = MapUtil.ReverseKeyValueInMap(tci);
 			JSONObject type_content_id_json = JSONObject.fromObject(tci_out);
 			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
 		}
+		FileUtil.WriteToFile(new File(dir + "/" + "summary.txt"), StringUtils.join(summary, " "));
 	}
 
 }
