@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -27,6 +28,9 @@ public class TensorGenerator extends ASTVisitor {
 	CompilationUnit cu = null;
 
 	Tensor t = new Tensor();
+	
+	Stack<Integer> expected_handled_child_num = new Stack<Integer>();
+	Stack<Integer> already_handled_child_num = new Stack<Integer>();
 	
 	public TensorGenerator(IJavaProject java_project, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
 		this.java_project = java_project;
@@ -52,9 +56,6 @@ public class TensorGenerator extends ASTVisitor {
 		}
 		return idx;
 	}
-
-	Stack<Integer> expected_handled_child_num = new Stack<Integer>();
-	Stack<Integer> already_handled_child_num = new Stack<Integer>();
 
 	@Override
 	public void preVisit(ASTNode node) {
@@ -88,9 +89,12 @@ public class TensorGenerator extends ASTVisitor {
 			node_content = im.GetContentID(type, node.toString());
 		}
 		// handle node self and reform its children to binary tree.
-		HandleChildren(node_index, children, node_type, node_content);
-		already_handled_child_num.push(already_handled_child_num.pop() + 1);
-
+		if (already_handled_child_num.size() > 0) {
+			HandleChildren(node_index, children, node_type, node_content);
+			already_handled_child_num.push(already_handled_child_num.pop() + 1);
+		} else {
+			Assert.isTrue((already_handled_child_num.size() == expected_handled_child_num.size()) && (node.getParent() == null));
+		}
 		super.postVisit(node);
 	}
 
