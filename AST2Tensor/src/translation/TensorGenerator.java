@@ -11,7 +11,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import logger.DebugLogger;
@@ -28,12 +27,6 @@ public class TensorGenerator extends ASTVisitor {
 	CompilationUnit cu = null;
 
 	Tensor t = new Tensor();
-	
-	@Override
-	public boolean visit(TypeDeclaration node) {
-		System.err.println(node.getName());
-		return super.visit(node);
-	}
 	
 	public TensorGenerator(IJavaProject java_project, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
 		this.java_project = java_project;
