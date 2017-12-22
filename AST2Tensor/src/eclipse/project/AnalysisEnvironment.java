@@ -18,11 +18,12 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
 
-import eclipse.jdt.JDTLexicalParser;
 import eclipse.FakedProjectEnvironmentMeta;
 import eclipse.ResourceMeta;
 import eclipse.exception.NoAnalysisSourceException;
 import eclipse.exception.ProjectAlreadyExistsException;
+import eclipse.jdt.JDTLexicalParser;
+import eclipse.project.process.PreProcessHelper;
 import logger.DebugLogger;
 import util.FileIterator;
 import util.FileUtil;
@@ -135,7 +136,7 @@ public class AnalysisEnvironment {
 				File f = fitr.next();
 				String f_norm_path = f.getAbsolutePath().trim().replace('\\', '/');
 				DebugLogger.Log("f_norm_path:" + f_norm_path);
-				CompilationUnit cu = JDTLexicalParser.GetUniqueParser().ParseJavaFile(f);
+				CompilationUnit cu = JDTLexicalParser.ParseJavaFile(f);
 				PackageDeclaration pack = cu.getPackage();
 				if (pack != null) {
 					String fname = f.getName();
@@ -175,7 +176,7 @@ public class AnalysisEnvironment {
 
 		// System.err.println("Debugging, import files:" + dir_files_map);
 
-		// PreProcessHelper.EliminateAllParameterizedTypeAndReformAssignment(java_project);
+		PreProcessHelper.PreProcessProject(java_project);
 		return java_project;
 	}
 
