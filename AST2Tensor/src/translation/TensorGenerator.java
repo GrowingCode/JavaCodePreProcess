@@ -67,7 +67,7 @@ public class TensorGenerator extends ASTVisitor {
 	@Override
 	public void postVisit(ASTNode node) {
 		if (expected_handled_child_num.peek() != already_handled_child_num.peek()) {
-			DebugLogger.Error("Strange! expected num of children unmatched!");
+			DebugLogger.Error("Strange! expected num of children unmatched! ASTNode is:" + node);
 			SystemUtil.Flush();
 			System.exit(1);
 		}

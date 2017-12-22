@@ -39,6 +39,10 @@ public class Application implements IApplication {
 //		}
 		// load and execute the project.
 		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+		if (args.length != 1) {
+			System.err.println("Wrong: argument size should be 1 and must be the directory which contains the tested files!");
+			return IApplication.EXIT_OK;
+		}
 		String all_proj_paths = args[0];
 		IDCounter ic = new IDCounter();
 		{

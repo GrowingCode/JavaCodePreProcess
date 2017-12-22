@@ -19,5 +19,16 @@ public class MapUtil {
 		}
 		return result;
 	}
+
+	public static Map<String, Object> CastKeyToString(Map<Object, Object> map) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Set<Object> kset = map.keySet();
+		Iterator<Object> eitr = kset.iterator();
+		while (eitr.hasNext()) {
+			Object entry = eitr.next();
+			result.put(entry.toString(), map.get(entry));
+		}
+		return result;
+	}
 	
 }

@@ -15,16 +15,27 @@ public class Tensor {
 	}
 	
 	public void StoreOneASTNode(int node_idx, int left_child_node_idx, int right_child_node_idx, int type_id, int content_id) {
-		left_child.set(node_idx, left_child_node_idx);
-		right_child.set(node_idx, right_child_node_idx);
-		type.set(node_idx, type_id);
-		content.set(node_idx, content_id);
+		SetValueAtIndex(left_child, node_idx, left_child_node_idx);
+		SetValueAtIndex(right_child, node_idx, right_child_node_idx);
+		SetValueAtIndex(type, node_idx, type_id);
+		SetValueAtIndex(content, node_idx, content_id);
 	}
 	
 	@Override
 	public String toString() {
 		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ");
 		return result;
+	}
+	
+	private void SetValueAtIndex(ArrayList<Integer> array_list, int index, Integer value) {
+		int size = array_list.size();
+		if (index >= size) {
+			int gap = index - size + 1;
+			for (int i=0;i<gap;i++) {
+				array_list.add(-1);
+			}
+		}
+		array_list.set(index, value);
 	}
 	
 }

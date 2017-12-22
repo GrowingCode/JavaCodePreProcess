@@ -122,8 +122,9 @@ public class IDManager {
 		TreeMap<String, Integer> ati = ast_type_id_map;
 		summary.add(ati.size());
 		Map<Object, Object> ati_out = MapUtil.ReverseKeyValueInMap(ati);
+		Map<String, Object> ati_out_str = MapUtil.CastKeyToString(ati_out);
 		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
-		JSONObject type_id_json = JSONObject.fromObject(ati_out);
+		JSONObject type_id_json = JSONObject.fromObject(ati_out_str);
 		FileUtil.WriteToFile(new File(dir + "/" + "type_id.json"), type_id_json.toString());
 		Set<String> akeys = ati.keySet();
 		for (String ak : akeys) {
@@ -131,7 +132,8 @@ public class IDManager {
 			TreeMap<String, Integer> tci = atci.get(tcid);
 			summary.add(tci.size());
 			Map<Object, Object> tci_out = MapUtil.ReverseKeyValueInMap(tci);
-			JSONObject type_content_id_json = JSONObject.fromObject(tci_out);
+			Map<String, Object> tci_out_str = MapUtil.CastKeyToString(tci_out);
+			JSONObject type_content_id_json = JSONObject.fromObject(tci_out_str);
 			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
 		}
 		FileUtil.WriteToFile(new File(dir + "/" + "summary.txt"), StringUtils.join(summary, " "));
