@@ -20,7 +20,7 @@ public class IDCounter {
 	}
 	
 	public void EncounterANode(String type, String content) {
-		String cc = type + "#" + content;
+		String cc = type + "&" + content;
 		Integer sc = safe.get(cc);
 		if (sc != null) {
 			sc++;
@@ -35,7 +35,7 @@ public class IDCounter {
 		}
 	}
 
-	public void RefineAllStatistics(int minsupport, int maxcapacity) {
+	public void TempRefineAllStatistics(int minsupport, int maxcapacity) {
 		if (count.size() + safe.size() <= maxcapacity) {
 			return;
 		}
@@ -47,8 +47,22 @@ public class IDCounter {
 			if (ct >= minsupport || ck.startsWith("PrimordialNonLeafASTType#")) {
 				safe.put(ck, ct);
 			}
-			count.remove(ck);
 		}
+		count.clear();
+	}
+	
+	public void FinalRefineAllStatistics(int minsupport, int maxcapacity) {
+		boolean skip_minsupport = count.size() + safe.size() <= maxcapacity;
+		Set<String> ckeys = count.keySet();
+		Iterator<String> ckitr = ckeys.iterator();
+		while (ckitr.hasNext()) {
+			String ck = ckitr.next();
+			int ct = count.get(ck);
+			if (ct >= minsupport || skip_minsupport || ck.startsWith("PrimordialNonLeafASTType#")) {
+				safe.put(ck, ct);
+			}
+		}
+		count.clear();
 	}
 	
 	public boolean IsRefined() {
@@ -56,14 +70,14 @@ public class IDCounter {
 	}
 	
 	public void FullFillIDManager(IDManager im) {
+		im.EnsureDefaultValue();
 		Set<String> skeys = safe.keySet();
 		Iterator<String> skitr = skeys.iterator();
 		while (skitr.hasNext()) {
 			String sk = skitr.next();
-			String[] tcs = sk.split("#");
+			String[] tcs = sk.split("&");
 			im.RegistContentID(tcs[0], tcs[1]);
 		}
-		im.EnsureDefaultValue();
 	}
 	
 }

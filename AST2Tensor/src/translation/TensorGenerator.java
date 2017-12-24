@@ -75,22 +75,26 @@ public class TensorGenerator extends ASTVisitor {
 		// handle this node
 		expected_handled_child_num.pop();
 		already_handled_child_num.pop();
-		int node_index = GetASTNodeIndex(node);
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		// set node type and content
+		String type = null;
+		String content = null;
 		int node_type = -1;
 		int node_content = -1;
 		if (children.size() > 0) {
-			node_type = im.GetTypeID(IDManager.PrimordialNonLeafASTType);
-			node_content = im.GetContentID(IDManager.PrimordialNonLeafASTType, node.getClass().getSimpleName());
-		} else {
-			String type = node.getParent().getClass().getSimpleName() + "#" + node.getClass().getSimpleName();
+			type = IDManager.PrimordialNonLeafASTType;
+			content = node.getClass().getSimpleName();
 			node_type = im.GetTypeID(type);
-			node_content = im.GetContentID(type, node.toString());
+			node_content = im.GetContentID(type, content);
+		} else {
+			type = node.getParent().getClass().getSimpleName() + "#" + node.getClass().getSimpleName();
+			content = node.toString().trim();
+			node_type = im.GetTypeID(type);
+			node_content = im.GetContentID(type, content);
 		}
 		// handle node self and reform its children to binary tree.
 		if (already_handled_child_num.size() > 0) {
-			HandleChildren(node_index, children, node_type, node_content);
+			HandleChildren(node, children, node_type, node_content, type, content);
 			already_handled_child_num.push(already_handled_child_num.pop() + 1);
 		} else {
 			Assert.isTrue((already_handled_child_num.size() == expected_handled_child_num.size()) && (node.getParent() == null));
@@ -98,22 +102,28 @@ public class TensorGenerator extends ASTVisitor {
 		super.postVisit(node);
 	}
 
-	private void HandleChildren(int node_index, List<ASTNode> children, int node_type, int node_content) {
+	private void HandleChildren(ASTNode node, List<ASTNode> children, int node_type, int node_content, String type, String content) {
 		int node_left_index = -1;
 		int node_right_index = -1;
 		if (children.size() > 0) {
 			ASTNode child = children.get(0);
 			node_left_index = GetASTNodeIndex(child);
 			if (1 == children.size()) {
-				node_right_index = GetNewIndex();
-				HandleChildren(node_right_index, new LinkedList<ASTNode>(), im.GetTypeID(IDManager.TerminalLeafASTType), 0);
+				// node_right_index = GetNewIndex();
+				HandleChildren(null, new LinkedList<ASTNode>(), im.GetTypeID(IDManager.TerminalLeafASTType), 0, IDManager.TerminalLeafASTType, IDManager.Default);
 			} else {
-				node_right_index = GetNewIndex();
-				HandleChildren(node_right_index, children.subList(1, children.size()), 0, 0);
+				// node_right_index = GetNewIndex();
+				HandleChildren(null, children.subList(1, children.size()), 0, 0, IDManager.Default, IDManager.Default);
 			}
-			GetASTNodeIndex(child);
+		}
+		int node_index = -1;
+		if (node != null) {
+			node_index = GetASTNodeIndex(node);
+		} else {
+			node_index = GetNewIndex();
 		}
 		t.StoreOneASTNode(node_index, node_left_index, node_right_index, node_type, node_content);
+		t.StoreOracle(node_index, type, content);
 	}
 
 	public Tensor GetGeneratedTensor() {

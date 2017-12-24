@@ -125,7 +125,7 @@ public class IDManager {
 		Map<String, Object> ati_out_str = MapUtil.CastKeyToString(ati_out);
 		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
 		JSONObject type_id_json = JSONObject.fromObject(ati_out_str);
-		FileUtil.WriteToFile(new File(dir + "/" + "type_id.json"), type_id_json.toString());
+		FileUtil.WriteToFile(new File(dir + "/" + "All_type_id.json"), type_id_json.toString());
 		Set<String> akeys = ati.keySet();
 		for (String ak : akeys) {
 			Integer tcid = ati.get(ak);

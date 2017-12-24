@@ -11,6 +11,9 @@ public class Tensor {
 	ArrayList<Integer> type = new ArrayList<Integer>();
 	ArrayList<Integer> content = new ArrayList<Integer>();
 	
+	ArrayList<String> type_oracle = new ArrayList<String>();
+	ArrayList<String> content_oracle = new ArrayList<String>();
+	
 	public Tensor() {
 	}
 	
@@ -21,21 +24,39 @@ public class Tensor {
 		SetValueAtIndex(content, node_idx, content_id);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void SetValueAtIndex(ArrayList array_list, int index, Object value) {
+		int size = array_list.size();
+		if (index >= size) {
+			int gap = index - size + 1;
+			for (int i=0;i<gap;i++) {
+				array_list.add(null);
+			}
+		}
+		array_list.set(index, value);
+	}
+	
+	public void StoreOracle(int node_idx, String type, String content) {
+		SetValueAtIndex(type_oracle, node_idx, type);
+		SetValueAtIndex(content_oracle, node_idx, content);
+	}
+	
 	@Override
 	public String toString() {
 		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ");
 		return result;
 	}
 	
-	private void SetValueAtIndex(ArrayList<Integer> array_list, int index, Integer value) {
-		int size = array_list.size();
-		if (index >= size) {
-			int gap = index - size + 1;
-			for (int i=0;i<gap;i++) {
-				array_list.add(-1);
-			}
-		}
-		array_list.set(index, value);
+	public String toDebugString() {
+		String line_seperator = System.getProperty("line.separator");
+		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator;
+		return result;
+	}
+	
+	public String toOracleString() {
+		String line_seperator = System.getProperty("line.separator");
+		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator;
+		return result;
 	}
 	
 }

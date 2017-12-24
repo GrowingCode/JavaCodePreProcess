@@ -53,40 +53,34 @@ public class Application implements IApplication {
 				String proj_path = pitr.next();
 				all_size += CountOneProject(proj_path, ic);
 				if (all_size >= RefinePeriod) {
-					RefineAllStatistics(ic);
+					ic.TempRefineAllStatistics(MinSupport, MaxCapacity);
 					all_size %= RefinePeriod;
 				}
 			}
 		}
 		IDManager im = new IDManager();
 		{
-			RefineAllStatistics(ic);
+			ic.FinalRefineAllStatistics(MinSupport, MaxCapacity);
 			ic.FullFillIDManager(im);
 			SaveIDMapToFile.SaveIDMaps(im, Meta.DataDirectory);
 		}
 		{
 			File f = new File(Meta.DataDirectory + "/all_data.txt");
-			if (f.exists()) {
-				f.delete();
-			}
-			f.createNewFile();
+			File debug_f = new File(Meta.DataDirectory + "/debug_all_data.txt");
+			File oracle_f = new File(Meta.DataDirectory + "/oracle_all_data.txt");
 			
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 			Iterator<String> pitr = proj_paths.iterator();
 			while (pitr.hasNext()) {
 				String proj_path = pitr.next();
-				TranslateOneProject(proj_path, im, f);
+				TranslateOneProject(proj_path, im, f, debug_f, oracle_f);
 			}
 		}
 		SystemUtil.Flush();
 		SystemUtil.Delay(1000);
 		return IApplication.EXIT_OK;
 	}
-
-	private void RefineAllStatistics(IDCounter im) {
-		im.RefineAllStatistics(MinSupport, MaxCapacity);
-	}
-
+	
 	private int CountOneProject(String proj_path, IDCounter im) {
 		int project_size = 0;
 		try {
@@ -111,13 +105,13 @@ public class Application implements IApplication {
 		// DebugLogger.Log("Force Stop is invoked!");
 	}
 
-	private void TranslateOneProject(String proj_path, IDManager im, File dest) {
+	private void TranslateOneProject(String proj_path, IDManager im, File dest, File debug_dest, File oracle_dest) {
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			SystemUtil.Delay(1000);
 			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(java_project, im);
 			TensorForProject one_project_tensor = irgfop.GenerateForOneProject();
-			SaveTensorToFile.SaveTensors(one_project_tensor, dest);
+			SaveTensorToFile.SaveTensors(one_project_tensor, dest, debug_dest, oracle_dest);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

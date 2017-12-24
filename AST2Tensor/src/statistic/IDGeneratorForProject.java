@@ -15,11 +15,11 @@ import statistic.id.IDCounter;
 public class IDGeneratorForProject {
 	
 	IJavaProject java_project = null;
-	IDCounter im = null;
+	IDCounter ic = null;
 	
-	public IDGeneratorForProject(IJavaProject java_project, IDCounter im) {
+	public IDGeneratorForProject(IJavaProject java_project, IDCounter ic) {
 		this.java_project = java_project;
-		this.im = im;
+		this.ic = ic;
 	}
 	
 	public int GenerateForOneProject() {
@@ -36,7 +36,7 @@ public class IDGeneratorForProject {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				length += cu.getLength();
 				// CreateJDTParserWithJavaProject(java_project).
-				IDGenerator tg = new IDGenerator(java_project, icu, cu, im);
+				IDGenerator tg = new IDGenerator(java_project, icu, cu, ic);
 				cu.accept(tg);
 			}
 		}
