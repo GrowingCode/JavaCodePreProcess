@@ -88,6 +88,7 @@ public class TensorForProject {
 				valid_tensors.add(t);
 			}
 		}
+		SaveToFile(tensors, "all");
 		SaveToFile(train_tensors, "train");
 		SaveToFile(test_tensors, "test");
 		SaveToFile(valid_tensors, "valid");
