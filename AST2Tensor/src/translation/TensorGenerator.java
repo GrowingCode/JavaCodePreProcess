@@ -21,7 +21,6 @@ public class TensorGenerator extends ASTVisitor {
 	
 	IJavaProject java_project = null;
 	IDManager im = null;
-	NodeIndexer ni = null;
 	
 	ICompilationUnit icu = null;
 	CompilationUnit cu = null;
@@ -31,10 +30,9 @@ public class TensorGenerator extends ASTVisitor {
 	Stack<Integer> expected_handled_child_num = new Stack<Integer>();
 	Stack<Integer> already_handled_child_num = new Stack<Integer>();
 	
-	public TensorGenerator(IJavaProject java_project, IDManager im, NodeIndexer ni, ICompilationUnit icu, CompilationUnit cu) {
+	public TensorGenerator(IJavaProject java_project, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
 		this.java_project = java_project;
 		this.im = im;
-		this.ni = ni;
 		this.icu = icu;
 		this.cu = cu;
 	}
@@ -92,7 +90,7 @@ public class TensorGenerator extends ASTVisitor {
 		int node_right_index = -1;
 		if (children.size() > 0) {
 			ASTNode child = children.get(0);
-			node_left_index = ni.GetASTNodeIndex(child);
+			node_left_index = t_list.getLast().GetASTNodeIndex(child);
 			if (1 == children.size()) {
 				// node_right_index = GetNewIndex();
 				HandleChildren(null, new LinkedList<ASTNode>(), im.GetTypeID(IDManager.TerminalLeafASTType), 0, IDManager.TerminalLeafASTType, IDManager.Default);
@@ -103,9 +101,9 @@ public class TensorGenerator extends ASTVisitor {
 		}
 		int node_index = -1;
 		if (node != null) {
-			node_index = ni.GetASTNodeIndex(node);
+			node_index = t_list.getLast().GetASTNodeIndex(node);
 		} else {
-			node_index = ni.GetNewIndex();
+			node_index = t_list.getLast().GetNewIndex();
 		}
 		t_list.getLast().StoreOneASTNode(node_index, node_left_index, node_right_index, node_type, node_content);
 		t_list.getLast().StoreOracle(node_index, type, content);

@@ -1,8 +1,11 @@
 package translation.tensor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.core.dom.ASTNode;
 
 public class Tensor {
 	
@@ -57,6 +60,24 @@ public class Tensor {
 		String line_seperator = System.getProperty("line.separator");
 		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator;
 		return result;
+	}
+	
+	private Map<ASTNode, Integer> node_idx = new HashMap<ASTNode, Integer>();
+	private int current_max_idx = -1;
+	
+	public int GetNewIndex() {
+		current_max_idx++;
+		return current_max_idx;
+	}
+
+	public int GetASTNodeIndex(ASTNode node) {
+		Integer idx = node_idx.get(node);
+		if (idx == null) {
+			current_max_idx++;
+			idx = current_max_idx;
+			node_idx.put(node, idx);
+		}
+		return idx;
 	}
 	
 }

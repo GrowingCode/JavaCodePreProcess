@@ -65,15 +65,12 @@ public class Application implements IApplication {
 			SaveIDMapToFile.SaveIDMaps(im, Meta.DataDirectory);
 		}
 		{
-			File f = new File(Meta.DataDirectory + "/all_data.txt");
-			File debug_f = new File(Meta.DataDirectory + "/debug_all_data.txt");
-			File oracle_f = new File(Meta.DataDirectory + "/oracle_all_data.txt");
-			
+			int total_num_tensors = 0;
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 			Iterator<String> pitr = proj_paths.iterator();
 			while (pitr.hasNext()) {
 				String proj_path = pitr.next();
-				TranslateOneProject(proj_path, im, f, debug_f, oracle_f);
+				total_num_tensors += TranslateOneProject(total_num_tensors, proj_path, im);// , f, debug_f, oracle_f
 			}
 		}
 		SystemUtil.Flush();
@@ -104,14 +101,17 @@ public class Application implements IApplication {
 	public void stop() {
 		// DebugLogger.Log("Force Stop is invoked!");
 	}
-
-	private void TranslateOneProject(String proj_path, IDManager im, File dest, File debug_dest, File oracle_dest) {
+	
+	// , File dest, File debug_dest, File oracle_dest
+	private int TranslateOneProject(int total_num_tensors, String proj_path, IDManager im) {
+		int num_of_projects = 0;
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			SystemUtil.Delay(1000);
 			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(java_project, im);
 			TensorForProject one_project_tensor = irgfop.GenerateForOneProject();
-			SaveTensorToFile.SaveTensors(one_project_tensor, dest, debug_dest, oracle_dest);
+			num_of_projects = one_project_tensor.GetNumOfTensors();
+			SaveTensorToFile.SaveTensors(total_num_tensors, one_project_tensor);// , Best, debug_dest, oracle_dest
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -121,6 +121,7 @@ public class Application implements IApplication {
 				e1.printStackTrace();
 			}
 		}
+		return num_of_projects;
 	}
 
 }

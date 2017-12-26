@@ -39,7 +39,7 @@ public class TensorGeneratorForProject {
 				TensorGenerator tg = new TensorGenerator(
 						java_project, im, icu, cu);
 				cu.accept(tg);
-				result.AddTensor(tg.GetGeneratedTensor());
+				result.AddTensors(tg.GetGeneratedTensor());
 			}
 		}
 		return result;
