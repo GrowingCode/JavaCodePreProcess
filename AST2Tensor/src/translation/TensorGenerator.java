@@ -1,9 +1,7 @@
 package translation;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
@@ -20,46 +18,33 @@ import translation.tensor.Tensor;
 import util.SystemUtil;
 
 public class TensorGenerator extends ASTVisitor {
-
+	
 	IJavaProject java_project = null;
 	IDManager im = null;
-
+	NodeIndexer ni = null;
+	
 	ICompilationUnit icu = null;
 	CompilationUnit cu = null;
-
-	Tensor t = new Tensor();
+	
+	LinkedList<Tensor> t_list = new LinkedList<Tensor>();
 	
 	Stack<Integer> expected_handled_child_num = new Stack<Integer>();
 	Stack<Integer> already_handled_child_num = new Stack<Integer>();
 	
-	public TensorGenerator(IJavaProject java_project, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
+	public TensorGenerator(IJavaProject java_project, IDManager im, NodeIndexer ni, ICompilationUnit icu, CompilationUnit cu) {
 		this.java_project = java_project;
 		this.im = im;
+		this.ni = ni;
 		this.icu = icu;
 		this.cu = cu;
-	}
-
-	private Map<ASTNode, Integer> node_idx = new HashMap<ASTNode, Integer>();
-	private int current_max_idx = -1;
-
-	private int GetNewIndex() {
-		current_max_idx++;
-		return current_max_idx;
-	}
-
-	private int GetASTNodeIndex(ASTNode node) {
-		Integer idx = node_idx.get(node);
-		if (idx == null) {
-			current_max_idx++;
-			idx = current_max_idx;
-			node_idx.put(node, idx);
-		}
-		return idx;
 	}
 
 	@Override
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
+		if (node.getParent() == null) {
+			t_list.add(new Tensor());
+		}
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		expected_handled_child_num.push(children.size());
 		already_handled_child_num.push(0);
@@ -68,7 +53,7 @@ public class TensorGenerator extends ASTVisitor {
 	@Override
 	public void postVisit(ASTNode node) {
 		if (expected_handled_child_num.peek() != already_handled_child_num.peek()) {
-			DebugLogger.Error("Strange! expected num of children unmatched! ASTNode is:" + node);
+			DebugLogger.Error("Strange! The system will exit! Expected num of children unmatched! ASTNode is:" + node);
 			SystemUtil.Flush();
 			System.exit(1);
 		}
@@ -107,7 +92,7 @@ public class TensorGenerator extends ASTVisitor {
 		int node_right_index = -1;
 		if (children.size() > 0) {
 			ASTNode child = children.get(0);
-			node_left_index = GetASTNodeIndex(child);
+			node_left_index = ni.GetASTNodeIndex(child);
 			if (1 == children.size()) {
 				// node_right_index = GetNewIndex();
 				HandleChildren(null, new LinkedList<ASTNode>(), im.GetTypeID(IDManager.TerminalLeafASTType), 0, IDManager.TerminalLeafASTType, IDManager.Default);
@@ -118,16 +103,16 @@ public class TensorGenerator extends ASTVisitor {
 		}
 		int node_index = -1;
 		if (node != null) {
-			node_index = GetASTNodeIndex(node);
+			node_index = ni.GetASTNodeIndex(node);
 		} else {
-			node_index = GetNewIndex();
+			node_index = ni.GetNewIndex();
 		}
-		t.StoreOneASTNode(node_index, node_left_index, node_right_index, node_type, node_content);
-		t.StoreOracle(node_index, type, content);
+		t_list.getLast().StoreOneASTNode(node_index, node_left_index, node_right_index, node_type, node_content);
+		t_list.getLast().StoreOracle(node_index, type, content);
 	}
 
-	public Tensor GetGeneratedTensor() {
-		return t;
+	public List<Tensor> GetGeneratedTensor() {
+		return t_list;
 	}
 	
 	/*
