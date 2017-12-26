@@ -82,6 +82,9 @@ public class TensorGenerator extends ASTVisitor {
 		} else {
 			Assert.isTrue((already_handled_child_num.size() == expected_handled_child_num.size()) && (node.getParent() == null));
 		}
+		if (node.getParent() == null) {
+			t_list.getLast().GenerateTreeIterationSequence();
+		}
 		super.postVisit(node);
 	}
 

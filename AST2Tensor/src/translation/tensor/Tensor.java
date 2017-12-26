@@ -3,6 +3,7 @@ package translation.tensor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -44,10 +45,45 @@ public class Tensor {
 		SetValueAtIndex(content_oracle, node_idx, content);
 	}
 	
+	TreeMap<Integer, Integer> node_index_map = new TreeMap<Integer, Integer>();
+	ArrayList<Integer> node = new ArrayList<Integer>();
+	ArrayList<Integer> up = new ArrayList<Integer>();
+	ArrayList<Integer> left = new ArrayList<Integer>();
+	
+	public void GenerateTreeIterationSequence() {
+		GenerateTreeIterationSequence(left_child.size()-1, -1, -1);
+	}
+	
+	private void GenerateTreeIterationSequence(int current_root, int up_of_root, int left_of_root) {
+		if (current_root >= 0) {
+			Integer lc = left_child.get(current_root);
+			Integer rc = right_child.get(current_root);
+			if (type.get(current_root) == 0) {
+				GenerateTreeIterationSequence(lc, up_of_root, left_of_root);
+				GenerateTreeIterationSequence(rc, lc, left_of_root);
+			} else {
+				node_index_map.put(current_root, node.size());
+				node.add(current_root);
+				int up_of_root_index = -1;
+				if (up_of_root >= 0) {
+					node_index_map.get(up_of_root);
+				}
+				int left_of_root_index = -1;
+				if (left_of_root >= 0) {
+					node_index_map.get(left_of_root);
+				}
+				up.add(up_of_root_index);
+				left.add(left_of_root_index);
+				GenerateTreeIterationSequence(lc, -1, current_root);
+				GenerateTreeIterationSequence(rc, lc, current_root);
+			}
+		}
+	}
+	
 	@Override
 	public String toString() {
-		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ");
-		return result;
+		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + " " + StringUtils.join(node.toArray(), " ") + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(left.toArray(), " ");
+		return result.trim();
 	}
 	
 	public String toDebugString() {
