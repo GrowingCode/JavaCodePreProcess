@@ -2,6 +2,7 @@ package translation.tensor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -82,20 +83,51 @@ public class Tensor {
 	
 	@Override
 	public String toString() {
-		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + " " + StringUtils.join(node.toArray(), " ") + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(left.toArray(), " ");
+		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + " " + StringUtils.join(node.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(left.toArray(), " ");
 		return result.trim();
 	}
 	
 	public String toDebugString() {
 		String line_seperator = System.getProperty("line.separator");
-		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator;
+		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator + StringUtils.join(node.toArray(), " ") + line_seperator + StringUtils.join(up.toArray(), " ") + line_seperator + StringUtils.join(left.toArray(), " ");
 		return result;
 	}
 	
 	public String toOracleString() {
 		String line_seperator = System.getProperty("line.separator");
-		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator;
+		String left_oracle = IDToTypeContent(left_child);
+		String right_oracle = IDToTypeContent(right_child);
+		String ind_left_oracle = IDToTypeContent(left);
+		String ind_up_oracle = IDToTypeContent(up);
+		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator + left_oracle + line_seperator + right_oracle + line_seperator + ind_left_oracle + line_seperator + ind_up_oracle ;
 		return result;
+	}
+	
+	public String IndirectIDToTypeContent(ArrayList<Integer> idxs) {
+		String line_seperator = System.getProperty("line.separator");
+		ArrayList<String> tp = new ArrayList<String>();
+		ArrayList<String> cnt = new ArrayList<String>();
+		Iterator<Integer> itr = idxs.iterator();
+		while (itr.hasNext()) {
+			Integer ii = itr.next();
+			Integer iidx = node.get(ii);
+			tp.add(type_oracle.get(iidx));
+			cnt.add(content_oracle.get(iidx));
+		}
+		return StringUtils.join(tp.toArray(), " ") + line_seperator + StringUtils.join(cnt.toArray(), " ");
+	}
+	
+	public String IDToTypeContent(ArrayList<Integer> indexs) {
+		String line_seperator = System.getProperty("line.separator");
+		ArrayList<String> tp = new ArrayList<String>();
+		ArrayList<String> cnt = new ArrayList<String>();
+		Iterator<Integer> iitr = indexs.iterator();
+		while (iitr.hasNext()) {
+			Integer iidx = iitr.next();
+			tp.add(type_oracle.get(iidx));
+			cnt.add(content_oracle.get(iidx));
+		}
+		return StringUtils.join(tp.toArray(), " ") + line_seperator + StringUtils.join(cnt.toArray(), " ");
 	}
 	
 	private Map<ASTNode, Integer> node_idx = new HashMap<ASTNode, Integer>();
