@@ -110,9 +110,14 @@ public class Tensor {
 		Iterator<Integer> itr = idxs.iterator();
 		while (itr.hasNext()) {
 			Integer ii = itr.next();
-			Integer iidx = node.get(ii);
-			tp.add(type_oracle.get(iidx));
-			cnt.add(content_oracle.get(iidx));
+			if (ii >= 0) {
+				Integer iidx = node.get(ii);
+				tp.add(type_oracle.get(iidx));
+				cnt.add(content_oracle.get(iidx));
+			} else {
+				tp.add("-1");
+				cnt.add("-1");
+			}
 		}
 		return StringUtils.join(tp.toArray(), " ") + line_seperator + StringUtils.join(cnt.toArray(), " ");
 	}
@@ -124,8 +129,13 @@ public class Tensor {
 		Iterator<Integer> iitr = indexs.iterator();
 		while (iitr.hasNext()) {
 			Integer iidx = iitr.next();
-			tp.add(type_oracle.get(iidx));
-			cnt.add(content_oracle.get(iidx));
+			if (iidx >= 0) {
+				tp.add(type_oracle.get(iidx));
+				cnt.add(content_oracle.get(iidx));
+			} else {
+				tp.add("-1");
+				cnt.add("-1");
+			}
 		}
 		return StringUtils.join(tp.toArray(), " ") + line_seperator + StringUtils.join(cnt.toArray(), " ");
 	}
