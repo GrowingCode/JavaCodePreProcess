@@ -88,18 +88,16 @@ public class TensorGenerator extends ASTVisitor {
 		super.postVisit(node);
 	}
 
-	private void HandleChildren(ASTNode node, List<ASTNode> children, int node_type, int node_content, String type, String content) {
+	private int HandleChildren(ASTNode node, List<ASTNode> children, int node_type, int node_content, String type, String content) {
 		int node_left_index = -1;
 		int node_right_index = -1;
 		if (children.size() > 0) {
 			ASTNode child = children.get(0);
 			node_left_index = t_list.getLast().GetASTNodeIndex(child);
 			if (1 == children.size()) {
-				// node_right_index = GetNewIndex();
-				HandleChildren(null, new LinkedList<ASTNode>(), im.GetTypeID(IDManager.TerminalLeafASTType), 0, IDManager.TerminalLeafASTType, IDManager.Default);
+				node_right_index = HandleChildren(null, new LinkedList<ASTNode>(), im.GetTypeID(IDManager.TerminalLeafASTType), 0, IDManager.TerminalLeafASTType, IDManager.Default);
 			} else {
-				// node_right_index = GetNewIndex();
-				HandleChildren(null, children.subList(1, children.size()), 0, 0, IDManager.Default, IDManager.Default);
+				node_right_index = HandleChildren(null, children.subList(1, children.size()), 0, 0, IDManager.Default, IDManager.Default);
 			}
 		}
 		int node_index = -1;
@@ -110,6 +108,7 @@ public class TensorGenerator extends ASTVisitor {
 		}
 		t_list.getLast().StoreOneASTNode(node_index, node_left_index, node_right_index, node_type, node_content);
 		t_list.getLast().StoreOracle(node_index, type, content);
+		return node_index;
 	}
 
 	public List<Tensor> GetGeneratedTensor() {
