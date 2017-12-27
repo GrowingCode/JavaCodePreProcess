@@ -95,15 +95,15 @@ public class Tensor {
 	
 	public String toOracleString() {
 		String line_seperator = System.getProperty("line.separator");
-		String left_oracle = IDToTypeContent(left_child);
-		String right_oracle = IDToTypeContent(right_child);
-		String ind_left_oracle = IDToTypeContent(left);
-		String ind_up_oracle = IDToTypeContent(up);
+		String left_oracle = IDToTypeContent("Encode's Every node's left_child:", left_child);
+		String right_oracle = IDToTypeContent("Encode's Every node's right_child:", right_child);
+		String ind_left_oracle = IndirectIDToTypeContent("Decode's Every node's left", left);
+		String ind_up_oracle = IndirectIDToTypeContent("Decode's Every node's up", up);
 		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator + left_oracle + line_seperator + right_oracle + line_seperator + ind_left_oracle + line_seperator + ind_up_oracle ;
 		return result;
 	}
 	
-	public String IndirectIDToTypeContent(ArrayList<Integer> idxs) {
+	public String IndirectIDToTypeContent(String description, ArrayList<Integer> idxs) {
 		String line_seperator = System.getProperty("line.separator");
 		ArrayList<String> tp = new ArrayList<String>();
 		ArrayList<String> cnt = new ArrayList<String>();
@@ -119,10 +119,10 @@ public class Tensor {
 				cnt.add("-1");
 			}
 		}
-		return StringUtils.join(tp.toArray(), " ") + line_seperator + StringUtils.join(cnt.toArray(), " ");
+		return description + "#type:" + StringUtils.join(tp.toArray(), " ") + line_seperator + description + "#content:" + StringUtils.join(cnt.toArray(), " ");
 	}
 	
-	public String IDToTypeContent(ArrayList<Integer> indexs) {
+	public String IDToTypeContent(String description, ArrayList<Integer> indexs) {
 		String line_seperator = System.getProperty("line.separator");
 		ArrayList<String> tp = new ArrayList<String>();
 		ArrayList<String> cnt = new ArrayList<String>();
@@ -137,7 +137,7 @@ public class Tensor {
 				cnt.add("-1");
 			}
 		}
-		return StringUtils.join(tp.toArray(), " ") + line_seperator + StringUtils.join(cnt.toArray(), " ");
+		return description + "#type:" + StringUtils.join(tp.toArray(), " ") + line_seperator + description + "#content:" + StringUtils.join(cnt.toArray(), " ");
 	}
 	
 	private Map<ASTNode, Integer> node_idx = new HashMap<ASTNode, Integer>();
