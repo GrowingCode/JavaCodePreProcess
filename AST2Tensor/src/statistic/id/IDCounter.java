@@ -76,7 +76,7 @@ public class IDCounter {
 		while (skitr.hasNext()) {
 			String sk = skitr.next();
 			String[] tcs = sk.split("&");
-			im.RegistContentID(tcs[0], tcs[1]);
+			im.RegistContentID(tcs[0], tcs[1], safe.get(sk));
 		}
 	}
 	

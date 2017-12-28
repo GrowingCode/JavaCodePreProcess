@@ -30,14 +30,16 @@ public class IDManager {
 //	public static String TerminalLeafDefault = "TermDefault";
 
 	private TreeMap<String, Integer> ast_type_id_map = new TreeMap<String, Integer>();
-
+	private TreeMap<Integer, Integer> ast_type_id_count_map = new TreeMap<Integer, Integer>();
+	
 	private TreeMap<Integer, TreeMap<String, Integer>> ast_type_content_id_map = new TreeMap<Integer, TreeMap<String, Integer>>();
-
+	private TreeMap<Integer, TreeMap<Integer, Integer>> ast_type_content_id_count_map = new TreeMap<Integer, TreeMap<Integer, Integer>>();
+	
 	public IDManager() {
-		RegistTypeID(Default);
+		RegistTypeID(Default, 0);
 	}
 
-	public int RegistTypeID(String type) {
+	private int RegistTypeID(String type, int count) {
 		Integer id = ast_type_id_map.get(type);
 		if (id == null) {
 			id = ast_type_id_map.size();
@@ -48,13 +50,25 @@ public class IDManager {
 				content_id_map.put(Default, 0);
 				ast_type_content_id_map.put(id, content_id_map);
 			}
+			TreeMap<Integer, Integer> content_id_count_map = ast_type_content_id_count_map.get(id);
+			if (content_id_count_map == null) {
+				content_id_count_map = new TreeMap<Integer, Integer>();
+				ast_type_content_id_count_map.put(id, content_id_count_map);
+			}
 		}
+		Integer ct = ast_type_id_count_map.get(id);
+		if (ct == null) {
+			ct = 0;
+		}
+		ct += count;
+		ast_type_id_count_map.put(id, ct);
 		return id;
 	}
 
-	public int RegistContentID(String type, String content) {
-		int type_id = RegistTypeID(type);
+	public int RegistContentID(String type, String content, int count) {
+		int type_id = RegistTypeID(type, count);
 		TreeMap<String, Integer> contents_id = ast_type_content_id_map.get(type_id);
+		TreeMap<Integer, Integer> contents_count_id = ast_type_content_id_count_map.get(type_id);
 //		if (contents_id == null) {
 //			contents_id = new TreeMap<String, Integer>();
 //			ast_type_content_id_map.put(type_id, contents_id);
@@ -64,14 +78,20 @@ public class IDManager {
 			cnt_id = contents_id.size();
 			contents_id.put(content, cnt_id);
 		}
+		Integer ct = contents_count_id.get(cnt_id);
+		if (ct == null) {
+			ct = 0;
+		}
+		ct += count;
+		contents_count_id.put(cnt_id, ct);
 		return cnt_id;
 	}
 
 	public void EnsureDefaultValue() {
 		// non leaf
-		RegistTypeID(PrimordialNonLeafASTType);
+		RegistTypeID(PrimordialNonLeafASTType, 0);
 		// leaf
-		RegistTypeID(TerminalLeafASTType);
+		RegistTypeID(TerminalLeafASTType, 0);
 //		GetTypeID(TerminalLeafASTType);
 //		GetTypeID(SimpleName.class.getSimpleName());
 //		GetTypeID(NumberLiteral.class.getSimpleName());
@@ -90,7 +110,7 @@ public class IDManager {
 		Iterator<String> aitr = akeys.iterator();
 		while (aitr.hasNext()) {
 			String ak = aitr.next();
-			RegistTypeID(ak);
+			RegistTypeID(ak, 0);
 //			Integer aid = ast_type_id_map.get(ak);
 //			TreeMap<String, Integer> cidm = ast_type_content_id_map.get(aid);
 //			if (!cidm.containsKey(ak + SimpleNameLeafDefault)) {
