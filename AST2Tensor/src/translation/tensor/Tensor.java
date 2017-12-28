@@ -97,9 +97,10 @@ public class Tensor {
 		String line_seperator = System.getProperty("line.separator");
 		String left_oracle = IDToTypeContent("Encode's Every node's left_child:", left_child);
 		String right_oracle = IDToTypeContent("Encode's Every node's right_child:", right_child);
+		String node_oracle = IDToTypeContent("Decode's Every node:", node);
 		String ind_left_oracle = IndirectIDToTypeContent("Decode's Every node's left", left);
 		String ind_up_oracle = IndirectIDToTypeContent("Decode's Every node's up", up);
-		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator + left_oracle + line_seperator + right_oracle + line_seperator + ind_left_oracle + line_seperator + ind_up_oracle ;
+		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator + left_oracle + line_seperator + right_oracle + line_seperator + node_oracle + line_seperator + ind_left_oracle + line_seperator + ind_up_oracle ;
 		return result;
 	}
 	
