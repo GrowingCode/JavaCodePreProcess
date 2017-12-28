@@ -67,11 +67,11 @@ public class Tensor {
 				node.add(current_root);
 				int up_of_root_index = -1;
 				if (up_of_root >= 0) {
-					node_index_map.get(up_of_root);
+					up_of_root_index = node_index_map.get(up_of_root);
 				}
 				int left_of_root_index = -1;
 				if (left_of_root >= 0) {
-					node_index_map.get(left_of_root);
+					left_of_root_index = node_index_map.get(left_of_root);
 				}
 				up.add(up_of_root_index);
 				left.add(left_of_root_index);
