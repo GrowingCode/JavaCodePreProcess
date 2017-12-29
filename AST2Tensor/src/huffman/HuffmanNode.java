@@ -104,7 +104,9 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 	// ArrayList<Integer> node, ArrayList<Integer> left_child, ArrayList<Integer> right_child
 	public int[][] ToTensor() {
 		int[][] tensor = new int[3][totalNodeNum];
-		Arrays.fill(tensor, -1);
+		Arrays.fill(tensor[0], -1);
+		Arrays.fill(tensor[1], -1);
+		Arrays.fill(tensor[2], -1);
 		IDAssigner ida = new IDAssigner();
 		ToTensor(tensor, ida);
 		return tensor;
@@ -112,8 +114,14 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 	
 	private int ToTensor(int[][] tensor, IDAssigner ida) {
 		int id = ida.GetNewID();
-		int infix_right_id = rightNode.ToTensor(tensor, ida);
-		int infix_left_id = leftNode.ToTensor(tensor, ida);
+		int infix_right_id = -1;
+		if (rightNode != null) {
+			infix_right_id = rightNode.ToTensor(tensor, ida);
+		}
+		int infix_left_id = -1;
+		if (leftNode != null) {
+			infix_left_id = leftNode.ToTensor(tensor, ida);
+		}
 		tensor[0][id] = infix_right_id;
 		tensor[1][id] = infix_left_id;
 		tensor[2][id] = (content == null ? -1 : content);

@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.runtime.Assert;
 
 public class GenerateHuffmanTree {
@@ -50,7 +51,7 @@ public class GenerateHuffmanTree {
 	public static int[][] BuildEncodeTensor(HuffmanNode root) {
 		int width = root.getMaxDepth();
 		int height = root.getLeafNodeNum();
-		System.out.println("=== height:" + height);
+		// System.out.println("=== height:" + height);
 		int[][] tensor = new int[height][width];
 		for (int i=0;i<height;i++) {
 			Arrays.fill(tensor[i], -1);
@@ -63,9 +64,10 @@ public class GenerateHuffmanTree {
 		if (root.isLeaf()) {
 			Integer[] path_arr = new Integer[path.size()];
 			path.toArray(path_arr);
-			System.out.println("=== tensor_length:" + tensor.length);
-			System.out.println("=== tensor_content:" + root.getContent());
-			System.arraycopy(tensor[root.getContent()], 0, path_arr, 0, path_arr.length);
+			int[] path_arr_primitive = ArrayUtils.toPrimitive(path_arr);
+			// System.out.println("=== tensor_length:" + tensor.length);
+			// System.out.println("=== tensor_content:" + root.getContent());
+			System.arraycopy(path_arr_primitive, 0, tensor[root.getContent()], 0, path_arr_primitive.length);
 		} else {
 			if (root.hasLeftChild()) {
 				path.push(1);
