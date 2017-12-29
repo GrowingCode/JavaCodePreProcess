@@ -1,6 +1,7 @@
 package statistic.id;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import huffman.GenerateHuffmanTree;
+import huffman.HuffmanNode;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import util.FileUtil;
 import util.MapUtil;
@@ -53,6 +57,7 @@ public class IDManager {
 			TreeMap<Integer, Integer> content_id_count_map = ast_type_content_id_count_map.get(id);
 			if (content_id_count_map == null) {
 				content_id_count_map = new TreeMap<Integer, Integer>();
+				content_id_count_map.put(0, 0);
 				ast_type_content_id_count_map.put(id, content_id_count_map);
 			}
 		}
@@ -136,7 +141,7 @@ public class IDManager {
 		}
 		return 0;
 	}
-	
+
 	public void SaveToDirectory(String dir) {
 		List<Integer> summary = new LinkedList<Integer>();
 		TreeMap<String, Integer> ati = ast_type_id_map;
@@ -157,6 +162,32 @@ public class IDManager {
 			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
 		}
 		FileUtil.WriteToFile(new File(dir + "/" + "summary.txt"), StringUtils.join(summary, " "));
+		
+		HuffmanNode root = GenerateHuffmanTree.BuildTree(ast_type_id_count_map);
+		int[][] type_huffman_leaf_node_encode_tensor = GenerateHuffmanTree.BuildEncodeTensor(root);
+		int[][] type_huffman_tree_tensor = root.ToTensor();
+		JSONArray type_huff_leaf_encode_json = JSONArray.fromObject(type_huffman_leaf_node_encode_tensor);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_type_huff_leaf_encode.json"), type_huff_leaf_encode_json.toString());
+		JSONArray type_huff_tree_json = JSONArray.fromObject(type_huffman_tree_tensor);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_type_huff_tree.json"), type_huff_tree_json.toString());
+		
+		List<int[][]> type_content_huff_leaf_encode_list = new ArrayList<int[][]>();
+		List<int[][]> type_content_huff_tree_list = new ArrayList<int[][]>();
+		Set<Integer> atckeys = ast_type_content_id_count_map.keySet();
+		Iterator<Integer> atcitr = atckeys.iterator();
+		while (atcitr.hasNext()) {
+			Integer atckey = atcitr.next();
+			TreeMap<Integer, Integer> atc = ast_type_content_id_count_map.get(atckey);
+			HuffmanNode act_root = GenerateHuffmanTree.BuildTree(atc);
+			int[][] act_type_huffman_leaf_node_encode_tensor = GenerateHuffmanTree.BuildEncodeTensor(act_root);
+			type_content_huff_leaf_encode_list.add(atckey, act_type_huffman_leaf_node_encode_tensor);
+			int[][] act_type_huffman_tree_tensor = act_root.ToTensor();
+			type_content_huff_tree_list.add(atckey, act_type_huffman_tree_tensor);
+		}
+		JSONArray type_content_huff_leaf_encode_list_json = JSONArray.fromObject(type_content_huff_leaf_encode_list);
+		FileUtil.WriteToFile(new File(dir + "/" + "type_content_huff_leaf_encode.json"), type_content_huff_leaf_encode_list_json.toString());
+		JSONArray type_content_huff_tree_list_json = JSONArray.fromObject(type_content_huff_tree_list);
+		FileUtil.WriteToFile(new File(dir + "/" + "type_content_huff_tree.json"), type_content_huff_tree_list_json.toString());
 	}
 
 }
