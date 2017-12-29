@@ -186,9 +186,9 @@ public class IDManager {
 			type_content_huff_tree_list.add(atckey, act_type_huffman_tree_tensor);
 		}
 		JSONArray type_content_huff_leaf_encode_list_json = JSONArray.fromObject(type_content_huff_leaf_encode_list);
-		FileUtil.WriteToFile(new File(dir + "/" + "type_content_huff_leaf_encode.json"), type_content_huff_leaf_encode_list_json.toString());
+		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_huff_leaf_encode.json"), type_content_huff_leaf_encode_list_json.toString());
 		JSONArray type_content_huff_tree_list_json = JSONArray.fromObject(type_content_huff_tree_list);
-		FileUtil.WriteToFile(new File(dir + "/" + "type_content_huff_tree.json"), type_content_huff_tree_list_json.toString());
+		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_huff_tree.json"), type_content_huff_tree_list_json.toString());
 	}
 
 }
