@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
 
+import org.eclipse.core.runtime.Assert;
+
 public class GenerateHuffmanTree {
 
 	public static HuffmanNode BuildTree(Map<Integer, Integer> statistics) {
@@ -23,7 +25,7 @@ public class GenerateHuffmanTree {
 		}
 
 		int size = priorityQueue.size();
-		for (int i = 1; i < size - 1; i++) {
+		for (int i = 1; i <= size - 1; i++) {
 			HuffmanNode node1 = priorityQueue.poll();
 			HuffmanNode node2 = priorityQueue.poll();
 
@@ -41,15 +43,18 @@ public class GenerateHuffmanTree {
 
 			priorityQueue.add(sumNode);
 		}
-
+		Assert.isTrue(priorityQueue.size() == 1);
 		return priorityQueue.poll();
 	}
 
 	public static int[][] BuildEncodeTensor(HuffmanNode root) {
 		int width = root.getMaxDepth();
 		int height = root.getLeafNodeNum();
+		System.out.println("=== height:" + height);
 		int[][] tensor = new int[height][width];
-		Arrays.fill(tensor, -1);
+		for (int i=0;i<height;i++) {
+			Arrays.fill(tensor[i], -1);
+		}
 		RecursiveBuildEncodeTensor(root, tensor, new Stack<Integer>());
 		return tensor;
 	}
@@ -58,6 +63,8 @@ public class GenerateHuffmanTree {
 		if (root.isLeaf()) {
 			Integer[] path_arr = new Integer[path.size()];
 			path.toArray(path_arr);
+			System.out.println("=== tensor_length:" + tensor.length);
+			System.out.println("=== tensor_content:" + root.getContent());
 			System.arraycopy(tensor[root.getContent()], 0, path_arr, 0, path_arr.length);
 		} else {
 			if (root.hasLeftChild()) {

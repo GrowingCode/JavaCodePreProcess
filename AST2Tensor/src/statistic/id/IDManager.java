@@ -163,6 +163,7 @@ public class IDManager {
 		}
 		FileUtil.WriteToFile(new File(dir + "/" + "summary.txt"), StringUtils.join(summary, " "));
 		
+		System.out.println("=== ast_type_id_count_map:" + ast_type_id_count_map);
 		HuffmanNode root = GenerateHuffmanTree.BuildTree(ast_type_id_count_map);
 		int[][] type_huffman_leaf_node_encode_tensor = GenerateHuffmanTree.BuildEncodeTensor(root);
 		int[][] type_huffman_tree_tensor = root.ToTensor();
