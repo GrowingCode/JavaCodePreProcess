@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import huffman.GenerateHuffmanTree;
 import huffman.HuffmanNode;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import util.FileUtil;
 import util.MapUtil;
 
@@ -147,18 +146,29 @@ public class IDManager {
 		TreeMap<String, Integer> ati = ast_type_id_map;
 		summary.add(ati.size());
 		Map<Object, Object> ati_out = MapUtil.ReverseKeyValueInMap(ati);
-		Map<String, Object> ati_out_str = MapUtil.CastKeyToString(ati_out);
-		TreeMap<Integer, TreeMap<String, Integer>> atci = ast_type_content_id_map;
-		JSONObject type_id_json = JSONObject.fromObject(ati_out_str);
+		Set<Object> ati_keys = ati_out.keySet();
+		List<Object> ati_objs = new LinkedList<Object>();
+		Iterator<Object> ati_key_itr = ati_keys.iterator();
+		while (ati_key_itr.hasNext()) {
+			Object key = ati_key_itr.next();
+			ati_objs.add(ati_out.get(key));
+		}
+		JSONArray type_id_json = JSONArray.fromObject(ati_objs);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_type_id.json"), type_id_json.toString());
 		Set<String> akeys = ati.keySet();
 		for (String ak : akeys) {
 			Integer tcid = ati.get(ak);
-			TreeMap<String, Integer> tci = atci.get(tcid);
+			TreeMap<String, Integer> tci = ast_type_content_id_map.get(tcid);
 			summary.add(tci.size());
 			Map<Object, Object> tci_out = MapUtil.ReverseKeyValueInMap(tci);
-			Map<String, Object> tci_out_str = MapUtil.CastKeyToString(tci_out);
-			JSONObject type_content_id_json = JSONObject.fromObject(tci_out_str);
+			Set<Object> tci_keys = tci_out.keySet();
+			List<Object> tci_objs = new LinkedList<Object>();
+			Iterator<Object> tci_key_itr = tci_keys.iterator();
+			while (tci_key_itr.hasNext()) {
+				Object key = tci_key_itr.next();
+				tci_objs.add(tci_out.get(key));
+			}
+			JSONArray type_content_id_json = JSONArray.fromObject(tci_objs);
 			FileUtil.WriteToFile(new File(dir + "/" + ak + "_content_id.json"), type_content_id_json.toString());
 		}
 		FileUtil.WriteToFile(new File(dir + "/" + "summary.txt"), StringUtils.join(summary, " "));
