@@ -70,12 +70,12 @@ public class GenerateHuffmanTree {
 			System.arraycopy(path_arr_primitive, 0, tensor[root.getContent()], 0, path_arr_primitive.length);
 		} else {
 			if (root.hasLeftChild()) {
-				path.push(1);
+				path.push(0);
 				RecursiveBuildEncodeTensor(root.getLeftNode(), tensor, path);
 				path.pop();
 			}
 			if (root.hasRightChild()) {
-				path.push(0);
+				path.push(1);
 				RecursiveBuildEncodeTensor(root.getRightNode(), tensor, path);
 				path.pop();
 			}
