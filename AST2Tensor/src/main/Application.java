@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.IJavaProject;
 
 import eclipse.project.AnalysisEnvironment;
 import eclipse.project.ProjectLoader;
+import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
 import statistic.id.IDCounter;
 import statistic.id.IDManager;
@@ -37,6 +38,15 @@ public class Application implements IApplication {
 //			DebugLogger.Log("Waiting the creation of the workbench.");
 //			SystemUtil.Delay(1000);
 //		}
+		{
+			// Clear data.
+			DebugLogger.Log("===== Data Directory:" + System.getProperty("user.home") + "/AST_Tensors" + "; created!!! =====");
+			File dd = new File(Meta.DataDirectory);
+			if (dd.exists()) {
+				FileUtil.DeleteFile(dd);
+			}
+			dd.mkdir();
+		}
 		// load and execute the project.
 		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 		if (args.length != 1) {
