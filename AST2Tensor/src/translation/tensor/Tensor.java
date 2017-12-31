@@ -89,7 +89,7 @@ public class Tensor {
 	
 	public String toDebugString() {
 		String line_seperator = System.getProperty("line.separator");
-		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator + StringUtils.join(node.toArray(), " ") + line_seperator + StringUtils.join(up.toArray(), " ") + line_seperator + StringUtils.join(left.toArray(), " ");
+		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator + StringUtils.join(left.toArray(), " ") + line_seperator + StringUtils.join(up.toArray(), " ") + line_seperator + StringUtils.join(node.toArray(), " ");
 		return result;
 	}
 	
