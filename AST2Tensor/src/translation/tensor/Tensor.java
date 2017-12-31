@@ -83,7 +83,7 @@ public class Tensor {
 	
 	@Override
 	public String toString() {
-		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + " " + StringUtils.join(node.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(left.toArray(), " ");
+		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + StringUtils.join(left.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(node.toArray(), " ");
 		return result.trim();
 	}
 	
