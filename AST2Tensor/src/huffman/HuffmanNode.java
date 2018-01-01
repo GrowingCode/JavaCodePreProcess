@@ -129,17 +129,3 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 	}
 	
 }
-
-class IDAssigner {
-	
-	int id = -1;
-	
-	public IDAssigner() {
-	}
-	
-	public int GetNewID() {
-		id++;
-		return id;
-	}
-	
-}

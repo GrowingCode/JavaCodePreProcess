@@ -48,35 +48,39 @@ public class GenerateHuffmanTree {
 		return priorityQueue.poll();
 	}
 
-	public static int[][] BuildEncodeTensor(HuffmanNode root) {
+	public static WordInfo BuildEncodeTensor(HuffmanNode root) {
 		int width = root.getMaxDepth();
 		int height = root.getLeafNodeNum();
 		// System.out.println("=== height:" + height);
-		int[][] tensor = new int[height][width];
+		int[][] encode = new int[height][width];
+		int[] huff_tree_index = new int[height];
 		for (int i=0;i<height;i++) {
-			Arrays.fill(tensor[i], -1);
+			Arrays.fill(encode[i], -1);
 		}
-		RecursiveBuildEncodeTensor(root, tensor, new Stack<Integer>());
-		return tensor;
+		IDAssigner ida = new IDAssigner();
+		RecursiveBuildEncodeTensor(root, encode, huff_tree_index, new Stack<Integer>(), ida);
+		return new WordInfo(encode, huff_tree_index);
 	}
 
-	private static void RecursiveBuildEncodeTensor(HuffmanNode root, int[][] tensor, Stack<Integer> path) {
+	private static void RecursiveBuildEncodeTensor(HuffmanNode root, int[][] encode, int[] huff_tree_index, Stack<Integer> path, IDAssigner ida) {
+		int id = ida.GetNewID();
 		if (root.isLeaf()) {
 			Integer[] path_arr = new Integer[path.size()];
 			path.toArray(path_arr);
 			int[] path_arr_primitive = ArrayUtils.toPrimitive(path_arr);
 			// System.out.println("=== tensor_length:" + tensor.length);
 			// System.out.println("=== tensor_content:" + root.getContent());
-			System.arraycopy(path_arr_primitive, 0, tensor[root.getContent()], 0, path_arr_primitive.length);
+			System.arraycopy(path_arr_primitive, 0, encode[root.getContent()], 0, path_arr_primitive.length);
+			huff_tree_index[root.getContent()] = id;
 		} else {
 			if (root.hasLeftChild()) {
 				path.push(0);
-				RecursiveBuildEncodeTensor(root.getLeftNode(), tensor, path);
+				RecursiveBuildEncodeTensor(root.getLeftNode(), encode, huff_tree_index, path, ida);
 				path.pop();
 			}
 			if (root.hasRightChild()) {
 				path.push(1);
-				RecursiveBuildEncodeTensor(root.getRightNode(), tensor, path);
+				RecursiveBuildEncodeTensor(root.getRightNode(), encode, huff_tree_index, path, ida);
 				path.pop();
 			}
 		}
