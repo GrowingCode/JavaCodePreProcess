@@ -25,6 +25,8 @@ public class IDManager {
 	public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
 	// leaf type
 	public static String TerminalLeafASTType = "TerminalLeafASTType";
+	// leaf type
+	public static String InitialLeafASTType = "InitialLeafASTType";
 	// leaf value
 //	public static String SimpleNameLeafDefault = "SNDefault";
 //	public static String NumberLiteralLeafDefault = "100";
@@ -93,10 +95,12 @@ public class IDManager {
 	}
 
 	public void EnsureDefaultValue() {
-		// leaf
-		RegistTypeID(TerminalLeafASTType, 0);
 		// non leaf
 		RegistTypeID(PrimordialNonLeafASTType, 0);
+		// leaf
+		RegistTypeID(TerminalLeafASTType, 0);
+		// leaf
+		RegistTypeID(InitialLeafASTType, 0);
 //		GetTypeID(TerminalLeafASTType);
 //		GetTypeID(SimpleName.class.getSimpleName());
 //		GetTypeID(NumberLiteral.class.getSimpleName());
