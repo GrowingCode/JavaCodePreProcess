@@ -93,10 +93,10 @@ public class IDManager {
 	}
 
 	public void EnsureDefaultValue() {
-		// non leaf
-		RegistTypeID(PrimordialNonLeafASTType, 0);
 		// leaf
 		RegistTypeID(TerminalLeafASTType, 0);
+		// non leaf
+		RegistTypeID(PrimordialNonLeafASTType, 0);
 //		GetTypeID(TerminalLeafASTType);
 //		GetTypeID(SimpleName.class.getSimpleName());
 //		GetTypeID(NumberLiteral.class.getSimpleName());
