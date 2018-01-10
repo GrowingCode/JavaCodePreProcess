@@ -31,10 +31,9 @@ public class IDGenerator extends ASTVisitor {
 		super.preVisit(node);
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		if (children.size() > 0) {
-			ic.EncounterANode(IDManager.PrimordialNonLeafASTType, node.getClass().getSimpleName());
+			ic.EncounterANode(node.getClass().getSimpleName(), false, IDManager.Default);
 		} else {
-			String type = node.getParent().getClass().getSimpleName() + "#" + node.getClass().getSimpleName();
-			ic.EncounterANode(type, node.toString());
+			ic.EncounterANode(node.getClass().getSimpleName(), true, node.toString().trim());
 		}
 	}
 	

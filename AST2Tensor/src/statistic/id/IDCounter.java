@@ -12,6 +12,8 @@ public class IDCounter {
 	// return unique;
 	// }
 	
+	private TreeMap<String, Boolean> type_is_leaf = new TreeMap<String, Boolean>();
+	
 	private TreeMap<String, Integer> safe = new TreeMap<String, Integer>();
 
 	private TreeMap<String, Integer> count = new TreeMap<String, Integer>();
@@ -19,7 +21,8 @@ public class IDCounter {
 	public IDCounter() {
 	}
 	
-	public void EncounterANode(String type, String content) {
+	public void EncounterANode(String type, boolean is_leaf, String content) {
+		type_is_leaf.put(type, is_leaf);
 		String cc = type + "&" + content;
 		Integer sc = safe.get(cc);
 		if (sc != null) {
@@ -76,7 +79,10 @@ public class IDCounter {
 		while (skitr.hasNext()) {
 			String sk = skitr.next();
 			String[] tcs = sk.split("&");
-			im.RegistContentID(tcs[0], tcs[1], safe.get(sk));
+			String type = tcs[0];
+			String content = tcs[1];
+			im.RegistTypeID(type, type_is_leaf.get(type), safe.get(sk));
+			im.RegistContentID(content, safe.get(sk));
 		}
 	}
 	

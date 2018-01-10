@@ -72,20 +72,19 @@ public class TensorForProject {
 		}
 	}
 	
-	public void SaveToFile(int total_of_tensors) {
+	public void SaveToFile() {// int total_of_tensors
 		LinkedList<Tensor> train_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> test_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> valid_tensors = new LinkedList<Tensor>();
 		Iterator<Tensor> titr = tensors.iterator();
 		while (titr.hasNext()) {
 			Tensor t = titr.next();
-			total_of_tensors++;
-			if (total_of_tensors % Meta.all <= Meta.train) {
+			if (t.GetRole() == 0) {
 				train_tensors.add(t);
-			} else if (total_of_tensors % Meta.all <= Meta.test) {
-				test_tensors.add(t);
-			} else if (total_of_tensors % Meta.all <= Meta.valid) {
+			} else if (t.GetRole() == 1) {
 				valid_tensors.add(t);
+			} else {
+				test_tensors.add(t);
 			}
 		}
 		SaveToFile(tensors, "all");

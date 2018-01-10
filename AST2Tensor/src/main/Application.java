@@ -18,6 +18,7 @@ import statistic.IDGeneratorForProject;
 import statistic.id.IDCounter;
 import statistic.id.IDManager;
 import statistic.id.serialize.SaveIDMapToFile;
+import translation.RoleAssigner;
 import translation.TensorGeneratorForProject;
 import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
@@ -75,12 +76,12 @@ public class Application implements IApplication {
 			SaveIDMapToFile.SaveIDMaps(im, Meta.DataDirectory);
 		}
 		{
-			int total_num_tensors = 0;
+			RoleAssigner role_assigner = new RoleAssigner();
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 			Iterator<String> pitr = proj_paths.iterator();
 			while (pitr.hasNext()) {
 				String proj_path = pitr.next();
-				total_num_tensors += TranslateOneProject(total_num_tensors, proj_path, im);// , f, debug_f, oracle_f
+				TranslateOneProject(role_assigner, proj_path, im);// , f, debug_f, oracle_f
 			}
 		}
 		SystemUtil.Flush();
@@ -113,15 +114,15 @@ public class Application implements IApplication {
 	}
 	
 	// , File dest, File debug_dest, File oracle_dest
-	private int TranslateOneProject(int total_num_tensors, String proj_path, IDManager im) {
-		int num_of_projects = 0;
+	// int total_num_tensors, 
+	private void TranslateOneProject(RoleAssigner role_assigner, String proj_path, IDManager im) {
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			SystemUtil.Delay(1000);
-			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(java_project, im);
+			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(role_assigner, java_project, im);
 			TensorForProject one_project_tensor = irgfop.GenerateForOneProject();
-			num_of_projects = one_project_tensor.GetNumOfTensors();
-			SaveTensorToFile.SaveTensors(total_num_tensors, one_project_tensor);// , Best, debug_dest, oracle_dest
+			one_project_tensor.GetNumOfTensors();
+			SaveTensorToFile.SaveTensors(one_project_tensor);// , Best, debug_dest, oracle_dest
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -131,7 +132,6 @@ public class Application implements IApplication {
 				e1.printStackTrace();
 			}
 		}
-		return num_of_projects;
 	}
 
 }

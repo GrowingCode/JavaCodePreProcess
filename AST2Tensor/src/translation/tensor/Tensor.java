@@ -11,22 +11,31 @@ import org.eclipse.jdt.core.dom.ASTNode;
 
 public class Tensor {
 	
+	int role = -1;
+	
+	public int GetRole() {
+		return role;
+	}
+	
 	ArrayList<Integer> left_child = new ArrayList<Integer>();
 	ArrayList<Integer> right_child = new ArrayList<Integer>();
 	ArrayList<Integer> type = new ArrayList<Integer>();
 	ArrayList<Integer> content = new ArrayList<Integer>();
+	ArrayList<Integer> decode_type = new ArrayList<Integer>();
 	
 	ArrayList<String> type_oracle = new ArrayList<String>();
 	ArrayList<String> content_oracle = new ArrayList<String>();
 	
-	public Tensor() {
+	public Tensor(int role) {
+		this.role = role;
 	}
 	
-	public void StoreOneASTNode(int node_idx, int left_child_node_idx, int right_child_node_idx, int type_id, int content_id) {
+	public void StoreOneASTNode(int node_idx, int left_child_node_idx, int right_child_node_idx, int type_id, int content_id, int decode_type_id) {
 		SetValueAtIndex(left_child, node_idx, left_child_node_idx);
 		SetValueAtIndex(right_child, node_idx, right_child_node_idx);
 		SetValueAtIndex(type, node_idx, type_id);
 		SetValueAtIndex(content, node_idx, content_id);
+		SetValueAtIndex(decode_type, node_idx, decode_type_id);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -50,6 +59,7 @@ public class Tensor {
 	ArrayList<Integer> node = new ArrayList<Integer>();
 	ArrayList<Integer> up = new ArrayList<Integer>();
 	ArrayList<Integer> left = new ArrayList<Integer>();
+	ArrayList<Integer> decode_type_node = new ArrayList<Integer>();
 	
 	public void GenerateTreeIterationSequence() {
 		GenerateTreeIterationSequence(left_child.size()-1, -1, -1);
@@ -59,7 +69,7 @@ public class Tensor {
 		if (current_root >= 0) {
 			Integer lc = left_child.get(current_root);
 			Integer rc = right_child.get(current_root);
-			if (type.get(current_root) == 0) {
+			if (type.get(current_root) == 1) {
 				GenerateTreeIterationSequence(lc, up_of_root, left_of_root);
 				GenerateTreeIterationSequence(rc, lc, left_of_root);
 			} else {
@@ -75,6 +85,7 @@ public class Tensor {
 				}
 				up.add(up_of_root_index);
 				left.add(left_of_root_index);
+				decode_type_node.add(decode_type.get(current_root));
 				GenerateTreeIterationSequence(lc, -1, current_root);
 				GenerateTreeIterationSequence(rc, lc, current_root);
 			}
@@ -83,7 +94,7 @@ public class Tensor {
 	
 	@Override
 	public String toString() {
-		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + StringUtils.join(left.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(node.toArray(), " ");
+		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + StringUtils.join(left.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(node.toArray(), " ") + " " + StringUtils.join(decode_type_node.toArray(), " ");
 		return result.trim();
 	}
 	
