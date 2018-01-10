@@ -9,9 +9,12 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
 
+import statistic.id.IDManager;
+
 public class Tensor {
 	
 	int role = -1;
+	IDManager im = null;
 	
 	public int GetRole() {
 		return role;
@@ -26,8 +29,9 @@ public class Tensor {
 	ArrayList<String> type_oracle = new ArrayList<String>();
 	ArrayList<String> content_oracle = new ArrayList<String>();
 	
-	public Tensor(int role) {
+	public Tensor(int role, IDManager im) {
 		this.role = role;
+		this.im = im;
 	}
 	
 	public void StoreOneASTNode(int node_idx, int left_child_node_idx, int right_child_node_idx, int type_id, int content_id, int decode_type_id) {
@@ -69,7 +73,7 @@ public class Tensor {
 		if (current_root >= 0) {
 			Integer lc = left_child.get(current_root);
 			Integer rc = right_child.get(current_root);
-			if (type.get(current_root) == 1) {
+			if (type.get(current_root) == im.GetTypeID(IDManager.VirtualChildrenConnectionNonLeafASTType)) {
 				GenerateTreeIterationSequence(lc, up_of_root, left_of_root);
 				GenerateTreeIterationSequence(rc, lc, left_of_root);
 			} else {

@@ -52,7 +52,7 @@ public class TensorGenerator extends ASTVisitor {
 			} else {
 				decode_type_generator = new TestDataDecodeTypeGenerator();
 			}
-			t_list.add(new Tensor(role));
+			t_list.add(new Tensor(role, im));
 		}
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		expected_handled_child_num.push(children.size());
