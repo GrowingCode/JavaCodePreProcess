@@ -33,7 +33,7 @@ public class TensorGeneratorForProject {
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
-		DebugLogger.Log("ICompilationUnit_size:" + units.size());
+		DebugLogger.Log("Tensor: ICompilationUnit_size:" + units.size());
 		if (units != null) {
 			for (ICompilationUnit icu : units) {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);

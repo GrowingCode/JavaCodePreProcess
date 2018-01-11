@@ -29,7 +29,7 @@ public class IDGeneratorForProject {
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
-		DebugLogger.Log("ICompilationUnit_size of project:" + units.size());
+		DebugLogger.Log("ID: ICompilationUnit_size of project:" + units.size());
 		int length = 0;
 		if (units != null) {
 			for (ICompilationUnit icu : units) {
