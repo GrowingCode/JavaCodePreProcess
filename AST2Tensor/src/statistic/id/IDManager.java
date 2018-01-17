@@ -52,6 +52,7 @@ public class IDManager {
 
 	public IDManager() {
 		RegistTypeID(Default, true, 0);
+		RegistContentID(Default, 0);
 	}
 
 	public int RegistTypeID(String type, boolean is_leaf, int count) {
