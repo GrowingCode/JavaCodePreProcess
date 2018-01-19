@@ -1,8 +1,7 @@
 package main;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.app.IApplication;
@@ -58,20 +57,23 @@ public class Application implements IApplication {
 			return IApplication.EXIT_OK;
 		}
 		String all_proj_paths = args[0];
+		File root_dir = new File(all_proj_paths);
 		int max_handle_projs = Integer.parseInt(args[1]);
 		IDCounter ic = new IDCounter();
 		{
-			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
-			Iterator<String> pitr = proj_paths.iterator();
-			int all_size = 0;
-			while (pitr.hasNext()) {
-				String proj_path = pitr.next();
-				all_size += CountOneProject(proj_path, ic);
-				if (all_size >= RefinePeriod) {
-					ic.TempRefineAllStatistics(MinSupport, MaxCapacity);
-					all_size %= RefinePeriod;
-				}
-			}
+			CountOneProjectHandle handle = new CountOneProjectHandle();
+			HandleEachProjectFramework(max_handle_projs, root_dir, handle, ic, MinSupport, MaxCapacity, null, null);
+//			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
+//			Iterator<String> pitr = proj_paths.iterator();
+//			int all_size = 0;
+//			while (pitr.hasNext()) {
+//				String proj_path = pitr.next();
+//				all_size += CountOneProject(proj_path, ic);
+//				if (all_size >= RefinePeriod) {
+//					ic.TempRefineAllStatistics(MinSupport, MaxCapacity);
+//					all_size %= RefinePeriod;
+//				}
+//			}
 		}
 		IDManager im = new IDManager();
 		{
@@ -81,48 +83,75 @@ public class Application implements IApplication {
 		}
 		{
 			RoleAssigner role_assigner = new RoleAssigner();
-			File root_dir = new File(all_proj_paths);
 			if (root_dir.isDirectory()) {
-				File[] files = root_dir.listFiles();
-				int count_projs = 0;
-				for (File f : files) {
-					if (f.isDirectory()) {
-						count_projs++;
-						TranslateOneProject(role_assigner, f.getAbsolutePath(), im);
-					} else {
-						File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
-						if (unzip_out_dir.exists()) {
-							FileUtil.DeleteFile(unzip_out_dir);
-						}
-						unzip_out_dir.mkdirs();
-						if (f.getName().endsWith(".zip")) {
-							ZIPUtil.Unzip(f, unzip_out_dir);
-							TranslateOneProject(role_assigner, unzip_out_dir.getAbsolutePath(), im);
-						}
+				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
+				HandleEachProjectFramework(max_handle_projs, root_dir, handle, null, -1, -1, im, role_assigner);
+//				File[] files = root_dir.listFiles();
+//				int count_projs = 0;
+//				for (File f : files) {
+//					if (f.isDirectory()) {
+//						count_projs++;
+//						TranslateOneProject(role_assigner, f.getAbsolutePath(), im);
+//					} else {
+//						File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
 //						if (unzip_out_dir.exists()) {
 //							FileUtil.DeleteFile(unzip_out_dir);
 //						}
-					}
-					if (count_projs > max_handle_projs) {
-						break;
-					}
-				}
+//						unzip_out_dir.mkdirs();
+//						if (f.getName().endsWith(".zip")) {
+//							ZIPUtil.Unzip(f, unzip_out_dir);
+//							TranslateOneProject(role_assigner, unzip_out_dir.getAbsolutePath(), im);
+//						}
+////						if (unzip_out_dir.exists()) {
+////							FileUtil.DeleteFile(unzip_out_dir);
+////						}
+//					}
+//					if (count_projs > max_handle_projs) {
+//						break;
+//					}
+//				}
 			} else {
 				DebugLogger.Error("The root path given in parameter should be a directory which contains zip files or with-project directories");
 			}
-//			List<String> proj_paths = FileUtil.ReadLineFromFile();
-//			Iterator<String> pitr = proj_paths.iterator();
-//			while (pitr.hasNext()) {
-//				String proj_path = pitr.next();
-//				TranslateOneProject(role_assigner, proj_path, im);// , f, debug_f, oracle_f
-//			}
 		}
 		SystemUtil.Flush();
 		SystemUtil.Delay(1000);
 		return IApplication.EXIT_OK;
 	}
 	
-	private int CountOneProject(String proj_path, IDCounter im) {
+	private void HandleEachProjectFramework(int max_handle_projs, File root_dir, HandleOneProject run, IDCounter ic, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
+		File[] files = root_dir.listFiles();
+		int count_projs = 0;
+		int all_size = 0;
+		for (File f : files) {
+			if (f.isDirectory()) {
+				count_projs++;
+				all_size = run.Handle(f.getAbsolutePath(), ic, all_size, min_support, max_capacity, im, role_assigner);
+			} else {
+				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
+				if (unzip_out_dir.exists()) {
+					FileUtil.DeleteFile(unzip_out_dir);
+				}
+				unzip_out_dir.mkdirs();
+				if (f.getName().endsWith(".zip")) {
+					try {
+						ZIPUtil.Unzip(f, unzip_out_dir);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					all_size = run.Handle(unzip_out_dir.getAbsolutePath(), ic, all_size, min_support, max_capacity, im, role_assigner);
+				}
+//				if (unzip_out_dir.exists()) {
+//					FileUtil.DeleteFile(unzip_out_dir);
+//				}
+			}
+			if (count_projs > max_handle_projs) {
+				break;
+			}
+		}
+	}
+	
+	static int CountOneProject(String proj_path, IDCounter im) {
 		int project_size = 0;
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
@@ -148,7 +177,7 @@ public class Application implements IApplication {
 	
 	// , File dest, File debug_dest, File oracle_dest
 	// int total_num_tensors, 
-	private void TranslateOneProject(RoleAssigner role_assigner, String proj_path, IDManager im) {
+	static void TranslateOneProject(RoleAssigner role_assigner, String proj_path, IDManager im) {
 		try {
 			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			SystemUtil.Delay(1000);
@@ -167,4 +196,32 @@ public class Application implements IApplication {
 		}
 	}
 
+}
+
+interface HandleOneProject {
+	public int Handle(String proj_path, IDCounter ic, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner);
+}
+
+class TranslateOneProjectHandle implements HandleOneProject {
+
+	@Override
+	public int Handle(String proj_path, IDCounter ic, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
+		Application.TranslateOneProject(role_assigner, proj_path, im);
+		return -1;
+	}
+	
+}
+
+class CountOneProjectHandle implements HandleOneProject {
+
+	@Override
+	public int  Handle(String proj_path, IDCounter ic, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
+		all_size += Application.CountOneProject(proj_path, ic);
+		if (all_size >= Application.RefinePeriod) {
+			ic.TempRefineAllStatistics(min_support, max_capacity);
+			all_size %= Application.RefinePeriod;
+		}
+		return all_size;
+	}
+	
 }
