@@ -24,12 +24,15 @@ import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
 import util.FileUtil;
 import util.SystemUtil;
+import util.ZIPUtil;
 
 public class Application implements IApplication {
 	
 	public final static int RefinePeriod = 10000000;
 	public final static int MinSupport = 3;
 	public final static int MaxCapacity = 10000000;
+	
+	public final static String TemporaryUnzipWorkingSpace = "temp_unzip";
 	
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
@@ -55,6 +58,7 @@ public class Application implements IApplication {
 			return IApplication.EXIT_OK;
 		}
 		String all_proj_paths = args[0];
+		int max_handle_projs = Integer.parseInt(args[1]);
 		IDCounter ic = new IDCounter();
 		{
 			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
@@ -77,12 +81,41 @@ public class Application implements IApplication {
 		}
 		{
 			RoleAssigner role_assigner = new RoleAssigner();
-			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
-			Iterator<String> pitr = proj_paths.iterator();
-			while (pitr.hasNext()) {
-				String proj_path = pitr.next();
-				TranslateOneProject(role_assigner, proj_path, im);// , f, debug_f, oracle_f
+			File root_dir = new File(all_proj_paths);
+			if (root_dir.isDirectory()) {
+				File[] files = root_dir.listFiles();
+				int count_projs = 0;
+				for (File f : files) {
+					if (f.isDirectory()) {
+						count_projs++;
+						TranslateOneProject(role_assigner, f.getAbsolutePath(), im);
+					} else {
+						File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
+						if (unzip_out_dir.exists()) {
+							FileUtil.DeleteFile(unzip_out_dir);
+						}
+						unzip_out_dir.mkdirs();
+						if (f.getName().endsWith(".zip")) {
+							ZIPUtil.Unzip(f, unzip_out_dir);
+							TranslateOneProject(role_assigner, unzip_out_dir.getAbsolutePath(), im);
+						}
+//						if (unzip_out_dir.exists()) {
+//							FileUtil.DeleteFile(unzip_out_dir);
+//						}
+					}
+					if (count_projs > max_handle_projs) {
+						break;
+					}
+				}
+			} else {
+				DebugLogger.Error("The root path given in parameter should be a directory which contains zip files or with-project directories");
 			}
+//			List<String> proj_paths = FileUtil.ReadLineFromFile();
+//			Iterator<String> pitr = proj_paths.iterator();
+//			while (pitr.hasNext()) {
+//				String proj_path = pitr.next();
+//				TranslateOneProject(role_assigner, proj_path, im);// , f, debug_f, oracle_f
+//			}
 		}
 		SystemUtil.Flush();
 		SystemUtil.Delay(1000);
