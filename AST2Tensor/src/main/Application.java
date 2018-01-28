@@ -162,12 +162,6 @@ public class Application implements IApplication {
 			project_size = irgfop.GenerateForOneProject();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
-			} catch (CoreException e1) {
-				e1.printStackTrace();
-			}
 		}
 		return project_size;
 	}
@@ -188,13 +182,14 @@ public class Application implements IApplication {
 			SaveTensorToFile.SaveTensors(one_project_tensor, kind);// , Best, debug_dest, oracle_dest
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
-			} catch (CoreException e1) {
-				e1.printStackTrace();
-			}
-		}
+		} 
+//		finally {
+//			try {
+//				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
+//			} catch (CoreException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
 	}
 
 }
@@ -216,6 +211,7 @@ class TranslateOneProjectHandle implements HandleOneProject {
 			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
 			try {
 				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
 			} catch (CoreException e1) {
@@ -231,7 +227,17 @@ class CountOneProjectHandle implements HandleOneProject {
 
 	@Override
 	public int  Handle(String proj_path, IDCounter ic, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
-		all_size += Application.CountOneProject(proj_path, ic);
+		try {
+			all_size += Application.CountOneProject(proj_path, ic);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			}
+		}
 		if (all_size >= Application.RefinePeriod) {
 			ic.TempRefineAllStatistics(min_support, max_capacity);
 			all_size %= Application.RefinePeriod;
