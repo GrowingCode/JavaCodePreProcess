@@ -1,9 +1,9 @@
-package translation;
+package translation.helper;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Statement;
 
-public class TestDataDecodeTypeGenerator implements DecodeTypeGenerator {
+public class TestDataDecodeType implements DecodeType {
 
 	@Override
 	public int GenerateDecodeType(ASTNode node) {

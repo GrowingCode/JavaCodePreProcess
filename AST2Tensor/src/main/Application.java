@@ -18,7 +18,9 @@ import statistic.id.IDCounter;
 import statistic.id.IDManager;
 import statistic.id.serialize.SaveIDMapToFile;
 import translation.RoleAssigner;
+import translation.SequenceTensorGeneratorForProject;
 import translation.TensorGeneratorForProject;
+import translation.TreeTensorGeneratorForProject;
 import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
 import util.FileUtil;
@@ -177,14 +179,13 @@ public class Application implements IApplication {
 	
 	// , File dest, File debug_dest, File oracle_dest
 	// int total_num_tensors, 
-	static void TranslateOneProject(RoleAssigner role_assigner, String proj_path, IDManager im) {
+	// String proj_path, 
+	static void TranslateOneProject(RoleAssigner role_assigner, IDManager im, TensorGeneratorForProject irgfop, String kind) {
 		try {
-			IJavaProject java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			SystemUtil.Delay(1000);
-			TensorGeneratorForProject irgfop = new TensorGeneratorForProject(role_assigner, java_project, im);
 			TensorForProject one_project_tensor = irgfop.GenerateForOneProject();
 			one_project_tensor.GetNumOfTensors();
-			SaveTensorToFile.SaveTensors(one_project_tensor);// , Best, debug_dest, oracle_dest
+			SaveTensorToFile.SaveTensors(one_project_tensor, kind);// , Best, debug_dest, oracle_dest
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -206,7 +207,21 @@ class TranslateOneProjectHandle implements HandleOneProject {
 
 	@Override
 	public int Handle(String proj_path, IDCounter ic, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
-		Application.TranslateOneProject(role_assigner, proj_path, im);
+		IJavaProject java_project = null;
+		try {
+			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			TensorGeneratorForProject ttgfop = new TreeTensorGeneratorForProject(role_assigner, java_project, im);
+			Application.TranslateOneProject(role_assigner, im, ttgfop, "tree");// proj_path, 
+			TensorGeneratorForProject stgfop = new SequenceTensorGeneratorForProject(role_assigner, java_project, im);
+			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			}
+		}
 		return -1;
 	}
 	

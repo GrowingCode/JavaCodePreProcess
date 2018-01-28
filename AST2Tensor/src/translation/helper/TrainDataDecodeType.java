@@ -1,8 +1,8 @@
-package translation;
+package translation.helper;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
-public class TrainDataDecodeTypeGenerator implements DecodeTypeGenerator {
+public class TrainDataDecodeType implements DecodeType {
 
 	@Override
 	public int GenerateDecodeType(ASTNode node) {

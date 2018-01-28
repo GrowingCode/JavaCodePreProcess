@@ -1,8 +1,8 @@
-package translation;
+package translation.helper;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
-public interface DecodeTypeGenerator {
+public interface DecodeType {
 	
 	public int GenerateDecodeType(ASTNode node);
 	

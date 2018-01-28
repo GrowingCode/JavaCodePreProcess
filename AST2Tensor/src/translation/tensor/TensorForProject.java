@@ -72,7 +72,7 @@ public class TensorForProject {
 		}
 	}
 	
-	public void SaveToFile() {// int total_of_tensors
+	public void SaveToFile(String kind) {// int total_of_tensors
 		LinkedList<Tensor> train_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> test_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> valid_tensors = new LinkedList<Tensor>();
@@ -87,10 +87,10 @@ public class TensorForProject {
 				test_tensors.add(t);
 			}
 		}
-		SaveToFile(tensors, "all");
-		SaveToFile(train_tensors, "train");
-		SaveToFile(test_tensors, "test");
-		SaveToFile(valid_tensors, "valid");
+		SaveToFile(tensors, kind + "_all");
+		SaveToFile(train_tensors, kind + "_train");
+		SaveToFile(test_tensors, kind + "_test");
+		SaveToFile(valid_tensors, kind + "_valid");
 	}
 
 	public int GetNumOfTensors() {

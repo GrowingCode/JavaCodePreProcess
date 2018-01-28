@@ -13,7 +13,7 @@ import logger.DebugLogger;
 import statistic.id.IDManager;
 import translation.tensor.TensorForProject;
 
-public class TensorGeneratorForProject {
+public abstract class TensorGeneratorForProject {
 	
 	RoleAssigner role_assigner = null;
 	IJavaProject java_project = null;
@@ -38,13 +38,18 @@ public class TensorGeneratorForProject {
 			for (ICompilationUnit icu : units) {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				// CreateJDTParserWithJavaProject(java_project).
-				TensorGenerator tg = new TensorGenerator(
-						role_assigner, java_project, im, icu, cu);
+				TensorGenerator tg = GenerateTensorGeneratorVisitor(icu, cu);
+				// role_assigner, java_project, im, 
+				// TensorGenerator tg = new TensorGenerator(
+				//		role_assigner, java_project, im, icu, cu);
 				cu.accept(tg);
-				result.AddTensors(tg.GetGeneratedTensor());
+				result.AddTensors(tg.GetGeneratedTensors());
 			}
 		}
 		return result;
 	}
+	
+	// RoleAssigner role_assigner, IJavaProject java_project, IDManager im, 
+	protected abstract TensorGenerator GenerateTensorGeneratorVisitor(ICompilationUnit icu, CompilationUnit cu);
 	
 }
