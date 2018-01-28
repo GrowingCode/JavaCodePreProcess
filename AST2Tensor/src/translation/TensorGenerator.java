@@ -14,6 +14,8 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import logger.DebugLogger;
 import statistic.id.IDManager;
+import translation.helper.TypeContentID;
+import translation.helper.TypeContentIDFetcher;
 import translation.tensor.Tensor;
 import util.SystemUtil;
 
@@ -70,27 +72,12 @@ public class TensorGenerator extends ASTVisitor {
 		expected_handled_child_num.pop();
 		already_handled_child_num.pop();
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		// set node type and content
-		String type = null;
-		String content = null;
-		int node_type = -1;
-		int node_content = -1;
-		if (children.size() > 0) {
-			// IDManager.PrimordialNonLeafASTType
-			type = node.getClass().getSimpleName();
-			content = IDManager.Default;
-			node_type = im.GetTypeID(type);
-			node_content = im.GetContentID(content);// type,
-		} else {
-			// node.getParent().getClass().getSimpleName() + "#" +
-			type = node.getClass().getSimpleName();
-			content = node.toString().trim();
-			node_type = im.GetTypeID(type);
-			node_content = im.GetContentID(content);// type,
-		}
+		// get node type content id
+		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, children.size() == 0, im);
 		// handle node self and reform its children to binary tree.
 		if (already_handled_child_num.size() > 0) {
-			HandleChildren(true, node, children, node_type, node_content, type, content);
+			HandleChildren(true, node, children, type_content_id);
+			// HandleChildren(true, node, children, node_type, node_content, type, content);
 			already_handled_child_num.push(already_handled_child_num.pop() + 1);
 		} else {
 			Assert.isTrue((already_handled_child_num.size() == expected_handled_child_num.size())
@@ -101,6 +88,10 @@ public class TensorGenerator extends ASTVisitor {
 			decode_type_generator = null;
 		}
 		super.postVisit(node);
+	}
+	
+	private int HandleChildren(boolean first, ASTNode node, List<ASTNode> children, TypeContentID type_content_id) {
+		return HandleChildren(first, node, children, type_content_id.GetTypeID(), type_content_id.GetContentID(), type_content_id.GetType(), type_content_id.GetContent());
 	}
 
 	private int HandleChildren(boolean first, ASTNode node, List<ASTNode> children, int node_type, int node_content,
