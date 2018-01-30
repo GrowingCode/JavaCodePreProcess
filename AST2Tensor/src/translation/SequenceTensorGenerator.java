@@ -49,6 +49,7 @@ public class SequenceTensorGenerator extends TensorGenerator {
 		}
 		SequenceTensor last_sequence = (SequenceTensor)tensor_list.peekLast();
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+		// TODO add virtual start here and end in postVisit
 		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, children.size() == 0, im);
 		last_sequence.AppendOneToken(type_content_id, decode_type_generator.GenerateDecodeType(node));
 		super.preVisit(node);
