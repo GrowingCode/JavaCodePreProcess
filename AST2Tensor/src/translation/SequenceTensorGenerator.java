@@ -49,9 +49,24 @@ public class SequenceTensorGenerator extends TensorGenerator {
 		}
 		SequenceTensor last_sequence = (SequenceTensor)tensor_list.peekLast();
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, children.size() == 0, im);
+		boolean is_leaf = children.size() == 0;
+		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, is_leaf, im);
 		last_sequence.AppendOneToken(type_content_id, decode_type_generator.GenerateDecodeType(node));
+		if (!is_leaf) {
+			last_sequence.AppendOneToken(new TypeContentID(IDManager.InitialLeafASTType, IDManager.Default, im.GetTypeID(IDManager.InitialLeafASTType), im.GetContentID(IDManager.Default)), 0);
+		}
 		super.preVisit(node);
+	}
+	
+	@Override
+	public void postVisit(ASTNode node) {
+		SequenceTensor last_sequence = (SequenceTensor)tensor_list.peekLast();
+		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+		boolean is_leaf = children.size() == 0;
+		if (!is_leaf) {
+			last_sequence.AppendOneToken(new TypeContentID(IDManager.TerminalLeafASTType, IDManager.Default, im.GetTypeID(IDManager.TerminalLeafASTType), im.GetContentID(IDManager.Default)), 0);
+		}
+		super.postVisit(node);
 	}
 	
 }
