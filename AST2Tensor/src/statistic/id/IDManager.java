@@ -92,9 +92,9 @@ public class IDManager {
 		// non leaf
 		RegistTypeID(Block.class.getSimpleName(), false, 0);
 		// leaf
-		RegistTypeID(TerminalLeafASTType, true, 0);
-		// leaf
 		RegistTypeID(InitialLeafASTType, true, 0);
+		// leaf
+		RegistTypeID(TerminalLeafASTType, true, 0);
 		// GetTypeID(TerminalLeafASTType);
 		// GetTypeID(SimpleName.class.getSimpleName());
 		// GetTypeID(NumberLiteral.class.getSimpleName());
