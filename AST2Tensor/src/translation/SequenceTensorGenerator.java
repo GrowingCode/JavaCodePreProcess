@@ -49,8 +49,13 @@ public class SequenceTensorGenerator extends TensorGenerator {
 		}
 		SequenceTensor last_sequence = (SequenceTensor)tensor_list.peekLast();
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+<<<<<<< HEAD
 		boolean is_leaf = children.size() == 0;
 		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, is_leaf, im);
+=======
+		// TODO add virtual start here and end in postVisit
+		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, children.size() == 0, im);
+>>>>>>> branch 'master' of https://github.com/GrowingCode/JavaCodePreProcess.git
 		last_sequence.AppendOneToken(type_content_id, decode_type_generator.GenerateDecodeType(node));
 		if (!is_leaf) {
 			last_sequence.AppendOneToken(new TypeContentID(IDManager.InitialLeafASTType, IDManager.Default, im.GetTypeID(IDManager.InitialLeafASTType), im.GetContentID(IDManager.Default)), 0);
