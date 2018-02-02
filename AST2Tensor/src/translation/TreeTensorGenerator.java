@@ -13,7 +13,6 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import logger.DebugLogger;
 import statistic.id.IDManager;
-import translation.helper.DecodeType;
 import translation.helper.TestDataDecodeType;
 import translation.helper.TrainDataDecodeType;
 import translation.helper.TypeContentID;
@@ -23,27 +22,14 @@ import util.SystemUtil;
 
 public class TreeTensorGenerator extends TensorGenerator {
 
-	RoleAssigner role_assigner = null;
-	IJavaProject java_project = null;
-	IDManager im = null;
-
-	ICompilationUnit icu = null;
-	CompilationUnit cu = null;
-
 	// LinkedList<TreeTensor> tensor_list = new LinkedList<TreeTensor>();
 
 	Stack<Integer> expected_handled_child_num = new Stack<Integer>();
 	Stack<Integer> already_handled_child_num = new Stack<Integer>();
 
-	DecodeType decode_type_generator = null;
-
 	public TreeTensorGenerator(RoleAssigner role_assigner, IJavaProject java_project, IDManager im, ICompilationUnit icu,
 			CompilationUnit cu) {
-		this.role_assigner = role_assigner;
-		this.java_project = java_project;
-		this.im = im;
-		this.icu = icu;
-		this.cu = cu;
+		super(role_assigner, java_project, im, icu, cu);
 	}
 
 	@Override
