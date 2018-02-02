@@ -11,6 +11,8 @@ public class SequenceTensor extends Tensor {
 	public SequenceTensor(int role) {
 		super(role);
 	}
+	
+	TreeTensor tree_tensor = null;
 
 	ArrayList<Integer> type_id = new ArrayList<Integer>();
 	ArrayList<Integer> content_id = new ArrayList<Integer>();
@@ -27,9 +29,13 @@ public class SequenceTensor extends Tensor {
 		content.add(type_content_id.GetContent());
 	}
 	
+	public void SetTreeTensor(TreeTensor tree_tensor) {
+		this.tree_tensor = tree_tensor;
+	}
+	
 	@Override
 	public String toString() {
-		String result = StringUtils.join(type_id.toArray(), " ") + " " + StringUtils.join(content_id.toArray(), " ") + " " + StringUtils.join(decode_type_id.toArray(), " ");
+		String result = tree_tensor.toString() + "#" + StringUtils.join(type_id.toArray(), " ") + " " + StringUtils.join(content_id.toArray(), " ") + " " + StringUtils.join(decode_type_id.toArray(), " ");
 		return result.trim();
 	}
 

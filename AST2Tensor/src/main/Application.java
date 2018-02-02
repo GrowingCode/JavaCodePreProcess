@@ -2,6 +2,7 @@ package main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.app.IApplication;
@@ -18,9 +19,7 @@ import statistic.id.IDCounter;
 import statistic.id.IDManager;
 import statistic.id.serialize.SaveIDMapToFile;
 import translation.RoleAssigner;
-import translation.SequenceTensorGeneratorForProject;
 import translation.TensorGeneratorForProject;
-import translation.TreeTensorGeneratorForProject;
 import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
 import util.FileUtil;
@@ -174,12 +173,16 @@ public class Application implements IApplication {
 	// , File dest, File debug_dest, File oracle_dest
 	// int total_num_tensors, 
 	// String proj_path, 
-	static void TranslateOneProject(RoleAssigner role_assigner, IDManager im, TensorGeneratorForProject irgfop, String kind) {
+	// , TensorGeneratorForProject irgfop, String kind
+	static void TranslateOneProject(RoleAssigner role_assigner, IJavaProject java_project, IDManager im) {
 		try {
 			SystemUtil.Delay(1000);
-			TensorForProject one_project_tensor = irgfop.GenerateForOneProject();
-			one_project_tensor.GetNumOfTensors();
-			SaveTensorToFile.SaveTensors(one_project_tensor, kind);// , Best, debug_dest, oracle_dest
+			TensorGeneratorForProject tgfp = new TensorGeneratorForProject(role_assigner, java_project, im);
+			List<TensorForProject> project_tensors = tgfp.GenerateForOneProject();
+			// one_project_tensor.GetNumOfTensors();
+			for (TensorForProject one_project_tensor : project_tensors) {
+				SaveTensorToFile.SaveTensors(one_project_tensor);// , Best, debug_dest, oracle_dest
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
@@ -205,10 +208,10 @@ class TranslateOneProjectHandle implements HandleOneProject {
 		IJavaProject java_project = null;
 		try {
 			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			TensorGeneratorForProject ttgfop = new TreeTensorGeneratorForProject(role_assigner, java_project, im);
-			Application.TranslateOneProject(role_assigner, im, ttgfop, "tree");// proj_path, 
-			TensorGeneratorForProject stgfop = new SequenceTensorGeneratorForProject(role_assigner, java_project, im);
-			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
+//			TensorGeneratorForProject ttgfop = new TreeTensorGeneratorForProject(role_assigner, java_project, im);
+			Application.TranslateOneProject(role_assigner, java_project, im);// proj_path, , ttgfop
+//			TensorGeneratorForProject stgfop = new SequenceTensorGeneratorForProject(role_assigner, java_project, im);
+//			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

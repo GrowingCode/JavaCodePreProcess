@@ -12,9 +12,11 @@ import main.Meta;
 
 public class TensorForProject {
 	
+	String kind = null;
 	List<Tensor> tensors = new LinkedList<Tensor>();
 	
-	public TensorForProject() {
+	public TensorForProject(String kind) {
+		this.kind = kind;
 	}
 	
 	public void AddTensors(List<Tensor> e) {
@@ -95,6 +97,10 @@ public class TensorForProject {
 
 	public int GetNumOfTensors() {
 		return tensors.size();
+	}
+	
+	public String GetKind() {
+		return kind;
 	}
 	
 }
