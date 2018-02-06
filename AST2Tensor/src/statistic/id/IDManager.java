@@ -26,9 +26,9 @@ public class IDManager {
 	// non-leaf type
 	// public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
 	// leaf type
-	public static String TerminalLeafASTType = "TerminalLeafASTType";
-	// leaf type
 	public static String InitialLeafASTType = "InitialLeafASTType";
+	// leaf type
+	public static String TerminalLeafASTType = "TerminalLeafASTType";
 	// leaf value
 	// public static String SimpleNameLeafDefault = "SNDefault";
 	// public static String NumberLiteralLeafDefault = "100";
