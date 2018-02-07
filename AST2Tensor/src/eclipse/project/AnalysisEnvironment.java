@@ -30,15 +30,11 @@ public class AnalysisEnvironment {
 	protected static IJavaProject default_project = null;
 
 	private static void InitializeClassPathWithDefaultJRE(List<IClasspathEntry> entries) {
+		LibraryLocation[] libs = new LibraryLocation[0];
 		IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-		File installLocation = vmInstall.getInstallLocation();
-		LibraryLocation[] libs = null;
-		if (installLocation == null) {
-			libs = new LibraryLocation[0];
-		} else {
+		if (vmInstall != null) {
 			libs = JavaRuntime.getLibraryLocations(vmInstall);
 		}
-//		LibraryLocation[] locations = JavaRuntime.getLibraryLocations(vmInstall);
 		for (LibraryLocation element : libs) {
 			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 		}
