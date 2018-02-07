@@ -24,7 +24,6 @@ import eclipse.exception.NoAnalysisSourceException;
 import eclipse.exception.ProjectAlreadyExistsException;
 import eclipse.jdt.JDTLexicalParser;
 import eclipse.project.process.PreProcessHelper;
-import logger.DebugLogger;
 import util.FileIterator;
 import util.FileUtil;
 
@@ -135,7 +134,7 @@ public class AnalysisEnvironment {
 			while (fitr.hasNext()) {
 				File f = fitr.next();
 				String f_norm_path = f.getAbsolutePath().trim().replace('\\', '/');
-				DebugLogger.Log("f_norm_path:" + f_norm_path);
+//				DebugLogger.Log("f_norm_path:" + f_norm_path);
 				CompilationUnit cu = JDTLexicalParser.ParseJavaFile(f);
 				PackageDeclaration pack = cu.getPackage();
 				if (pack != null) {
