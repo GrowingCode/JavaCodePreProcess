@@ -1,0 +1,14 @@
+package test;
+
+public class CountNumber {
+	
+	public static void main(String[] args) {
+		System.out.println("PackageDeclaration#SimpleName TerminalLeafASTType PrimordialNonLeafASTType TypeDeclaration#Modifier TypeDeclaration#SimpleName MethodDeclaration#Modifier MethodDeclaration#PrimitiveType MethodDeclaration#SimpleName VariableDeclarationStatement#PrimitiveType VariableDeclarationFragment#SimpleName VariableDeclarationFragment#NumberLiteral TerminalLeafASTType @Default PrimordialNonLeafASTType TerminalLeafASTType @Default PrimordialNonLeafASTType QualifiedName#SimpleName QualifiedName#SimpleName TerminalLeafASTType @Default PrimordialNonLeafASTType MethodInvocation#SimpleName PostfixExpression#SimpleName TerminalLeafASTType PrimordialNonLeafASTType TerminalLeafASTType @Default @Default PrimordialNonLeafASTType TerminalLeafASTType PrimordialNonLeafASTType TerminalLeafASTType @Default PrimordialNonLeafASTType TerminalLeafASTType @Default @Default @Default PrimordialNonLeafASTType TerminalLeafASTType @Default @Default PrimordialNonLeafASTType".split(" ").length);
+		System.out.println("test @Default PackageDeclaration public SimpleTest public void test int i 0 @Default @Default VariableDeclarationFragment @Default @Default VariableDeclarationStatement System out @Default @Default QualifiedName println i @Default PostfixExpression @Default @Default @Default MethodInvocation @Default ExpressionStatement @Default @Default Block @Default @Default @Default @Default MethodDeclaration @Default @Default @Default TypeDeclaration".split(" ").length);
+		System.out.println("-1 -1 PackageDeclaration#SimpleName -1 -1 -1 -1 -1 -1 -1 -1 -1 VariableDeclarationFragment#NumberLiteral VariableDeclarationFragment#SimpleName -1 PrimordialNonLeafASTType VariableDeclarationStatement#PrimitiveType -1 -1 -1 QualifiedName#SimpleName QualifiedName#SimpleName -1 -1 -1 PostfixExpression#SimpleName -1 PrimordialNonLeafASTType MethodInvocation#SimpleName PrimordialNonLeafASTType -1 PrimordialNonLeafASTType -1 PrimordialNonLeafASTType PrimordialNonLeafASTType -1 PrimordialNonLeafASTType MethodDeclaration#SimpleName MethodDeclaration#PrimitiveType MethodDeclaration#Modifier -1 PrimordialNonLeafASTType TypeDeclaration#SimpleName TypeDeclaration#Modifier".split(" ").length);
+		System.out.println("-1 -1 test -1 -1 -1 -1 -1 -1 -1 -1 -1 0 i -1 VariableDeclarationFragment int -1 -1 -1 out System -1 -1 -1 i -1 PostfixExpression println QualifiedName -1 MethodInvocation -1 ExpressionStatement VariableDeclarationStatement -1 Block test void public -1 MethodDeclaration SimpleTest public".split(" ").length);
+		System.out.println("-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1".split(" ").length);
+		System.out.println("-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1".split(" ").length);
+	}
+	
+}
