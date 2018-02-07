@@ -19,13 +19,11 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
 
 import eclipse.FakedProjectEnvironmentMeta;
-import eclipse.ResourceMeta;
 import eclipse.exception.NoAnalysisSourceException;
 import eclipse.exception.ProjectAlreadyExistsException;
 import eclipse.jdt.JDTLexicalParser;
 import eclipse.project.process.PreProcessHelper;
 import util.FileIterator;
-import util.FileUtil;
 
 public class AnalysisEnvironment {
 
@@ -62,26 +60,26 @@ public class AnalysisEnvironment {
 		if (!dir.exists() || !dir.isDirectory()) {
 			throw new NoAnalysisSourceException();
 		}
-		File dependency_dir = new File(ResourceMeta.GetAbsolutePathOfProjectDependencyDirectory());
-		if (dependency_dir.exists()) {
-			FileUtil.DeleteFile(dependency_dir);
-		}
-		dependency_dir.mkdir();
-		File faked_proj_dir = new File(FakedProjectEnvironmentMeta.GetFakedEnvironment());
-		if (faked_proj_dir.exists()) {
-			FileUtil.DeleteFile(faked_proj_dir);
-		}
-		faked_proj_dir.mkdir();
-		File gradle_dir = new File(dependency_dir + "/gradle_dependencies");
-		if (gradle_dir.exists()) {
-			FileUtil.DeleteFile(gradle_dir);
-		}
-		gradle_dir.mkdirs();
-		File maven_dir = new File(dependency_dir + "/maven_dependencies");
-		if (maven_dir.exists()) {
-			FileUtil.DeleteFile(maven_dir);
-		}
-		maven_dir.mkdirs();
+//		File dependency_dir = new File(ResourceMeta.GetAbsolutePathOfProjectDependencyDirectory());
+//		if (dependency_dir.exists()) {
+//			FileUtil.DeleteFile(dependency_dir);
+//		}
+//		dependency_dir.mkdir();
+//		File faked_proj_dir = new File(FakedProjectEnvironmentMeta.GetFakedEnvironment());
+//		if (faked_proj_dir.exists()) {
+//			FileUtil.DeleteFile(faked_proj_dir);
+//		}
+//		faked_proj_dir.mkdir();
+//		File gradle_dir = new File(dependency_dir + "/gradle_dependencies");
+//		if (gradle_dir.exists()) {
+//			FileUtil.DeleteFile(gradle_dir);
+//		}
+//		gradle_dir.mkdirs();
+//		File maven_dir = new File(dependency_dir + "/maven_dependencies");
+//		if (maven_dir.exists()) {
+//			FileUtil.DeleteFile(maven_dir);
+//		}
+//		maven_dir.mkdirs();
 
 		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
 		InitializeClassPathWithDefaultJRE(entries);
