@@ -173,7 +173,7 @@ public class AnalysisEnvironment {
 		}
 		JavaImportOperation.ImportFileSystem(java_project, dir_files_map);
 
-		// System.err.println("Debugging, import files:" + dir_files_map);
+//		System.err.println("Debugging, import files:" + dir_files_map);
 
 		PreProcessHelper.PreProcessProject(java_project);
 		return java_project;

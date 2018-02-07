@@ -36,8 +36,8 @@ public class Application implements IApplication {
 	
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
-		// DebugLogger.Log("Start is invoked!");
-		// SystemUtil.Delay(1000);
+//		DebugLogger.Log("Start is invoked!");
+//		SystemUtil.Delay(5000);
 //		while (!PlatformUI.isWorkbenchRunning()) {
 //			DebugLogger.Log("Waiting the creation of the workbench.");
 //			SystemUtil.Delay(1000);
