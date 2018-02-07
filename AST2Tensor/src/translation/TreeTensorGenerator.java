@@ -52,7 +52,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 	@Override
 	public void postVisit(ASTNode node) {
 		if (expected_handled_child_num.peek() != already_handled_child_num.peek()) {
-			DebugLogger.Error("Strange! The system will exit! Expected num of children unmatched! ASTNode is:" + System.getProperty("line.separator") + node);
+			DebugLogger.Error("Strange! The system will exit! Expected num of children unmatched! Expected num is:" + expected_handled_child_num.peek() + ";Already handled is:" + already_handled_child_num.peek() + "#ASTNode is:" + System.getProperty("line.separator") + node);
 			SystemUtil.Flush();
 			System.exit(1);
 		}
