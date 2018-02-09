@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
+import main.Meta;
 import statistic.id.IDManager;
 import translation.tensor.SequenceTensor;
 import translation.tensor.Tensor;
@@ -45,6 +46,9 @@ public class TensorGeneratorForProject {
 		DebugLogger.Log("Tensor: ICompilationUnit_size:" + units.size());
 		if (units != null) {
 			for (ICompilationUnit icu : units) {
+				if (Meta.DetailDebugMode) {
+					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
+				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				// CreateJDTParserWithJavaProject(java_project).
 				TensorGenerator tg_tree = new TreeTensorGenerator(role_assigner, java_project, im, icu, cu);
