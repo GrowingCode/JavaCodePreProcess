@@ -146,7 +146,7 @@ public class Application implements IApplication {
 //					FileUtil.DeleteFile(unzip_out_dir);
 //				}
 			}
-			if (count_projs > max_handle_projs) {
+			if (count_projs >= max_handle_projs) {
 				break;
 			}
 		}
