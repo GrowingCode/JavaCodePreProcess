@@ -14,7 +14,7 @@ public class WordInfo {
 		return encode;
 	}
 
-	public void setEncode(int[][] encode) {
+	private void setEncode(int[][] encode) {
 		this.encode = encode;
 	}
 
@@ -22,7 +22,7 @@ public class WordInfo {
 		return huff_tree_index;
 	}
 
-	public void setHuffTreeIndex(int[] huff_tree_index) {
+	private void setHuffTreeIndex(int[] huff_tree_index) {
 		this.huff_tree_index = huff_tree_index;
 	}
 	
