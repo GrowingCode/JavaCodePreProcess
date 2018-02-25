@@ -147,13 +147,28 @@ public class FileUtil {
 
 	public static void WriteToFile(File file, String content) {
 		FileWriter fw = null;
+		BufferedWriter bw = null;
 		try {
 			fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
+			bw = new BufferedWriter(fw);
 			bw.write(content);
-			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (bw != null) {
+				try {
+					bw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fw != null) {
+				try {
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
