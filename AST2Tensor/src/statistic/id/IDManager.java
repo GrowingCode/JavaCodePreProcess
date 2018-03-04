@@ -159,12 +159,16 @@ public class IDManager {
 	private void GenerateHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc) {
 		HuffmanNode root = GenerateHuffmanTree.BuildTree(count_map);
 		WordInfo wi = GenerateHuffmanTree.BuildEncodeTensor(root);
-		int[][] type_huffman_leaf_node_encode_tensor = wi.getEncodeDirection();
+		int[][] type_huffman_leaf_node_encode_direction_tensor = wi.getEncodeDirection();
+		int[][] type_huffman_leaf_node_encode_state_tensor = wi.getEncodeState();
 		int[] type_huffman_leaf_node_huff_tree_index_tensor = wi.getHuffTreeIndex();
 		int[][] type_huffman_tree_tensor = root.ToTensor();
-		JSONArray type_huff_leaf_encode_json = JSONArray.fromObject(type_huffman_leaf_node_encode_tensor);
-		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_encode.json"),
-				type_huff_leaf_encode_json.toString());
+		JSONArray type_huff_leaf_encode_direction_json = JSONArray.fromObject(type_huffman_leaf_node_encode_direction_tensor);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_encode_direction.json"),
+				type_huff_leaf_encode_direction_json.toString());
+		JSONArray type_huff_leaf_encode_state_json = JSONArray.fromObject(type_huffman_leaf_node_encode_state_tensor);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_encode_state.json"),
+				type_huff_leaf_encode_state_json.toString());
 		JSONArray type_huff_leaf_huff_tree_index_json = JSONArray
 				.fromObject(type_huffman_leaf_node_huff_tree_index_tensor);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_huff_tree_index.json"),
