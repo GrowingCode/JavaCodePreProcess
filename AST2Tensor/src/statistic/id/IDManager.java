@@ -159,7 +159,7 @@ public class IDManager {
 	private void GenerateHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc) {
 		HuffmanNode root = GenerateHuffmanTree.BuildTree(count_map);
 		WordInfo wi = GenerateHuffmanTree.BuildEncodeTensor(root);
-		int[][] type_huffman_leaf_node_encode_tensor = wi.getEncode();
+		int[][] type_huffman_leaf_node_encode_tensor = wi.getEncodeDirection();
 		int[] type_huffman_leaf_node_huff_tree_index_tensor = wi.getHuffTreeIndex();
 		int[][] type_huffman_tree_tensor = root.ToTensor();
 		JSONArray type_huff_leaf_encode_json = JSONArray.fromObject(type_huffman_leaf_node_encode_tensor);

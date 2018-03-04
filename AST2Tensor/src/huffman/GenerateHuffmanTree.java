@@ -52,17 +52,19 @@ public class GenerateHuffmanTree {
 		int width = root.getMaxDepth();
 		int height = root.getLeafNodeNum();
 		// System.out.println("=== height:" + height);
-		int[][] encode = new int[height][width];
+		int[][] encode_direction = new int[height][width];
+		int[][] encode_state = new int[height][width];
 		int[] huff_tree_index = new int[height];
 		for (int i=0;i<height;i++) {
-			Arrays.fill(encode[i], -1);
+			Arrays.fill(encode_direction[i], -1);
+			Arrays.fill(encode_state[i], -1);
 		}
 		IDAssigner ida = new IDAssigner();
-		RecursiveBuildEncodeTensor(root, encode, huff_tree_index, new Stack<Integer>(), ida);
-		return new WordInfo(encode, huff_tree_index);
+		RecursiveBuildEncodeTensor(root, encode_direction, encode_state, huff_tree_index, new Stack<Integer>(), new Stack<Integer>(), ida);
+		return new WordInfo(encode_direction, encode_state, huff_tree_index);
 	}
 
-	private static void RecursiveBuildEncodeTensor(HuffmanNode root, int[][] encode, int[] huff_tree_index, Stack<Integer> path, IDAssigner ida) {
+	private static void RecursiveBuildEncodeTensor(HuffmanNode root, int[][] encode_direction, int[][] encode_state, int[] huff_tree_index, Stack<Integer> path, Stack<Integer> state, IDAssigner ida) {
 		int id = ida.GetNewID();
 		if (root.isLeaf()) {
 			Integer[] path_arr = new Integer[path.size()];
@@ -70,17 +72,23 @@ public class GenerateHuffmanTree {
 			int[] path_arr_primitive = ArrayUtils.toPrimitive(path_arr);
 			// System.out.println("=== tensor_length:" + tensor.length);
 			// System.out.println("=== tensor_content:" + root.getContent());
-			System.arraycopy(path_arr_primitive, 0, encode[root.getContent()], 0, path_arr_primitive.length);
+			System.arraycopy(path_arr_primitive, 0, encode_direction[root.getContent()], 0, path_arr_primitive.length);
+			// 
+			
 			huff_tree_index[root.getContent()] = id;
 		} else {
 			if (root.hasLeftChild()) {
 				path.push(0);
-				RecursiveBuildEncodeTensor(root.getLeftNode(), encode, huff_tree_index, path, ida);
+				state.push(id);
+				RecursiveBuildEncodeTensor(root.getLeftNode(), encode_direction, encode_state, huff_tree_index, path, state, ida);
+				state.pop();
 				path.pop();
 			}
 			if (root.hasRightChild()) {
 				path.push(1);
-				RecursiveBuildEncodeTensor(root.getRightNode(), encode, huff_tree_index, path, ida);
+				state.push(id);
+				RecursiveBuildEncodeTensor(root.getRightNode(), encode_direction, encode_state, huff_tree_index, path, state, ida);
+				state.pop();
 				path.pop();
 			}
 		}
