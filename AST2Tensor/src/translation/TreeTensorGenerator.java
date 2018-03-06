@@ -36,7 +36,8 @@ public class TreeTensorGenerator extends TensorGenerator {
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
 		if (node.getParent() == null) {
-			int role = role_assigner.AssignRole();
+			int role = role_assigner.AssignRole(icu.getElementName());
+//			System.err.println("Element Name of ICU:" +icu.getElementName());
 			if (role == 0 || role == 1) {
 				decode_type_generator = new TrainDataDecodeType();
 			} else {

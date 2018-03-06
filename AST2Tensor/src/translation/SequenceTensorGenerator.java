@@ -26,7 +26,7 @@ public class SequenceTensorGenerator extends TensorGenerator {
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
 		if (node.getParent() == null) {
-			int role = role_assigner.AssignRole();
+			int role = role_assigner.AssignRole(icu.getElementName());
 			tensor_list.add(new SequenceTensor(role));
 			if (role == 0 || role == 1) {
 				decode_type_generator = new TrainDataDecodeType();
