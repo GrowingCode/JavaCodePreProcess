@@ -36,6 +36,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
 		if (node.getParent() == null) {
+//			System.err.println("@parent is null node:" + node);
 			int role = role_assigner.AssignRole(icu.getElementName());
 //			System.err.println("Element Name of ICU:" +icu.getElementName());
 			if (role == 0 || role == 1) {
@@ -62,18 +63,17 @@ public class TreeTensorGenerator extends TensorGenerator {
 		// handle this node
 		expected_handled_child_num.pop();
 		already_handled_child_num.pop();
-		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		// get node type content id
-		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, children.size() == 0, im);
-		// handle node self and reform its children to binary tree.
 		if (already_handled_child_num.size() > 0) {
-			HandleChildren(true, node, children, type_content_id);
-			// HandleChildren(true, node, children, node_type, node_content, type, content);
 			already_handled_child_num.push(already_handled_child_num.pop() + 1);
 		} else {
 			Assert.isTrue((already_handled_child_num.size() == expected_handled_child_num.size())
 					&& (node.getParent() == null));
 		}
+		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+		// get node type content id
+		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, children.size() == 0, im);
+		// handle node self and reform its children to binary tree.
+		HandleChildren(true, node, children, type_content_id);
 		if (node.getParent() == null) {
 			((TreeTensor)tensor_list.getLast()).GenerateTreeIterationSequence();
 			decode_type_generator = null;
