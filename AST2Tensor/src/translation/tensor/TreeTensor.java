@@ -54,52 +54,53 @@ public class TreeTensor extends Tensor {
 		SetValueAtIndex(content_oracle, node_idx, content);
 	}
 	
-	TreeMap<Integer, Integer> node_index_map = new TreeMap<Integer, Integer>();
-	ArrayList<Integer> node = new ArrayList<Integer>();
-	ArrayList<Integer> up = new ArrayList<Integer>();
+	TreeMap<Integer, Integer> node_encode_index_to_decode_index_map = new TreeMap<Integer, Integer>();
 	ArrayList<Integer> left = new ArrayList<Integer>();
+	ArrayList<Integer> up = new ArrayList<Integer>();
+	ArrayList<Integer> node_encode_index_in_decode_array = new ArrayList<Integer>();
 	ArrayList<Integer> decode_type_node = new ArrayList<Integer>();
 	
 	public void GenerateTreeIterationSequence() {
-		GenerateTreeIterationSequence(left_child.size()-1, -1, -1);
+		int encode_last_index = left_child.size()-1;
+		GenerateTreeIterationSequence(encode_last_index, -1, -1);
 	}
 	
-	private void GenerateTreeIterationSequence(int current_root, int up_of_root, int left_of_root) {
+	private void GenerateTreeIterationSequence(int current_root, int left_of_root, int up_of_root) {
 		if (current_root >= 0) {
 			Integer lc = left_child.get(current_root);
 			Integer rc = right_child.get(current_root);
 			if (type.get(current_root) == im.GetTypeID(IDManager.VirtualChildrenConnectionNonLeafASTType)) {
-				GenerateTreeIterationSequence(lc, up_of_root, left_of_root);
-				GenerateTreeIterationSequence(rc, lc, left_of_root);
+				GenerateTreeIterationSequence(lc, left_of_root, up_of_root);
+				GenerateTreeIterationSequence(rc, left_of_root, lc);
 			} else {
-				node_index_map.put(current_root, node.size());
-				node.add(current_root);
-				int up_of_root_index = -1;
-				if (up_of_root >= 0) {
-					up_of_root_index = node_index_map.get(up_of_root);
-				}
+				node_encode_index_to_decode_index_map.put(current_root, node_encode_index_in_decode_array.size());
+				node_encode_index_in_decode_array.add(current_root);
 				int left_of_root_index = -1;
 				if (left_of_root >= 0) {
-					left_of_root_index = node_index_map.get(left_of_root);
+					left_of_root_index = node_encode_index_to_decode_index_map.get(left_of_root);
 				}
-				up.add(up_of_root_index);
+				int up_of_root_index = -1;
+				if (up_of_root >= 0) {
+					up_of_root_index = node_encode_index_to_decode_index_map.get(up_of_root);
+				}
 				left.add(left_of_root_index);
+				up.add(up_of_root_index);
 				decode_type_node.add(decode_type.get(current_root));
-				GenerateTreeIterationSequence(lc, -1, current_root);
-				GenerateTreeIterationSequence(rc, lc, current_root);
+				GenerateTreeIterationSequence(lc, current_root, -1);
+				GenerateTreeIterationSequence(rc, current_root, lc);
 			}
 		}
 	}
 	
 	@Override
 	public String toString() {
-		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + StringUtils.join(left.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(node.toArray(), " ") + " " + StringUtils.join(decode_type_node.toArray(), " ");
+		String result = StringUtils.join(left_child.toArray(), " ") + " " + StringUtils.join(right_child.toArray(), " ") + " " + StringUtils.join(type.toArray(), " ") + " " + StringUtils.join(content.toArray(), " ") + ", " + StringUtils.join(left.toArray(), " ") + " " + StringUtils.join(up.toArray(), " ") + " " + StringUtils.join(node_encode_index_in_decode_array.toArray(), " ") + " " + StringUtils.join(decode_type_node.toArray(), " ");
 		return result.trim();
 	}
 	
 	public String toDebugString() {
 		String line_seperator = System.getProperty("line.separator");
-		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator + StringUtils.join(left.toArray(), " ") + line_seperator + StringUtils.join(up.toArray(), " ") + line_seperator + StringUtils.join(node.toArray(), " ");
+		String result = StringUtils.join(left_child.toArray(), " ") + line_seperator + StringUtils.join(right_child.toArray(), " ") + line_seperator + StringUtils.join(type.toArray(), " ") + line_seperator + StringUtils.join(content.toArray(), " ") + line_seperator + StringUtils.join(left.toArray(), " ") + line_seperator + StringUtils.join(up.toArray(), " ") + line_seperator + StringUtils.join(node_encode_index_in_decode_array.toArray(), " ");
 		return result;
 	}
 	
@@ -107,7 +108,7 @@ public class TreeTensor extends Tensor {
 		String line_seperator = System.getProperty("line.separator");
 		String left_oracle = IDToTypeContent("Encode's Every node's left_child:", left_child);
 		String right_oracle = IDToTypeContent("Encode's Every node's right_child:", right_child);
-		String node_oracle = IDToTypeContent("Decode's Every node:", node);
+		String node_oracle = IDToTypeContent("Decode's Every node:", node_encode_index_in_decode_array);
 		String ind_left_oracle = IndirectIDToTypeContent("Decode's Every node's left", left);
 		String ind_up_oracle = IndirectIDToTypeContent("Decode's Every node's up", up);
 		String result = StringUtils.join(type_oracle.toArray(), " ") + line_seperator + StringUtils.join(content_oracle.toArray(), " ") + line_seperator + left_oracle + line_seperator + right_oracle + line_seperator + node_oracle + line_seperator + ind_left_oracle + line_seperator + ind_up_oracle ;
@@ -122,7 +123,7 @@ public class TreeTensor extends Tensor {
 		while (itr.hasNext()) {
 			Integer ii = itr.next();
 			if (ii >= 0) {
-				Integer iidx = node.get(ii);
+				Integer iidx = node_encode_index_in_decode_array.get(ii);
 				tp.add(type_oracle.get(iidx));
 				cnt.add(content_oracle.get(iidx));
 			} else {
