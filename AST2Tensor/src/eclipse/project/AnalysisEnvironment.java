@@ -138,35 +138,36 @@ public class AnalysisEnvironment {
 //				DebugLogger.Log("f_norm_path:" + f_norm_path);
 				CompilationUnit cu = JDTLexicalParser.ParseJavaFile(f);
 				PackageDeclaration pack = cu.getPackage();
+				String packagename = "";
 				if (pack != null) {
-					String fname = f.getName();
-					String packagename = pack.getName().toString();
-					String packagepath = packagename.replace('.', '/');
-					String packagepath_with_classfile = packagepath + "/" + fname;
-					String class_full_qualified_name = packagename + "."
-							+ fname.substring(0, fname.lastIndexOf(".java"));
-					if (f_norm_path.endsWith(packagepath_with_classfile)) {
-						String f_dir = f_norm_path.substring(0, f_norm_path.lastIndexOf(packagepath_with_classfile))
-								.replace('\\', '/');
-						while (f_dir.endsWith("/")) {
-							f_dir = f_dir.substring(0, f_dir.length() - 1);
-						}
-						TreeMap<String, String> files_in_dir = dir_files_map.get(f_dir);
-						if (files_in_dir == null) {
-							files_in_dir = new TreeMap<String, String>();
-							dir_files_map.put(f_dir, files_in_dir);
-						}
-						// How to judge which java file is more complete? Currently, just judge the last
-						// update time of a file.
-						if (files_in_dir.containsKey(class_full_qualified_name)) {
-							String full_name = files_in_dir.get(class_full_qualified_name);
-							File full_f = new File(full_name);
-							if (f.lastModified() > full_f.lastModified()) {
-								files_in_dir.put(class_full_qualified_name, f_norm_path);
-							}
-						} else {
+					packagename = pack.getName().toString();
+				}
+				String fname = f.getName();
+				String packagepath = packagename.replace('.', '/');
+				String packagepath_with_classfile = packagepath + "/" + fname;
+				String class_full_qualified_name = packagename + "."
+						+ fname.substring(0, fname.lastIndexOf(".java"));
+				if (f_norm_path.endsWith(packagepath_with_classfile)) {
+					String f_dir = f_norm_path.substring(0, f_norm_path.lastIndexOf(packagepath_with_classfile))
+							.replace('\\', '/');
+					while (f_dir.endsWith("/")) {
+						f_dir = f_dir.substring(0, f_dir.length() - 1);
+					}
+					TreeMap<String, String> files_in_dir = dir_files_map.get(f_dir);
+					if (files_in_dir == null) {
+						files_in_dir = new TreeMap<String, String>();
+						dir_files_map.put(f_dir, files_in_dir);
+					}
+					// How to judge which java file is more complete? Currently, just judge the last
+					// update time of a file.
+					if (files_in_dir.containsKey(class_full_qualified_name)) {
+						String full_name = files_in_dir.get(class_full_qualified_name);
+						File full_f = new File(full_name);
+						if (f.lastModified() > full_f.lastModified()) {
 							files_in_dir.put(class_full_qualified_name, f_norm_path);
 						}
+					} else {
+						files_in_dir.put(class_full_qualified_name, f_norm_path);
 					}
 				}
 			}
