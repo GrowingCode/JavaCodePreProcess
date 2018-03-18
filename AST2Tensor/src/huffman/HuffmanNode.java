@@ -1,11 +1,9 @@
 package huffman;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import main.Meta;
+import org.eclipse.core.runtime.Assert;
 
 public class HuffmanNode implements Comparable<HuffmanNode> {
 	private Integer content = null;
@@ -37,7 +35,9 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 	}
 	
 	public boolean isLeaf() {
-		return nonLeafNodeNum == 0;
+		boolean is_leaf = nonLeafNodeNum == 0;
+		Assert.isTrue(is_leaf && (childrenNodes.size() == 0));
+		return is_leaf;
 	}
 	
 //	public void setTotalNodeNum(int totalNodeNum) {
@@ -116,48 +116,6 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 //	public void setLeafNodeNum(int leafNodeNum) {
 //		this.leafNodeNum = leafNodeNum;
 //	}
-	
-	// ArrayList<Integer> node, ArrayList<Integer> left_child, ArrayList<Integer> right_child
-	public int[][][] ToTensor() {
-//		int[][] tensor = new int[3][totalNodeNum];
-//		Arrays.fill(tensor[0], -1);
-//		Arrays.fill(tensor[1], -1);
-//		Arrays.fill(tensor[2], -1);
-		int[][][] tensor = new int[nonLeafNodeNum][2][Meta.HuffTreeStandardChildrenNum];
-		for (int i=0;i<nonLeafNodeNum;i++) {
-			for (int j=0;j<2;j++) {
-				Arrays.fill(tensor[i][j], -1);
-			}
-		}
-		IDAssigner ida = new IDAssigner();
-		ToTensor(tensor, ida);
-		return tensor;
-	}
-	
-	private int ToTensor(int[][][] tensor, IDAssigner ida) {
-		int id = ida.GetNewID();
-		Iterator<HuffmanNode> citr = childrenNodes.iterator();
-		int child_index = 0;
-		while (citr.hasNext()) {
-			HuffmanNode child = citr.next();
-			int infix_child_id = child.ToTensor(tensor, ida);
-			tensor[id][0][child_index] = infix_child_id;
-			tensor[id][1][child_index] = child.isLeaf() ? 1 : 0;
-			child_index++;
-		}
-//		int infix_left_id = -1;
-//		if (leftNode != null) {
-//			infix_left_id = leftNode.ToTensor(tensor, ida);
-//		}
-//		int infix_right_id = -1;
-//		if (rightNode != null) {
-//			infix_right_id = rightNode.ToTensor(tensor, ida);
-//		}
-//		tensor[0][id] = infix_left_id;
-//		tensor[1][id] = infix_right_id;
-//		tensor[2][id] = (content == null ? -1 : content);
-		return id;
-	}
 
 	public void setLeafNodeNum(int i) {
 		this.leafNodeNum = i;

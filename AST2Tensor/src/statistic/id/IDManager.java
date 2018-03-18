@@ -11,9 +11,9 @@ import java.util.TreeMap;
 
 import org.eclipse.jdt.core.dom.Block;
 
-import huffman.GenerateHuffmanTree;
-import huffman.HuffmanNode;
+import huffman.GenerateHuffmanTreeTensor;
 import huffman.WordInfo;
+import main.Meta;
 import net.sf.json.JSONArray;
 import util.FileUtil;
 import util.MapUtil;
@@ -156,24 +156,30 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_id.json"), type_id_json.toString());
 	}
 	
-	private void GenerateHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc) {
-		HuffmanNode root = GenerateHuffmanTree.BuildTree(count_map);
-		WordInfo wi = GenerateHuffmanTree.BuildEncodeTensor(root);
-		int[][] type_huffman_leaf_node_encode_direction_tensor = wi.getEncodeDirection();
-		int[][] type_huffman_leaf_node_encode_state_tensor = wi.getEncodeState();
-		int[] type_huffman_leaf_node_huff_tree_index_tensor = wi.getHuffTreeIndex();
-		int[][][] type_huffman_tree_tensor = root.ToTensor();
-		JSONArray type_huff_leaf_encode_direction_json = JSONArray.fromObject(type_huffman_leaf_node_encode_direction_tensor);
+	private void GenerateHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc, int huff_tree_standard_children_num) {
+		GenerateHuffmanTreeTensor gen = new GenerateHuffmanTreeTensor(huff_tree_standard_children_num, count_map);
+		WordInfo wi = gen.GetWordInfo();
+//		HuffmanNode root = GenerateHuffmanTreeTensor.BuildTree(count_map);
+//		WordInfo wi = GenerateHuffmanTreeTensor.BuildEncodeTensor(root);
+		int[][] huffman_leaf_node_encode_direction_tensor = wi.getEncodeDirection();
+		int[][] huffman_leaf_node_encode_state_tensor = wi.getEncodeState();
+		int[] huffman_non_leaf_node_valid_children_num_tensor = wi.getHuffTreeValidChildrenNum();
+		int[][][] huffman_tree_tensor = gen.GetHuffTreeTensor();// root.ToTensor();
+		String huff_tree_summary = "StandardChildrenNum:" + gen.GetStandardChildrenNum() + "\n" + "MinimumChildrenNum:" + gen.GetMinimumChildrenNum() + "\n" + "MaximumDepth:" + gen.GetMaximumDepth();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_tree_summary.txt"), huff_tree_summary);
+		JSONArray type_huff_leaf_encode_direction_json = JSONArray.fromObject(huffman_leaf_node_encode_direction_tensor);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_encode_direction.json"),
 				type_huff_leaf_encode_direction_json.toString());
-		JSONArray type_huff_leaf_encode_state_json = JSONArray.fromObject(type_huffman_leaf_node_encode_state_tensor);
+		JSONArray type_huff_leaf_encode_state_json = JSONArray.fromObject(huffman_leaf_node_encode_state_tensor);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_encode_state.json"),
 				type_huff_leaf_encode_state_json.toString());
-		JSONArray type_huff_leaf_huff_tree_index_json = JSONArray
-				.fromObject(type_huffman_leaf_node_huff_tree_index_tensor);
-		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_huff_tree_index.json"),
-				type_huff_leaf_huff_tree_index_json.toString());
-		JSONArray type_huff_tree_json = JSONArray.fromObject(type_huffman_tree_tensor);
+		JSONArray type_huff_non_leaf_valid_children_num_json = JSONArray.fromObject(huffman_non_leaf_node_valid_children_num_tensor);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_non_leaf_valid_children_num.json"),type_huff_non_leaf_valid_children_num_json.toString());
+//		JSONArray type_huff_leaf_huff_tree_index_json = JSONArray
+//				.fromObject(type_huffman_leaf_node_huff_tree_index_tensor);
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_huff_tree_index.json"),
+//				type_huff_leaf_huff_tree_index_json.toString());
+		JSONArray type_huff_tree_json = JSONArray.fromObject(huffman_tree_tensor);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_tree.json"), type_huff_tree_json.toString());
 	}
 
@@ -183,8 +189,8 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_type_is_leaf.json"), ast_type_is_leaf_json.toString());
 		GenerateIDJson(dir, ast_content_id_map, "content");
 		
-		GenerateHuffTree(dir, ast_type_id_count_map, "type");
-		GenerateHuffTree(dir, ast_content_id_count_map, "content");
+		GenerateHuffTree(dir, ast_type_id_count_map, "type", Meta.TypeHuffTreeStandardChildrenNum);
+		GenerateHuffTree(dir, ast_content_id_count_map, "content", Meta.ContentHuffTreeStandardChildrenNum);
 		
 //		Set<String> akeys = ati.keySet();
 //		for (String ak : akeys) {
