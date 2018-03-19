@@ -156,7 +156,7 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_id.json"), type_id_json.toString());
 	}
 	
-	private void GenerateHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc, int huff_tree_standard_children_num) {
+	private void GenerateAndSaveHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc, int huff_tree_standard_children_num) {
 		GenerateHuffmanTreeTensor gen = new GenerateHuffmanTreeTensor(huff_tree_standard_children_num, count_map);
 		WordInfo wi = gen.GetWordInfo();
 //		HuffmanNode root = GenerateHuffmanTreeTensor.BuildTree(count_map);
@@ -189,8 +189,8 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_type_is_leaf.json"), ast_type_is_leaf_json.toString());
 		GenerateIDJson(dir, ast_content_id_map, "content");
 		
-		GenerateHuffTree(dir, ast_type_id_count_map, "type", Meta.TypeHuffTreeStandardChildrenNum);
-		GenerateHuffTree(dir, ast_content_id_count_map, "content", Meta.ContentHuffTreeStandardChildrenNum);
+		GenerateAndSaveHuffTree(dir, ast_type_id_count_map, "type", Meta.TypeHuffTreeStandardChildrenNum);
+		GenerateAndSaveHuffTree(dir, ast_content_id_count_map, "content", Meta.ContentHuffTreeStandardChildrenNum);
 		
 //		Set<String> akeys = ati.keySet();
 //		for (String ak : akeys) {
