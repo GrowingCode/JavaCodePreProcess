@@ -91,58 +91,6 @@ public class GenerateHuffmanTreeTensor {
 		return priorityQueue.poll();
 	}
 
-	// ArrayList<Integer> node, ArrayList<Integer> left_child, ArrayList<Integer>
-	// right_child
-	private int[][][] ToTensor() {
-		// int[][] tensor = new int[3][totalNodeNum];
-		// Arrays.fill(tensor[0], -1);
-		// Arrays.fill(tensor[1], -1);
-		// Arrays.fill(tensor[2], -1);
-		int nonLeafNodeNum = this.root.getNonLeafNodeNum();
-		int[][][] tensor = new int[nonLeafNodeNum][2][standard_children_num];
-		for (int i = 0; i < nonLeafNodeNum; i++) {
-			for (int j = 0; j < 2; j++) {
-				Arrays.fill(tensor[i][j], -1);
-			}
-		}
-		IDAssigner ida = new IDAssigner();
-		ToTensor(this.root, tensor, ida);
-		return tensor;
-	}
-
-	private int ToTensor(HuffmanNode curr_node, int[][][] tensor, IDAssigner ida) {
-		int id = -1;
-		if (curr_node.isLeaf()) {
-			Integer id_raw = curr_node.getContent();
-			Assert.isTrue(id_raw != null);
-			id = id_raw;
-		} else {
-			id = ida.GetNewID();
-			List<HuffmanNode> childrenNodes = curr_node.getChildren();
-			Iterator<HuffmanNode> citr = childrenNodes.iterator();
-			int child_index = 0;
-			while (citr.hasNext()) {
-				HuffmanNode child = citr.next();
-				int infix_child_id = ToTensor(child, tensor, ida);
-				tensor[id][0][child_index] = infix_child_id;
-				tensor[id][1][child_index] = child.isLeaf() ? 1 : 0;
-				child_index++;
-			}
-		}
-		// int infix_left_id = -1;
-		// if (leftNode != null) {
-		// infix_left_id = leftNode.ToTensor(tensor, ida);
-		// }
-		// int infix_right_id = -1;
-		// if (rightNode != null) {
-		// infix_right_id = rightNode.ToTensor(tensor, ida);
-		// }
-		// tensor[0][id] = infix_left_id;
-		// tensor[1][id] = infix_right_id;
-		// tensor[2][id] = (content == null ? -1 : content);
-		return id;
-	}
-
 	private WordInfo BuildEncodeTensor(HuffmanNode root) {
 		int width = root.getMaxDepth();
 		int height = root.getLeafNodeNum();
@@ -230,6 +178,58 @@ public class GenerateHuffmanTreeTensor {
 			// path.pop();
 			// }
 		}
+	}
+	
+	// ArrayList<Integer> node, ArrayList<Integer> left_child, ArrayList<Integer>
+	// right_child
+	private int[][][] ToTensor() {
+		// int[][] tensor = new int[3][totalNodeNum];
+		// Arrays.fill(tensor[0], -1);
+		// Arrays.fill(tensor[1], -1);
+		// Arrays.fill(tensor[2], -1);
+		int nonLeafNodeNum = this.root.getNonLeafNodeNum();
+		int[][][] tensor = new int[nonLeafNodeNum][2][maximum_children_num];
+		for (int i = 0; i < nonLeafNodeNum; i++) {
+			for (int j = 0; j < 2; j++) {
+				Arrays.fill(tensor[i][j], -1);
+			}
+		}
+		IDAssigner ida = new IDAssigner();
+		ToTensor(this.root, tensor, ida);
+		return tensor;
+	}
+
+	private int ToTensor(HuffmanNode curr_node, int[][][] tensor, IDAssigner ida) {
+		int id = -1;
+		if (curr_node.isLeaf()) {
+			Integer id_raw = curr_node.getContent();
+			Assert.isTrue(id_raw != null);
+			id = id_raw;
+		} else {
+			id = ida.GetNewID();
+			List<HuffmanNode> childrenNodes = curr_node.getChildren();
+			Iterator<HuffmanNode> citr = childrenNodes.iterator();
+			int child_index = 0;
+			while (citr.hasNext()) {
+				HuffmanNode child = citr.next();
+				int infix_child_id = ToTensor(child, tensor, ida);
+				tensor[id][0][child_index] = infix_child_id;
+				tensor[id][1][child_index] = child.isLeaf() ? 1 : 0;
+				child_index++;
+			}
+		}
+		// int infix_left_id = -1;
+		// if (leftNode != null) {
+		// infix_left_id = leftNode.ToTensor(tensor, ida);
+		// }
+		// int infix_right_id = -1;
+		// if (rightNode != null) {
+		// infix_right_id = rightNode.ToTensor(tensor, ida);
+		// }
+		// tensor[0][id] = infix_left_id;
+		// tensor[1][id] = infix_right_id;
+		// tensor[2][id] = (content == null ? -1 : content);
+		return id;
 	}
 	
 	public int GetStandardChildrenNum() {
