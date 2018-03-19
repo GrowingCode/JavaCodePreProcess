@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Assert;
 public class GenerateHuffmanTreeTensor {
 
 	int standard_children_num = -1;
+	int maximum_children_num = 0;
 	int minimum_children_num = -1;
 	HuffmanNode root = null;
 	WordInfo wi = null;
@@ -192,6 +193,9 @@ public class GenerateHuffmanTreeTensor {
 			List<HuffmanNode> children = root.getChildren();
 			int child_size = children.size();
 			huff_tree_valid_children_num[id] = child_size;
+			if (maximum_children_num < child_size) {
+				maximum_children_num = child_size;
+			}
 			if (minimum_children_num > child_size) {
 				minimum_children_num = child_size;
 			}
@@ -230,6 +234,10 @@ public class GenerateHuffmanTreeTensor {
 	
 	public int GetStandardChildrenNum() {
 		return standard_children_num;
+	}
+	
+	public int GetMaximumChildrenNum() {
+		return maximum_children_num;
 	}
 	
 	public int GetMinimumChildrenNum() {

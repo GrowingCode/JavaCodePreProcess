@@ -165,7 +165,7 @@ public class IDManager {
 		int[][] huffman_leaf_node_encode_state_tensor = wi.getEncodeState();
 		int[] huffman_non_leaf_node_valid_children_num_tensor = wi.getHuffTreeValidChildrenNum();
 		int[][][] huffman_tree_tensor = gen.GetHuffTreeTensor();// root.ToTensor();
-		String huff_tree_summary = "StandardChildrenNum:" + gen.GetStandardChildrenNum() + "\n" + "MinimumChildrenNum:" + gen.GetMinimumChildrenNum() + "\n" + "MaximumDepth:" + gen.GetMaximumDepth();
+		String huff_tree_summary = "StandardChildrenNum:" + gen.GetStandardChildrenNum() + "\n" + "MaximumChildrenNum:" + gen.GetMaximumChildrenNum() + "\n" + "MinimumChildrenNum:" + gen.GetMinimumChildrenNum() + "\n" + "MaximumDepth:" + gen.GetMaximumDepth();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_tree_summary.txt"), huff_tree_summary);
 		JSONArray type_huff_leaf_encode_direction_json = JSONArray.fromObject(huffman_leaf_node_encode_direction_tensor);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_leaf_encode_direction.json"),
