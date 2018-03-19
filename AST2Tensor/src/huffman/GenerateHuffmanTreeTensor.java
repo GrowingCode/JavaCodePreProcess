@@ -64,6 +64,7 @@ public class GenerateHuffmanTreeTensor {
 			sumNode.setMaxDepth(max_depth + 1);
 			sumNode.setLeafNodeNum(leaf_node_num);
 			sumNode.setNonLeafNodeNum(non_leaf_node_num);
+			priorityQueue.add(sumNode);
 		}
 		// int size = priorityQueue.size();
 		// for (int i = 1; i <= size - 1; i++) {
