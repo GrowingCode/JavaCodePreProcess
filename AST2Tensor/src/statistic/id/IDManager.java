@@ -21,9 +21,9 @@ import util.MapUtil;
 public class IDManager {
 
 	public static String Default = "@Default";
-	// non-leaf type
+	// non_leaf type
 	public static String VirtualChildrenConnectionNonLeafASTType = "VirtualChildrenConnectionNonLeafASTType";
-	// non-leaf type
+	// non_leaf type
 	// public static String PrimordialNonLeafASTType = "PrimordialNonLeafASTType";
 	// leaf type
 	public static String InitialLeafASTType = "InitialLeafASTType";
