@@ -192,7 +192,7 @@ public class GenerateHuffmanTreeTensor {
 			List<HuffmanNode> children = root.getChildren();
 			int child_size = children.size();
 			huff_tree_valid_children_num[id] = child_size;
-			if (minimum_children_num < child_size) {
+			if (minimum_children_num > child_size) {
 				minimum_children_num = child_size;
 			}
 			int child_index = 0;
