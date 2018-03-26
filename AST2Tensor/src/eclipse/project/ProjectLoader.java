@@ -11,7 +11,7 @@ public class ProjectLoader {
 		// proj_path - example: D:/eclipse-workspace-pool/eclipse-rcp-neon-codecompletion/cn.yyx.research.program.snippet.extractor
 		ProjectInfo epi = new ProjectInfo("no_use", proj_path);
 		IJavaProject jproj = AnalysisEnvironment.CreateAnalysisEnvironment(epi);
-		DebugLogger.Log("Just for test, this is the args:" + proj_path);
+		DebugLogger.Log("Just for test, this is the project path:" + proj_path);
 		return jproj;
 	}
 	
