@@ -125,6 +125,9 @@ public class Application implements IApplication {
 		int count_projs = 0;
 		int all_size = 0;
 		for (File f : files) {
+			if (max_handle_projs >= 0 && count_projs >= max_handle_projs) {
+				break;
+			}
 			if (f.isDirectory()) {
 				count_projs++;
 				all_size = run.Handle(f.getAbsolutePath(), ic, all_size, min_support, max_capacity, im, role_assigner);
@@ -145,9 +148,6 @@ public class Application implements IApplication {
 //				if (unzip_out_dir.exists()) {
 //					FileUtil.DeleteFile(unzip_out_dir);
 //				}
-			}
-			if (count_projs >= max_handle_projs) {
-				break;
 			}
 		}
 	}
