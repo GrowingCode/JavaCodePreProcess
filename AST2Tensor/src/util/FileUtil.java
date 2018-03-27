@@ -179,9 +179,8 @@ public class FileUtil {
 				for (File f : files) {
 					DeleteFile(f);
 				}
-			} else {
-				file.delete();
 			}
+			file.delete();
 		}
 	}
 
