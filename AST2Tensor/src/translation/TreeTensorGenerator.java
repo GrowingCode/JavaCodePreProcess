@@ -14,7 +14,6 @@ import eclipse.search.JDTSearchForChildrenOfASTNode;
 import logger.DebugLogger;
 import statistic.id.IDManager;
 import translation.helper.TestDataDecodeType;
-import translation.helper.TrainDataDecodeType;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
 import translation.tensor.TreeTensor;
@@ -39,11 +38,12 @@ public class TreeTensorGenerator extends TensorGenerator {
 //			System.err.println("@parent is null node:" + node);
 			int role = role_assigner.AssignRole(icu.getElementName());
 //			System.err.println("Element Name of ICU:" +icu.getElementName());
-			if (role == 0 || role == 1) {
-				decode_type_generator = new TrainDataDecodeType();
-			} else {
-				decode_type_generator = new TestDataDecodeType();
-			}
+//			if (role == 0 || role == 1) {
+//				decode_type_generator = new TrainDataDecodeType();
+//			} else {
+//				decode_type_generator = new TestDataDecodeType();
+//			}
+			decode_type_generator = new TestDataDecodeType();
 			tensor_list.add(new TreeTensor(role, im));
 		}
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
