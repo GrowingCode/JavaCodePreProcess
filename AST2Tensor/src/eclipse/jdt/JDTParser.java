@@ -17,7 +17,7 @@ public class JDTParser {
 	
 	public static CompilationUnit ParseICompilationUnit(ICompilationUnit icu)
 	{
-		ASTParser parser= ASTParser.newParser(AST.JLS9);
+		ASTParser parser= ASTParser.newParser(AST.JLS10);
 		parser.setResolveBindings(true);
 		parser.setSource(icu);
 		parser.setStatementsRecovery(true);
@@ -37,7 +37,7 @@ public class JDTParser {
 	
 	public static CompilationUnit ParseOneClass(IClassFile f)
 	{
-		ASTParser parser= ASTParser.newParser(AST.JLS9);
+		ASTParser parser= ASTParser.newParser(AST.JLS10);
 		parser.setResolveBindings(true);
 		parser.setSource(f);
 		parser.setStatementsRecovery(true);

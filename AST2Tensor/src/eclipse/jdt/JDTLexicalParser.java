@@ -17,9 +17,9 @@ public class JDTLexicalParser {
 	
 	public static CompilationUnit ParseJavaFile(File f)
 	{
-		ASTParser parser = ASTParser.newParser(AST.JLS9);
+		ASTParser parser = ASTParser.newParser(AST.JLS10);
 		Map<String, String> options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_9);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_10);
 		parser.setCompilerOptions(options);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(FileUtil.ReadFromFile(f).toCharArray());
