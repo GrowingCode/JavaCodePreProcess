@@ -10,16 +10,22 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
+import statistic.ast.ChildrenNumCounter;
 import statistic.id.IDCounter;
+import translation.roles.RoleAssigner;
 
 public class IDGeneratorForProject {
 	
 	IJavaProject java_project = null;
+	RoleAssigner role_assigner = null;
 	IDCounter ic = null;
+	ChildrenNumCounter cnc = null;
 	
-	public IDGeneratorForProject(IJavaProject java_project, IDCounter ic) {
+	public IDGeneratorForProject(IJavaProject java_project, RoleAssigner role_assigner, IDCounter ic, ChildrenNumCounter cnc) {
 		this.java_project = java_project;
+		this.role_assigner = role_assigner;
 		this.ic = ic;
+		this.cnc = cnc;
 	}
 	
 	public int GenerateForOneProject() {
@@ -36,7 +42,12 @@ public class IDGeneratorForProject {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				length += cu.getLength();
 				// CreateJDTParserWithJavaProject(java_project).
-				IDGenerator tg = new IDGenerator(java_project, icu, cu, ic);
+				int role = role_assigner.AssignRole(icu.getElementName());
+				if (role <= RoleAssigner.train_seen_k) {
+					IDGenerator tg = new IDGenerator(icu, cu, ic, cnc);
+					cu.accept(tg);
+				}
+				IDGenerator tg = new IDGenerator(icu, cu, ic, cnc);
 				cu.accept(tg);
 			}
 		}

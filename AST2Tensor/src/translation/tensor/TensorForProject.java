@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import main.Meta;
+import main.MetaOfApp;
+import translation.roles.RoleAssigner;
 
 public class TensorForProject {
 	
@@ -24,9 +25,9 @@ public class TensorForProject {
 	}
 	
 	private void SaveToFile(List<Tensor> tensors_to, String type) {
-		File dest = new File(Meta.DataDirectory + "/" + type + "_data.txt");
-		File debug_dest = new File(Meta.DataDirectory + "/debug_" + type + "_data.txt");
-		File oracle_dest = new File(Meta.DataDirectory + "/oracle_" + type + "_data.txt");
+		File dest = new File(MetaOfApp.DataDirectory + "/" + type + "_data.txt");
+		File debug_dest = new File(MetaOfApp.DataDirectory + "/debug_" + type + "_data.txt");
+		File oracle_dest = new File(MetaOfApp.DataDirectory + "/oracle_" + type + "_data.txt");
 		BufferedWriter bw = null;
 		BufferedWriter debug_bw = null;
 		BufferedWriter oracle_bw = null;
@@ -74,33 +75,34 @@ public class TensorForProject {
 		}
 	}
 	
-	public void SaveToFile(String kind) {// int total_of_tensors
+	public void SaveToFile() {// int total_of_tensors
+//		System.err.println("tensor_size:" + tensors.size());
 		LinkedList<Tensor> train_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> test_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> valid_tensors = new LinkedList<Tensor>();
 		Iterator<Tensor> titr = tensors.iterator();
 		while (titr.hasNext()) {
 			Tensor t = titr.next();
-			if (t.GetRole() == 0) {
+//			System.err.println("role:" + t.GetRole());
+			if (t.GetRole() <= RoleAssigner.train_k) {
 				train_tensors.add(t);
-			} else if (t.GetRole() == 1) {
+			} else if (t.GetRole() == RoleAssigner.valid_k) {
 				valid_tensors.add(t);
 			} else {
 				test_tensors.add(t);
 			}
 		}
 		SaveToFile(tensors, kind + "_all");
+//		System.err.println("train_tensor_size:" + train_tensors.size());
 		SaveToFile(train_tensors, kind + "_train");
+//		System.err.println("test_tensor_size:" + test_tensors.size());
 		SaveToFile(test_tensors, kind + "_test");
+//		System.err.println("valid_tensor_size:" + valid_tensors.size());
 		SaveToFile(valid_tensors, kind + "_valid");
 	}
 
-	public int GetNumOfTensors() {
-		return tensors.size();
-	}
-	
-	public String GetKind() {
-		return kind;
-	}
+//	public int GetNumOfTensors() {
+//		return tensors.size();
+//	}
 	
 }

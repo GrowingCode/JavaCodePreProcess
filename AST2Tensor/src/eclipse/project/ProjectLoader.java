@@ -15,4 +15,8 @@ public class ProjectLoader {
 		return jproj;
 	}
 	
+	public static void CloseAllProjects() throws Exception {
+		AnalysisEnvironment.DeleteAllAnalysisEnvironment();
+	}
+	
 }

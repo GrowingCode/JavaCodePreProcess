@@ -18,14 +18,14 @@ public class GenerateHuffmanTreeTensor {
 	int minimum_children_num = -1;
 	HuffmanNode root = null;
 	WordInfo wi = null;
-	int[][][] huff_tree_tensor = null;
+	HuffNonLeaf huff_non_leaf_tensor = null;
 
 	public GenerateHuffmanTreeTensor(int standard_children_num, Map<Integer, Integer> statistics) {
 		this.standard_children_num = standard_children_num;
 		this.minimum_children_num = standard_children_num;
 		this.root = BuildTree(statistics);
 		this.wi = BuildEncodeTensor(this.root);
-		this.huff_tree_tensor = ToTensor();
+		this.huff_non_leaf_tensor = ToTensor();
 	}
 
 	private HuffmanNode BuildTree(Map<Integer, Integer> statistics) {
@@ -67,26 +67,6 @@ public class GenerateHuffmanTreeTensor {
 			sumNode.setNonLeafNodeNum(non_leaf_node_num);
 			priorityQueue.add(sumNode);
 		}
-		// int size = priorityQueue.size();
-		// for (int i = 1; i <= size - 1; i++) {
-		// HuffmanNode node1 = priorityQueue.poll();
-		// HuffmanNode node2 = priorityQueue.poll();
-		//
-		// HuffmanNode sumNode = new HuffmanNode();
-		// sumNode.setContent(null);// node1.getContent() + node2.getContent()
-		// sumNode.setFrequence(node1.getFrequence() + node2.getFrequence());
-		// sumNode.setMaxDepth(Math.max(node1.getMaxDepth(), node2.getMaxDepth()) + 1);
-		// sumNode.setLeftNode(node1);
-		// sumNode.setRightNode(node2);
-		// sumNode.setLeafNodeNum(node1.getLeafNodeNum() + node2.getLeafNodeNum());
-		// sumNode.setTotalNodeNum(sumNode.getTotalNodeNum() + node1.getTotalNodeNum() +
-		// node2.getTotalNodeNum());
-		//
-		// node1.setParent(sumNode);
-		// node2.setParent(sumNode);
-		//
-		// priorityQueue.add(sumNode);
-		// }
 		Assert.isTrue(priorityQueue.size() == 1);
 		return priorityQueue.poll();
 	}
@@ -95,26 +75,24 @@ public class GenerateHuffmanTreeTensor {
 		int width = root.getMaxDepth();
 		int height = root.getLeafNodeNum();
 		// System.out.println("=== height:" + height);
-		int[][] encode_direction = new int[height][width];
-		int[][] encode_state = new int[height][width];
+		int[][] encode_direction = new int[height][width+1];
+		int[][] encode_state = new int[height][width+1];
 		// int[] huff_tree_index = new int[height];
-		int[] huff_tree_valid_children_num = new int[height];
 		for (int i = 0; i < height; i++) {
 			Arrays.fill(encode_direction[i], -1);
 			Arrays.fill(encode_state[i], -1);
 		}
 		IDAssigner ida = new IDAssigner();
 		// the origin of position of huff_tree_valid_children_num is huff_tree_index
-		RecursiveBuildEncodeTensor(root, encode_direction, encode_state, huff_tree_valid_children_num,
+		RecursiveBuildEncodeTensor(root, encode_direction, encode_state, 
 				new Stack<Integer>(), new Stack<Integer>(), ida);
 		// the origin of position of huff_tree_valid_children_num is huff_tree_index
-		return new WordInfo(encode_direction, encode_state, huff_tree_valid_children_num);
+		return new WordInfo(encode_direction, encode_state);
 	}
 
 	private void RecursiveBuildEncodeTensor(HuffmanNode root, int[][] encode_direction, int[][] encode_state,
 			// the origin of position of huff_tree_valid_children_num is huff_tree_index
-			int[] huff_tree_valid_children_num, Stack<Integer> path, Stack<Integer> state, IDAssigner ida) {
-		int id = ida.GetNewID();
+			Stack<Integer> path, Stack<Integer> state, IDAssigner ida) {
 		if (root.isLeaf()) {
 			{
 				// handle encode path which is for example: 0,1,0,1,-1 etc.
@@ -138,9 +116,9 @@ public class GenerateHuffmanTreeTensor {
 			}
 			// huff_tree_index[root.getContent()] = id;
 		} else {
+			int id = ida.GetNewID();
 			List<HuffmanNode> children = root.getChildren();
 			int child_size = children.size();
-			huff_tree_valid_children_num[id] = child_size;
 			if (maximum_children_num < child_size) {
 				maximum_children_num = child_size;
 			}
@@ -153,7 +131,7 @@ public class GenerateHuffmanTreeTensor {
 				HuffmanNode child = citr.next();
 				path.push(child_index);
 				state.push(id);
-				RecursiveBuildEncodeTensor(child, encode_direction, encode_state, huff_tree_valid_children_num, path,
+				RecursiveBuildEncodeTensor(child, encode_direction, encode_state, path,
 						state, ida);
 				state.pop();
 				path.pop();
@@ -182,24 +160,25 @@ public class GenerateHuffmanTreeTensor {
 	
 	// ArrayList<Integer> node, ArrayList<Integer> left_child, ArrayList<Integer>
 	// right_child
-	private int[][][] ToTensor() {
+	private HuffNonLeaf ToTensor() {
 		// int[][] tensor = new int[3][totalNodeNum];
 		// Arrays.fill(tensor[0], -1);
 		// Arrays.fill(tensor[1], -1);
 		// Arrays.fill(tensor[2], -1);
 		int nonLeafNodeNum = this.root.getNonLeafNodeNum();
-		int[][][] tensor = new int[nonLeafNodeNum][2][maximum_children_num];
+		int[][][] huff_tree_tensor = new int[nonLeafNodeNum][2][maximum_children_num];
+		int[] huff_tree_valid_children_num = new int[nonLeafNodeNum];
 		for (int i = 0; i < nonLeafNodeNum; i++) {
 			for (int j = 0; j < 2; j++) {
-				Arrays.fill(tensor[i][j], -1);
+				Arrays.fill(huff_tree_tensor[i][j], -1);
 			}
 		}
 		IDAssigner ida = new IDAssigner();
-		ToTensor(this.root, tensor, ida);
-		return tensor;
+		ToTensor(this.root, huff_tree_tensor, huff_tree_valid_children_num, ida);
+		return new HuffNonLeaf(huff_tree_tensor, huff_tree_valid_children_num);
 	}
 
-	private int ToTensor(HuffmanNode curr_node, int[][][] tensor, IDAssigner ida) {
+	private int ToTensor(HuffmanNode curr_node, int[][][] tensor, int[] huff_tree_valid_children_num, IDAssigner ida) {
 		int id = -1;
 		if (curr_node.isLeaf()) {
 			Integer id_raw = curr_node.getContent();
@@ -208,11 +187,14 @@ public class GenerateHuffmanTreeTensor {
 		} else {
 			id = ida.GetNewID();
 			List<HuffmanNode> childrenNodes = curr_node.getChildren();
+			int children_size = childrenNodes.size();
+			Assert.isTrue(children_size > 0);
+			huff_tree_valid_children_num[id] = children_size;
 			Iterator<HuffmanNode> citr = childrenNodes.iterator();
 			int child_index = 0;
 			while (citr.hasNext()) {
 				HuffmanNode child = citr.next();
-				int infix_child_id = ToTensor(child, tensor, ida);
+				int infix_child_id = ToTensor(child, tensor, huff_tree_valid_children_num, ida);
 				tensor[id][0][child_index] = infix_child_id;
 				tensor[id][1][child_index] = child.isLeaf() ? 1 : 0;
 				child_index++;
@@ -253,7 +235,23 @@ public class GenerateHuffmanTreeTensor {
 	}
 	
 	public int[][][] GetHuffTreeTensor() {
-		return huff_tree_tensor;
+		return huff_non_leaf_tensor.huff_tree_tensor;
+	}
+	
+	public int[] GetHuffTreeValidChildrenNumTensor() {
+		return huff_non_leaf_tensor.huff_tree_valid_children_num;
+	}
+	
+}
+
+class HuffNonLeaf {
+	
+	int[][][] huff_tree_tensor = null;
+	int[] huff_tree_valid_children_num = null;
+	
+	public HuffNonLeaf(int[][][] huff_tree_tensor, int[] huff_tree_valid_children_num) {
+		this.huff_tree_tensor = huff_tree_tensor;
+		this.huff_tree_valid_children_num = huff_tree_valid_children_num;
 	}
 	
 }
