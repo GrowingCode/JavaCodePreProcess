@@ -68,7 +68,7 @@ public class Application implements IApplication {
 		IDCounter ic = new IDCounter();
 		{
 			CountOneProjectHandle handle = new CountOneProjectHandle();
-			HandleEachProjectFramework(max_handle_projs, root_dir, handle, ic, cnc, MinSupport, MaxCapacity, null, null);
+			HandleEachProjectFramework(max_handle_projs, root_dir, handle, ic, cnc, MinSupport, MaxCapacity, null, role_assigner);
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 //			Iterator<String> pitr = proj_paths.iterator();
 //			int all_size = 0;

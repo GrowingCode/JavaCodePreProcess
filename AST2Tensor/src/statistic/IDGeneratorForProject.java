@@ -2,6 +2,7 @@ package statistic;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
@@ -42,6 +43,7 @@ public class IDGeneratorForProject {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				length += cu.getLength();
 				// CreateJDTParserWithJavaProject(java_project).
+				Assert.isTrue(icu != null);
 				int role = role_assigner.AssignRole(icu.getElementName());
 				if (role <= RoleAssigner.train_seen_k) {
 					IDGenerator tg = new IDGenerator(icu, cu, ic, cnc);
