@@ -11,22 +11,16 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
-import statistic.ast.ChildrenNumCounter;
-import statistic.id.IDCounter;
 import translation.roles.RoleAssigner;
 
 public class IDGeneratorForProject {
 	
 	IJavaProject java_project = null;
-	RoleAssigner role_assigner = null;
-	IDCounter ic = null;
-	ChildrenNumCounter cnc = null;
+	IDTools tool = null;
 	
-	public IDGeneratorForProject(IJavaProject java_project, RoleAssigner role_assigner, IDCounter ic, ChildrenNumCounter cnc) {
+	public IDGeneratorForProject(IJavaProject java_project, IDTools tool) {
 		this.java_project = java_project;
-		this.role_assigner = role_assigner;
-		this.ic = ic;
-		this.cnc = cnc;
+		this.tool = tool;
 	}
 	
 	public int GenerateForOneProject() {
@@ -42,15 +36,15 @@ public class IDGeneratorForProject {
 			for (ICompilationUnit icu : units) {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				length += cu.getLength();
+				int deliberate = 0;
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
-				int role = role_assigner.AssignRole(icu.getElementName());
+				int role = tool.role_assigner.AssignRole(icu.getElementName());
+				System.out.println("icu.getElementName():" + icu.getElementName());
 				if (role <= RoleAssigner.train_seen_k) {
-					IDGenerator tg = new IDGenerator(icu, cu, ic, cnc);
+					IDGenerator tg = new IDGenerator(icu, cu, tool);
 					cu.accept(tg);
 				}
-				IDGenerator tg = new IDGenerator(icu, cu, ic, cnc);
-				cu.accept(tg);
 			}
 		}
 		return length;

@@ -15,10 +15,12 @@ import eclipse.project.AnalysisEnvironment;
 import eclipse.project.ProjectLoader;
 import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
+import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
-import statistic.id.IDCounter;
+import statistic.id.TokenRecorder;
 import statistic.id.IDManager;
 import translation.TensorGeneratorForProject;
+import translation.TensorTools;
 import translation.roles.RoleAssigner;
 import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
@@ -65,10 +67,11 @@ public class Application implements IApplication {
 		}
 		RoleAssigner role_assigner = new RoleAssigner();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
-		IDCounter ic = new IDCounter();
+		TokenRecorder ic = new TokenRecorder();
 		{
+			IDTools id_tool = new IDTools(role_assigner, ic, cnc);
 			CountOneProjectHandle handle = new CountOneProjectHandle();
-			HandleEachProjectFramework(max_handle_projs, root_dir, handle, ic, cnc, MinSupport, MaxCapacity, null, role_assigner);
+			HandleEachProjectFramework(max_handle_projs, root_dir, handle, MinSupport, MaxCapacity, id_tool, null);
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 //			Iterator<String> pitr = proj_paths.iterator();
 //			int all_size = 0;
@@ -91,9 +94,10 @@ public class Application implements IApplication {
 			ic.FullFillIDManager(im);
 		}
 		{
+			TensorTools tensor_tool = new TensorTools(role_assigner, im);
 			if (root_dir.isDirectory()) {
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
-				HandleEachProjectFramework(max_handle_projs, root_dir, handle, null, null, -1, -1, im, role_assigner);
+				HandleEachProjectFramework(max_handle_projs, root_dir, handle, -1, -1, null, tensor_tool);
 //				File[] files = root_dir.listFiles();
 //				int count_projs = 0;
 //				for (File f : files) {
@@ -122,12 +126,17 @@ public class Application implements IApplication {
 				DebugLogger.Error("The root path given in parameter should be a directory which contains zip files or with-project directories");
 			}
 		}
+		{
+			im.SaveToDirectory(MetaOfApp.DataDirectory);
+		}
+		System.out.println(im.WordVocabularyInfo());
 		SystemUtil.Flush();
 		SystemUtil.Delay(1000);
 		return IApplication.EXIT_OK;
 	}
 	
-	private static void HandleEachProjectFramework(int max_handle_projs, File root_dir, HandleOneProject run, IDCounter ic, ChildrenNumCounter cnc, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
+	// , RoleAssigner role_assigner
+	private static void HandleEachProjectFramework(int max_handle_projs, File root_dir, HandleOneProject run, int min_support, int max_capacity, IDTools id_tool, TensorTools tensor_tool) {
 		System.err.println(root_dir.getAbsolutePath());
 		File[] files = root_dir.listFiles();
 		int count_projs = 0;
@@ -138,7 +147,7 @@ public class Application implements IApplication {
 			}
 			if (f.isDirectory()) {
 				count_projs++;
-				all_size = run.Handle(f.getAbsolutePath(), ic, cnc, all_size, min_support, max_capacity, im, role_assigner);
+				all_size = run.Handle(f.getAbsolutePath(), all_size, min_support, max_capacity, id_tool, tensor_tool);
 			} else {
 				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
 				if (unzip_out_dir.exists()) {
@@ -151,7 +160,7 @@ public class Application implements IApplication {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					all_size = run.Handle(unzip_out_dir.getAbsolutePath(), ic, cnc, all_size, min_support, max_capacity, im, role_assigner);
+					all_size = run.Handle(unzip_out_dir.getAbsolutePath(), all_size, min_support, max_capacity, id_tool, tensor_tool);
 				}
 //				if (unzip_out_dir.exists()) {
 //					FileUtil.DeleteFile(unzip_out_dir);
@@ -160,11 +169,11 @@ public class Application implements IApplication {
 		}
 	}
 	
-	static int CountOneProject(IJavaProject java_project, RoleAssigner role_assigner, IDCounter ic, ChildrenNumCounter cnc) {
+	static int CountOneProject(IJavaProject java_project, IDTools id_tool) {
 		int project_size = 0;
 		try {
 			SystemUtil.Delay(1000);
-			IDGeneratorForProject irgfop = new IDGeneratorForProject(java_project, role_assigner, ic, cnc);
+			IDGeneratorForProject irgfop = new IDGeneratorForProject(java_project, id_tool);
 			project_size = irgfop.GenerateForOneProject();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -176,10 +185,10 @@ public class Application implements IApplication {
 	// int total_num_tensors, 
 	// String proj_path, 
 	// , TensorGeneratorForProject irgfop, String kind
-	static void TranslateOneProject(IJavaProject java_project, RoleAssigner role_assigner, IDManager im) {
+	static void TranslateOneProject(IJavaProject java_project, TensorTools tensor_tool) {
 		try {
 			SystemUtil.Delay(1000);
-			TensorGeneratorForProject tgfp = new TensorGeneratorForProject(java_project, role_assigner, im);
+			TensorGeneratorForProject tgfp = new TensorGeneratorForProject(java_project, tensor_tool);
 			List<TensorForProject> project_tensors = tgfp.GenerateForOneProject();
 			// one_project_tensor.GetNumOfTensors();
 			for (TensorForProject one_project_tensor : project_tensors) {
@@ -205,18 +214,18 @@ public class Application implements IApplication {
 }
 
 interface HandleOneProject {
-	public int Handle(String proj_path, IDCounter ic, ChildrenNumCounter cnc, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner);
+	public int Handle(String proj_path, int all_size, int min_support, int max_capacity, IDTools id_tool, TensorTools tensor_tool);
 }
 
 class TranslateOneProjectHandle implements HandleOneProject {
 
 	@Override
-	public int Handle(String proj_path, IDCounter ic, ChildrenNumCounter cnc, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
+	public int Handle(String proj_path, int all_size, int min_support, int max_capacity, IDTools id_tool, TensorTools tensor_tool) {
 		IJavaProject java_project = null;
 		try {
 			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 //			TensorGeneratorForProject ttgfop = new TreeTensorGeneratorForProject(role_assigner, java_project, im);
-			Application.TranslateOneProject(java_project, role_assigner, im);// proj_path, , ttgfop
+			Application.TranslateOneProject(java_project, tensor_tool);// proj_path, , ttgfop
 //			TensorGeneratorForProject stgfop = new SequenceTensorGeneratorForProject(role_assigner, java_project, im);
 //			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
 		} catch (Exception e) {
@@ -236,11 +245,11 @@ class TranslateOneProjectHandle implements HandleOneProject {
 class CountOneProjectHandle implements HandleOneProject {
 
 	@Override
-	public int  Handle(String proj_path, IDCounter ic, ChildrenNumCounter cnc, int all_size, int min_support, int max_capacity, IDManager im, RoleAssigner role_assigner) {
+	public int  Handle(String proj_path, int all_size, int min_support, int max_capacity, IDTools id_tool, TensorTools tensor_tool) {
 		IJavaProject java_project = null;
 		try {
 			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			all_size += Application.CountOneProject(java_project, role_assigner, ic, cnc);
+			all_size += Application.CountOneProject(java_project, id_tool);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -251,7 +260,7 @@ class CountOneProjectHandle implements HandleOneProject {
 			}
 		}
 		if (all_size >= Application.RefinePeriod) {
-			ic.RefineAllStatistics(min_support, max_capacity);
+			id_tool.ic.RefineAllStatistics(min_support, max_capacity);
 			all_size %= Application.RefinePeriod;
 		}
 		return all_size;

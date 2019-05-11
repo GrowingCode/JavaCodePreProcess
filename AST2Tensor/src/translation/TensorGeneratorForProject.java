@@ -14,9 +14,7 @@ import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
 import main.MetaOfApp;
-import statistic.id.IDManager;
 import translation.ast.ASTTensorGenerator;
-import translation.roles.RoleAssigner;
 import translation.sequence.SequenceTensorGenerator;
 import translation.tensor.Tensor;
 import translation.tensor.TensorForProject;
@@ -24,13 +22,11 @@ import translation.tensor.TensorForProject;
 public class TensorGeneratorForProject {
 	
 	IJavaProject java_project = null;
-	RoleAssigner role_assigner = null;
-	IDManager im = null;
+	TensorTools tensor_tool = null;
 	
-	public TensorGeneratorForProject(IJavaProject java_project, RoleAssigner role_assigner, IDManager im) {
+	public TensorGeneratorForProject(IJavaProject java_project, TensorTools tensor_tool) {
 		this.java_project = java_project;
-		this.role_assigner = role_assigner;
-		this.im = im;
+		this.tensor_tool = tensor_tool;
 	}
 
 	public List<TensorForProject> GenerateForOneProject() {
@@ -83,8 +79,8 @@ public class TensorGeneratorForProject {
 					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
 				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
-				ASTTensorGenerator tg_depth_guided_tree = new ASTTensorGenerator(role_assigner, im, icu, cu);
-				TensorGenerator tg_sequence = new SequenceTensorGenerator(role_assigner, im, icu, cu);
+				ASTTensorGenerator tg_depth_guided_tree = new ASTTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu);
+				TensorGenerator tg_sequence = new SequenceTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu);
 				cu.accept(tg_depth_guided_tree);
 				cu.accept(tg_sequence);
 				List<Tensor> tree_tensors = tg_depth_guided_tree.GetGeneratedTensors();

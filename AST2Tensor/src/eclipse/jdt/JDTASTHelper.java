@@ -31,34 +31,42 @@ public class JDTASTHelper {
 //		}
 //	}
 	
-	public static String GetRepresentationForASTNode(ASTNode node) {
+	public static String GetTypeRepresentationForASTNode(ASTNode node) {
+		String type = node.getClass().getSimpleName();
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		int children_size = children == null ? 0 : children.size();
-		String pre = node.getClass().getSimpleName();
-		String pre_extra = "";
-		String post = "";
-		if (children_size > 0) {
-			if (node instanceof PostfixExpression) {
-				PostfixExpression pe = (PostfixExpression)node;
-				org.eclipse.jdt.core.dom.PostfixExpression.Operator op = pe.getOperator();
-				pre_extra = op.toString();
-			}
-			if (node instanceof PrefixExpression) {
-				PrefixExpression pe = (PrefixExpression)node;
-				org.eclipse.jdt.core.dom.PrefixExpression.Operator op = pe.getOperator();
-				pre_extra = op.toString();
-			}
-			if (node instanceof InfixExpression) {
-				InfixExpression pe = (InfixExpression)node;
-				org.eclipse.jdt.core.dom.InfixExpression.Operator op = pe.getOperator();
-				pre_extra = op.toString();
-			}
-			post = IDManager.DefaultPart;
-		} else {
-			post = node.toString().trim();
+		String type_extra = "";
+		if (node instanceof PostfixExpression) {
+			PostfixExpression pe = (PostfixExpression)node;
+			org.eclipse.jdt.core.dom.PostfixExpression.Operator op = pe.getOperator();
+			type_extra += op.toString();
 		}
-		String represent = pre + pre_extra + "#" + post;
+		if (node instanceof PrefixExpression) {
+			PrefixExpression pe = (PrefixExpression)node;
+			org.eclipse.jdt.core.dom.PrefixExpression.Operator op = pe.getOperator();
+			type_extra += op.toString();
+		}
+		if (node instanceof InfixExpression) {
+			InfixExpression pe = (InfixExpression)node;
+			org.eclipse.jdt.core.dom.InfixExpression.Operator op = pe.getOperator();
+			type_extra += op.toString();
+		}
+		String represent = type + type_extra + (children_size == 0 ? IDManager.Leaf : IDManager.NonLeaf);
 		return represent;
 	}
+	
+//	public static String GetRepresentationForASTNode(ASTNode node) {
+//		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+//		int children_size = children == null ? 0 : children.size();
+//		String pre = GetTypeRepresentationForASTNode(node);
+//		String post = "";
+//		if (children_size > 0) {
+//			post = IDManager.DefaultPart;
+//		} else {
+//			post = node.toString().trim();
+//		}
+//		String represent = pre + "#" + post;
+//		return represent;
+//	}
 
 }
