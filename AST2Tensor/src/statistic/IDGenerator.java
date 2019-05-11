@@ -16,33 +16,47 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
+import translation.roles.RoleAssigner;
 
 public class IDGenerator extends ASTVisitor {
 
 	ICompilationUnit icu = null;
 	CompilationUnit cu = null;
 	IDTools tool = null;
+	
+	int role = -1;
 
 	public IDGenerator(ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
 		this.icu = icu;
 		this.cu = cu;
 		this.tool = tool;
+		this.role = tool.role_assigner.AssignRole(icu.getElementName());
+		System.out.println("icu.getElementName():" + icu.getElementName());
 	}
 
 	@Override
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
+		// handle grammar
+		tool.gr.RecordGrammar(node);
+		// handle token
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		int children_size = children == null ? 0 : children.size();
-//		if (children_size > 0) {
-//			ic.EncounterANode(node.getClass().getSimpleName() + "#" + IDManager.DefaultPart, false);
-//		} else {
-//			ic.EncounterANode(node.getClass().getSimpleName() + "#" + node.toString().trim(), true);
-//		}
-		tool.ic.EncounterANode(JDTASTHelper.GetRepresentationForASTNode(node), children_size == 0);
-		/**
-		 * handle api and all its relevant apis
-		 */
+		String type_content = JDTASTHelper.GetTypeRepresentationForASTNode(node);
+		if (role <= RoleAssigner.train_seen_k) {
+			tool.tr.TokenHitInTrainSet(type_content);
+		} else {
+			tool.tr.TokenNotHitInTrainSet(type_content);
+		}
+		if (children_size == 0) {
+			String token_str = node.toString();
+			if (role <= RoleAssigner.train_seen_k) {
+				tool.tr.TokenHitInTrainSet(token_str);
+			} else {
+				tool.tr.TokenNotHitInTrainSet(token_str);
+			}
+		}
+		// handle api
 		if (node instanceof SimpleName) {
 			SimpleName sn = (SimpleName) node;
 			IBinding ib = sn.resolveBinding();
@@ -61,7 +75,12 @@ public class IDGenerator extends ASTVisitor {
 						}
 					}
 					String joined = String.join("#", mdnames);
-					System.out.println("mds:" + joined);
+					if (role <= RoleAssigner.train_seen_k) {
+						tool.ar.APIHitInTrainSet(joined);
+					} else {
+						tool.ar.APINotHitInTrainSet(joined);
+					}
+//					System.out.println("mds:" + joined);
 //					System.out.println("==== end print md ====");
 				}
 			}

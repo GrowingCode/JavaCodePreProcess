@@ -3,9 +3,11 @@ package translation.sequence;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
@@ -74,12 +76,16 @@ public class SequenceTensorGenerator extends TensorGenerator {
 		nodeCount++;
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		boolean is_leaf = children.size() == 0;
-		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, is_leaf, im);
-
-		// two parameters for leaf similarity test
-		int isExisted = 0;
-		int lastIndex = -1;
+		{
+			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
+			curr_tensor.AppendOneToken(im, type_content_id, 0, -1, 1);
+		}
 		if (is_leaf) {
+			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
+			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
+			// two parameters for leaf similarity test
+			int isExisted = 0;
+			int lastIndex = -1;
 			String name = node.toString();
 			// the last node
 			if (leafNodeLastIndexMap.containsKey(name)) {
@@ -87,9 +93,8 @@ public class SequenceTensorGenerator extends TensorGenerator {
 				isExisted = 1;
 			}
 			leafNodeLastIndexMap.put(name, nodeCount);
+			curr_tensor.AppendOneToken(im, type_content_id, isExisted, lastIndex, 1);
 		}
-
-		curr_tensor.AppendOneToken(im, type_content_id, isExisted, lastIndex, 1);// decode_type_generator.GenerateDecodeType(node)
 	}
 	
 }

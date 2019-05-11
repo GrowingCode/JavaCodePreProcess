@@ -14,7 +14,6 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
@@ -144,10 +143,16 @@ public class ASTTensorGenerator extends TensorGenerator {
 		}
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		boolean is_leaf = children.size() == 0;
-		TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeContentID(node, is_leaf, im);
-		int token_index = -1;
-		int is_var = -1;
-		if (node instanceof SimpleName) {
+		{
+			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
+			StatementInfo stmt = in_handling_tensor.peek();
+			stmt.StoreOneNode(im, type_content_id, -1, -1);
+		}
+		if (is_leaf) {
+			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
+			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
+			int token_index = -1;
+			int is_var = -1;
 			SimpleName sn = (SimpleName) node;
 			IBinding ib = sn.resolveBinding();
 			if (ib != null) {
@@ -163,22 +168,22 @@ public class ASTTensorGenerator extends TensorGenerator {
 					token_index = index_record;
 					is_var = 1;
 				}
-				if (ib instanceof ITypeBinding) {
-					ITypeBinding itb = (ITypeBinding) ib;
-					String itb_key = "type!" + itb.getKey() + "#" + sn;
-					Integer index_record = token_index_record.get(itb_key);
-					if (index_record == null) {
-						token_local_index++;
-						index_record = token_local_index;
-						token_index_record.put(itb_key, index_record);
-					}
-					token_index = index_record;
-					is_var = 0;
-				}
+//				if (ib instanceof ITypeBinding) {
+//					ITypeBinding itb = (ITypeBinding) ib;
+//					String itb_key = "type!" + itb.getKey() + "#" + sn;
+//					Integer index_record = token_index_record.get(itb_key);
+//					if (index_record == null) {
+//						token_local_index++;
+//						index_record = token_local_index;
+//						token_index_record.put(itb_key, index_record);
+//					}
+//					token_index = index_record;
+//					is_var = 0;
+//				}
 			}
+			StatementInfo stmt = in_handling_tensor.peek();
+			stmt.StoreOneNode(im, type_content_id, token_index, is_var);
 		}
-		StatementInfo stmt = in_handling_tensor.peek();
-		stmt.StoreOneNode(im, type_content_id, token_index, is_var);
 	}
 
 }

@@ -11,7 +11,6 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
-import translation.roles.RoleAssigner;
 
 public class IDGeneratorForProject {
 	
@@ -36,15 +35,10 @@ public class IDGeneratorForProject {
 			for (ICompilationUnit icu : units) {
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 				length += cu.getLength();
-				int deliberate = 0;
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
-				int role = tool.role_assigner.AssignRole(icu.getElementName());
-				System.out.println("icu.getElementName():" + icu.getElementName());
-				if (role <= RoleAssigner.train_seen_k) {
-					IDGenerator tg = new IDGenerator(icu, cu, tool);
-					cu.accept(tg);
-				}
+				IDGenerator tg = new IDGenerator(icu, cu, tool);
+				cu.accept(tg);
 			}
 		}
 		return length;
