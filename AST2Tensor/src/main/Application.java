@@ -88,10 +88,6 @@ public class Application implements IApplication {
 //				}
 //			}
 		}
-		{
-			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
-			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
-		}
 		IDManager im = new IDManager(id_tool);
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);
@@ -131,6 +127,8 @@ public class Application implements IApplication {
 			}
 		}
 		{
+			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
+			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
 			gr.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
 		}
