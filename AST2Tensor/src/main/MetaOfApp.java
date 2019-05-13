@@ -23,7 +23,7 @@ public class MetaOfApp {
 //	public final static int BeAContextMaximumThresholdNodeNum = (int) Math.floor((MaximumHandlingNodeNumInOneTree*1.0)*(BeAContextMaximumThresholdRate));
 //	public final static int BeForcedAdoptedThresholdNodeNum = 25;
 	
-	public final static int MaximumStringLength = 100;
+	public final static int MaximumStringLength = 40;
 	
 //	public final static boolean ReplaceLeastWithUnk = false;
 	
