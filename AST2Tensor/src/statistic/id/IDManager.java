@@ -14,7 +14,9 @@ import org.eclipse.core.runtime.Assert;
 
 import com.google.gson.Gson;
 
+import main.MetaOfApp;
 import statistic.IDTools;
+import util.ContentUtil;
 import util.FileUtil;
 import util.MapUtil;
 
@@ -422,6 +424,102 @@ public class IDManager {
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_char_sequence_summary.txt"), char_seq_meta);
 //	}
 	
+	private void GenerateAndSaveCharSequenceInCascadeForm(String dir) {
+		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+		
+		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
+		
+		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
+		Set<Character> c_set = new TreeSet<Character>();
+		Collection<String> ao = ati_out.values();
+		Iterator<String> aitr = ao.iterator();
+		while (aitr.hasNext()) {
+			String tc = aitr.next();
+			int tc_len = tc.length();
+			for (int i=0;i<tc_len;i++) {
+				char c = tc.charAt(i);
+				c_set.add(c);
+			}
+		}
+		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
+		Iterator<Character> c_itr = c_set.iterator();
+		while (c_itr.hasNext()) {
+			Character c = c_itr.next();
+			char_idx.put(c, char_idx.size());
+		}
+		char_num = char_idx.size();
+		
+		// handle sub words
+		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
+		for (int i=0;i<ati_out.size();i++) {
+			String token = ati_out.get(i);
+			Assert.isTrue(token != null && token.length() > 0);
+			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
+			for (int i1=0;i1<subwords.size();i1++) {
+				String subword = subwords.get(i1);
+				Assert.isTrue(subword != null && subword.length() > 0);
+				if (!subword_index.containsKey(subword)) {
+					subword_index.put(subword, subword_index.size());
+					each_char_sequence_start.add(char_sequences.size());
+					for (int i11=0;i11<subword.length();i11++) {
+						char c = subword.charAt(i11);
+						int idx = char_idx.get(c);
+						char_sequences.add(idx);
+					}
+					each_char_sequence_end.add(char_sequences.size()-1);
+				}
+			}
+//			int tc_len = token.length();
+//			each_char_sequence_start.add(char_sequences.size());
+//			for (int i1=0;i1<tc_len;i1++) {
+//				char c = token.charAt(i1);
+//				int idx = char_idx.get(c);
+//				char_sequences.add(idx);
+//			}
+//			if (i < grammar_token_num) {
+//				each_char_sequence_end.add(-1);
+//			} else {
+//				each_char_sequence_end.add(char_sequences.size()-1);
+//			}
+		}
+		for (int i=0;i<ati_out.size();i++) {
+			String token = ati_out.get(i);
+			Assert.isTrue(token != null && token.length() > 0);
+			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
+			Assert.isTrue(subwords.size() > 0);
+			each_subword_sequence_start.add(subword_sequences.size());
+			for (int i1=0;i1<subwords.size();i1++) {
+				String subword = subwords.get(i1);
+				Integer idx = subword_index.get(subword);
+				subword_sequences.add(idx);
+			}
+			each_subword_sequence_end.add(subword_sequences.size()-1);
+		}
+		Gson gson = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
+				gson.toJson(char_sequences));
+		Gson gson2 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
+				gson2.toJson(each_char_sequence_start));
+		Gson gson3 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
+				gson3.toJson(each_char_sequence_end));
+
+		Gson gson4 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"),
+				gson4.toJson(subword_sequences));
+		Gson gson5 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
+				gson5.toJson(each_subword_sequence_start));
+		Gson gson6 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
+				gson6.toJson(each_subword_sequence_end));
+	}
+	
 	private void GenerateAndSaveCharSequence(String dir) {
 		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
@@ -446,6 +544,7 @@ public class IDManager {
 			char_idx.put(c, char_idx.size());
 		}
 		char_num = char_idx.size();
+		
 		for (int i=0;i<ati_out.size();i++) {
 			String token = ati_out.get(i);
 			Assert.isTrue(token != null && token.length() > 0);
@@ -474,8 +573,14 @@ public class IDManager {
 	}
 	
 	private void GenerateIDSummary(String dir) {
-		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.txt"), char_seq_meta);
+		Gson gson = new Gson();
+		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
+		meta_of_ast2tensor.put("MaximumStringLength", MetaOfApp.MaximumStringLength);
+		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
+		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
+		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
+//		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
 	}
 
 	public void SaveToDirectory(String dir) {
@@ -498,8 +603,13 @@ public class IDManager {
 		GenerateIDJson(dir, token_id_map, "token");
 		GenerateIDJson(dir, api_comb_id_map, "api_comb");
 		// for real tensor usage
-		GenerateAndSaveCharSequence(dir);
 		GenerateIDSummary(dir);
+		
+		if (MetaOfApp.CharInCascadeForm) {
+			GenerateAndSaveCharSequenceInCascadeForm(dir);
+		} else {
+			GenerateAndSaveCharSequence(dir);
+		}
 		
 //		GenerateTypeAndSummaryJson(dir, ast_type_content_id_map, "type");
 //		GenerateAndSaveHuffTree(dir, ast_type_content_id_count_map, "type_content", MetaOfApp.TypeContentHuffTreeStandardChildrenNum);

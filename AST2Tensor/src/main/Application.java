@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -54,6 +55,7 @@ public class Application implements IApplication {
 				FileUtil.DeleteFile(dd);
 			}
 			dd.mkdir();
+			Assert.isTrue(dd.listFiles().length == 0);
 		}
 		// load and execute the project.
 		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
