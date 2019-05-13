@@ -26,9 +26,12 @@ public class ASTTensor extends Tensor {
 	// the second column is the range of nodes of statements
 	// in the rest, the first row is the type_content_id
 	//              the second row is the local_token_id
+	// the third row is inner token index 
+	// the forth row is api_group this token belongs to 
 	ArrayList<Integer> first_row = new ArrayList<Integer>();
 	ArrayList<Integer> second_row = new ArrayList<Integer>();
 	ArrayList<Integer> third_row = new ArrayList<Integer>();
+	ArrayList<Integer> forth_row = new ArrayList<Integer>();
 	
 	public static double min_rate_of_local_token = Double.MAX_VALUE;
 	public static double max_rate_of_local_token = Double.MIN_VALUE;
@@ -135,6 +138,7 @@ public class ASTTensor extends Tensor {
 		ArrayList<Integer> stmt_first_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_second_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_third_row = new ArrayList<Integer>();
+		ArrayList<Integer> stmt_forth_row = new ArrayList<Integer>();
 		
 		// get representative token and its ID
 		Assert.isTrue(last_stmt.is_variable.size() == last_stmt.local_token_id.size() && last_stmt.local_token_id.size() == last_stmt.type_content_id.size());
@@ -190,6 +194,7 @@ public class ASTTensor extends Tensor {
 		ArrayList<Integer> ids_first_row = new ArrayList<Integer>();
 		ArrayList<Integer> ids_second_row = new ArrayList<Integer>();
 		ArrayList<Integer> ids_third_row = new ArrayList<Integer>();
+		ArrayList<Integer> ids_forth_row = new ArrayList<Integer>();
 //		Iterator<Entry<Integer, TokenInCare>> stcs_itr = sorted_tics.iterator();
 		Iterator<Entry<Integer, TokenInCare>> stcs_itr = local_id_represent_list.iterator();
 		while (stcs_itr.hasNext()) {
@@ -200,6 +205,7 @@ public class ASTTensor extends Tensor {
 				ids_first_row.add(e.getValue().local_token_id);
 			}
 			ids_third_row.add(-1);
+			ids_forth_row.add(-1);
 		}
 		
 		Iterator<Entry<Integer, TokenInCare>> stcs_itr2 = local_id_represent_list.iterator();
@@ -216,31 +222,38 @@ public class ASTTensor extends Tensor {
 		ArrayList<Integer> nodes_first_row = new ArrayList<Integer>();
 		ArrayList<Integer> nodes_second_row = new ArrayList<Integer>();
 		ArrayList<Integer> nodes_third_row = new ArrayList<Integer>();
+		ArrayList<Integer> nodes_forth_row = new ArrayList<Integer>();
 		for (int i=0;i<size;i++) {
 			int tp_cnt_id = last_stmt.type_content_id.get(i);
 			nodes_first_row.add(tp_cnt_id);
 			nodes_second_row.add(last_stmt.local_token_id.get(i));
 			Integer inner = GenerateInnerIndexForTypeContent(tp_cnt_id);
 			nodes_third_row.add(inner);
+			nodes_forth_row.add(last_stmt.api_group.get(i));
 		}
 		
 		stmt_first_row.add(first_row.size()+2);
 		stmt_second_row.add(first_row.size()+2+ids_first_row.size()-1);
 		stmt_third_row.add(-1);
+		stmt_forth_row.add(-1);
 		stmt_first_row.add(first_row.size()+2+ids_first_row.size());
 		stmt_second_row.add(first_row.size()+2+ids_first_row.size()+nodes_first_row.size()-1);
 		stmt_third_row.add(-1);
+		stmt_forth_row.add(-1);
 		
 		stmt_first_row.addAll(ids_first_row);
 		stmt_second_row.addAll(ids_second_row);
 		stmt_third_row.addAll(ids_third_row);
+		stmt_forth_row.addAll(ids_forth_row);
 		stmt_first_row.addAll(nodes_first_row);
 		stmt_second_row.addAll(nodes_second_row);
 		stmt_third_row.addAll(nodes_third_row);
+		stmt_forth_row.addAll(nodes_forth_row);
 		
 		first_row.addAll(stmt_first_row);
 		second_row.addAll(stmt_second_row);
 		third_row.addAll(stmt_third_row);
+		forth_row.addAll(stmt_forth_row);
 	}
 
 	public void Validate(int total_node_num) {
