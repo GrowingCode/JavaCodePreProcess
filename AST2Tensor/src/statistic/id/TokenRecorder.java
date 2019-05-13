@@ -36,11 +36,13 @@ public class TokenRecorder {
 //	}
 	
 	public void TokenHitInTrainSet(String type_content) {
+		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		hit_train.add(type_content);
 		not_hit_train.remove(type_content);
 	}
 	
 	public void TokenNotHitInTrainSet(String type_content) {
+		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		if (!hit_train.contains(type_content)) {
 			not_hit_train.add(type_content);
 		}

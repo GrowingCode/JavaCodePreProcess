@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
+import statistic.id.PreProcessContentHelper;
 import translation.roles.RoleAssigner;
 
 public class IDGenerator extends ASTVisitor {
@@ -70,15 +71,23 @@ public class IDGenerator extends ASTVisitor {
 					LinkedList<String> mdnames = new LinkedList<String>();
 					for (IMethodBinding md : mds) {
 //						System.out.println(md);
-						if (!mdnames.contains(md.getName())) {
-							mdnames.add(md.getName());
+						String mdname = md.getName();
+						mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
+						if (!mdnames.contains(mdname)) {
+							mdnames.add(mdname);
 						}
 					}
 					String joined = String.join("#", mdnames);
+					tool.ar.RecordAPIComb(joined);
 					if (role <= RoleAssigner.train_seen_k) {
-						tool.ar.APIHitInTrainSet(joined);
+						for (String md : mdnames) {
+							tool.tr.TokenHitInTrainSet(md);
+						}
 					} else {
-						tool.ar.APINotHitInTrainSet(joined);
+						for (String md : mdnames) {
+							tool.tr.TokenHitInTrainSet(md);
+						}
+//						tool.ar.APINotHitInTrainSet(joined);
 					}
 //					System.out.println("mds:" + joined);
 //					System.out.println("==== end print md ====");

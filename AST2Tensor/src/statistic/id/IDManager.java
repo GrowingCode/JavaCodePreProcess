@@ -65,7 +65,7 @@ public class IDManager {
 //	private Set<String> not_hit_words = new TreeSet<String>();
 	
 	private TreeMap<String, Integer> api_comb_id_map = new TreeMap<String, Integer>();
-	private int api_comb_hit_num = -1;
+//	private int api_comb_hit_num = -1;
 	
 	private int char_num = -1;
 	
@@ -109,12 +109,12 @@ public class IDManager {
 		Regist(token_id_map, id_tool.tr.not_hit_train);
 		
 		// api comb regist
-		Regist(api_comb_id_map, id_tool.ar.hit_train);
+		Regist(api_comb_id_map, id_tool.ar.api_combs);
 		
-		api_comb_hit_num = api_comb_id_map.size();
-		Assert.isTrue(api_comb_hit_num > 0);
+//		api_comb_hit_num = api_comb_id_map.size();
+//		Assert.isTrue(api_comb_hit_num > 0);
 		
-		Regist(api_comb_id_map, id_tool.ar.not_hit_train);
+//		Regist(api_comb_id_map, id_tool.ar.not_hit_train);
 		
 //		RegistTypeContentID(LeafTypeDefault, true, 0);
 //		RegistTypeContentID(RootDefault, false, 0);
@@ -605,6 +605,8 @@ public class IDManager {
 		// for real tensor usage
 		GenerateIDSummary(dir);
 		
+		GenerateAPIJson(dir);
+		
 		if (MetaOfApp.CharInCascadeForm) {
 			GenerateAndSaveCharSequenceInCascadeForm(dir);
 		} else {
@@ -662,8 +664,44 @@ public class IDManager {
 //				type_content_huff_tree_list_json.toString());
 	}
 	
+	private void GenerateAPIJson(String dir) {
+		int all_size = api_comb_id_map.size();
+		String[] strs = new String[all_size];
+		Set<String> api_keys = api_comb_id_map.keySet();
+		Iterator<String> api_k_itr = api_keys.iterator();
+		while (api_k_itr.hasNext()) {
+			String api_k = api_k_itr.next();
+			Integer idx = api_comb_id_map.get(api_k);
+			strs[idx] = api_k;
+		}
+		
+		ArrayList<Integer> api_comb_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_api_comb_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_api_comb_end = new ArrayList<Integer>();
+		
+		for (int i=0;i<all_size;i++) {
+			String str = strs[i];
+			String[] to_compare_apis = str.split("#");
+			each_api_comb_start.add(api_comb_sequences.size());
+			for (String tc_api : to_compare_apis) {
+				api_comb_sequences.add(GetTypeContentID(tc_api));
+			}
+			each_api_comb_end.add(api_comb_sequences.size()-1);
+		}
+		
+		Gson gson = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_api_comb_sequences.json"),
+				gson.toJson(api_comb_sequences));
+		Gson gson2 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_start.json"),
+				gson2.toJson(each_api_comb_start));
+		Gson gson3 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_end.json"),
+				gson3.toJson(each_api_comb_end));
+	}
+
 	public String WordVocabularyInfo() {
-		return "Summary -- Vocabulary_Word_Size:" + token_hit_num + "#OutOfVocabulary_Word_Size:" + (token_id_map.size() - token_hit_num) + "#Vocabulary_API_Comb_Size:" + api_comb_hit_num + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
+		return "Summary -- Vocabulary_Word_Size:" + token_hit_num + "#OutOfVocabulary_Word_Size:" + (token_id_map.size() - token_hit_num) + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size();// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
 	}
 
 }
