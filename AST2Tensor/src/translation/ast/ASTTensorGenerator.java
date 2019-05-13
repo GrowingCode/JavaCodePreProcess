@@ -14,12 +14,16 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
+import statistic.id.PreProcessContentHelper;
 import translation.TensorGenerator;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
@@ -146,7 +150,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 		{
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, -1, -1);
+			stmt.StoreOneNode(im, type_content_id, -1, -1, -1);
 		}
 		if (is_leaf) {
 			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
@@ -155,6 +159,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 			int is_var = -1;
 			SimpleName sn = (SimpleName) node;
 			IBinding ib = sn.resolveBinding();
+			int api_comb_id = -1;
 			if (ib != null) {
 				if (ib instanceof IVariableBinding) {
 					IVariableBinding ivb = (IVariableBinding) ib;
@@ -180,9 +185,26 @@ public class ASTTensorGenerator extends TensorGenerator {
 //					token_index = index_record;
 //					is_var = 0;
 //				}
+				if (ib instanceof IMethodBinding) {
+					if (!(sn.getParent() instanceof MethodDeclaration)) {
+						IMethodBinding imb = (IMethodBinding) ib;
+						ITypeBinding dc = imb.getDeclaringClass();
+						IMethodBinding[] mds = dc.getDeclaredMethods();
+						LinkedList<String> mdnames = new LinkedList<String>();
+						for (IMethodBinding md : mds) {
+							String mdname = md.getName();
+							mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
+							if (!mdnames.contains(mdname)) {
+								mdnames.add(mdname);
+							}
+						}
+						String joined = String.join("#", mdnames);
+						api_comb_id = im.GetAPICombID(joined);
+					}
+				}
 			}
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, token_index, is_var);
+			stmt.StoreOneNode(im, type_content_id, token_index, is_var, api_comb_id);
 		}
 	}
 
