@@ -131,6 +131,7 @@ public class Application implements IApplication {
 			}
 		}
 		{
+			gr.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
 		}
 		System.out.println(im.WordVocabularyInfo());
