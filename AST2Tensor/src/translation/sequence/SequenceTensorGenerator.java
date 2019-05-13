@@ -1,16 +1,22 @@
 package translation.sequence;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
+import statistic.id.PreProcessContentHelper;
 import translation.TensorGenerator;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
@@ -78,7 +84,7 @@ public class SequenceTensorGenerator extends TensorGenerator {
 		boolean is_leaf = children.size() == 0;
 		{
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
-			curr_tensor.AppendOneToken(im, type_content_id, 0, -1, 1);
+			curr_tensor.AppendOneToken(im, type_content_id, -1, 0, -1, 1);
 		}
 		if (is_leaf) {
 			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
@@ -93,7 +99,27 @@ public class SequenceTensorGenerator extends TensorGenerator {
 				isExisted = 1;
 			}
 			leafNodeLastIndexMap.put(name, nodeCount);
-			curr_tensor.AppendOneToken(im, type_content_id, isExisted, lastIndex, 1);
+			int api_comb_id = -1;
+			SimpleName sn = (SimpleName) node;
+			IBinding ib = sn.resolveBinding();
+			if (ib != null && ib instanceof IMethodBinding) {
+				if (!(sn.getParent() instanceof MethodDeclaration)) {
+					IMethodBinding imb = (IMethodBinding) ib;
+					ITypeBinding dc = imb.getDeclaringClass();
+					IMethodBinding[] mds = dc.getDeclaredMethods();
+					LinkedList<String> mdnames = new LinkedList<String>();
+					for (IMethodBinding md : mds) {
+						String mdname = md.getName();
+						mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
+						if (!mdnames.contains(mdname)) {
+							mdnames.add(mdname);
+						}
+					}
+					String joined = String.join("#", mdnames);
+					api_comb_id = im.GetAPICombID(joined);
+				}
+			}
+			curr_tensor.AppendOneToken(im, type_content_id, api_comb_id, isExisted, lastIndex, 1);
 		}
 	}
 	

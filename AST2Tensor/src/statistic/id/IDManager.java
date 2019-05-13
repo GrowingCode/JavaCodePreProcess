@@ -244,7 +244,6 @@ public class IDManager {
 //	}
 	
 	public int GetTypeContentID(String type_content) {
-		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		Integer id = token_id_map.get(type_content);
 		Assert.isTrue(id != null);
 //		if (id != null) {
@@ -260,6 +259,12 @@ public class IDManager {
 //		}
 //		System.out.println("Using LeafTypeDefault:" + type_content);
 //		return RegistNotHitTypeContentID(type_content);
+	}
+	// type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
+	public int GetAPICombID(String api_comb) {
+		Integer id = api_comb_id_map.get(api_comb);
+		Assert.isTrue(id != null);
+		return id;
 	}
 	
 //	private int RegistNotHitTypeContentID(String type_content) {
