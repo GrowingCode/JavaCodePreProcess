@@ -1,6 +1,10 @@
 package translation.tensor;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
@@ -25,6 +29,11 @@ public class StatementInfo {
 	
 	ArrayList<String> type_content_str = new ArrayList<String>();
 	
+	Set<Integer> var_or_type_ids_in_this_stmt = new TreeSet<Integer>();
+	// legal means agree to the variable-define-use graph
+	List<Integer> following_stmts_same_legal_as_this = new LinkedList<Integer>();
+//	ArrayList<Boolean> depend_record = new ArrayList<Boolean>();
+	
 	public void StoreOneNode(IDManager im, TypeContentID t_c, int token_local_id, int is_var, int api_comb_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
@@ -32,6 +41,9 @@ public class StatementInfo {
 		is_variable.add(is_var);
 		if (token_local_id == -1) {
 			Assert.isTrue(token_local_id == is_var);
+		} else {
+			Assert.isTrue(is_var >= 0);
+			var_or_type_ids_in_this_stmt.add(token_local_id);
 		}
 		api_group.add(api_comb_id);
 		

@@ -3,21 +3,34 @@ package translation.tensor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
+
+import util.BooleanArrayUtil;
+import util.SetUtil;
 
 public class ASTTensor extends Tensor {
 
 	public ASTTensor(String origin_file, int role) {
 		super(origin_file, role);
 	}
+	
+	ArrayList<StatementInfo> si_list = new ArrayList<StatementInfo>();
+
+	Map<StatementInfo, ArrayList<Boolean>> depend_record = new HashMap<StatementInfo, ArrayList<Boolean>>();
+	
+	// local_token_id means the id for variable (memory address)
+	// inner id is the id for current training example (due to for every token, running char sequence is impossible)
 	
 	// for tensor
 	// base data
@@ -133,8 +146,49 @@ public class ASTTensor extends Tensor {
 	public int getSize() {
 		return first_row.size();
 	}
-
+	
 	public void Devour(StatementInfo last_stmt) {
+		ArrayList<Boolean> record = depend_record.get(last_stmt);
+		Assert.isTrue(record == null);
+		record = new ArrayList<Boolean>();
+		int dr_size = depend_record.size();
+		Assert.isTrue(dr_size == si_list.size());
+		for (int i=0;i<dr_size;i++) {
+			record.add(false);
+		}
+		depend_record.put(last_stmt, record);
+		// record conflict (encountered)
+		Set<Integer> current_not_encountered_variables = new TreeSet<Integer>(last_stmt.var_or_type_ids_in_this_stmt);
+		for (int i=dr_size-1;i>=0;i--) {
+			if (record.get(i) == false) {
+				// not depend
+				StatementInfo i_si = si_list.get(i);
+				Set<Integer> i_si_vars = i_si.var_or_type_ids_in_this_stmt;
+				Set<Integer> encountered_vars = SetUtil.TheElementsInSetOneExistInSetTwo(current_not_encountered_variables, i_si_vars);
+				if (encountered_vars.size() > 0) {
+					current_not_encountered_variables.removeAll(encountered_vars);
+					record.set(i, true);
+					ArrayList<Boolean> i_si_record = depend_record.get(i_si);
+					Assert.isTrue(i_si_record.size() == i);
+					BooleanArrayUtil.BooleanArrayElementOr(record, i_si_record);
+					if (current_not_encountered_variables.size() == 0) {
+						break;
+					}
+				}
+			}
+		}
+		// store non-conflict as following_legal
+		for (int i=dr_size-1;i>=0;i--) {
+			if (record.get(i) == false) {
+				// not depend
+				StatementInfo i_si = si_list.get(i);
+				i_si.following_stmts_same_legal_as_this.add(dr_size);
+			}
+		}
+		si_list.add(last_stmt);
+	}
+
+	private void DevourOneStatement(StatementInfo last_stmt) {
 		ArrayList<Integer> stmt_first_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_second_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_third_row = new ArrayList<Integer>();
@@ -256,6 +310,12 @@ public class ASTTensor extends Tensor {
 		forth_row.addAll(stmt_forth_row);
 	}
 
+	public void HandleAllDevoured() {
+		for (StatementInfo si : si_list) {
+			DevourOneStatement(si);
+		}
+	}
+	
 	public void Validate(int total_node_num) {
 		int node_num = 0;
 		int i=0;
