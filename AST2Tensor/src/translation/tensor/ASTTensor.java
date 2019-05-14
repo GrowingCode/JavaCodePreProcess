@@ -193,7 +193,6 @@ public class ASTTensor extends Tensor {
 		ArrayList<Integer> stmt_second_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_third_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_forth_row = new ArrayList<Integer>();
-		
 		// get representative token and its ID
 		Assert.isTrue(last_stmt.is_variable.size() == last_stmt.local_token_id.size() && last_stmt.local_token_id.size() == last_stmt.type_content_id.size());
 		int size = last_stmt.local_token_id.size();
