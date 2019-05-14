@@ -10,13 +10,14 @@ import translation.helper.TypeContentID;
 
 public class StatementInfo {
 	
+	String stmt = null;
+	int max_token_id_before_visiting_this_statement = -1;
+	
 	public StatementInfo(int max_token_id_before_visiting_this_statement, String stmt) {
 		this.max_token_id_before_visiting_this_statement = max_token_id_before_visiting_this_statement;
 		this.stmt = stmt;
 	}
 	
-	String stmt = null;
-	int max_token_id_before_visiting_this_statement = -1;
 	ArrayList<Integer> type_content_id = new ArrayList<Integer>();
 	ArrayList<Integer> local_token_id = new ArrayList<Integer>();
 	ArrayList<Integer> is_variable = new ArrayList<Integer>();
