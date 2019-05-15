@@ -327,27 +327,32 @@ public class ASTTensor extends Tensor {
 //		forth_row.addAll(stmt_forth_row);
 //	}
 	
-	private void HandleOneDevouredStatement(StatementInfo last_stmt) {
-		stmt_token_info_start.add(stmt_token_info.size());
-		stmt_token_info.addAll(last_stmt.type_content_id);
-		stmt_token_variable_info.addAll(last_stmt.local_token_id);
-		stmt_token_api_info.addAll(last_stmt.api_group);
-		stmt_token_info_end.add(stmt_token_info.size()-1);
-		
-		stmt_variable_info_start.add(stmt_variable_info.size());
-		stmt_variable_info.addAll(last_stmt.var_or_type_ids_in_this_stmt);
-		stmt_variable_info_end.add(stmt_variable_info.size()-1);
-
-		stmt_following_legal_info_start.add(stmt_following_legal_info.size());
-		int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
-		System.out.println("stmt:" + last_stmt.stmt + "#last_stmt_legal_follows:" + last_stmt_legal_follows);
-		stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0, Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
-		stmt_following_legal_info_end.add(stmt_following_legal_info.size()-1);
-	}
-
 	public void HandleAllDevoured() {
-		for (StatementInfo si : si_list) {
-			HandleOneDevouredStatement(si);
+		int i_len = si_list.size();
+		for (int i=0;i<i_len;i++) {
+			StatementInfo last_stmt = si_list.get(i);
+			stmt_token_info_start.add(stmt_token_info.size());
+			stmt_token_info.addAll(last_stmt.type_content_id);
+			stmt_token_variable_info.addAll(last_stmt.local_token_id);
+			stmt_token_api_info.addAll(last_stmt.api_group);
+			stmt_token_info_end.add(stmt_token_info.size()-1);
+			
+			stmt_variable_info_start.add(stmt_variable_info.size());
+			stmt_variable_info.addAll(last_stmt.var_or_type_ids_in_this_stmt);
+			stmt_variable_info_end.add(stmt_variable_info.size()-1);
+
+			stmt_following_legal_info_start.add(stmt_following_legal_info.size());
+			int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
+			{
+				System.out.println("stmt:" + last_stmt.stmt + "#last_stmt_legal_follows:" + last_stmt_legal_follows);
+				System.out.println("==== follow stmts begin ====");
+				for (Integer follow_i : last_stmt.following_stmts_same_legal_as_this) {
+					System.out.println("follow stmt:" + si_list.get(follow_i));
+				}
+				System.out.println("==== follow stmts end ====");
+			}
+			stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0, Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
+			stmt_following_legal_info_end.add(stmt_following_legal_info.size()-1);
 		}
 	}
 	
