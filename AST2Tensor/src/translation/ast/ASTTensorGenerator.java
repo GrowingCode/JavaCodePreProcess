@@ -113,7 +113,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 			pre_order_node.clear();
 			node_stmt.clear();
 			curr_tensor.HandleAllDevoured();
-			curr_tensor.Validate(nodeCount);
+			curr_tensor.Validate();
 			StringTensor st = (StringTensor) tensor_list.getLast();
 			st.SetToString(curr_tensor.toString());
 			st.SetToDebugString(curr_tensor.toDebugString());
@@ -138,7 +138,6 @@ public class ASTTensorGenerator extends TensorGenerator {
 	}
 	
 	private void HandleOneNode(ASTNode node, boolean is_real, boolean is_root) {
-		nodeCount++;
 		if (IsStatement(node) || begin_generation_node.equals(node)) {
 			in_handling_node.add(node);
 			StatementInfo stmt_info = new StatementInfo(token_local_index, node.toString());
@@ -149,11 +148,13 @@ public class ASTTensorGenerator extends TensorGenerator {
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		boolean is_leaf = children.size() == 0;
 		{
+			nodeCount++;
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
 			StatementInfo stmt = in_handling_tensor.peek();
 			stmt.StoreOneNode(im, type_content_id, -1, -1, -1);
 		}
 		if (is_leaf) {
+			nodeCount++;
 			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			int token_index = -1;

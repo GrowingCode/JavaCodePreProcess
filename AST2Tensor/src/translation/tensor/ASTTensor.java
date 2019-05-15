@@ -41,10 +41,31 @@ public class ASTTensor extends Tensor {
 	//              the second row is the local_token_id
 	// the third row is inner token index 
 	// the forth row is api_group this token belongs to 
-	ArrayList<Integer> first_row = new ArrayList<Integer>();
-	ArrayList<Integer> second_row = new ArrayList<Integer>();
-	ArrayList<Integer> third_row = new ArrayList<Integer>();
-	ArrayList<Integer> forth_row = new ArrayList<Integer>();
+	
+	// stmt info of tokens: ...|...|...
+	// memory_index means the local token index also the variable index or type index
+	// stmt info of tokens start end: se|se|se
+	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_memory_index_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
+	
+	// stmt info of variables: ``|```|``
+	// stmt info of variables start end: se|se|se
+	ArrayList<Integer> stmt_variable_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_variable_info_start = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_variable_info_end = new ArrayList<Integer>();
+	
+	// following legal stmt index: ,,|,,|,,,
+	// following legal stmt index start end: se|se|se
+	ArrayList<Integer> stmt_following_legal_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_following_legal_info_start = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_following_legal_info_end = new ArrayList<Integer>();
+	
+//	ArrayList<Integer> first_row = new ArrayList<Integer>();
+//	ArrayList<Integer> second_row = new ArrayList<Integer>();
+//	ArrayList<Integer> third_row = new ArrayList<Integer>();
+//	ArrayList<Integer> forth_row = new ArrayList<Integer>();
 	
 	public static double min_rate_of_local_token = Double.MAX_VALUE;
 	public static double max_rate_of_local_token = Double.MIN_VALUE;
@@ -100,15 +121,19 @@ public class ASTTensor extends Tensor {
 //		return up.get(node_index);
 //	}
 	
+	private String ToStmtInfo(String separator) {
+		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + StringUtils.join(stmt_token_memory_index_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
+	}
+	
 	public String toBaseString(String separator) {
 		ArrayList<Integer> inner_id_type_content_id = GenerateInnerIndexesForTypeContents();
-		String f_string = StringUtils.join(inner_id_type_content_id.toArray(), " ") + "#" + StringUtils.join(first_row.toArray(), " ") + separator + StringUtils.join(second_row.toArray(), " ") + separator + StringUtils.join(third_row.toArray(), " ");
+		String f_string = StringUtils.join(inner_id_type_content_id.toArray(), " ") + separator + ToStmtInfo(separator);
+//		StringUtils.join(first_row.toArray(), " ") + separator + StringUtils.join(second_row.toArray(), " ") + separator + StringUtils.join(third_row.toArray(), " ");
 		return f_string;
 	}
 	
 	public String toOracleBaseString(String separator) {
-		String f_string = StringUtils.join(first_row.toArray(), " ") + separator + StringUtils.join(second_row.toArray(), " ") + separator + StringUtils.join(third_row.toArray(), " ");
-		return f_string;
+		return ToStmtInfo(separator);
 	}
 	
 	public String toBaseExceptString(String separator) {
@@ -144,7 +169,7 @@ public class ASTTensor extends Tensor {
 
 	@Override
 	public int getSize() {
-		return first_row.size();
+		return stmt_token_info.size();
 	}
 	
 	public void Devour(StatementInfo last_stmt) {
@@ -188,7 +213,7 @@ public class ASTTensor extends Tensor {
 		si_list.add(last_stmt);
 	}
 
-	private void DevourOneStatement(StatementInfo last_stmt) {
+	private void HandleOneDevouredStatement(StatementInfo last_stmt) {
 		ArrayList<Integer> stmt_first_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_second_row = new ArrayList<Integer>();
 		ArrayList<Integer> stmt_third_row = new ArrayList<Integer>();
@@ -311,35 +336,42 @@ public class ASTTensor extends Tensor {
 
 	public void HandleAllDevoured() {
 		for (StatementInfo si : si_list) {
-			DevourOneStatement(si);
+			HandleOneDevouredStatement(si);
 		}
 	}
 	
-	public void Validate(int total_node_num) {
-		int node_num = 0;
-		int i=0;
-		while (i < first_row.size()) {
-			Integer local_token_start = first_row.get(i);
-			Integer local_token_end = second_row.get(i);
-			for (int j = local_token_start+1;j<=local_token_end;j++) {
-				Integer position_of_type_content = second_row.get(j);
-				Assert.isTrue(second_row.get(position_of_type_content).equals(first_row.get(j)) || (j == local_token_start+1 && second_row.get(position_of_type_content) == -1));
-			}
-			Integer type_content_start = first_row.get(i+1);
-			Integer type_content_end = second_row.get(i+1);
-			int lc_size = local_token_end - local_token_start;
-			int tc_size = type_content_end - type_content_start + 1;
-			double rate = (lc_size *1.0) / (tc_size * 1.0);
-			if (min_rate_of_local_token > rate) {
-				min_rate_of_local_token = rate;
-			}
-			if (max_rate_of_local_token < rate) {
-				max_rate_of_local_token = rate;
-			}
-			i = type_content_end + 1;
-			node_num += tc_size;
+	public void Validate() {
+//		int node_num = 0;
+//		int i=0;
+//		while (i < first_row.size()) {
+//			Integer local_token_start = first_row.get(i);
+//			Integer local_token_end = second_row.get(i);
+//			for (int j = local_token_start+1;j<=local_token_end;j++) {
+//				Integer position_of_type_content = second_row.get(j);
+//				Assert.isTrue(second_row.get(position_of_type_content).equals(first_row.get(j)) || (j == local_token_start+1 && second_row.get(position_of_type_content) == -1));
+//			}
+//			Integer type_content_start = first_row.get(i+1);
+//			Integer type_content_end = second_row.get(i+1);
+//			int lc_size = local_token_end - local_token_start;
+//			int tc_size = type_content_end - type_content_start + 1;
+//			double rate = (lc_size *1.0) / (tc_size * 1.0);
+//			if (min_rate_of_local_token > rate) {
+//				min_rate_of_local_token = rate;
+//			}
+//			if (max_rate_of_local_token < rate) {
+//				max_rate_of_local_token = rate;
+//			}
+//			i = type_content_end + 1;
+//			node_num += tc_size;
+//		}
+//		Assert.isTrue(node_num == total_node_num);
+		double rate = (lc_size *1.0) / (tc_size * 1.0);
+		if (min_rate_of_local_token > rate) {
+			min_rate_of_local_token = rate;
 		}
-		Assert.isTrue(node_num == total_node_num);
+		if (max_rate_of_local_token < rate) {
+			max_rate_of_local_token = rate;
+		}
 	}
 	
 }
