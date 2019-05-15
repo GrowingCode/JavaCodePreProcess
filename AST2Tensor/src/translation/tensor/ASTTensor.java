@@ -339,7 +339,9 @@ public class ASTTensor extends Tensor {
 		stmt_variable_info_end.add(stmt_variable_info.size()-1);
 
 		stmt_following_legal_info_start.add(stmt_following_legal_info.size());
-		stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0, Math.min(last_stmt.following_stmts_same_legal_as_this.size(), MetaOfApp.MaximumFollowingStatements)));
+		int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
+		System.out.println("stmt:" + last_stmt.stmt + "#last_stmt_legal_follows:" + last_stmt_legal_follows);
+		stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0, Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
 		stmt_following_legal_info_end.add(stmt_following_legal_info.size()-1);
 	}
 
