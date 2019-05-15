@@ -1,21 +1,17 @@
 package translation.tensor;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
+import main.MetaOfApp;
 import util.BooleanArrayUtil;
 import util.SetUtil;
 
@@ -46,7 +42,8 @@ public class ASTTensor extends Tensor {
 	// memory_index means the local token index also the variable index or type index
 	// stmt info of tokens start end: se|se|se
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_memory_index_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
 	
@@ -122,7 +119,7 @@ public class ASTTensor extends Tensor {
 //	}
 	
 	private String ToStmtInfo(String separator) {
-		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + StringUtils.join(stmt_token_memory_index_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
+		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
 	}
 	
 	public String toBaseString(String separator) {
@@ -213,125 +210,137 @@ public class ASTTensor extends Tensor {
 		si_list.add(last_stmt);
 	}
 
-	private void HandleOneDevouredStatement(StatementInfo last_stmt) {
-		ArrayList<Integer> stmt_first_row = new ArrayList<Integer>();
-		ArrayList<Integer> stmt_second_row = new ArrayList<Integer>();
-		ArrayList<Integer> stmt_third_row = new ArrayList<Integer>();
-		ArrayList<Integer> stmt_forth_row = new ArrayList<Integer>();
-		// get representative token and its ID
-		Assert.isTrue(last_stmt.is_variable.size() == last_stmt.local_token_id.size() && last_stmt.local_token_id.size() == last_stmt.type_content_id.size());
-		int size = last_stmt.local_token_id.size();
-		Map<Integer, TokenInCare> token_in_care = new TreeMap<Integer, TokenInCare>();
-		for (int i=0;i<size;i++) {
-			Integer is_var = last_stmt.is_variable.get(i);
-			if (is_var >= 0) {
-				int l_tk_id = last_stmt.local_token_id.get(i);
-				int tp_cnt_id = last_stmt.type_content_id.get(i);
-				TokenInCare tic = token_in_care.get(tp_cnt_id);
-				if (tic == null) {
-					tic = new TokenInCare(tp_cnt_id, l_tk_id, is_var);
-					token_in_care.put(tp_cnt_id, tic);
-				}
-				tic.EncounterOne(i);
-			}
-		}
-		List<Map.Entry<Integer, TokenInCare>> local_id_represent_list = new ArrayList<Map.Entry<Integer, TokenInCare>>(token_in_care.entrySet());
-        Collections.sort(local_id_represent_list, new Comparator<Map.Entry<Integer, TokenInCare>>() {
-            public int compare(Entry<Integer, TokenInCare> o1,
-                    Entry<Integer, TokenInCare> o2) {
-                return o1.getValue().LocalIDCompareTo(o2.getValue());
-            }
-        });
-//		List<Entry<Integer, TokenInCare>> sorted_tics = MapUtil.SortMapByValue(token_in_care);
-        Entry<Integer, TokenInCare> representative_token = null;
-		List<Map.Entry<Integer, TokenInCare>> represent_list = new ArrayList<Map.Entry<Integer, TokenInCare>>(token_in_care.entrySet());
-        Collections.sort(represent_list, new Comparator<Map.Entry<Integer, TokenInCare>>() {
-            public int compare(Entry<Integer, TokenInCare> o1,
-                    Entry<Integer, TokenInCare> o2) {
-                return o1.getValue().RepresentCompareTo(o2.getValue());
-            }
-        });
-		Iterator<Entry<Integer, TokenInCare>> st_itr = represent_list.iterator();
-		while (st_itr.hasNext()) {
-			Entry<Integer, TokenInCare> st_e = st_itr.next();
-			TokenInCare tic = st_e.getValue();
-			if (tic.local_token_id <= last_stmt.max_token_id_before_visiting_this_statement) {
-				representative_token = st_e;
-				break;
-			}
-		}
-//		if (representative_token != null) {
-//			sorted_tics.remove(representative_token);
+//	private void HandleOneDevouredStatement(StatementInfo last_stmt) {
+//		ArrayList<Integer> stmt_first_row = new ArrayList<Integer>();
+//		ArrayList<Integer> stmt_second_row = new ArrayList<Integer>();
+//		ArrayList<Integer> stmt_third_row = new ArrayList<Integer>();
+//		ArrayList<Integer> stmt_forth_row = new ArrayList<Integer>();
+//		// get representative token and its ID
+//		Assert.isTrue(last_stmt.is_variable.size() == last_stmt.local_token_id.size() && last_stmt.local_token_id.size() == last_stmt.type_content_id.size());
+//		int size = last_stmt.local_token_id.size();
+//		Map<Integer, TokenInCare> token_in_care = new TreeMap<Integer, TokenInCare>();
+//		for (int i=0;i<size;i++) {
+//			Integer is_var = last_stmt.is_variable.get(i);
+//			if (is_var >= 0) {
+//				int l_tk_id = last_stmt.local_token_id.get(i);
+//				int tp_cnt_id = last_stmt.type_content_id.get(i);
+//				TokenInCare tic = token_in_care.get(tp_cnt_id);
+//				if (tic == null) {
+//					tic = new TokenInCare(tp_cnt_id, l_tk_id, is_var);
+//					token_in_care.put(tp_cnt_id, tic);
+//				}
+//				tic.EncounterOne(i);
+//			}
 //		}
-		local_id_represent_list.add(0, representative_token);
-		if (representative_token == null) {
-			local_id_represent_list.add(0, representative_token);
-		}
+//		List<Map.Entry<Integer, TokenInCare>> local_id_represent_list = new ArrayList<Map.Entry<Integer, TokenInCare>>(token_in_care.entrySet());
+//        Collections.sort(local_id_represent_list, new Comparator<Map.Entry<Integer, TokenInCare>>() {
+//            public int compare(Entry<Integer, TokenInCare> o1,
+//                    Entry<Integer, TokenInCare> o2) {
+//                return o1.getValue().LocalIDCompareTo(o2.getValue());
+//            }
+//        });
+////		List<Entry<Integer, TokenInCare>> sorted_tics = MapUtil.SortMapByValue(token_in_care);
+//        Entry<Integer, TokenInCare> representative_token = null;
+//		List<Map.Entry<Integer, TokenInCare>> represent_list = new ArrayList<Map.Entry<Integer, TokenInCare>>(token_in_care.entrySet());
+//        Collections.sort(represent_list, new Comparator<Map.Entry<Integer, TokenInCare>>() {
+//            public int compare(Entry<Integer, TokenInCare> o1,
+//                    Entry<Integer, TokenInCare> o2) {
+//                return o1.getValue().RepresentCompareTo(o2.getValue());
+//            }
+//        });
+//		Iterator<Entry<Integer, TokenInCare>> st_itr = represent_list.iterator();
+//		while (st_itr.hasNext()) {
+//			Entry<Integer, TokenInCare> st_e = st_itr.next();
+//			TokenInCare tic = st_e.getValue();
+//			if (tic.local_token_id <= last_stmt.max_token_id_before_visiting_this_statement) {
+//				representative_token = st_e;
+//				break;
+//			}
+//		}
+////		if (representative_token != null) {
+////			sorted_tics.remove(representative_token);
+////		}
+//		local_id_represent_list.add(0, representative_token);
+//		if (representative_token == null) {
+//			local_id_represent_list.add(0, representative_token);
+//		}
+//		// generate all ids in statement
+//		ArrayList<Integer> ids_first_row = new ArrayList<Integer>();
+//		ArrayList<Integer> ids_second_row = new ArrayList<Integer>();
+//		ArrayList<Integer> ids_third_row = new ArrayList<Integer>();
+//		ArrayList<Integer> ids_forth_row = new ArrayList<Integer>();
+////		Iterator<Entry<Integer, TokenInCare>> stcs_itr = sorted_tics.iterator();
+//		Iterator<Entry<Integer, TokenInCare>> stcs_itr = local_id_represent_list.iterator();
+//		while (stcs_itr.hasNext()) {
+//			Entry<Integer, TokenInCare> e = stcs_itr.next();
+//			if (e == null) {
+//				ids_first_row.add(0);
+//			} else {
+//				ids_first_row.add(e.getValue().local_token_id);
+//			}
+//			ids_third_row.add(-1);
+//			ids_forth_row.add(-1);
+//		}
+//		Iterator<Entry<Integer, TokenInCare>> stcs_itr2 = local_id_represent_list.iterator();
+//		while (stcs_itr2.hasNext()) {
+//			Entry<Integer, TokenInCare> e = stcs_itr2.next();
+//			if (e == null) {
+//				ids_second_row.add(first_row.size() + 2 + ids_first_row.size());
+//			} else {
+//				ids_second_row.add(first_row.size() + 2 + ids_first_row.size() + e.getValue().positions.get(0));
+//			}
+//		}
+//		// generate all nodes in statement
+//		ArrayList<Integer> nodes_first_row = new ArrayList<Integer>();
+//		ArrayList<Integer> nodes_second_row = new ArrayList<Integer>();
+//		ArrayList<Integer> nodes_third_row = new ArrayList<Integer>();
+//		ArrayList<Integer> nodes_forth_row = new ArrayList<Integer>();
+//		for (int i=0;i<size;i++) {
+//			int tp_cnt_id = last_stmt.type_content_id.get(i);
+//			nodes_first_row.add(tp_cnt_id);
+//			nodes_second_row.add(last_stmt.local_token_id.get(i));
+//			Integer inner = GenerateInnerIndexForTypeContent(tp_cnt_id);
+//			nodes_third_row.add(inner);
+//			nodes_forth_row.add(last_stmt.api_group.get(i));
+//		}
+//		stmt_first_row.add(first_row.size()+2);
+//		stmt_second_row.add(first_row.size()+2+ids_first_row.size()-1);
+//		stmt_third_row.add(-1);
+//		stmt_forth_row.add(-1);
+//		stmt_first_row.add(first_row.size()+2+ids_first_row.size());
+//		stmt_second_row.add(first_row.size()+2+ids_first_row.size()+nodes_first_row.size()-1);
+//		stmt_third_row.add(-1);
+//		stmt_forth_row.add(-1);
+//		// stmt rows
+//		stmt_first_row.addAll(ids_first_row);
+//		stmt_second_row.addAll(ids_second_row);
+//		stmt_third_row.addAll(ids_third_row);
+//		stmt_forth_row.addAll(ids_forth_row);
+//		stmt_first_row.addAll(nodes_first_row);
+//		stmt_second_row.addAll(nodes_second_row);
+//		stmt_third_row.addAll(nodes_third_row);
+//		stmt_forth_row.addAll(nodes_forth_row);
+//		// final rows
+//		first_row.addAll(stmt_first_row);
+//		second_row.addAll(stmt_second_row);
+//		third_row.addAll(stmt_third_row);
+//		forth_row.addAll(stmt_forth_row);
+//	}
+	
+	private void HandleOneDevouredStatement(StatementInfo last_stmt) {
+		stmt_token_info_start.add(stmt_token_info.size());
+		stmt_token_info.addAll(last_stmt.type_content_id);
+		stmt_token_variable_info.addAll(last_stmt.local_token_id);
+		stmt_token_api_info.addAll(last_stmt.api_group);
+		stmt_token_info_end.add(stmt_token_info.size()-1);
 		
-		// generate all ids in statement
-		ArrayList<Integer> ids_first_row = new ArrayList<Integer>();
-		ArrayList<Integer> ids_second_row = new ArrayList<Integer>();
-		ArrayList<Integer> ids_third_row = new ArrayList<Integer>();
-		ArrayList<Integer> ids_forth_row = new ArrayList<Integer>();
-//		Iterator<Entry<Integer, TokenInCare>> stcs_itr = sorted_tics.iterator();
-		Iterator<Entry<Integer, TokenInCare>> stcs_itr = local_id_represent_list.iterator();
-		while (stcs_itr.hasNext()) {
-			Entry<Integer, TokenInCare> e = stcs_itr.next();
-			if (e == null) {
-				ids_first_row.add(0);
-			} else {
-				ids_first_row.add(e.getValue().local_token_id);
-			}
-			ids_third_row.add(-1);
-			ids_forth_row.add(-1);
-		}
-		
-		Iterator<Entry<Integer, TokenInCare>> stcs_itr2 = local_id_represent_list.iterator();
-		while (stcs_itr2.hasNext()) {
-			Entry<Integer, TokenInCare> e = stcs_itr2.next();
-			if (e == null) {
-				ids_second_row.add(first_row.size() + 2 + ids_first_row.size());
-			} else {
-				ids_second_row.add(first_row.size() + 2 + ids_first_row.size() + e.getValue().positions.get(0));
-			}
-		}
-		
-		// generate all nodes in statement
-		ArrayList<Integer> nodes_first_row = new ArrayList<Integer>();
-		ArrayList<Integer> nodes_second_row = new ArrayList<Integer>();
-		ArrayList<Integer> nodes_third_row = new ArrayList<Integer>();
-		ArrayList<Integer> nodes_forth_row = new ArrayList<Integer>();
-		for (int i=0;i<size;i++) {
-			int tp_cnt_id = last_stmt.type_content_id.get(i);
-			nodes_first_row.add(tp_cnt_id);
-			nodes_second_row.add(last_stmt.local_token_id.get(i));
-			Integer inner = GenerateInnerIndexForTypeContent(tp_cnt_id);
-			nodes_third_row.add(inner);
-			nodes_forth_row.add(last_stmt.api_group.get(i));
-		}
-		
-		stmt_first_row.add(first_row.size()+2);
-		stmt_second_row.add(first_row.size()+2+ids_first_row.size()-1);
-		stmt_third_row.add(-1);
-		stmt_forth_row.add(-1);
-		stmt_first_row.add(first_row.size()+2+ids_first_row.size());
-		stmt_second_row.add(first_row.size()+2+ids_first_row.size()+nodes_first_row.size()-1);
-		stmt_third_row.add(-1);
-		stmt_forth_row.add(-1);
-		
-		stmt_first_row.addAll(ids_first_row);
-		stmt_second_row.addAll(ids_second_row);
-		stmt_third_row.addAll(ids_third_row);
-		stmt_forth_row.addAll(ids_forth_row);
-		stmt_first_row.addAll(nodes_first_row);
-		stmt_second_row.addAll(nodes_second_row);
-		stmt_third_row.addAll(nodes_third_row);
-		stmt_forth_row.addAll(nodes_forth_row);
-		
-		first_row.addAll(stmt_first_row);
-		second_row.addAll(stmt_second_row);
-		third_row.addAll(stmt_third_row);
-		forth_row.addAll(stmt_forth_row);
+		stmt_variable_info_start.add(stmt_variable_info.size());
+		stmt_variable_info.addAll(last_stmt.var_or_type_ids_in_this_stmt);
+		stmt_variable_info_end.add(stmt_variable_info.size()-1);
+
+		stmt_following_legal_info_start.add(stmt_following_legal_info.size());
+		stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0, Math.min(last_stmt.following_stmts_same_legal_as_this.size(), MetaOfApp.MaximumFollowingStatements)));
+		stmt_following_legal_info_end.add(stmt_following_legal_info.size()-1);
 	}
 
 	public void HandleAllDevoured() {
@@ -365,13 +374,24 @@ public class ASTTensor extends Tensor {
 //			node_num += tc_size;
 //		}
 //		Assert.isTrue(node_num == total_node_num);
-		double rate = (lc_size *1.0) / (tc_size * 1.0);
-		if (min_rate_of_local_token > rate) {
-			min_rate_of_local_token = rate;
+		int total_size = 0;
+		int i_len = stmt_token_info_start.size();
+		for (int i=0;i<i_len;i++) {
+			Integer start_idx = stmt_token_info_start.get(i);
+			Integer end_idx = stmt_token_info_end.get(i);
+
+			int one_size = end_idx - start_idx + 1;
+			total_size += one_size;
+			int lc_size = stmt_variable_info_end.get(i) - stmt_variable_info_start.get(i) + 1;
+			double rate = (lc_size *1.0) / (one_size * 1.0);
+			if (min_rate_of_local_token > rate) {
+				min_rate_of_local_token = rate;
+			}
+			if (max_rate_of_local_token < rate) {
+				max_rate_of_local_token = rate;
+			}
 		}
-		if (max_rate_of_local_token < rate) {
-			max_rate_of_local_token = rate;
-		}
+		Assert.isTrue(total_size == stmt_token_info.size());
 	}
 	
 }

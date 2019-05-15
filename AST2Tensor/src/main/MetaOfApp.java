@@ -25,6 +25,8 @@ public class MetaOfApp {
 	
 	public final static int MaximumStringLength = 40;
 	
+	public final static int MaximumFollowingStatements = 5;
+	
 //	public final static boolean ReplaceLeastWithUnk = false;
 	
 	public final static boolean CharInCascadeForm = false;
