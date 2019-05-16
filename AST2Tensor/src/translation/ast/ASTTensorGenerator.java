@@ -160,49 +160,51 @@ public class ASTTensorGenerator extends TensorGenerator {
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			int token_index = -1;
 			int is_var = -1;
-			SimpleName sn = (SimpleName) node;
-			IBinding ib = sn.resolveBinding();
 			int api_comb_id = -1;
-			if (ib != null) {
-				if (ib instanceof IVariableBinding) {
-					IVariableBinding ivb = (IVariableBinding) ib;
-					String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
-					Integer index_record = token_index_record.get(ivb_key);
-					if (index_record == null) {
-						token_local_index++;
-						index_record = token_local_index;
-						token_index_record.put(ivb_key, index_record);
-					}
-					token_index = index_record;
-					is_var = 1;
-				}
-//				if (ib instanceof ITypeBinding) {
-//					ITypeBinding itb = (ITypeBinding) ib;
-//					String itb_key = "type!" + itb.getKey() + "#" + sn;
-//					Integer index_record = token_index_record.get(itb_key);
-//					if (index_record == null) {
-//						token_local_index++;
-//						index_record = token_local_index;
-//						token_index_record.put(itb_key, index_record);
-//					}
-//					token_index = index_record;
-//					is_var = 0;
-//				}
-				if (ib instanceof IMethodBinding) {
-					if (!(sn.getParent() instanceof MethodDeclaration)) {
-						IMethodBinding imb = (IMethodBinding) ib;
-						ITypeBinding dc = imb.getDeclaringClass();
-						IMethodBinding[] mds = dc.getDeclaredMethods();
-						LinkedList<String> mdnames = new LinkedList<String>();
-						for (IMethodBinding md : mds) {
-							String mdname = md.getName();
-							mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
-							if (!mdnames.contains(mdname)) {
-								mdnames.add(mdname);
-							}
+			if (node instanceof SimpleName) {
+				SimpleName sn = (SimpleName) node;
+				IBinding ib = sn.resolveBinding();
+				if (ib != null) {
+					if (ib instanceof IVariableBinding) {
+						IVariableBinding ivb = (IVariableBinding) ib;
+						String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
+						Integer index_record = token_index_record.get(ivb_key);
+						if (index_record == null) {
+							token_local_index++;
+							index_record = token_local_index;
+							token_index_record.put(ivb_key, index_record);
 						}
-						String joined = String.join("#", mdnames);
-						api_comb_id = im.GetAPICombID(joined);
+						token_index = index_record;
+						is_var = 1;
+					}
+//					if (ib instanceof ITypeBinding) {
+//						ITypeBinding itb = (ITypeBinding) ib;
+//						String itb_key = "type!" + itb.getKey() + "#" + sn;
+//						Integer index_record = token_index_record.get(itb_key);
+//						if (index_record == null) {
+//							token_local_index++;
+//							index_record = token_local_index;
+//							token_index_record.put(itb_key, index_record);
+//						}
+//						token_index = index_record;
+//						is_var = 0;
+//					}
+					if (ib instanceof IMethodBinding) {
+						if (!(sn.getParent() instanceof MethodDeclaration)) {
+							IMethodBinding imb = (IMethodBinding) ib;
+							ITypeBinding dc = imb.getDeclaringClass();
+							IMethodBinding[] mds = dc.getDeclaredMethods();
+							LinkedList<String> mdnames = new LinkedList<String>();
+							for (IMethodBinding md : mds) {
+								String mdname = md.getName();
+								mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
+								if (!mdnames.contains(mdname)) {
+									mdnames.add(mdname);
+								}
+							}
+							String joined = String.join("#", mdnames);
+							api_comb_id = im.GetAPICombID(joined);
+						}
 					}
 				}
 			}
