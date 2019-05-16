@@ -3,7 +3,6 @@ package util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.TreeMap;
 public class MapUtil {
 
 	public static <K, V> Map<V, K> ReverseKeyValueInMap(Map<K, V> map) {
-		Map<V, K> result = new HashMap<V, K>();
+		Map<V, K> result = new TreeMap<V, K>();
 		Set<Entry<K, V>> eset = map.entrySet();
 		Iterator<Entry<K, V>> eitr = eset.iterator();
 		while (eitr.hasNext()) {
@@ -25,7 +24,7 @@ public class MapUtil {
 	}
 
 	public static Map<String, Object> CastKeyToString(Map<Object, Object> map) {
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new TreeMap<String, Object>();
 		Set<Object> kset = map.keySet();
 		Iterator<Object> eitr = kset.iterator();
 		while (eitr.hasNext()) {

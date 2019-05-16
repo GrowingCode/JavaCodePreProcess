@@ -23,8 +23,8 @@ public class GrammarRecorder {
 	
 //	Map<String, Integer> node_type_id = new TreeMap<String, Integer>();
 	
-	TreeSet<String> fixed_token = new TreeSet<String>();
-	TreeSet<String> unfixed_token = new TreeSet<String>();
+	TreeSet<String> fixed_tokens = new TreeSet<String>();
+	TreeSet<String> unfixed_tokens = new TreeSet<String>();
 	
 	Map<String, TreeSet<String>> self_children_map = new TreeMap<String, TreeSet<String>>();
 	
@@ -34,7 +34,7 @@ public class GrammarRecorder {
 	public void RecordGrammar(ASTNode node) {
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		String tp = JDTASTHelper.GetTypeRepresentationForASTNode(node);
-		fixed_token.add(tp);
+		fixed_tokens.add(tp);
 //		EncounterNodeType(sim);
 		TreeSet<String> children_nt = self_children_map.get(tp);
 		if (children_nt == null) {
@@ -43,7 +43,7 @@ public class GrammarRecorder {
 		}
 		for (ASTNode nc : children) {
 			String nc_tp = JDTASTHelper.GetTypeRepresentationForASTNode(nc);
-			fixed_token.add(nc_tp);
+			fixed_tokens.add(nc_tp);
 			children_nt.add(nc_tp);
 		}
 	}
@@ -59,9 +59,9 @@ public class GrammarRecorder {
 		}
 		String cnt = JDTASTHelper.GetContentRepresentationForASTNode(node);
 		if (TokenRecorder.LeafIsFixed(node)) {
-			fixed_token.add(cnt);
+			fixed_tokens.add(cnt);
 		} else {
-			unfixed_token.add(cnt);
+			unfixed_tokens.add(cnt);
 		}
 		children_nt.add(cnt);
 	}
@@ -75,9 +75,9 @@ public class GrammarRecorder {
 //		return id;
 //	}
 	
-	public void SaveToDirectory(String dir) {
+	public void SaveToDirectory(String dir, IDManager im) {
 		ArrayList<LinkedList<Integer>> raw = new ArrayList<LinkedList<Integer>>();
-		int nti_size = node_type_id.size();
+		int nti_size = self_children_map.size();
 		for (int i=0;i<nti_size;i++) {
 			raw.add(new LinkedList<Integer>());
 		}
@@ -85,12 +85,13 @@ public class GrammarRecorder {
 		Iterator<String> sc_itr = sc_keys.iterator();
 		while (sc_itr.hasNext()) {
 			String sc = sc_itr.next();
-			TreeSet<String> children_types = self_children_map.get(sc);
-			Assert.isTrue(children_types.size() > 0);
-			Integer tid = node_type_id.get(sc);
+			TreeSet<String> childrens = self_children_map.get(sc);
+			Assert.isTrue(childrens.size() > 0);
+			Integer tid = im.GetTypeContentID(sc);
+			Assert.isTrue(tid < raw.size());
 			LinkedList<Integer> ll = raw.get(tid);
-			for (String child_type : children_types) {
-				Integer child_nti = node_type_id.get(child_type);
+			for (String child : childrens) {
+				Integer child_nti = im.GetTypeContentID(child);
 				ll.add(child_nti);
 			}
 		}
