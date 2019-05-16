@@ -156,7 +156,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 		boolean is_leaf = children.size() == 0;
 		if (is_leaf) {
 			leafExtraCount++;
-			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
+//			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			int token_index = -1;
 			int is_var = -1;

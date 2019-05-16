@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -88,7 +87,7 @@ public class SequenceTensorGenerator extends TensorGenerator {
 			curr_tensor.AppendOneToken(im, type_content_id, -1, 0, -1, 1);
 		}
 		if (is_leaf) {
-			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
+//			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			// two parameters for leaf similarity test
 			int isExisted = 0;

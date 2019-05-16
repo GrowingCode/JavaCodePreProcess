@@ -2,7 +2,9 @@ package statistic.id;
 
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 public class TokenRecorder {
@@ -52,6 +54,7 @@ public class TokenRecorder {
 	}
 	
 	public static boolean LeafIsFixed(ASTNode node) {
+		Assert.isTrue(node instanceof SimpleName || node instanceof Modifier, "Strange node class:" + node.getClass().getSimpleName());
 		if (node instanceof SimpleName) {
 			return false;
 		}
