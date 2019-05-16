@@ -256,7 +256,7 @@ public class IDManager {
 	
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
-		Assert.isTrue(id != null);
+		Assert.isTrue(id != null, "unseen type_content:" + type_content);
 //		if (id != null) {
 		return id;
 //		}
