@@ -15,41 +15,65 @@ import org.eclipse.jdt.core.dom.ASTNode;
 
 import com.google.gson.Gson;
 
+import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import util.FileUtil;
 
 public class GrammarRecorder {
 	
-	Map<String, Integer> node_type_id = new TreeMap<String, Integer>();
+//	Map<String, Integer> node_type_id = new TreeMap<String, Integer>();
 	
-	Map<String, TreeSet<String>> self_children_node_type_map = new TreeMap<String, TreeSet<String>>();
+	TreeSet<String> fixed_token = new TreeSet<String>();
+	TreeSet<String> unfixed_token = new TreeSet<String>();
+	
+	Map<String, TreeSet<String>> self_children_map = new TreeMap<String, TreeSet<String>>();
 	
 	public GrammarRecorder() {
 	}
 	
 	public void RecordGrammar(ASTNode node) {
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		String sim = node.getClass().getSimpleName();
-		EncounterNodeType(sim);
-		TreeSet<String> children_nt = self_children_node_type_map.get(sim);
+		String tp = JDTASTHelper.GetTypeRepresentationForASTNode(node);
+		fixed_token.add(tp);
+//		EncounterNodeType(sim);
+		TreeSet<String> children_nt = self_children_map.get(tp);
 		if (children_nt == null) {
 			children_nt = new TreeSet<String>();
-			self_children_node_type_map.put(sim, children_nt);
+			self_children_map.put(tp, children_nt);
 		}
 		for (ASTNode nc : children) {
-			String nc_sim = nc.getClass().getSimpleName();
-			children_nt.add(nc_sim);
+			String nc_tp = JDTASTHelper.GetTypeRepresentationForASTNode(nc);
+			fixed_token.add(nc_tp);
+			children_nt.add(nc_tp);
 		}
 	}
 	
-	private int EncounterNodeType(String node_type) {
-		Integer id = node_type_id.get(node_type);
-		if (id == null) {
-			id = node_type_id.size();
-			node_type_id.put(node_type, id);
+	public void RecordExtraGrammarForLeaf(ASTNode node) {
+		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+		Assert.isTrue(children.size() == 0);
+		String tp = JDTASTHelper.GetTypeRepresentationForASTNode(node);
+		TreeSet<String> children_nt = self_children_map.get(tp);
+		if (children_nt == null) {
+			children_nt = new TreeSet<String>();
+			self_children_map.put(tp, children_nt);
 		}
-		return id;
+		String cnt = JDTASTHelper.GetContentRepresentationForASTNode(node);
+		if (TokenRecorder.LeafIsFixed(node)) {
+			fixed_token.add(cnt);
+		} else {
+			unfixed_token.add(cnt);
+		}
+		children_nt.add(cnt);
 	}
+	
+//	private int EncounterNodeType(String node_type) {
+//		Integer id = node_type_id.get(node_type);
+//		if (id == null) {
+//			id = node_type_id.size();
+//			node_type_id.put(node_type, id);
+//		}
+//		return id;
+//	}
 	
 	public void SaveToDirectory(String dir) {
 		ArrayList<LinkedList<Integer>> raw = new ArrayList<LinkedList<Integer>>();
@@ -57,11 +81,11 @@ public class GrammarRecorder {
 		for (int i=0;i<nti_size;i++) {
 			raw.add(new LinkedList<Integer>());
 		}
-		Set<String> sc_keys = self_children_node_type_map.keySet();
+		Set<String> sc_keys = self_children_map.keySet();
 		Iterator<String> sc_itr = sc_keys.iterator();
 		while (sc_itr.hasNext()) {
 			String sc = sc_itr.next();
-			TreeSet<String> children_types = self_children_node_type_map.get(sc);
+			TreeSet<String> children_types = self_children_map.get(sc);
 			Assert.isTrue(children_types.size() > 0);
 			Integer tid = node_type_id.get(sc);
 			LinkedList<Integer> ll = raw.get(tid);

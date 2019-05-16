@@ -38,11 +38,15 @@ public class IDGenerator extends ASTVisitor {
 	@Override
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
-		// handle grammar
-		tool.gr.RecordGrammar(node);
 		// handle token
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		int children_size = children == null ? 0 : children.size();
+		// handle GrammarRecorder
+		tool.gr.RecordGrammar(node);
+		if (children_size == 0) {
+			tool.gr.RecordExtraGrammarForLeaf(node);
+		}
+		// handle TokenRecorder
 		String type_content = JDTASTHelper.GetTypeRepresentationForASTNode(node);
 		if (role <= RoleAssigner.train_seen_k) {
 			tool.tr.TokenHitInTrainSet(type_content);
@@ -50,14 +54,14 @@ public class IDGenerator extends ASTVisitor {
 			tool.tr.TokenNotHitInTrainSet(type_content);
 		}
 		if (children_size == 0) {
-			String token_str = node.toString();
+			String token_str = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			if (role <= RoleAssigner.train_seen_k) {
 				tool.tr.TokenHitInTrainSet(token_str);
 			} else {
 				tool.tr.TokenNotHitInTrainSet(token_str);
 			}
 		}
-		// handle api
+		// handle APIRecorder
 		if (node instanceof SimpleName) {
 			SimpleName sn = (SimpleName) node;
 			IBinding ib = sn.resolveBinding();

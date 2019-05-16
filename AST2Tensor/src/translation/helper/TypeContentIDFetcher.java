@@ -48,8 +48,9 @@ public class TypeContentIDFetcher {
 //		}
 //		type_content = JDTASTHelper.GetRepresentationForASTNode(node);
 //		type_content_id = im.GetTypeContentID(type_content);
-		String type_content = node.toString();
-		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
+		String type_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
+//		String type_content = node.toString();
+//		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		int type_content_id = im.GetTypeContentID(type_content);
 		return new TypeContentID(type_content, type_content_id);
 	}

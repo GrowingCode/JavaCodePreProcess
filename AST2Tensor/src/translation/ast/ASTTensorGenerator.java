@@ -57,6 +57,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 //	HashMap<ASTNode, Integer> node_index_map = new HashMap<ASTNode, Integer>();
 //	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<>();
 	int nodeCount = 0;
+	int leafExtraCount = 0;
 
 	@Override
 	public void preVisit(ASTNode node) {
@@ -109,7 +110,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 					max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
 				}
 			}
-			Assert.isTrue(nodeCount == size_of_statements);
+			Assert.isTrue((nodeCount + leafExtraCount) == size_of_statements);
 			pre_order_node.clear();
 			node_stmt.clear();
 			curr_tensor.HandleAllDevoured();
@@ -146,16 +147,16 @@ public class ASTTensorGenerator extends TensorGenerator {
 			node_stmt.put(node, stmt_info);
 		}
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		boolean is_leaf = children.size() == 0;
 		{
 			nodeCount++;
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
 			StatementInfo stmt = in_handling_tensor.peek();
 			stmt.StoreOneNode(im, type_content_id, -1, -1, -1);
 		}
+		boolean is_leaf = children.size() == 0;
 		if (is_leaf) {
-			nodeCount++;
-			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
+			leafExtraCount++;
+			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			int token_index = -1;
 			int is_var = -1;

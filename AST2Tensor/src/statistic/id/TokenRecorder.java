@@ -2,6 +2,9 @@ package statistic.id;
 
 import java.util.TreeSet;
 
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.SimpleName;
+
 public class TokenRecorder {
 
 	// private static IDManager unique = new IDManager();
@@ -46,6 +49,13 @@ public class TokenRecorder {
 		if (!hit_train.contains(type_content)) {
 			not_hit_train.add(type_content);
 		}
+	}
+	
+	public static boolean LeafIsFixed(ASTNode node) {
+		if (node instanceof SimpleName) {
+			return false;
+		}
+		return true;
 	}
 	
 //	public void EncounterANode(String type_content, boolean is_leaf) {

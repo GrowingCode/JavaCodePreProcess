@@ -2,6 +2,7 @@ package eclipse.jdt;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
@@ -9,6 +10,7 @@ import org.eclipse.jdt.core.dom.PrefixExpression;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
+import statistic.id.PreProcessContentHelper;
 
 public class JDTASTHelper {
 
@@ -53,6 +55,11 @@ public class JDTASTHelper {
 		}
 		String represent = type + type_extra + (children_size == 0 ? IDManager.Leaf : IDManager.NonLeaf);
 		return represent;
+	}
+	
+	public static String GetContentRepresentationForASTNode(ASTNode node) {
+		Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).isEmpty());
+		return PreProcessContentHelper.PreProcessTypeContent(node.toString());
 	}
 	
 //	public static String GetRepresentationForASTNode(ASTNode node) {

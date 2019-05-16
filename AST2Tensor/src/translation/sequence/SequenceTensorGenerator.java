@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 
+import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
@@ -92,7 +93,7 @@ public class SequenceTensorGenerator extends TensorGenerator {
 			// two parameters for leaf similarity test
 			int isExisted = 0;
 			int lastIndex = -1;
-			String name = node.toString();
+			String name = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			// the last node
 			if (leafNodeLastIndexMap.containsKey(name)) {
 				lastIndex = leafNodeLastIndexMap.get(name) - nodeCount;
