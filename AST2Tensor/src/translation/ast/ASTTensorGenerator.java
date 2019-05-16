@@ -158,7 +158,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 			leafExtraCount++;
 //			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			int token_index = -1;
+			int var_index = -1;
 			int is_var = -1;
 			int api_comb_id = -1;
 			if (node instanceof SimpleName) {
@@ -174,7 +174,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 							index_record = token_local_index;
 							token_index_record.put(ivb_key, index_record);
 						}
-						token_index = index_record;
+						var_index = index_record;
 						is_var = 1;
 					}
 //					if (ib instanceof ITypeBinding) {
@@ -209,7 +209,7 @@ public class ASTTensorGenerator extends TensorGenerator {
 				}
 			}
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, token_index, is_var, api_comb_id);
+			stmt.StoreOneNode(im, type_content_id, var_index, is_var, api_comb_id);
 		}
 	}
 

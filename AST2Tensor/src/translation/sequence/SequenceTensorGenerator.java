@@ -87,11 +87,13 @@ public class SequenceTensorGenerator extends TensorGenerator {
 			curr_tensor.AppendOneToken(im, type_content_id, -1, 0, -1, 1);
 		}
 		if (is_leaf) {
+			nodeCount++;
 //			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			// two parameters for leaf similarity test
 			int isExisted = 0;
 			int lastIndex = -1;
+			int api_comb_id = -1;
 			String name = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			// the last node
 			if (leafNodeLastIndexMap.containsKey(name)) {
@@ -99,24 +101,25 @@ public class SequenceTensorGenerator extends TensorGenerator {
 				isExisted = 1;
 			}
 			leafNodeLastIndexMap.put(name, nodeCount);
-			int api_comb_id = -1;
-			SimpleName sn = (SimpleName) node;
-			IBinding ib = sn.resolveBinding();
-			if (ib != null && ib instanceof IMethodBinding) {
-				if (!(sn.getParent() instanceof MethodDeclaration)) {
-					IMethodBinding imb = (IMethodBinding) ib;
-					ITypeBinding dc = imb.getDeclaringClass();
-					IMethodBinding[] mds = dc.getDeclaredMethods();
-					LinkedList<String> mdnames = new LinkedList<String>();
-					for (IMethodBinding md : mds) {
-						String mdname = md.getName();
-						mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
-						if (!mdnames.contains(mdname)) {
-							mdnames.add(mdname);
+			if (node instanceof SimpleName) {
+				SimpleName sn = (SimpleName) node;
+				IBinding ib = sn.resolveBinding();
+				if (ib != null && ib instanceof IMethodBinding) {
+					if (!(sn.getParent() instanceof MethodDeclaration)) {
+						IMethodBinding imb = (IMethodBinding) ib;
+						ITypeBinding dc = imb.getDeclaringClass();
+						IMethodBinding[] mds = dc.getDeclaredMethods();
+						LinkedList<String> mdnames = new LinkedList<String>();
+						for (IMethodBinding md : mds) {
+							String mdname = md.getName();
+							mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
+							if (!mdnames.contains(mdname)) {
+								mdnames.add(mdname);
+							}
 						}
+						String joined = String.join("#", mdnames);
+						api_comb_id = im.GetAPICombID(joined);
 					}
-					String joined = String.join("#", mdnames);
-					api_comb_id = im.GetAPICombID(joined);
 				}
 			}
 			curr_tensor.AppendOneToken(im, type_content_id, api_comb_id, isExisted, lastIndex, 1);
