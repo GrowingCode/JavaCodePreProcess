@@ -62,4 +62,9 @@ public class StatementInfo {
 		return StringUtils.join(type_content_str.toArray(), '~');
 	}
 	
+	@Override
+	public String toString() {
+		return stmt;
+	}
+	
 }
