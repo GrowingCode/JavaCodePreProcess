@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
@@ -24,7 +23,7 @@ public class TypeContentIDFetcher {
 	public static TypeContentID FetchContentID(ASTNode node, IDManager im) { // List<ASTNode> children
 		List<ASTNode> ncs = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		Assert.isTrue(ncs.size() == 0);
-		Assert.isTrue(node instanceof SimpleName, "not SimpleName node class:" + node.getClass());
+//		Assert.isTrue(node instanceof SimpleName, "not SimpleName node class:" + node.getClass());
 		// set node type and content
 //		String type = null;
 //		String content = null;
