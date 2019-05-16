@@ -205,6 +205,8 @@ public class ASTTensor extends Tensor {
 				// not depend
 				StatementInfo i_si = si_list.get(i);
 				i_si.following_stmts_same_legal_as_this.add(dr_size);
+			} else {
+				break;
 			}
 		}
 		si_list.add(last_stmt);
