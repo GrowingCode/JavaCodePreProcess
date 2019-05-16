@@ -3,6 +3,7 @@ package statistic;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -11,6 +12,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.jdt.JDTASTHelper;
@@ -44,7 +46,7 @@ public class IDGenerator extends ASTVisitor {
 		// handle GrammarRecorder
 		tool.gr.RecordGrammar(node);
 		if (children_size == 0) {
-			tool.gr.RecordExtraGrammarForLeaf(node);
+			tool.gr.RecordExtraGrammarForLeaf(node, null);
 		}
 		// handle TokenRecorder
 		String type_content = JDTASTHelper.GetTypeRepresentationForASTNode(node);
@@ -67,6 +69,7 @@ public class IDGenerator extends ASTVisitor {
 			IBinding ib = sn.resolveBinding();
 			if (ib != null && ib instanceof IMethodBinding) {
 				if (!(sn.getParent() instanceof MethodDeclaration)) {
+					Assert.isTrue(sn.getParent() instanceof MethodInvocation);
 //					System.out.println("sn is method declared name!");
 					IMethodBinding imb = (IMethodBinding) ib;
 					ITypeBinding dc = imb.getDeclaringClass();
@@ -80,19 +83,15 @@ public class IDGenerator extends ASTVisitor {
 						if (!mdnames.contains(mdname)) {
 							mdnames.add(mdname);
 						}
+						tool.gr.RecordExtraGrammarForLeaf(node, mdname);
+						if (role <= RoleAssigner.train_seen_k) {
+							tool.tr.TokenHitInTrainSet(mdname);
+						} else {
+							tool.tr.TokenHitInTrainSet(mdname);
+						}
 					}
 					String joined = String.join("#", mdnames);
 					tool.ar.RecordAPIComb(joined);
-					if (role <= RoleAssigner.train_seen_k) {
-						for (String md : mdnames) {
-							tool.tr.TokenHitInTrainSet(md);
-						}
-					} else {
-						for (String md : mdnames) {
-							tool.tr.TokenHitInTrainSet(md);
-						}
-//						tool.ar.APINotHitInTrainSet(joined);
-					}
 //					System.out.println("mds:" + joined);
 //					System.out.println("==== end print md ====");
 				}

@@ -48,7 +48,7 @@ public class GrammarRecorder {
 		}
 	}
 	
-	public void RecordExtraGrammarForLeaf(ASTNode node) {
+	public void RecordExtraGrammarForLeaf(ASTNode node, String synonym) {
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		Assert.isTrue(children.size() == 0);
 		String tp = JDTASTHelper.GetTypeRepresentationForASTNode(node);
@@ -57,7 +57,7 @@ public class GrammarRecorder {
 			children_nt = new TreeSet<String>();
 			self_children_map.put(tp, children_nt);
 		}
-		String cnt = JDTASTHelper.GetContentRepresentationForASTNode(node);
+		String cnt = synonym != null ? synonym : JDTASTHelper.GetContentRepresentationForASTNode(node);
 		if (TokenRecorder.LeafIsFixed(node)) {
 			fixed_tokens.add(cnt);
 		} else {
