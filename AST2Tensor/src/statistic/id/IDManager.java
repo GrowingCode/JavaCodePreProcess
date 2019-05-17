@@ -620,6 +620,7 @@ public class IDManager {
 		Gson gson = new Gson();
 		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
 		meta_of_ast2tensor.put("MaximumStringLength", MetaOfApp.MaximumStringLength);
+		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 		meta_of_ast2tensor.put("CharInCascadeForm", MetaOfApp.CharInCascadeForm ? 1 : 0);
