@@ -22,10 +22,11 @@ public class ChildrenNumCounter {
 	}
 
 	public void SaveToDirectory(String dir) {
-		Gson gson = new Gson();
-		TreeMap<String, Integer> meta_of_ast = new TreeMap<String, Integer>();
-		meta_of_ast.put("MaxChildrenNum", max_children_num);
-		FileUtil.WriteToFile(new File(dir + "/" + "Meta_of_ast.json"), gson.toJson(meta_of_ast));
+//		Gson gson = new Gson();
+//		TreeMap<String, Integer> meta_of_ast = new TreeMap<String, Integer>();
+//		meta_of_ast.put("MaxChildrenNum", max_children_num);
+//		FileUtil.WriteToFile(new File(dir + "/" + "Meta_of_ast.json"), gson.toJson(meta_of_ast));
+		System.out.println("MaxChildrenNum:" + max_children_num);
 	}
 	
 }
