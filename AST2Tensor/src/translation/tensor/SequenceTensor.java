@@ -48,12 +48,16 @@ public class SequenceTensor extends Tensor {
 //		this.tree_tensor = tree_tensor;
 //	}
 	
+	private String ToStmtInfo(String separator) {
+		return StringUtils.join(type_content_id.toArray(), " ") + separator + StringUtils.join(inner_type_content_id.toArray(), " ") + separator + StringUtils.join(api_group.toArray(), " ") + separator + StringUtils.join(isExistedList.toArray(), " ") + separator + StringUtils.join(lastIndexList.toArray(), " ") + separator + StringUtils.join(is_real.toArray(), " ");
+	}
+	
 	@Override
 	public String toString() {
 		// tree_tensor.toString() + "#" + 
 		// + " " + StringUtils.join(content_id.toArray(), " ") 
 		ArrayList<Integer> inner_id_type_content_id = GenerateInnerIndexesForTypeContents();
-		String result = StringUtils.join(inner_id_type_content_id.toArray(), " ") + "#" + StringUtils.join(type_content_id.toArray(), " ") + " " + StringUtils.join(inner_type_content_id.toArray(), " ") + " " + StringUtils.join(api_group.toArray(), " ") + " " + StringUtils.join(isExistedList.toArray(), " ") + " " + StringUtils.join(lastIndexList.toArray(), " ") + " " + StringUtils.join(is_real.toArray(), " ");// + " " + StringUtils.join(decode_type_id.toArray(), " ")
+		String result = StringUtils.join(inner_id_type_content_id.toArray(), " ") + "#" + ToStmtInfo("#");
 		return result.trim();
 	}
 
@@ -61,7 +65,7 @@ public class SequenceTensor extends Tensor {
 	public String toDebugString() {
 		String line_seperator = System.getProperty("line.separator");
 		// StringUtils.join(content_id.toArray(), " ") + line_seperator + 
-		String result = StringUtils.join(type_content_id.toArray(), " ") + line_seperator + StringUtils.join(inner_type_content_id.toArray(), " ") + line_seperator + StringUtils.join(api_group.toArray(), " ") + line_seperator + StringUtils.join(isExistedList.toArray(), " ") + line_seperator + StringUtils.join(lastIndexList.toArray(), " ") + line_seperator + StringUtils.join(is_real.toArray(), " ");// + line_seperator + StringUtils.join(decode_type_id.toArray(), " ")
+		String result = ToStmtInfo(line_seperator);
 		return result;
 	}
 
@@ -69,7 +73,7 @@ public class SequenceTensor extends Tensor {
 	public String toOracleString() {
 		String line_seperator = System.getProperty("line.separator");
 		// StringUtils.join(content.toArray(), " ") + line_seperator + 
-		String result = StringUtils.join(type_content_str.toArray(), " ") + line_seperator + StringUtils.join(inner_type_content_id.toArray(), " ") + line_seperator + StringUtils.join(api_group.toArray(), " ") + line_seperator + StringUtils.join(isExistedList.toArray(), " ") + line_seperator + StringUtils.join(lastIndexList.toArray(), " ") + line_seperator + StringUtils.join(is_real.toArray(), " ");// + line_seperator + StringUtils.join(decode_type_id.toArray(), " ")
+		String result = StringUtils.join(type_content_str.toArray(), " ") + line_seperator + ToStmtInfo(line_seperator);
 		return result;
 	}
 
