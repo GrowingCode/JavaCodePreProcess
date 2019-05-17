@@ -622,6 +622,7 @@ public class IDManager {
 		meta_of_ast2tensor.put("MaximumStringLength", MetaOfApp.MaximumStringLength);
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
+		meta_of_ast2tensor.put("CharInCascadeForm", MetaOfApp.CharInCascadeForm ? 1 : 0);
 		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
