@@ -1,12 +1,5 @@
 package statistic.ast;
 
-import java.io.File;
-import java.util.TreeMap;
-
-import com.google.gson.Gson;
-
-import util.FileUtil;
-
 public class ChildrenNumCounter {
 	
 	int max_children_num = 0;
