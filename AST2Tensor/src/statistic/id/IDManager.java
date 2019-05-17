@@ -684,6 +684,7 @@ public class IDManager {
 		// only for debug
 		GenerateIDJson(dir, token_id_map, "token");
 		GenerateIDJson(dir, api_comb_id_map, "api_comb");
+		
 		// for real tensor usage
 		GenerateIDHitJson(dir);
 		GenerateIDSummary(dir);
