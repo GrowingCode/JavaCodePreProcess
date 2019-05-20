@@ -120,6 +120,8 @@ public class IDManager {
 		// api comb regist
 		Regist(api_comb_id_map, id_tool.ar.api_combs);
 		
+		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
+		
 //		api_comb_hit_num = api_comb_id_map.size();
 //		Assert.isTrue(api_comb_hit_num > 0);
 		
@@ -654,6 +656,10 @@ public class IDManager {
 			}
 			each_api_comb_end.add(api_comb_sequences.size()-1);
 		}
+		// add default api_comb
+		each_api_comb_start.add(api_comb_sequences.size());
+		api_comb_sequences.add(-1);
+		each_api_comb_end.add(api_comb_sequences.size()-1);
 		
 		Gson gson = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_api_comb_sequences.json"),
@@ -747,6 +753,10 @@ public class IDManager {
 //		JSONArray type_content_huff_tree_list_json = JSONArray.fromObject(type_content_huff_tree_list);
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_huff_tree.json"),
 //				type_content_huff_tree_list_json.toString());
+	}
+	
+	public GrammarRecorder GetGrammarRecorder() {
+		return id_tool.gr;
 	}
 	
 	public String WordVocabularyInfo() {

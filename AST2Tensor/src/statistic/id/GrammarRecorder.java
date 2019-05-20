@@ -28,6 +28,8 @@ public class GrammarRecorder {
 	
 	Map<String, TreeSet<String>> self_children_map = new TreeMap<String, TreeSet<String>>();
 	
+	Map<String, TreeMap<String, Integer>> self_children_inner_index_map = new TreeMap<String, TreeMap<String, Integer>>();
+	
 	public GrammarRecorder() {
 	}
 	
@@ -66,6 +68,11 @@ public class GrammarRecorder {
 		children_nt.add(cnt);
 	}
 	
+	public Integer GetNodeRelativeIndexInGrammar(String parent_cnt, String node_cnt) {
+		Integer relative_id = self_children_inner_index_map.get(parent_cnt).get(node_cnt);
+		return relative_id;
+	}
+	
 //	private int EncounterNodeType(String node_type) {
 //		Integer id = node_type_id.get(node_type);
 //		if (id == null) {
@@ -74,6 +81,23 @@ public class GrammarRecorder {
 //		}
 //		return id;
 //	}
+	
+	public void ProcessNodeRelativeIndexInGrammar() {
+		Set<String> selfs = self_children_map.keySet();
+		Iterator<String> sf_itr = selfs.iterator();
+		while (sf_itr.hasNext()) {
+			String sf = sf_itr.next();
+			TreeSet<String> children = self_children_map.get(sf);
+			TreeMap<String, Integer> children_inner_index = self_children_inner_index_map.get(sf);
+			int index = -1;
+			Iterator<String> c_itr = children.iterator();
+			while (c_itr.hasNext()) {
+				String c = c_itr.next();
+				index++;
+				children_inner_index.put(c, index);
+			}
+		}
+	}
 	
 	public void SaveToDirectory(String dir, IDManager im) {
 		ArrayList<LinkedList<Integer>> raw = new ArrayList<LinkedList<Integer>>();

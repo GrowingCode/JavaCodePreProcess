@@ -82,18 +82,21 @@ public class SequenceTensorGenerator extends TensorGenerator {
 		nodeCount++;
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		boolean is_leaf = children.size() == 0;
+		TypeContentID type_id = TypeContentIDFetcher.FetchTypeID(node, im);
+		TypeContentID parent_type_id = TypeContentIDFetcher.FetchTypeID(node.getParent(), im);
 		{
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
-			curr_tensor.AppendOneToken(im, type_content_id, -1, 0, -1, 1);
+			int tc_relative = im.GetGrammarRecorder().GetNodeRelativeIndexInGrammar(parent_type_id.GetTypeContent(), type_id.GetTypeContent());
+			curr_tensor.AppendOneToken(im, type_id, parent_type_id, tc_relative, -1, -1, 0, -1, 1);
 		}
 		if (is_leaf) {
 			nodeCount++;
 //			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass());
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
+			TypeContentID content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			// two parameters for leaf similarity test
 			int isExisted = 0;
 			int lastIndex = -1;
 			int api_comb_id = -1;
+			int api_relative_idx = -1;
 			String name = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			// the last node
 			if (leafNodeLastIndexMap.containsKey(name)) {
@@ -110,19 +113,25 @@ public class SequenceTensorGenerator extends TensorGenerator {
 						ITypeBinding dc = imb.getDeclaringClass();
 						IMethodBinding[] mds = dc.getDeclaredMethods();
 						LinkedList<String> mdnames = new LinkedList<String>();
+						int index = 0;
 						for (IMethodBinding md : mds) {
 							String mdname = md.getName();
 							mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
 							if (!mdnames.contains(mdname)) {
 								mdnames.add(mdname);
 							}
+							if (mdname.equals(name)) {
+								api_relative_idx = index;
+							}
+							index++;
 						}
 						String joined = String.join("#", mdnames);
 						api_comb_id = im.GetAPICombID(joined);
 					}
 				}
 			}
-			curr_tensor.AppendOneToken(im, type_content_id, api_comb_id, isExisted, lastIndex, 1);
+			Integer content_relative_idx = im.GetGrammarRecorder().GetNodeRelativeIndexInGrammar(type_id.GetTypeContent(), content_id.GetTypeContent());
+			curr_tensor.AppendOneToken(im, content_id, type_id, content_relative_idx, api_comb_id, api_relative_idx, isExisted, lastIndex, 1);
 		}
 	}
 	
