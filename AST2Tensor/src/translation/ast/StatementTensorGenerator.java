@@ -1,5 +1,7 @@
 package translation.ast;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,10 +34,11 @@ import translation.tensor.ASTTensor;
 import translation.tensor.StatementInfo;
 import translation.tensor.StringTensor;
 
-public class ASTTensorGenerator extends TensorGenerator {
+public class StatementTensorGenerator extends TensorGenerator {
 
-	public ASTTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
+	public StatementTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, Class<?> tensor_creator) {
 		super(role_assigner, im, icu, cu);
+		this.tensor_creator = tensor_creator;
 	}
 	
 	public static int min_statement_size = Integer.MAX_VALUE;
@@ -44,6 +47,8 @@ public class ASTTensorGenerator extends TensorGenerator {
 	public static int max_statement_size = Integer.MIN_VALUE;
 	public static String max_size_statement = null;
 
+	Class<?> tensor_creator = null;
+	
 	int token_local_index = 0;
 	Map<String, Integer> token_index_record = null;
 	ASTTensor curr_tensor = null;
@@ -70,7 +75,21 @@ public class ASTTensorGenerator extends TensorGenerator {
 			Assert.isTrue(in_handling_tensor.size() == 0);
 			Assert.isTrue(pre_order_node.size() == 0);
 			Assert.isTrue(node_stmt.size() == 0);
-			curr_tensor = new ASTTensor(icu.getElementName(), -1);
+			Constructor<?> cc = null;
+			try {
+				cc = tensor_creator.getConstructor(String.class, int.class);
+			} catch (NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			try {
+				curr_tensor = (ASTTensor) cc.newInstance(icu.getElementName(), -1);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+//			curr_tensor = new ASTTensor(icu.getElementName(), -1);
 			token_index_record = new TreeMap<String, Integer>();
 			token_local_index = 0;
 		}

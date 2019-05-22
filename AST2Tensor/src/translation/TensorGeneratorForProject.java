@@ -14,16 +14,17 @@ import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
 import main.MetaOfApp;
-import translation.ast.ASTTensorGenerator;
-import translation.sequence.SequenceTensorGenerator;
+import translation.ast.StatementTensorGenerator;
+import translation.tensor.ASTTensor;
+import translation.tensor.SequenceTensor;
 import translation.tensor.Tensor;
 import translation.tensor.TensorForProject;
 
 public class TensorGeneratorForProject {
-	
+
 	IJavaProject java_project = null;
 	TensorTools tensor_tool = null;
-	
+
 	public TensorGeneratorForProject(IJavaProject java_project, TensorTools tensor_tool) {
 		this.java_project = java_project;
 		this.tensor_tool = tensor_tool;
@@ -72,15 +73,15 @@ public class TensorGeneratorForProject {
 //					seq_tensor.SetTreeTensor(tree_tensor);
 //				}
 //				result_sequence.AddTensors(sequence_tensors);
-				
-				
-				
+
 				if (MetaOfApp.DetailDebugMode) {
 					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
 				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
-				ASTTensorGenerator tg_depth_guided_tree = new ASTTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu);
-				TensorGenerator tg_sequence = new SequenceTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu);
+				TensorGenerator tg_depth_guided_tree = new StatementTensorGenerator(tensor_tool.role_assigner,
+						tensor_tool.im, icu, cu, ASTTensor.class);
+				TensorGenerator tg_sequence = new StatementTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+						SequenceTensor.class);
 				cu.accept(tg_depth_guided_tree);
 				cu.accept(tg_sequence);
 				List<Tensor> tree_tensors = tg_depth_guided_tree.GetGeneratedTensors();
@@ -95,12 +96,13 @@ public class TensorGeneratorForProject {
 		}
 		return result;
 	}
-	
-	// RoleAssigner role_assigner, IJavaProject java_project, IDManager im, 
-	// protected abstract TensorGenerator GenerateTensorGeneratorVisitor(ICompilationUnit icu, CompilationUnit cu);
+
+	// RoleAssigner role_assigner, IJavaProject java_project, IDManager im,
+	// protected abstract TensorGenerator
+	// GenerateTensorGeneratorVisitor(ICompilationUnit icu, CompilationUnit cu);
 	// return new SequenceTensorGenerator(role_assigner, java_project, im, icu, cu);
 	// return new TreeTensorGenerator(role_assigner, java_project, im, icu, cu);
-	
+
 }
 
 class SizePath implements Comparable<SizePath> {
