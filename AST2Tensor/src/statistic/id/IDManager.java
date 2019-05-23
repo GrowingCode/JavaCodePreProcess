@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 
 import com.google.gson.Gson;
 
-import bpe.SubWords;
+import bpe.BPEWords;
 import main.MetaOfApp;
 import statistic.IDTools;
 import util.ContentUtil;
@@ -488,10 +488,6 @@ public class IDManager {
 			}
 		}
 		return sws;
-	}
-	
-	private Set<String> ExtractAllSubBEPWords(Map<String, Integer> sws) {
-		return SubWords.GenerateBEPVocabulary(sws, -1);
 	}
 	
 	private Map<String, Integer> HandleSubWord(String dir, Map<Integer, String> ati_out) {
