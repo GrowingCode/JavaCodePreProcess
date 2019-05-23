@@ -44,7 +44,7 @@ public class SubWords {
 		return new_vocab;
 	}
 
-	public static void main() {
+	public static void main(String[] args) {
 	    Map<String, Integer> vocab = new TreeMap<String, Integer>();
 	    vocab.put("l o w", 5);
 	    vocab.put("l o w e r", 5);
