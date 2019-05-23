@@ -51,16 +51,16 @@ public class IDGenerator extends ASTVisitor {
 		// handle TokenRecorder
 		String type_content = JDTASTHelper.GetTypeRepresentationForASTNode(node);
 		if (role <= RoleAssigner.train_seen_k) {
-			tool.tr.TokenHitInTrainSet(type_content);
+			tool.tr.TokenHitInTrainSet(type_content, 1);
 		} else {
-			tool.tr.TokenNotHitInTrainSet(type_content);
+			tool.tr.TokenNotHitInTrainSet(type_content, 1);
 		}
 		if (children_size == 0) {
 			String token_str = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			if (role <= RoleAssigner.train_seen_k) {
-				tool.tr.TokenHitInTrainSet(token_str);
+				tool.tr.TokenHitInTrainSet(token_str, 1);
 			} else {
-				tool.tr.TokenNotHitInTrainSet(token_str);
+				tool.tr.TokenNotHitInTrainSet(token_str, 1);
 			}
 		}
 		// handle APIRecorder
@@ -85,9 +85,9 @@ public class IDGenerator extends ASTVisitor {
 						}
 						tool.gr.RecordExtraGrammarForLeaf(node, mdname);
 						if (role <= RoleAssigner.train_seen_k) {
-							tool.tr.TokenHitInTrainSet(mdname);
+							tool.tr.TokenHitInTrainSet(mdname, 0);
 						} else {
-							tool.tr.TokenHitInTrainSet(mdname);
+							tool.tr.TokenHitInTrainSet(mdname, 0);
 						}
 					}
 					String joined = String.join("#", mdnames);

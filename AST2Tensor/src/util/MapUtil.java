@@ -12,8 +12,8 @@ import java.util.TreeMap;
 
 public class MapUtil {
 
-	public static <K, V> Map<V, K> ReverseKeyValueInMap(Map<K, V> map) {
-		Map<V, K> result = new TreeMap<V, K>();
+	public static <K, V> TreeMap<V, K> ReverseKeyValueInMap(Map<K, V> map) {
+		TreeMap<V, K> result = new TreeMap<V, K>();
 		Set<Entry<K, V>> eset = map.entrySet();
 		Iterator<Entry<K, V>> eitr = eset.iterator();
 		while (eitr.hasNext()) {

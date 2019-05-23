@@ -1,6 +1,6 @@
 package statistic.id;
 
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -32,8 +32,8 @@ public class TokenRecorder {
 	
 //	private TreeMap<String, Boolean> ast_type_is_leaf = new TreeMap<String, Boolean>();
 	
-	TreeSet<String> hit_train = new TreeSet<String>();
-	TreeSet<String> not_hit_train = new TreeSet<String>();
+	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
+	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
 	
 	public TokenRecorder() {
 	}
@@ -46,16 +46,30 @@ public class TokenRecorder {
 //		}
 //	}
 	
-	public void TokenHitInTrainSet(String type_content) {
+	public void TokenHitInTrainSet(String type_content, Integer count) {
 		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
-		hit_train.add(type_content);
-		not_hit_train.remove(type_content);
+//		hit_train.add(type_content);
+		Integer h_count = hit_train.get(type_content);
+		if (h_count == null) {
+			h_count = 0;
+		}
+		h_count += count;
+		Integer val = not_hit_train.remove(type_content);
+		if (val != null) {
+//			h_count += val;
+		}
+		hit_train.put(type_content, h_count);
 	}
 	
-	public void TokenNotHitInTrainSet(String type_content) {
+	public void TokenNotHitInTrainSet(String type_content, Integer count) {
 		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
-		if (!hit_train.contains(type_content)) {
-			not_hit_train.add(type_content);
+		if (!hit_train.containsKey(type_content)) {
+			Integer nh_count = not_hit_train.get(type_content);
+			if (nh_count == null) {
+				nh_count = 0;
+			}
+			nh_count += count;
+			not_hit_train.put(type_content, nh_count);
 		}
 	}
 	
