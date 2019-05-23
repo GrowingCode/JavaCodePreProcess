@@ -48,7 +48,7 @@ public class SubWords {
 	public static void main(String[] args) {
 	    Map<String, Integer> vocab = new TreeMap<String, Integer>();
 	    vocab.put("l o w", 5);
-	    vocab.put("l o w e r", 5);
+	    vocab.put("l o w e r", 2);
 	    vocab.put("n e w e s t", 6);
 	    vocab.put("w i d e s t", 3);
 		int num_merges = 10;
