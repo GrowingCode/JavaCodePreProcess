@@ -68,6 +68,29 @@ public class MapUtil {
 		System.out.println(map.remove("A"));
 	}
 
+	public static <K, T> K FindKeyWithMaxValue(Map<K, T> pairs) {
+		K max_k = null;
+		Comparable<T> max = null;
+		Set<K> ks = pairs.keySet();
+		Iterator<K> k_itr = ks.iterator();
+		while (k_itr.hasNext()) {
+			K k = k_itr.next();
+			T t = pairs.get(k);
+			@SuppressWarnings("unchecked")
+			Comparable<T> cmp = (Comparable<T>) t;
+			if (max == null) {
+				max_k = k;
+				max = cmp;
+			} else {
+				if (max.compareTo(t) < 0) {
+					max_k = k;
+					max = cmp;
+				}
+			}
+		}
+		return max_k;
+	}
+
 }
 
 class MapValueComparator <K,V> implements Comparator<Map.Entry<K, V>> {

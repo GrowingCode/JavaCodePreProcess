@@ -5,12 +5,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import util.MapUtil;
+import util.PrintUtil;
 
 public class SubWords {
-	
+
 	public static Map<String, Integer> get_stats(Map<String, Integer> vocab) {
 		Map<String, Integer> pairs = new TreeMap<String, Integer>();
 		Set<String> vks = vocab.keySet();
@@ -19,8 +18,8 @@ public class SubWords {
 			String vk = vk_itr.next();
 			String[] vk_sbs = vk.split(" ");
 			int freq = vocab.get(vk);
-			for (int i=0;i<vk_sbs.length-1;i++) {
-				String nk = vk_sbs[i] + "," + vk_sbs[i+1];
+			for (int i = 0; i < vk_sbs.length - 1; i++) {
+				String nk = vk_sbs[i] + " " + vk_sbs[i + 1];
 				Integer n_freq = pairs.get(nk);
 				if (n_freq == null) {
 					n_freq = 0;
@@ -29,17 +28,20 @@ public class SubWords {
 				pairs.put(nk, n_freq);
 			}
 		}
-	    return pairs;
+		return pairs;
 	}
 
 	public static Map<String, Integer> merge_vocab(String pair, Map<String, Integer> old_vocab) {
 		Map<String, Integer> new_vocab = new TreeMap<String, Integer>();
-	    bigram = re.escape(' '.join(pair))
-	    p = re.compile(r'(?     for word in v_in:
-	      w_out = p.sub(''.join(pair), word)
-	      print("w_out    ",w_out)
-	      v_out[w_out] = v_in[word]
-	    return new_vocab;
+//	    bigram = re.escape(' '.join(pair))
+		Set<String> ov_set = old_vocab.keySet();
+		Iterator<String> os_itr = ov_set.iterator();
+		while (os_itr.hasNext()) {
+			String os = os_itr.next();
+			String new_os = os.replace(pair, pair.replace(" ", ""));
+			new_vocab.put(new_os, old_vocab.get(os));
+		}
+		return new_vocab;
 	}
 
 	public static void main() {
@@ -53,12 +55,11 @@ public class SubWords {
 		for (int i=0;i<num_merges;i++) {
 			System.out.println("=#####################################=== ");
 			Map<String, Integer> pairs = get_stats(vocab);
-		  
-			best = max(pairs, key=pairs.get)
-			vocab = merge_vocab(best, vocab)
-			print("vocab   ",vocab)
+			MapUtil.FindKeyWithMaxValue(pairs);
+			String best = MapUtil.FindKeyWithMaxValue(pairs);
+			vocab = merge_vocab(best, vocab);
+			PrintUtil.PrintMap(vocab);
 		}
 	}
 
 }
-
