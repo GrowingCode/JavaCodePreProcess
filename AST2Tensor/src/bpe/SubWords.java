@@ -1,5 +1,6 @@
 package bpe;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -53,8 +54,17 @@ public class SubWords {
 		int num_merges = 10;
 
 		for (int i=0;i<num_merges;i++) {
-			System.out.println("=#####################################=== ");
 			Map<String, Integer> pairs = get_stats(vocab);
+			Collection<Integer> vals = pairs.values();
+			boolean should_stop = true;
+			for (Integer val : vals) {
+				if (val > 1) {
+					should_stop = false;
+				}
+			}
+			if (should_stop) {
+				break;
+			}
 			MapUtil.FindKeyWithMaxValue(pairs);
 			String best = MapUtil.FindKeyWithMaxValue(pairs);
 			vocab = merge_vocab(best, vocab);
