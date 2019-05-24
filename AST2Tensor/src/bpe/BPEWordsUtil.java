@@ -138,7 +138,6 @@ public class BPEWordsUtil {
 		return bpes;
 	}
 	
-
 	public static Map<String, Integer> ExtractAllSubWords(Map<String, Integer> record) {
 		Map<String, Integer> sws = new TreeMap<String, Integer>();
 		Set<String> hr_set = record.keySet();
