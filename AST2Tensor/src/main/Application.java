@@ -20,6 +20,7 @@ import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
 import statistic.id.TokenRecorder;
 import statistic.id.APIRecorder;
+import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
 import translation.TensorGeneratorForProject;
@@ -59,25 +60,36 @@ public class Application implements IApplication {
 		}
 		// load and execute the project.
 		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-		if (args.length < 1) {
-			System.err.println("Wrong: argument size should be 2 and must be the directory which contains the tested files with max number of should-handle projects!");
+		if (args.length < 2) {
+			System.err.println("Wrong: argument size should be 2 and must be the directory which contains the tested files with BPE merge handling projects!");
 			return IApplication.EXIT_OK;
 		}
 		String all_proj_paths = args[0];
 		File root_dir = new File(all_proj_paths);
-		int max_handle_projs = -1;
-		if (args.length >= 2) {
-			max_handle_projs = Integer.parseInt(args[1]);
-		}
+		
+		String bpe_proj_paths = args[1];
+		File bpe_dir = new File(bpe_proj_paths);
+		
+//		int max_handle_projs = -1;
+//		if (args.length >= 2) {
+//			max_handle_projs = Integer.parseInt(args[1]);
+//		}
+		BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
 		RoleAssigner role_assigner = new RoleAssigner();
 		TokenRecorder tr = new TokenRecorder();
 		GrammarRecorder gr = new GrammarRecorder();
 		APIRecorder ar = new APIRecorder();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
-		IDTools id_tool = new IDTools(role_assigner, tr, gr, ar, cnc);
+		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, gr, ar, cnc);
+		{
+			BPEOneProjectHandle handle = new BPEOneProjectHandle();
+			HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
+		}
+		bpe_mr.GenerateBPEMerges();
 		{
 			CountOneProjectHandle handle = new CountOneProjectHandle();
-			HandleEachProjectFramework(max_handle_projs, root_dir, handle, id_tool, null);
+			HandleEachProjectFramework(root_dir, handle, id_tool, null);
+			// max_handle_projs, 
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 //			Iterator<String> pitr = proj_paths.iterator();
 //			int all_size = 0;
@@ -99,7 +111,8 @@ public class Application implements IApplication {
 			TensorTools tensor_tool = new TensorTools(role_assigner, im);
 			if (root_dir.isDirectory()) {
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
-				HandleEachProjectFramework(max_handle_projs, root_dir, handle, null, tensor_tool);
+				HandleEachProjectFramework(root_dir, handle, null, tensor_tool);
+				// max_handle_projs, 
 //				File[] files = root_dir.listFiles();
 //				int count_projs = 0;
 //				for (File f : files) {
@@ -140,18 +153,18 @@ public class Application implements IApplication {
 		return IApplication.EXIT_OK;
 	}
 	
-	// , RoleAssigner role_assigner
-	private static void HandleEachProjectFramework(int max_handle_projs, File root_dir, HandleOneProject run, IDTools id_tool, TensorTools tensor_tool) {
+	// int max_handle_projs, RoleAssigner role_assigner
+	private static void HandleEachProjectFramework(File root_dir, HandleOneProject run, IDTools id_tool, TensorTools tensor_tool) {
 		System.err.println(root_dir.getAbsolutePath());
 		File[] files = root_dir.listFiles();
-		int count_projs = 0;
+//		int count_projs = 0;
 		int all_size = 0;
 		for (File f : files) {
-			if (max_handle_projs >= 0 && count_projs >= max_handle_projs) {
-				break;
-			}
+//			if (max_handle_projs >= 0 && count_projs >= max_handle_projs) {
+//				break;
+//			}
 			if (f.isDirectory()) {
-				count_projs++;
+//				count_projs++;
 				all_size = run.Handle(f.getAbsolutePath(), all_size, id_tool, tensor_tool);
 			} else {
 				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
@@ -172,6 +185,18 @@ public class Application implements IApplication {
 //				}
 			}
 		}
+	}
+	
+	static int BPEOneProject(IJavaProject java_project, IDTools id_tool) {
+		int project_size = 0;
+		try {
+			SystemUtil.Delay(1000);
+			IDGeneratorForProject irgfop = new IDGeneratorForProject(java_project, id_tool);
+			project_size = irgfop.GenerateForOneProject();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return project_size;
 	}
 	
 	static int CountOneProject(IJavaProject java_project, IDTools id_tool) {
@@ -268,6 +293,27 @@ class CountOneProjectHandle implements HandleOneProject {
 //			id_tool.ic.RefineAllStatistics(min_support, max_capacity);
 //			all_size %= Application.RefinePeriod;
 //		}
+		return all_size;
+	}
+	
+}
+
+class BPEOneProjectHandle implements HandleOneProject {
+	
+	public int Handle(String proj_path, int all_size, IDTools id_tool, TensorTools tensor_tool) {
+		IJavaProject java_project = null;
+		try {
+			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			all_size += Application.BPEOneProject(java_project, id_tool);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			}
+		}
 		return all_size;
 	}
 	

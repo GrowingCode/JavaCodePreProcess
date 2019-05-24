@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 
 import com.google.gson.Gson;
 
-import bpe.BPEWords;
+import bpe.BPEWordsUtil;
 import main.MetaOfApp;
 import statistic.IDTools;
 import util.ContentUtil;
@@ -470,25 +470,6 @@ public class IDManager {
 //		String char_seq_meta = "HitNumber:" + hit.size() + "\n" + "MaxCharSequenceLength:" + max_length + "\n" + "TotalNumberOfChar:" + char_idx.size();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_char_sequence_summary.txt"), char_seq_meta);
 //	}
-	
-	private Map<String, Integer> ExtractAllSubWords(Map<String, Integer> hit_record) {
-		Map<String, Integer> sws = new TreeMap<String, Integer>();
-		Set<String> hr_set = hit_record.keySet();
-		for (String hr : hr_set) {
-			Integer r = hit_record.get(hr);
-			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(hr);
-//			sws.addAll(subwords);
-			for (String sw : subwords) {
-				Integer sw_i = sws.get(sw);
-				if (sw_i == null) {
-					sw_i = 0;
-				}
-				sw_i += r;
-				sws.put(sw, sw_i);
-			}
-		}
-		return sws;
-	}
 	
 	private Map<String, Integer> HandleSubWord(String dir, Map<Integer, String> ati_out) {
 		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();

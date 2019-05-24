@@ -1,5 +1,6 @@
 package bpe;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,9 +10,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import util.ContentUtil;
 import util.MapUtil;
 
-public class BPEWords {
+public class BPEWordsUtil {
 
 	private static Map<String, Integer> get_stats(Map<String, Integer> vocab) {
 		Map<String, Integer> pairs = new TreeMap<String, Integer>();
@@ -134,6 +136,26 @@ public class BPEWords {
 			}
 		}
 		return bpes;
+	}
+	
+
+	public static Map<String, Integer> ExtractAllSubWords(Map<String, Integer> record) {
+		Map<String, Integer> sws = new TreeMap<String, Integer>();
+		Set<String> hr_set = record.keySet();
+		for (String hr : hr_set) {
+			Integer r = record.get(hr);
+			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(hr);
+//			sws.addAll(subwords);
+			for (String sw : subwords) {
+				Integer sw_i = sws.get(sw);
+				if (sw_i == null) {
+					sw_i = 0;
+				}
+				sw_i += r;
+				sws.put(sw, sw_i);
+			}
+		}
+		return sws;
 	}
 	
 	public static void main(String[] args) {
