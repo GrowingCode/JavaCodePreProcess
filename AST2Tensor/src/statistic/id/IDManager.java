@@ -2,6 +2,7 @@ package statistic.id;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import org.eclipse.core.runtime.Assert;
 
 import com.google.gson.Gson;
 
+import bpe.BPEHandledResult;
 import bpe.BPEWordsUtil;
 import main.MetaOfApp;
 import statistic.IDTools;
@@ -471,7 +473,40 @@ public class IDManager {
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_char_sequence_summary.txt"), char_seq_meta);
 //	}
 	
-	private Map<String, Integer> HandleSubWord(String dir, Map<Integer, String> ati_out) {
+//	private Map<String, Integer> HandleSubWord(String dir, Map<Integer, String> ati_out) {
+//	
+//		
+//		return subword_index;
+//	}
+	
+	private void GenerateAndSaveCharSequenceInCascadeForm(String dir) {
+		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+		
+		// handle char index
+		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
+		Set<Character> c_set = new TreeSet<Character>();
+		Collection<String> ao = ati_out.values();
+		Iterator<String> aitr = ao.iterator();
+		while (aitr.hasNext()) {
+			String tc = aitr.next();
+			int tc_len = tc.length();
+			for (int i=0;i<tc_len;i++) {
+				char c = tc.charAt(i);
+				c_set.add(c);
+			}
+		}
+		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
+		Iterator<Character> c_itr = c_set.iterator();
+		while (c_itr.hasNext()) {
+			Character c = c_itr.next();
+			char_idx.put(c, char_idx.size());
+		}
+		char_num = char_idx.size();
+		
+		// handle sub words
+//		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
 		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
@@ -503,44 +538,12 @@ public class IDManager {
 		Gson gson6 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
-		
-		return subword_index;
-	}
-	
-	private void GenerateAndSaveCharSequenceInCascadeForm(String dir) {
-		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
-		
-		// handle char index
-		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
-		Set<Character> c_set = new TreeSet<Character>();
-		Collection<String> ao = ati_out.values();
-		Iterator<String> aitr = ao.iterator();
-		while (aitr.hasNext()) {
-			String tc = aitr.next();
-			int tc_len = tc.length();
-			for (int i=0;i<tc_len;i++) {
-				char c = tc.charAt(i);
-				c_set.add(c);
-			}
-		}
-		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
-		Iterator<Character> c_itr = c_set.iterator();
-		while (c_itr.hasNext()) {
-			Character c = c_itr.next();
-			char_idx.put(c, char_idx.size());
-		}
-		char_num = char_idx.size();
-		
-		// handle sub words
-		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
 //		for (int i=0;i<ati_out.size();i++) {
 //			String token = ati_out.get(i);
 //			Assert.isTrue(token != null && token.length() > 0);
 //			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
 //			for (int i1=0;i1<subwords.size();i1++) {
-		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(sub_words);
+		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> sw_keys = sw_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
 		while (sw_itr.hasNext()) {
@@ -593,94 +596,141 @@ public class IDManager {
 	}
 
 	private void GenerateAndSaveBPESubWordSequenceInCascadeForm(String dir) {
-		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+//		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
 		
 		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
 		Set<String> ht_keys = ht.keySet();
+		BPEHandledResult hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, ht_keys);
 		
+		TreeMap<String, Integer> nht = id_tool.tr.not_hit_train;
+		Set<String> nht_keys = nht.keySet();
+		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, nht_keys);
 		
-		// handle sub words
-		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
-		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
-		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(sub_words);
-		Set<Integer> sw_keys = sw_out.keySet();
-		Iterator<Integer> sw_itr = sw_keys.iterator();
-		while (sw_itr.hasNext()) {
-			Integer sw = sw_itr.next();
-			String subword = sw_out.get(sw);
-			each_char_sequence_start.add(char_sequences.size());
-			for (int i11=0;i11<subword.length();i11++) {
-				char c = subword.charAt(i11);
-				int idx = char_idx.get(c);
-				char_sequences.add(idx);
-			}
-			each_char_sequence_end.add(char_sequences.size()-1);
-		}
+		// in train
+		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
+		// not in train
+		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
+		not_in_train_vobs.removeAll(in_train_vobs);
+		System.out.println("not_in_train_vobs_size:" + not_in_train_vobs.size() + "#in_train_vobs:" + in_train_vobs.size() + "#unseen_rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
 		
-		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
-				gson.toJson(char_sequences));
-		Gson gson2 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
-				gson2.toJson(each_char_sequence_start));
-		Gson gson3 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
-				gson3.toJson(each_char_sequence_end));
-	}
-	
-	private void GenerateAndSaveCharSequence(String dir) {
-		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+		Map<String, String> origin_after = new TreeMap<String, String>();
+		origin_after.putAll(hit_res.origin_after);
+		origin_after.putAll(not_hit_res.origin_after);
+		
+		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 		
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
-		Set<Character> c_set = new TreeSet<Character>();
-		Collection<String> ao = ati_out.values();
-		Iterator<String> aitr = ao.iterator();
-		while (aitr.hasNext()) {
-			String tc = aitr.next();
-			int tc_len = tc.length();
-			for (int i=0;i<tc_len;i++) {
-				char c = tc.charAt(i);
-				c_set.add(c);
-			}
-		}
-		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
-		Iterator<Character> c_itr = c_set.iterator();
-		while (c_itr.hasNext()) {
-			Character c = c_itr.next();
-			char_idx.put(c, char_idx.size());
-		}
-		char_num = char_idx.size();
-		
+		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
 		for (int i=0;i<ati_out.size();i++) {
 			String token = ati_out.get(i);
 			Assert.isTrue(token != null && token.length() > 0);
-			int tc_len = token.length();
-			each_char_sequence_start.add(char_sequences.size());
-			for (int i1=0;i1<tc_len;i1++) {
-				char c = token.charAt(i1);
-				int idx = char_idx.get(c);
-				char_sequences.add(idx);
+			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
+			Assert.isTrue(subwords.size() > 0);
+			each_subword_sequence_start.add(subword_sequences.size());
+			for (int i1=0;i1<subwords.size();i1++) {
+				String subword = subwords.get(i1);
+				if (!subword_index.containsKey(subword)) {
+					subword_index.put(subword, subword_index.size());
+				}
+				Integer idx = subword_index.get(subword);
+				subword_sequences.add(idx);
 			}
-			if (i < id_tool.gr.fixed_tokens.size()) {
-				each_char_sequence_end.add(-1);
-			} else {
-				each_char_sequence_end.add(char_sequences.size()-1);
-			}
+			each_subword_sequence_end.add(subword_sequences.size()-1);
 		}
-		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
-				gson.toJson(char_sequences));
-		Gson gson2 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
-				gson2.toJson(each_char_sequence_start));
-		Gson gson3 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
-				gson3.toJson(each_char_sequence_end));
+		
+		Gson gson4 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"),
+				gson4.toJson(subword_sequences));
+		Gson gson5 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
+				gson5.toJson(each_subword_sequence_start));
+		Gson gson6 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
+				gson6.toJson(each_subword_sequence_end));
+//		return subword_index;
+//		// handle sub words
+//		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
+//		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(sub_words);
+//		Set<Integer> sw_keys = sw_out.keySet();
+//		Iterator<Integer> sw_itr = sw_keys.iterator();
+//		while (sw_itr.hasNext()) {
+//			Integer sw = sw_itr.next();
+//			String subword = sw_out.get(sw);
+//			each_char_sequence_start.add(char_sequences.size());
+//			for (int i11=0;i11<subword.length();i11++) {
+//				char c = subword.charAt(i11);
+//				int idx = char_idx.get(c);
+//				char_sequences.add(idx);
+//			}
+//			each_char_sequence_end.add(char_sequences.size()-1);
+//		}
+//		
+//		Gson gson = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
+//				gson.toJson(char_sequences));
+//		Gson gson2 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
+//				gson2.toJson(each_char_sequence_start));
+//		Gson gson3 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
+//				gson3.toJson(each_char_sequence_end));
 	}
+	
+//	private void GenerateAndSaveCharSequence(String dir) {
+//		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+//		
+//		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
+//		Set<Character> c_set = new TreeSet<Character>();
+//		Collection<String> ao = ati_out.values();
+//		Iterator<String> aitr = ao.iterator();
+//		while (aitr.hasNext()) {
+//			String tc = aitr.next();
+//			int tc_len = tc.length();
+//			for (int i=0;i<tc_len;i++) {
+//				char c = tc.charAt(i);
+//				c_set.add(c);
+//			}
+//		}
+//		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
+//		Iterator<Character> c_itr = c_set.iterator();
+//		while (c_itr.hasNext()) {
+//			Character c = c_itr.next();
+//			char_idx.put(c, char_idx.size());
+//		}
+//		char_num = char_idx.size();
+//		
+//		for (int i=0;i<ati_out.size();i++) {
+//			String token = ati_out.get(i);
+//			Assert.isTrue(token != null && token.length() > 0);
+//			int tc_len = token.length();
+//			each_char_sequence_start.add(char_sequences.size());
+//			for (int i1=0;i1<tc_len;i1++) {
+//				char c = token.charAt(i1);
+//				int idx = char_idx.get(c);
+//				char_sequences.add(idx);
+//			}
+//			if (i < id_tool.gr.fixed_tokens.size()) {
+//				each_char_sequence_end.add(-1);
+//			} else {
+//				each_char_sequence_end.add(char_sequences.size()-1);
+//			}
+//		}
+//		Gson gson = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
+//				gson.toJson(char_sequences));
+//		Gson gson2 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
+//				gson2.toJson(each_char_sequence_start));
+//		Gson gson3 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
+//				gson3.toJson(each_char_sequence_end));
+//	}
 	
 	private void GenerateIDSummary(String dir) {
 		Gson gson = new Gson();
@@ -765,7 +815,8 @@ public class IDManager {
 		if (MetaOfApp.CharInCascadeForm) {
 			GenerateAndSaveCharSequenceInCascadeForm(dir);
 		} else {
-			GenerateAndSaveCharSequence(dir);
+//			GenerateAndSaveCharSequence(dir);
+			GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
 		}
 		
 //		GenerateTypeAndSummaryJson(dir, ast_type_content_id_map, "type");
