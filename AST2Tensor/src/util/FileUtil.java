@@ -20,7 +20,7 @@ public class FileUtil {
 			d.mkdirs();
 		}
 	}
-	
+
 	public static List<String> ReadLineFromFile(File f) {
 		List<String> result = new LinkedList<String>();
 		BufferedReader reader = null;
@@ -181,6 +181,50 @@ public class FileUtil {
 				}
 			}
 			file.delete();
+		}
+	}
+
+	public static void CopyDir(String sourcePath, String newPath) throws IOException {
+
+		if (!(new File(newPath)).exists()) {
+			(new File(newPath)).mkdirs();
+		}
+
+		File file = new File(sourcePath);
+		String[] filePath = file.list();
+
+		for (int i = 0; i < filePath.length; i++) {
+			if ((new File(sourcePath + File.separator + filePath[i])).isDirectory()) {
+				CopyDir(sourcePath + File.separator + filePath[i], newPath + File.separator + filePath[i]);
+			}
+			if (new File(sourcePath + File.separator + filePath[i]).isFile()) {
+				CopyFile(new File(sourcePath + File.separator + filePath[i]),
+						new File(newPath + File.separator + filePath[i]));
+			}
+		}
+	}
+
+	public static void CopyDirUnderSpecificDir(String sourcePath, String newPath) throws IOException {
+
+		if (!(new File(newPath)).exists()) {
+			(new File(newPath)).mkdirs();
+		}
+
+		File file = new File(sourcePath);
+		assert file.isDirectory();
+		String f_name = file.getName();
+		String r_new_path = newPath + File.separator + f_name;
+		assert !(new File(r_new_path)).exists();
+		new File(r_new_path).mkdirs();
+		String[] filePath = file.list();
+		for (int i = 0; i < filePath.length; i++) {
+			if ((new File(sourcePath + File.separator + filePath[i])).isDirectory()) {
+				CopyDir(sourcePath + File.separator + filePath[i], r_new_path + File.separator + filePath[i]);
+			}
+			if (new File(sourcePath + File.separator + filePath[i]).isFile()) {
+				CopyFile(new File(sourcePath + File.separator + filePath[i]),
+						new File(r_new_path + File.separator + filePath[i]));
+			}
 		}
 	}
 

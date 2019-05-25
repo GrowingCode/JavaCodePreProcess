@@ -33,6 +33,10 @@ import util.SystemUtil;
 import util.ZIPUtil;
 
 public class Application implements IApplication {
+
+	public static final String user_home = System.getProperty("user.home");
+	public static final String witness = user_home + "/YYXWitness";
+	public static final String data = user_home + "/YYXData";
 	
 	public final static int RefinePeriod = 10000000;
 	public final static int MinSupport = 3;
@@ -59,16 +63,16 @@ public class Application implements IApplication {
 			Assert.isTrue(dd.listFiles().length == 0);
 		}
 		// load and execute the project.
-		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-		if (args.length < 2) {
-			System.err.println("Wrong: argument size should be 2 and must be the directory which contains the tested files with BPE merge handling projects!");
-			return IApplication.EXIT_OK;
-		}
-		String all_proj_paths = args[0];
-		File root_dir = new File(all_proj_paths);
+//		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+//		if (args.length < 2) {
+//			System.err.println("Wrong: argument size should be 2 and must be the directory which contains the tested files with BPE merge handling projects!");
+//			return IApplication.EXIT_OK;
+//		}
+//		String all_proj_paths = args[0];
+		File root_dir = new File(data);
 		
-		String bpe_proj_paths = args[1];
-		File bpe_dir = new File(bpe_proj_paths);
+//		String bpe_proj_paths = args[1];
+		File bpe_dir = new File(witness);
 		
 //		int max_handle_projs = -1;
 //		if (args.length >= 2) {
