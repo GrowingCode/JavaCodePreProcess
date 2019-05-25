@@ -12,6 +12,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 // import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IJavaProject;
 
+import bpe.BPEGeneratorForProject;
 import eclipse.project.AnalysisEnvironment;
 import eclipse.project.ProjectLoader;
 import logger.DebugLogger;
@@ -195,7 +196,7 @@ public class Application implements IApplication {
 		int project_size = 0;
 		try {
 			SystemUtil.Delay(1000);
-			IDGeneratorForProject irgfop = new IDGeneratorForProject(java_project, id_tool);
+			BPEGeneratorForProject irgfop = new BPEGeneratorForProject(java_project, id_tool);
 			project_size = irgfop.GenerateForOneProject();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -22,6 +22,7 @@ import statistic.IDTools;
 import util.ContentUtil;
 import util.FileUtil;
 import util.MapUtil;
+import util.PrintUtil;
 
 public class IDManager {
 	
@@ -599,6 +600,7 @@ public class IDManager {
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
 		
 		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
 		Set<String> ht_keys = ht.keySet();

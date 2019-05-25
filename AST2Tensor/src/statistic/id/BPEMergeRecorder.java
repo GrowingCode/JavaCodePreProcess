@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import bpe.BPEWordsUtil;
+import util.PrintUtil;
 
 public class BPEMergeRecorder {
 	
@@ -26,6 +27,7 @@ public class BPEMergeRecorder {
 	}
 	
 	public void GenerateBPEMerges() {
+		PrintUtil.PrintMap(token_times, "token_times");
 		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(sub_words);
 		List<String> mgs = BPEWordsUtil.GenerateBPEMerges(n_vob, -1);
