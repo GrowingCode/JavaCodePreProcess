@@ -89,6 +89,10 @@ public class GrammarRecorder {
 			String sf = sf_itr.next();
 			TreeSet<String> children = self_children_map.get(sf);
 			TreeMap<String, Integer> children_inner_index = self_children_inner_index_map.get(sf);
+			if (children_inner_index == null) {
+				children_inner_index = new TreeMap<String, Integer>();
+				self_children_inner_index_map.put(sf, children_inner_index);
+			}
 			int index = -1;
 			Iterator<String> c_itr = children.iterator();
 			while (c_itr.hasNext()) {
