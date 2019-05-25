@@ -613,7 +613,7 @@ public class IDManager {
 		// not in train
 		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
 		not_in_train_vobs.removeAll(in_train_vobs);
-		System.out.println("not_in_train_vobs_size:" + not_in_train_vobs.size() + "#in_train_vobs:" + in_train_vobs.size() + "#unseen_rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
+		System.out.println("Not_In_Train_Vobs_Size:" + not_in_train_vobs.size() + "#In_Train_Vobs_Size:" + in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
 		
 		Map<String, String> origin_after = new TreeMap<String, String>();
 		origin_after.putAll(hit_res.origin_after);
@@ -739,7 +739,7 @@ public class IDManager {
 		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
-		meta_of_ast2tensor.put("CharInCascadeForm", MetaOfApp.CharInCascadeForm ? 1 : 0);
+		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
 		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
@@ -812,11 +812,11 @@ public class IDManager {
 		
 		GenerateAPIJson(dir);
 		
-		if (MetaOfApp.CharInCascadeForm) {
-			GenerateAndSaveCharSequenceInCascadeForm(dir);
-		} else {
+		if (MetaOfApp.InBPEForm) {
 //			GenerateAndSaveCharSequence(dir);
 			GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
+		} else {
+			GenerateAndSaveCharSequenceInCascadeForm(dir);
 		}
 		
 //		GenerateTypeAndSummaryJson(dir, ast_type_content_id_map, "type");

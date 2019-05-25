@@ -29,7 +29,9 @@ public class MetaOfApp {
 	
 //	public final static boolean ReplaceLeastWithUnk = false;
 	
-	public final static boolean CharInCascadeForm = false;
+//	public final static boolean CharInCascadeForm = false;
+	
+	public final static boolean InBPEForm = true;
 	
 	public static void SaveToDirectory(String dir) {
 //		Gson gson = new Gson();
