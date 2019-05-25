@@ -33,6 +33,8 @@ public class MetaOfApp {
 	
 	public final static boolean InBPEForm = true;
 	
+	public final static int number_of_merges = 100;
+	
 	public static void SaveToDirectory(String dir) {
 //		Gson gson = new Gson();
 //		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();

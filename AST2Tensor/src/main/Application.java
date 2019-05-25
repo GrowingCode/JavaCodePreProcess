@@ -39,9 +39,9 @@ public class Application implements IApplication {
 	public static final String witness = user_home + "/YYXWitness";
 	public static final String data = user_home + "/YYXData";
 	
-	public final static int RefinePeriod = 10000000;
-	public final static int MinSupport = 3;
-	public final static int MaxCapacity = 10000000;
+//	public final static int RefinePeriod = 10000000;
+//	public final static int MinSupport = 3;
+//	public final static int MaxCapacity = 10000000;
 	
 	public final static String TemporaryUnzipWorkingSpace = "temp_unzip";
 	
@@ -90,7 +90,9 @@ public class Application implements IApplication {
 			BPEOneProjectHandle handle = new BPEOneProjectHandle();
 			HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
 		}
-		bpe_mr.GenerateBPEMerges();
+		System.out.println("==== BPEMerge Begin ====");
+		bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
+		System.out.println("==== BPEMerge Over ====");
 		{
 			CountOneProjectHandle handle = new CountOneProjectHandle();
 			HandleEachProjectFramework(root_dir, handle, id_tool, null);
@@ -107,6 +109,7 @@ public class Application implements IApplication {
 //				}
 //			}
 		}
+		System.out.println("==== CountProject Over ====");
 		IDManager im = new IDManager(id_tool);
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);
@@ -146,6 +149,7 @@ public class Application implements IApplication {
 				DebugLogger.Error("The root path given in parameter should be a directory which contains zip files or with-project directories");
 			}
 		}
+		System.out.println("==== TranslateProject Over ====");
 		{
 			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
 			cnc.SaveToDirectory(MetaOfApp.DataDirectory);

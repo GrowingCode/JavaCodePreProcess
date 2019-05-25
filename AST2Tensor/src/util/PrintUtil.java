@@ -20,7 +20,7 @@ public class PrintUtil {
 	public static <K> void PrintList(List<K> list, String extra_info) {
 		System.out.println("===== list " + extra_info + " print begin =====");
 		for (K k : list) {
-			System.out.println("k"+":"+k);
+			System.out.println(k);
 		}
 		System.out.println("===== list " + extra_info + " print end =====");
 	}

@@ -1,7 +1,6 @@
 package bpe;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import org.eclipse.core.runtime.Assert;
 
 import util.ContentUtil;
 import util.MapUtil;
@@ -52,27 +53,34 @@ public class BPEWordsUtil {
 	public static List<String> GenerateBPEMerges(Map<String, Integer> vocab, int num_merges) {
 		List<String> merges = new LinkedList<String>();
 		Map<String, Integer> vocab_r = new TreeMap<String, Integer>(vocab);
-		if (num_merges == -1) {
-			num_merges = Integer.MAX_VALUE;
-		}
+//		if (num_merges == -1) {
+//			num_merges = Integer.MAX_VALUE;
+//		}
+//		System.out.println("num_merges:" + num_merges);
+		Assert.isTrue(num_merges > 0);
 		for (int i=0;i<num_merges;i++) {
-			Map<String, Integer> pairs = get_stats(vocab);
-			Collection<Integer> vals = pairs.values();
-			boolean should_stop = true;
-			for (Integer val : vals) {
-				if (val > 1) {
-					should_stop = false;
-				}
-			}
-			if (should_stop) {
+			Map<String, Integer> pairs = get_stats(vocab_r);
+//			System.out.println("pairs.size():" + pairs.size());
+			if (pairs.size() == 0) {
 				break;
 			}
-			MapUtil.FindKeyWithMaxValue(pairs);
+//			Collection<Integer> vals = pairs.values();
+//			boolean should_stop = true;
+//			for (Integer val : vals) {
+//				if (val > 1) {
+//					should_stop = false;
+//				}
+//			}
+//			if (should_stop) {
+//				break;
+//			}
+//			MapUtil.FindKeyWithMaxValue(pairs);
 			String best = MapUtil.FindKeyWithMaxValue(pairs);
 			vocab_r = merge_vocab(best, vocab_r);
 			merges.add(best);
 		}
 //		PrintUtil.PrintMap(vocab_r);
+//		PrintUtil.PrintList(merges, "bep_merges");
 		return merges;
 	}
 	
@@ -84,13 +92,18 @@ public class BPEWordsUtil {
 			origin_after.put(token, token);
 			after_origin.put(token, token);
 		}
-		Set<String> inserted = InsertSpaceToTokens(tokens);
+//		Set<String> inserted = InsertSpaceToTokens(tokens);
+		Set<String> inserted = new TreeSet<String>(tokens);
 		Set<String> new_inserted = new TreeSet<String>();
 		for (String merge : merges) {
 			for (String ins : inserted) {
-				String new_ins = ins.replace(merge, merge.replace(" ", ""));
+				String s_merge = merge.replace(" ", "");
+//				System.out.println("merge:" + merge + "#s_merge:" + s_merge);
+				String new_ins = ins.replace(merge, s_merge);
+//				System.out.println("ins:" + ins + "#new_ins:" + new_ins);
 				new_inserted.add(new_ins);
 				String ori = after_origin.remove(ins);
+				Assert.isTrue(ori != null);
 				after_origin.put(new_ins, ori);
 				origin_after.put(ori, new_ins);
 			}
@@ -98,7 +111,7 @@ public class BPEWordsUtil {
 			inserted.addAll(new_inserted);
 			new_inserted.clear();
 		}
-		result.vobs.addAll(new_inserted);
+		result.vobs.addAll(inserted);
 		result.origin_after.putAll(origin_after);
 		return result;
 	}
