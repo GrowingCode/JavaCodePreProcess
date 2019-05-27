@@ -12,13 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
+import statistic.id.IDManager;
 import util.BooleanArrayUtil;
 import util.SetUtil;
 
 public class ASTTensor extends Tensor {
 
-	public ASTTensor(String origin_file, int role) {
-		super(origin_file, role);
+	public ASTTensor(IDManager im, String origin_file, int role) {
+		super(im, origin_file, role);
 	}
 	
 	ArrayList<StatementInfo> si_list = new ArrayList<StatementInfo>();

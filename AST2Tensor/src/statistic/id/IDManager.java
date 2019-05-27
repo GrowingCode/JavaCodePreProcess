@@ -102,6 +102,10 @@ public class IDManager {
 	// Integer>>();
 	
 	IDTools id_tool = null;
+	
+	public ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+	public ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+	public ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 
 	public IDManager(IDTools id_tool) {
 		this.id_tool = id_tool;
@@ -508,9 +512,9 @@ public class IDManager {
 		
 		// handle sub words
 //		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
-		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
+//		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 		
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
 		for (int i=0;i<ati_out.size();i++) {
@@ -635,9 +639,9 @@ public class IDManager {
 		origin_after.putAll(hit_res.origin_after);
 		origin_after.putAll(not_hit_res.origin_after);
 		
-		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
+//		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 		
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();

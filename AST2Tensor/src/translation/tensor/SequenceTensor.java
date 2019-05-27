@@ -1,10 +1,14 @@
 package translation.tensor;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
+
+import statistic.id.IDManager;
 
 //public class SequenceTensor extends Tensor {
 //	
@@ -90,9 +94,13 @@ import org.eclipse.core.runtime.Assert;
 //}
 
 public class SequenceTensor extends ASTTensor {
+
+	ArrayList<Integer> swords = new ArrayList<Integer>();
+	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
+	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
 	
-	public SequenceTensor(String origin_file, int role) {
-		super(origin_file, role);
+	public SequenceTensor(IDManager im, String origin_file, int role) {
+		super(im, origin_file, role);
 	}
 	
 	@Override
@@ -114,6 +122,21 @@ public class SequenceTensor extends ASTTensor {
 		Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
 		stmt_token_variable_info.clear();
 		stmt_token_variable_info.addAll(seq_var_info);
+		
+		for (int i=0;i<i_len;i++) {
+			Integer ti = stmt_token_info.get(i);
+			Integer start = im.each_subword_sequence_start.get(ti);
+			Integer end = im.each_subword_sequence_end.get(ti);
+			List<Integer> seqs = im.subword_sequences.subList(start, end+1);
+			token_sword_start.add(swords.size());
+			swords.addAll(seqs);
+			token_sword_end.add(swords.size());
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + "#" + StringUtils.join(swords.toArray(), " ") + "#" + StringUtils.join(token_sword_start.toArray(), " ") + "#" + StringUtils.join(token_sword_end.toArray(), " ");
 	}
 	
 }

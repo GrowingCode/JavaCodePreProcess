@@ -9,10 +9,12 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
 
+import statistic.id.IDManager;
 import util.MapUtil;
 
 public abstract class Tensor {
 
+	IDManager im = null;
 	String origin_file = null;
 	int role = -1;
 	
@@ -20,7 +22,8 @@ public abstract class Tensor {
 	int inner_index = -1;
 	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
 	
-	public Tensor(String origin_file, int role) {
+	public Tensor(IDManager im, String origin_file, int role) {
+		this.im = im;
 		this.origin_file = origin_file;
 		this.role = role;
 	}
