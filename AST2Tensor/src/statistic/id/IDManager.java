@@ -544,12 +544,21 @@ public class IDManager {
 //			Assert.isTrue(token != null && token.length() > 0);
 //			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
 //			for (int i1=0;i1<subwords.size();i1++) {
+		
+		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
+		
 		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> sw_keys = sw_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
 		while (sw_itr.hasNext()) {
 			Integer sw = sw_itr.next();
+			Assert.isTrue(subword_is_end_of_token.size() == sw);
 			String subword = sw_out.get(sw);
+			if (subword.endsWith(" ")) {
+				subword_is_end_of_token.add(1);
+			} else {
+				subword_is_end_of_token.add(0);
+			}
 			each_char_sequence_start.add(char_sequences.size());
 			for (int i11=0;i11<subword.length();i11++) {
 				char c = subword.charAt(i11);
@@ -558,6 +567,11 @@ public class IDManager {
 			}
 			each_char_sequence_end.add(char_sequences.size()-1);
 		}
+		
+		Gson gson0 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
+				gson0.toJson(subword_is_end_of_token));
+		
 //				String subword = subwords.get(i1);
 //				Assert.isTrue(subword != null && subword.length() > 0);
 //				if (!subword_index.containsKey(subword)) {
@@ -653,6 +667,28 @@ public class IDManager {
 		Gson gson6 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
+		
+
+		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
+		
+		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
+		Set<Integer> sw_keys = sw_out.keySet();
+		Iterator<Integer> sw_itr = sw_keys.iterator();
+		while (sw_itr.hasNext()) {
+			Integer sw = sw_itr.next();
+			Assert.isTrue(subword_is_end_of_token.size() == sw);
+			String subword = sw_out.get(sw);
+			if (subword.endsWith(" ")) {
+				subword_is_end_of_token.add(1);
+			} else {
+				subword_is_end_of_token.add(0);
+			}
+		}
+		
+		Gson gson0 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
+				gson0.toJson(subword_is_end_of_token));
+		
 //		return subword_index;
 //		// handle sub words
 //		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
