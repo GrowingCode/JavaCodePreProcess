@@ -95,48 +95,70 @@ import statistic.id.IDManager;
 
 public class SequenceTensor extends ASTTensor {
 
-	ArrayList<Integer> swords = new ArrayList<Integer>();
+	ArrayList<Integer> sword_info = new ArrayList<Integer>();
+	ArrayList<Integer> sword_relative_info = new ArrayList<Integer>();
+
 	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
 	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
-	
+
 	public SequenceTensor(IDManager im, String origin_file, int role) {
 		super(im, origin_file, role);
 	}
-	
+
 	@Override
 	public void HandleAllDevoured() {
 		super.HandleAllDevoured();
-		Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
-		ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
 		int i_len = stmt_token_info.size();
-		for (int i=0;i<i_len;i++) {
-			Integer ti = stmt_token_info.get(i);
-			Integer li = latest_index.get(ti);
-			if (li != null) {
-				seq_var_info.add(li-i);
-			} else {
-				seq_var_info.add(Integer.MAX_VALUE);
+		{
+			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
+			ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
+			for (int i = 0; i < i_len; i++) {
+				Assert.isTrue(seq_var_info.size() == i);
+				Integer ti = stmt_token_info.get(i);
+				Integer li = latest_index.get(ti);
+				if (li != null) {
+					seq_var_info.add(li - i);
+				} else {
+					seq_var_info.add(Integer.MAX_VALUE);
+				}
+				latest_index.put(ti, i);
 			}
-			latest_index.put(ti, i);
+			Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
+			stmt_token_variable_info.clear();
+			stmt_token_variable_info.addAll(seq_var_info);
 		}
-		Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
-		stmt_token_variable_info.clear();
-		stmt_token_variable_info.addAll(seq_var_info);
-		
-		for (int i=0;i<i_len;i++) {
-			Integer ti = stmt_token_info.get(i);
-			Integer start = im.each_subword_sequence_start.get(ti);
-			Integer end = im.each_subword_sequence_end.get(ti);
-			List<Integer> seqs = im.subword_sequences.subList(start, end+1);
-			token_sword_start.add(swords.size());
-			swords.addAll(seqs);
-			token_sword_end.add(swords.size());
+		{
+			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
+			for (int i = 0; i < i_len; i++) {
+				Integer ti = stmt_token_info.get(i);
+				Integer start = im.each_subword_sequence_start.get(ti);
+				Integer end = im.each_subword_sequence_end.get(ti);
+				List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
+				int j_len = seqs.size();
+				for (int j = 0; j < j_len; j++) {
+					Integer swi = seqs.get(j);
+					Integer li = latest_index.get(swi);
+					if (li != null) {
+						sword_relative_info.add(li - sword_relative_info.size());
+					} else {
+						sword_relative_info.add(Integer.MAX_VALUE);
+					}
+					latest_index.put(swi, i);
+				}
+				token_sword_start.add(sword_info.size());
+				sword_info.addAll(seqs);
+				token_sword_end.add(sword_info.size());
+			}
+			Assert.isTrue(sword_info.size() == sword_relative_info.size());
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return super.toString() + "#" + StringUtils.join(swords.toArray(), " ") + "#" + StringUtils.join(token_sword_start.toArray(), " ") + "#" + StringUtils.join(token_sword_end.toArray(), " ");
+		return super.toString() + "#" + StringUtils.join(sword_info.toArray(), " ") + "#"
+				+ StringUtils.join(sword_relative_info.toArray(), " ") + "#"
+				+ StringUtils.join(token_sword_start.toArray(), " ") + "#"
+				+ StringUtils.join(token_sword_end.toArray(), " ");
 	}
-	
+
 }
