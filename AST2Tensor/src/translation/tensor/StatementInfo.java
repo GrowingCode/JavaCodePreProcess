@@ -26,6 +26,7 @@ public class StatementInfo {
 	ArrayList<Integer> local_token_id = new ArrayList<Integer>();
 	ArrayList<Integer> is_variable = new ArrayList<Integer>();
 	ArrayList<Integer> api_group = new ArrayList<Integer>();
+	ArrayList<Integer> api_relative = new ArrayList<Integer>();
 	
 	ArrayList<String> type_content_str = new ArrayList<String>();
 	
@@ -34,7 +35,7 @@ public class StatementInfo {
 	List<Integer> following_stmts_same_legal_as_this = new LinkedList<Integer>();
 //	ArrayList<Boolean> depend_record = new ArrayList<Boolean>();
 	
-	public void StoreOneNode(IDManager im, TypeContentID t_c, int token_local_id, int is_var, int api_comb_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
+	public void StoreOneNode(IDManager im, TypeContentID t_c, int token_local_id, int is_var, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
 		local_token_id.add(token_local_id);
@@ -46,6 +47,7 @@ public class StatementInfo {
 			var_or_type_ids_in_this_stmt.add(token_local_id);
 		}
 		api_group.add(api_comb_id);
+		api_relative.add(api_relative_id);
 		
 		type_content_str.add(t_c.GetTypeContent());
 	}

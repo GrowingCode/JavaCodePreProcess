@@ -170,7 +170,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			nodeCount++;
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, -1, -1, -1);
+			stmt.StoreOneNode(im, type_content_id, -1, -1, -1, 0);
 		}
 		boolean is_leaf = children.size() == 0;
 		if (is_leaf) {
@@ -180,6 +180,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			int var_index = -1;
 			int is_var = -1;
 			int api_comb_id = -1;
+			int api_relative_id = -1;
 			if (node instanceof SimpleName) {
 				SimpleName sn = (SimpleName) node;
 				IBinding ib = sn.resolveBinding();
@@ -223,12 +224,13 @@ public class StatementTensorGenerator extends TensorGenerator {
 							}
 							String joined = String.join("#", mdnames);
 							api_comb_id = im.GetAPICombID(joined);
+							api_relative_id = mdnames.indexOf(type_content_id.GetTypeContent());
 						}
 					}
 				}
 			}
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, var_index, is_var, api_comb_id);
+			stmt.StoreOneNode(im, type_content_id, var_index, is_var, api_comb_id, api_relative_id);
 		}
 	}
 
