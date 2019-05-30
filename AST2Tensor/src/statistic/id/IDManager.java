@@ -672,6 +672,7 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
 		
+		char_num = subword_index.size();
 
 		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
 		
