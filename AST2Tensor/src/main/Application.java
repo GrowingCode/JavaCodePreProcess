@@ -111,6 +111,12 @@ public class Application implements IApplication {
 		}
 		System.out.println("==== CountProject Over ====");
 		IDManager im = new IDManager(id_tool);
+		{
+			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
+			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
+			im.SaveToDirectory(MetaOfApp.DataDirectory);
+			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
+		}
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);
 //			tr.FullFillIDManager(im);
@@ -150,12 +156,6 @@ public class Application implements IApplication {
 			}
 		}
 		System.out.println("==== TranslateProject Over ====");
-		{
-			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
-			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
-			im.SaveToDirectory(MetaOfApp.DataDirectory);
-			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
-		}
 		System.out.println(im.WordVocabularyInfo());
 		SystemUtil.Flush();
 		SystemUtil.Delay(1000);
