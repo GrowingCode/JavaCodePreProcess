@@ -672,6 +672,7 @@ public class IDManager {
 				gson6.toJson(each_subword_sequence_end));
 		
 		char_num = subword_index.size();
+		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
 
 		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
 		
@@ -837,33 +838,26 @@ public class IDManager {
 //		
 //		GenerateAndSaveHuffTree(dir, ast_type_id_count_map, "type", MetaOfApp.TypeHuffTreeStandardChildrenNum);
 //		GenerateAndSaveHuffTree(dir, ast_content_id_count_map, "content", MetaOfApp.ContentHuffTreeStandardChildrenNum);
-		
 //		Gson gson = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_is_leaf.json"), gson.toJson(MapUtil.ListToIndexMap(ast_type_content_is_leaf)));
 //		GenerateIDJson(dir, not_hit_ast_type_content_id_map, "not_hit_type_content");
 //		GenerateAndSaveCharSequence(dir, ast_type_content_id_map, not_hit_ast_type_content_id_map, "type_content");
 //		GenerateIDJson(dir, ast_type_content_id_map, "type_content");
-		
-		// only for debug
-		GenerateIDJson(dir, token_id_map, "token");
-		GenerateIDJson(dir, api_comb_id_map, "api_comb");
-		
-		// for real tensor usage
-		GenerateIDHitJson(dir);
-		GenerateIDSummary(dir);
-		
-		GenerateAPIJson(dir);
-		
 		if (MetaOfApp.InBPEForm) {
 //			GenerateAndSaveCharSequence(dir);
 			GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
 		} else {
 			GenerateAndSaveCharSequenceInCascadeForm(dir);
 		}
-		
+		// only for debug
+		GenerateIDJson(dir, token_id_map, "token");
+		GenerateIDJson(dir, api_comb_id_map, "api_comb");
+		// for real tensor usage
+		GenerateIDHitJson(dir);
+		GenerateIDSummary(dir);
+		GenerateAPIJson(dir);
 //		GenerateTypeAndSummaryJson(dir, ast_type_content_id_map, "type");
 //		GenerateAndSaveHuffTree(dir, ast_type_content_id_count_map, "type_content", MetaOfApp.TypeContentHuffTreeStandardChildrenNum);
-		
 //		Set<String> akeys = ati.keySet();
 //		for (String ak : akeys) {
 //			Integer tcid = ati.get(ak);
@@ -882,7 +876,6 @@ public class IDManager {
 //		}
 //		FileUtil.WriteToFile(new File(dir + "/" + "summary.txt"), StringUtils.join(summary, " "));
 //		System.out.println("=== ast_type_id_count_map:" + ast_type_id_count_map);
-//
 //		List<int[][]> type_content_huff_leaf_encode_list = new ArrayList<int[][]>();
 //		List<int[]> type_content_huff_leaf_huff_tree_index_list = new ArrayList<int[]>();
 //		List<int[][]> type_content_huff_tree_list = new ArrayList<int[][]>();
