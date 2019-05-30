@@ -662,13 +662,13 @@ public class IDManager {
 		}
 		
 		Gson gson4 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
 				gson4.toJson(subword_sequences));
 		Gson gson5 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
 				gson5.toJson(each_subword_sequence_start));
 		Gson gson6 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
 		
 		char_num = subword_index.size();
@@ -689,9 +689,9 @@ public class IDManager {
 			}
 		}
 		
-		Gson gson0 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
-				gson0.toJson(subword_is_end_of_token));
+//		Gson gson0 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
+//				gson0.toJson(subword_is_end_of_token));
 		
 //		return subword_index;
 //		// handle sub words
