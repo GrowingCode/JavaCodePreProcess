@@ -164,7 +164,7 @@ public class Application implements IApplication {
 	
 	// int max_handle_projs, RoleAssigner role_assigner
 	private static void HandleEachProjectFramework(File root_dir, HandleOneProject run, IDTools id_tool, TensorTools tensor_tool) {
-		System.err.println(root_dir.getAbsolutePath());
+//		System.err.println(root_dir.getAbsolutePath());
 		File[] files = root_dir.listFiles();
 //		int count_projs = 0;
 		int all_size = 0;
