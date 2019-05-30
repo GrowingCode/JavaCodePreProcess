@@ -352,6 +352,7 @@ public class ASTTensor extends Tensor {
 
 			stmt_following_legal_info_start.add(stmt_following_legal_info.size());
 			int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
+			if (MetaOfApp.DetailFollowStatementDebugMode)
 			{
 				System.out.println("stmt:" + last_stmt.stmt + "#last_stmt_legal_follows:" + last_stmt_legal_follows);
 				System.out.println("==== follow stmts begin ====");

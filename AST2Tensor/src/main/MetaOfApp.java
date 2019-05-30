@@ -4,6 +4,7 @@ public class MetaOfApp {
 	
 	public final static String DataDirectory = System.getProperty("user.home") + "/AST_Tensors";
 	public final static boolean DetailDebugMode = false;
+	public final static boolean DetailFollowStatementDebugMode = false;
 	public final static boolean StatementsDetailDebugMode = true;
 	
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
