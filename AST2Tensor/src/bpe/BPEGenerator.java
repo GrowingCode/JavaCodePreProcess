@@ -32,7 +32,7 @@ public class BPEGenerator extends ASTVisitor {
 		this.cu = cu;
 		this.tool = tool;
 		this.role = tool.role_assigner.AssignRole(icu.getElementName());
-		System.out.println("icu.getElementName():" + icu.getElementName());
+//		System.out.println("icu.getElementName():" + icu.getElementName());
 	}
 
 	@Override
