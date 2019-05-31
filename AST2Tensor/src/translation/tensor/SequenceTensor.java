@@ -160,5 +160,14 @@ public class SequenceTensor extends ASTTensor {
 				+ StringUtils.join(token_sword_start.toArray(), " ") + "#"
 				+ StringUtils.join(token_sword_end.toArray(), " ");
 	}
+	
+	@Override
+	public String toDebugString() {
+		String separator = System.getProperty("line.separator");
+		return super.toDebugString() + separator + StringUtils.join(sword_info.toArray(), " ") + separator
+				+ StringUtils.join(sword_relative_info.toArray(), " ") + separator
+				+ StringUtils.join(token_sword_start.toArray(), " ") + separator
+				+ StringUtils.join(token_sword_end.toArray(), " ");
+	}
 
 }
