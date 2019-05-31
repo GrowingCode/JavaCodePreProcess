@@ -647,7 +647,7 @@ public class IDManager {
 		for (int i=0;i<ati_out.size();i++) {
 			String token = ati_out.get(i);
 			Assert.isTrue(token != null && token.length() > 0);
-			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
+			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split("_")));
 			Assert.isTrue(subwords.size() > 0);
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1=0;i1<subwords.size();i1++) {
@@ -688,6 +688,22 @@ public class IDManager {
 			} else {
 				subword_is_end_of_token.add(0);
 			}
+		}
+		
+		// validate token subwords
+		int i_len = each_subword_sequence_start.size();
+		for (int i=0;i<i_len;i++) {
+			Integer st = each_subword_sequence_start.get(i);
+			Integer ed = each_subword_sequence_end.get(i);
+			Assert.isTrue(ed >= st);
+			String token = "";
+			for (int j=st;j<=ed;j++) {
+				Integer subword_idx = subword_sequences.get(j);
+				String subsord = sw_out.get(subword_idx);
+				token += subsord + "_";
+			}
+			token = token.substring(0, token.length()-1);
+			Assert.isTrue(token.equals(ati_out.get(i)));
 		}
 		
 //		Gson gson0 = new Gson();
