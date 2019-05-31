@@ -712,8 +712,8 @@ public class IDManager {
 				token += subsord;
 				sbwds += (subsord + " ");
 			}
-			token = token.substring(0, token.length()-1);
-			Assert.isTrue((token+" ").equals(ati_out.get(i)));
+//			token = token.substring(0, token.length()-1);
+			Assert.isTrue((token).equals(ati_out.get(i)+" "), "token:"+token+"#expected:"+ati_out.get(i));
 			token_subwords.put(token, sbwds);
 		}
 		System.out.println("=== token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
