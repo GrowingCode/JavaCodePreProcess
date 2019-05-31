@@ -60,7 +60,7 @@ public class Application implements IApplication {
 			if (dd.exists()) {
 				FileUtil.DeleteFile(dd);
 			}
-			dd.mkdir();
+			dd.mkdirs();
 			Assert.isTrue(dd.listFiles().length == 0);
 		}
 		// load and execute the project.

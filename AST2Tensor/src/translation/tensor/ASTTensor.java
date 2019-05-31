@@ -122,7 +122,7 @@ public class ASTTensor extends Tensor {
 //	}
 	
 	private String ToStmtInfo(String separator) {
-		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + stmt_token_inner_index_info + separator + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
+		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + StringUtils.join(stmt_token_inner_index_info.toArray(), " ") + separator + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
 	}
 	
 	public String toBaseString(String separator) {
@@ -156,15 +156,15 @@ public class ASTTensor extends Tensor {
 	@Override
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		String result = toBaseString(separator) + separator + toBaseExceptString(separator);
-		return result.trim();
+		String result = toBaseString(separator) + separator + toBaseExceptString(separator) + separator;
+		return result;
 	}
 
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = toOracleBaseString(separator) + separator + toBaseExceptString(separator);
-		return result.trim();
+		String result = toOracleBaseString(separator) + separator + toBaseExceptString(separator) + separator;
+		return result;
 	}
 
 	@Override
