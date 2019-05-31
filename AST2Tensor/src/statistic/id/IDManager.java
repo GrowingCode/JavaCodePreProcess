@@ -650,6 +650,7 @@ public class IDManager {
 		for (int i=0;i<ati_out.size();i++) {
 			String token = ati_out.get(i);
 			Assert.isTrue(token != null && token.length() > 0);
+			token = BPEWordsUtil.InsertSpaceToToken(token);
 			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
 			Assert.isTrue(subwords.size() > 0);
 			each_subword_sequence_start.add(subword_sequences.size());

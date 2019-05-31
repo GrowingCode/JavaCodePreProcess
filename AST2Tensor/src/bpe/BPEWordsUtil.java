@@ -125,6 +125,10 @@ public class BPEWordsUtil {
 		}
 		return new_vocab;
 	}
+
+	public static String InsertSpaceToToken(String vocab) {
+		return vocab.replace("", " ").trim();
+	}
 	
 	public static Set<String> InsertSpaceToTokens(Set<String> tokens) {
 		Set<String> new_tokens = new TreeSet<String>();
