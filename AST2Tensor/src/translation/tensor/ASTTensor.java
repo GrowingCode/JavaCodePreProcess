@@ -156,14 +156,14 @@ public class ASTTensor extends Tensor {
 	@Override
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		String result = toBaseString(separator) + separator + toBaseExceptString(separator) + separator;
+		String result = toBaseString(separator) + separator + toBaseExceptString(separator);
 		return result;
 	}
 
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = toOracleBaseString(separator) + separator + toBaseExceptString(separator) + separator;
+		String result = toOracleBaseString(separator) + separator + toBaseExceptString(separator);
 		return result;
 	}
 

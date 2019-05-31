@@ -167,7 +167,7 @@ public class SequenceTensor extends ASTTensor {
 		return super.toDebugString() + separator + StringUtils.join(sword_info.toArray(), " ") + separator
 				+ StringUtils.join(sword_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(token_sword_start.toArray(), " ") + separator
-				+ StringUtils.join(token_sword_end.toArray(), " ");
+				+ StringUtils.join(token_sword_end.toArray(), " ") + separator;
 	}
 
 }
