@@ -655,6 +655,9 @@ public class IDManager {
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1=0;i1<subwords.size();i1++) {
 				String subword = subwords.get(i1);
+				if (i1 == subwords.size()-1) {
+					subword = subword + " ";
+				}
 				if (!subword_index.containsKey(subword)) {
 					subword_index.put(subword, subword_index.size());
 				}
@@ -705,11 +708,11 @@ public class IDManager {
 			for (int j=st;j<=ed;j++) {
 				Integer subword_idx = subword_sequences.get(j);
 				String subsord = sw_out.get(subword_idx);
-				token += subsord + "_";
-				sbwds += subsord + " ";
+				token += subsord;
+				sbwds += (subsord + " ");
 			}
 			token = token.substring(0, token.length()-1);
-			Assert.isTrue(token.equals(ati_out.get(i)));
+			Assert.isTrue((token+" ").equals(ati_out.get(i)));
 			token_subwords.put(token, sbwds);
 		}
 		System.out.println("=== token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
