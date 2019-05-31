@@ -22,6 +22,7 @@ import statistic.IDTools;
 import util.ContentUtil;
 import util.FileUtil;
 import util.MapUtil;
+import util.PrintUtil;
 
 public class IDManager {
 	
@@ -617,15 +618,17 @@ public class IDManager {
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
-//		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
+		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
 		
 		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
 		Set<String> ht_keys = ht.keySet();
-		BPEHandledResult hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, ht_keys);
+		Set<String> inserted_ht_keys = BPEWordsUtil.InsertSpaceToTokens(ht_keys);
+		BPEHandledResult hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_ht_keys);
 		
 		TreeMap<String, Integer> nht = id_tool.tr.not_hit_train;
 		Set<String> nht_keys = nht.keySet();
-		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, nht_keys);
+		Set<String> inserted_nht_keys = BPEWordsUtil.InsertSpaceToTokens(nht_keys);
+		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
 		
 		// in train
 		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
@@ -647,7 +650,7 @@ public class IDManager {
 		for (int i=0;i<ati_out.size();i++) {
 			String token = ati_out.get(i);
 			Assert.isTrue(token != null && token.length() > 0);
-			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split("_")));
+			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
 			Assert.isTrue(subwords.size() > 0);
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1=0;i1<subwords.size();i1++) {
@@ -691,20 +694,26 @@ public class IDManager {
 		}
 		
 		// validate token subwords
+		Map<String, String> token_subwords = new TreeMap<String, String>();
 		int i_len = each_subword_sequence_start.size();
 		for (int i=0;i<i_len;i++) {
 			Integer st = each_subword_sequence_start.get(i);
 			Integer ed = each_subword_sequence_end.get(i);
 			Assert.isTrue(ed >= st);
 			String token = "";
+			String sbwds = "";
 			for (int j=st;j<=ed;j++) {
 				Integer subword_idx = subword_sequences.get(j);
 				String subsord = sw_out.get(subword_idx);
 				token += subsord + "_";
+				sbwds += subsord + " ";
 			}
 			token = token.substring(0, token.length()-1);
 			Assert.isTrue(token.equals(ati_out.get(i)));
+			token_subwords.put(token, sbwds);
 		}
+		System.out.println("=== token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
+		PrintUtil.PrintMap(token_subwords, "token_subwords");
 		
 //		Gson gson0 = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),

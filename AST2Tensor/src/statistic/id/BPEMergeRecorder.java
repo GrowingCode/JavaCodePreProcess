@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import bpe.BPEWordsUtil;
-import util.PrintUtil;
 
 public class BPEMergeRecorder {
 	
@@ -33,7 +32,7 @@ public class BPEMergeRecorder {
 		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(sub_words);
 //		PrintUtil.PrintMap(n_vob, "n_vob");
 		List<String> mgs = BPEWordsUtil.GenerateBPEMerges(n_vob, merge_num);
-		PrintUtil.PrintList(mgs, "mgs");
+//		PrintUtil.PrintList(mgs, "mgs");
 //		BPEHandledResult result = ApplyBPEMergesToTokens(merges, n_vob.keySet());
 //		Set<String> vbs = result.vobs;
 //		Set<String> vbs = GenerateBEPVocabulary(n_vob, num_merges);
