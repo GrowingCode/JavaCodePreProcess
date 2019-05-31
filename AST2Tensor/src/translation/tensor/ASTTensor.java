@@ -136,34 +136,37 @@ public class ASTTensor extends Tensor {
 		return ToStmtInfo(separator);
 	}
 	
-	public String toBaseExceptString(String separator) {
+//	public String toBaseExceptString(String separator) {
 		// StringUtils.join(up_contingent.toArray(), " ") + separator + 
 		// StringUtils.join(right_contingent.toArray(), " ") + separator + 
 		// separator + StringUtils.join(seq_en_infer.toArray(), " ") + 
 		// StringUtils.join(relative_use.toArray(), " ") + separator + StringUtils.join(de_pop_num.toArray(), " ") + separator + 
 //		String f_string = StringUtils.join(up_relative_use.toArray(), " ") + separator + StringUtils.join(right_relative_use.toArray(), " ") + separator + StringUtils.join(to_encode.toArray(), " ") + separator + StringUtils.join(isExistedList.toArray(), " ") + separator + StringUtils.join(lastIndexList.toArray(), " ") + separator + StringUtils.join(is_real.toArray(), " ");
 //		return f_string;
-		return "";
-	}
+//		return "";
+//	}
 
 	@Override
 	public String toString() {
 		String separator = "#";
-		String result = toBaseString(separator) + separator + toBaseExceptString(separator);
+		String result = toBaseString(separator);
+//		+ separator + toBaseExceptString(separator);
 		return result.trim();
 	}
 
 	@Override
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		String result = toBaseString(separator) + separator + toBaseExceptString(separator);
+		String result = toBaseString(separator);
+//		+ separator + toBaseExceptString(separator);
 		return result;
 	}
 
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = toOracleBaseString(separator) + separator + toBaseExceptString(separator);
+		String result = toOracleBaseString(separator);
+//		+ separator + toBaseExceptString(separator);
 		return result;
 	}
 
