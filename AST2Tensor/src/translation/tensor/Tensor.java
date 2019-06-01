@@ -15,22 +15,23 @@ import util.MapUtil;
 public abstract class Tensor {
 
 	IDManager im = null;
-	String origin_file = null;
+//	String origin_file = null;
 	int role = -1;
 	
 	// processed
 	int inner_index = -1;
 	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
 	
-	public Tensor(IDManager im, String origin_file, int role) {
+//	String origin_file, 
+	public Tensor(IDManager im, int role) {
 		this.im = im;
-		this.origin_file = origin_file;
+//		this.origin_file = origin_file;
 		this.role = role;
 	}
 	
-	public String GetOriginFile() {
-		return origin_file;
-	}
+//	public String GetOriginFile() {
+//		return origin_file;
+//	}
 	
 	public int GetRole() {
 		return role;

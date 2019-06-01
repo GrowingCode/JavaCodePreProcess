@@ -88,7 +88,7 @@ public class TensorGeneratorForProject {
 				result_tree.AddTensors(tree_tensors);
 				List<Tensor> sequence_tensors = tg_sequence.GetGeneratedTensors();
 				for (Tensor s_t : sequence_tensors) {
-					pq.add(new SizePath(s_t.getSize(), s_t.GetOriginFile()));
+					pq.add(new SizePath(s_t.getSize()));//, s_t.GetOriginFile()
 				}
 				result_sequence.AddTensors(sequence_tensors);
 				Assert.isTrue(tree_tensors.size() == sequence_tensors.size());
@@ -108,11 +108,12 @@ public class TensorGeneratorForProject {
 class SizePath implements Comparable<SizePath> {
 
 	Integer size = -1;
-	String path = null;
+//	String path = null;
 
-	public SizePath(int size, String path) {
+	public SizePath(int size) {
+		// , String path
 		this.size = size;
-		this.path = path;
+//		this.path = path;
 	}
 
 	@Override

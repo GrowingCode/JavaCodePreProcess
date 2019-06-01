@@ -101,8 +101,9 @@ public class SequenceTensor extends ASTTensor {
 	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
 	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
 
-	public SequenceTensor(IDManager im, String origin_file, int role) {
-		super(im, origin_file, role);
+	// String origin_file, origin_file, 
+	public SequenceTensor(IDManager im, int role) {
+		super(im, role);
 	}
 
 	@Override

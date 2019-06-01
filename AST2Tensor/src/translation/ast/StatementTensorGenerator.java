@@ -83,7 +83,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 				System.exit(1);
 			}
 			try {
-				curr_tensor = (ASTTensor) cc.newInstance(im, icu.getElementName(), -1);
+				curr_tensor = (ASTTensor) cc.newInstance(im, -1);//, icu.getElementName()
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				e.printStackTrace();

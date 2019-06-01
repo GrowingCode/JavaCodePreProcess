@@ -7,8 +7,9 @@ public class StringTensor extends Tensor {
 	String oracle_str = null;
 	int size = -1;
 	
-	public StringTensor(String origin_file, int role) {
-		super(null, origin_file, role);
+//	String origin_file, 
+	public StringTensor(int role) {
+		super(null, role);
 	}
 	
 	public void SetToString(String str) {

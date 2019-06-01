@@ -18,8 +18,10 @@ import util.SetUtil;
 
 public class ASTTensor extends Tensor {
 
-	public ASTTensor(IDManager im, String origin_file, int role) {
-		super(im, origin_file, role);
+//	String origin_file, 
+	public ASTTensor(IDManager im, int role) {
+//		origin_file, 
+		super(im, role);
 	}
 	
 	ArrayList<StatementInfo> si_list = new ArrayList<StatementInfo>();

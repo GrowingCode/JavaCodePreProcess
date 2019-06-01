@@ -2,6 +2,8 @@ package translation.roles;
 
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.Assert;
+
 public class RoleAssigner {
 	
 //	ModifiableInteger ast_num = new ModifiableInteger(0);
@@ -37,11 +39,19 @@ public class RoleAssigner {
 //		return AssignRole(f, sequence_num);
 //	}
 	
+	public int GetRole(String f_path) {
+		Integer rl = roles.get(f_path);
+		Assert.isTrue(rl != null);
+//		Assert.isTrue(roles.containsKey(f_path));
+		return rl;
+	}
+	
 	public int AssignRole(String f_path) {
 //		String f_path = f.getAbsolutePath();
-		if (roles.containsKey(f_path)) {
-			return roles.get(f_path);
-		}
+		Assert.isTrue(!roles.containsKey(f_path));
+//		if (roles.containsKey(f_path)) {
+//			return roles.get(f_path);
+//		}
 		int role = AssignRole(f_path, role_num);
 		roles.put(f_path, role);
 		return role;
@@ -71,6 +81,7 @@ public class RoleAssigner {
 		} else {
 			return test_k;
 		}
+		
 	}
 	
 }

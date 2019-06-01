@@ -55,8 +55,8 @@ public class TensorGenerator extends ASTVisitor {
 			cared_parent = node;
 		}
 		if (cared_parent != null && StandAtRootNodeOfTensorGeneration(node, node_parent) && UnHandledASTNodesFilterPassed(node)) {
-			int role = role_assigner.AssignRole(icu.getElementName());
-			tensor_list.add(new StringTensor(icu.getElementName(), role));
+			int role = role_assigner.GetRole(icu.getPath().toOSString());
+			tensor_list.add(new StringTensor(role));// icu.getElementName(), 
 			decode_type_generator = new TestDataDecodeType();
 			begin_generation = true;
 			begin_generation_node = node;
