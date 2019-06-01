@@ -11,10 +11,11 @@ public class PreProcessContentHelper {
 		if (content.startsWith("\"") && content.endsWith("\"") && content.length() > MetaOfApp.MaximumStringLength+2) {
 			content = content.substring(1, content.length()-1);
 			content = content.substring(0, MetaOfApp.MaximumStringLength);
-//			content.replace(" ", "_");
-//			content = content + " ";
 			content = "\"" + content + "\"";
 		}
+		content = content.replace("\\s+", "#");
+		content = content.replace("_+", "`");
+		content = content + "_";
 		return content;
 	}
 	

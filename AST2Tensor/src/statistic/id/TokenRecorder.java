@@ -48,7 +48,7 @@ public class TokenRecorder {
 //	}
 	
 	public void TokenHitInTrainSet(String type_content, Integer count) {
-		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
+//		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 //		hit_train.add(type_content);
 		Integer h_count = hit_train.get(type_content);
 		if (h_count == null) {
@@ -63,7 +63,7 @@ public class TokenRecorder {
 	}
 	
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {
-		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
+//		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		if (!hit_train.containsKey(type_content)) {
 			Integer nh_count = not_hit_train.get(type_content);
 			if (nh_count == null) {

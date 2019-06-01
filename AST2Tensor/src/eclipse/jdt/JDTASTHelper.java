@@ -32,36 +32,37 @@ public class JDTASTHelper {
 //			child.delete();
 //		}
 //	}
-	
+
 	public static String GetTypeRepresentationForASTNode(ASTNode node) {
 		String type = node.getClass().getSimpleName();
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		int children_size = children == null ? 0 : children.size();
 		String type_extra = "";
 		if (node instanceof PostfixExpression) {
-			PostfixExpression pe = (PostfixExpression)node;
+			PostfixExpression pe = (PostfixExpression) node;
 			org.eclipse.jdt.core.dom.PostfixExpression.Operator op = pe.getOperator();
 			type_extra += op.toString();
 		}
 		if (node instanceof PrefixExpression) {
-			PrefixExpression pe = (PrefixExpression)node;
+			PrefixExpression pe = (PrefixExpression) node;
 			org.eclipse.jdt.core.dom.PrefixExpression.Operator op = pe.getOperator();
 			type_extra += op.toString();
 		}
 		if (node instanceof InfixExpression) {
-			InfixExpression pe = (InfixExpression)node;
+			InfixExpression pe = (InfixExpression) node;
 			org.eclipse.jdt.core.dom.InfixExpression.Operator op = pe.getOperator();
 			type_extra += op.toString();
 		}
 		String represent = type + type_extra + (children_size == 0 ? IDManager.Leaf : IDManager.NonLeaf);
+		PreProcessContentHelper.PreProcessTypeContent(represent);
 		return represent;
 	}
-	
+
 	public static String GetContentRepresentationForASTNode(ASTNode node) {
 		Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).isEmpty());
 		return PreProcessContentHelper.PreProcessTypeContent(node.toString());
 	}
-	
+
 //	public static String GetRepresentationForASTNode(ASTNode node) {
 //		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 //		int children_size = children == null ? 0 : children.size();

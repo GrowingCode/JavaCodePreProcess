@@ -34,7 +34,6 @@ public class IDManager {
 //	public static String InitialLeaf = "InitialLeafASTType";
 //	public static String TerminalLeaf = "TerminalLeafASTType";
 	
-	
 //	public static String LeafTypeDefault = LeafType + "#" + DefaultPart;
 //	public static String LeafTypeDefault = "LeafDefault" + "#" + DefaultPart;
 
@@ -641,6 +640,8 @@ public class IDManager {
 		origin_after.putAll(hit_res.origin_after);
 		origin_after.putAll(not_hit_res.origin_after);
 		
+		PrintUtil.PrintMap(origin_after, "origin_after");
+		
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
@@ -656,9 +657,9 @@ public class IDManager {
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1=0;i1<subwords.size();i1++) {
 				String subword = subwords.get(i1);
-				if (i1 == subwords.size()-1) {
-					subword = subword + " ";
-				}
+//				if (i1 == subwords.size()-1) {
+//					subword = subword + " ";
+//				}
 				if (!subword_index.containsKey(subword)) {
 					subword_index.put(subword, subword_index.size());
 				}
@@ -690,7 +691,7 @@ public class IDManager {
 			Integer sw = sw_itr.next();
 			Assert.isTrue(subword_is_end_of_token.size() == sw);
 			String subword = sw_out.get(sw);
-			if (subword.endsWith(" ")) {
+			if (subword.endsWith("_")) {
 				subword_is_end_of_token.add(1);
 			} else {
 				subword_is_end_of_token.add(0);
@@ -713,8 +714,9 @@ public class IDManager {
 				sbwds += (subsord + " ");
 			}
 //			token = token.substring(0, token.length()-1);
-			Assert.isTrue((token).equals(ati_out.get(i)+" "), "token:"+token+"#expected:"+ati_out.get(i));
-			token_subwords.put(token, sbwds);
+			String exp_tk = ati_out.get(i);// .replace(" ", "")
+			Assert.isTrue((token).equals(exp_tk), "token:"+token+"#expected:"+exp_tk);
+			token_subwords.put(exp_tk, sbwds);
 		}
 		System.out.println("=== token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
 		PrintUtil.PrintMap(token_subwords, "token_subwords");

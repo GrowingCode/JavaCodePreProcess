@@ -12,7 +12,7 @@ public class ContentUtil {
 	}
 	
 	public static String[] SplitByUnderScore(String cnt) {
-		return cnt.split("_+");
+		return cnt.split("[_+,\\s+]");
 	}
 	
 	public static ArrayList<String> SplitByUnderScoreWithCamelCase(String cnt) {
@@ -23,6 +23,15 @@ public class ContentUtil {
 			result.addAll(Arrays.asList(cc));
 		}
 		return result;
+	}
+	
+	public static void main(String[] args) {
+		ArrayList<String> strs = ContentUtil.SplitByUnderScoreWithCamelCase("\"Ne_w York\"");
+		System.out.println("==== start ====");
+		for (String str : strs) {
+			System.out.println(str);
+		}
+		System.out.println("==== end ====");
 	}
 	
 }

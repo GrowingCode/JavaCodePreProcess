@@ -8,14 +8,12 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
-import statistic.id.PreProcessContentHelper;
 
 public class TypeContentIDFetcher {
 	
 	public static TypeContentID FetchTypeID(ASTNode node, IDManager im) {
 		// set node type and content
 		String type_content = JDTASTHelper.GetTypeRepresentationForASTNode(node);
-		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		int type_content_id = im.GetTypeContentID(type_content);
 		return new TypeContentID(type_content, type_content_id);
 	}
