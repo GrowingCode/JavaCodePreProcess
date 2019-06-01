@@ -77,7 +77,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			Assert.isTrue(node_stmt.size() == 0);
 			Constructor<?> cc = null;
 			try {
-				cc = tensor_creator.getConstructor(IDManager.class, String.class, int.class);
+				cc = tensor_creator.getConstructor(IDManager.class, int.class);// , String.class
 			} catch (NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 				System.exit(1);
