@@ -11,11 +11,11 @@ public class RoleAssigner {
 	
 	HashMap<String, Integer> roles = new HashMap<String, Integer>();
 	
-	public final static int all = 20;
-	public final static int train_seen = 12;
-	public final static int train = 12;
-	public final static int valid = 12;
-	public final static int test = 19;
+	public final static int all = 5;
+	public final static int train_seen = 2;
+	public final static int train = 2;
+	public final static int valid = 3;
+	public final static int test = 4;
 	
 	public final static int train_seen_k = 0;
 	public final static int train_k = 1;
