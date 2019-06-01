@@ -13,8 +13,8 @@ public class PreProcessContentHelper {
 			content = content.substring(0, MetaOfApp.MaximumStringLength);
 			content = "\"" + content + "\"";
 		}
-		content = content.replace("\\s+", "#");
-		content = content.replace("_+", "`");
+		content = content.replaceAll("\\s+", "#");
+		content = content.replaceAll("_+", "`");
 		content = content + "_";
 		return content;
 	}

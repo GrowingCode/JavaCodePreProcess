@@ -26,8 +26,8 @@ import util.PrintUtil;
 
 public class IDManager {
 	
-	public static final String Leaf = "_LF";
-	public static final String NonLeaf = "_NLF";
+	public static final String Leaf = "L";
+	public static final String NonLeaf = "N";
 	
 //	public static String DefaultPart = "@Default";
 //	public static String LeafType = "LeafDefault";
