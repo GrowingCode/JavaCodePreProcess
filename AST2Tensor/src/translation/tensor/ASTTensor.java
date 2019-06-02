@@ -45,7 +45,7 @@ public class ASTTensor extends Tensor {
 	// memory_index means the local token index also the variable index or type index
 	// stmt info of tokens start end: se|se|se
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
@@ -124,12 +124,14 @@ public class ASTTensor extends Tensor {
 //	}
 	
 	private String ToStmtInfo(String separator) {
-		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + StringUtils.join(stmt_token_inner_index_info.toArray(), " ") + separator + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
+//		separator + StringUtils.join(stmt_token_inner_index_info.toArray(), " ") + 
+		return StringUtils.join(stmt_token_info.toArray(), " ") + separator + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_info.toArray(), " ") + separator + StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator + StringUtils.join(stmt_token_info_start.toArray(), " ") + separator + StringUtils.join(stmt_token_info_end.toArray(), " ") + separator + StringUtils.join(stmt_variable_info.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator + StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator + StringUtils.join(stmt_following_legal_info_end.toArray(), " ");
 	}
 	
 	public String toBaseString(String separator) {
-		ArrayList<Integer> inner_id_type_content_id = GenerateInnerIndexesForTypeContents();
-		String f_string = StringUtils.join(inner_id_type_content_id.toArray(), " ") + separator + ToStmtInfo(separator);
+//		ArrayList<Integer> inner_id_type_content_id = GenerateInnerIndexesForTypeContents();
+//		StringUtils.join(inner_id_type_content_id.toArray(), " ") + separator + 
+		String f_string = ToStmtInfo(separator);
 //		StringUtils.join(first_row.toArray(), " ") + separator + StringUtils.join(second_row.toArray(), " ") + separator + StringUtils.join(third_row.toArray(), " ");
 		return f_string;
 	}
@@ -343,9 +345,9 @@ public class ASTTensor extends Tensor {
 			StatementInfo last_stmt = si_list.get(i);
 			stmt_token_info_start.add(stmt_token_info.size());
 			stmt_token_info.addAll(last_stmt.type_content_id);
-			for (Integer tid : last_stmt.type_content_id) {
-				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
-			}
+//			for (Integer tid : last_stmt.type_content_id) {
+//				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
+//			}
 			stmt_token_variable_info.addAll(last_stmt.local_token_id);
 			stmt_token_api_info.addAll(last_stmt.api_group);
 			stmt_token_api_relative_info.addAll(last_stmt.api_relative);
