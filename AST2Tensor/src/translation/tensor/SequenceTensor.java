@@ -148,7 +148,7 @@ public class SequenceTensor extends ASTTensor {
 				}
 				token_sword_start.add(sword_info.size());
 				sword_info.addAll(seqs);
-				token_sword_end.add(sword_info.size());
+				token_sword_end.add(sword_info.size()-1);
 			}
 			Assert.isTrue(sword_info.size() == sword_relative_info.size());
 		}
