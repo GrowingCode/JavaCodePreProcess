@@ -51,6 +51,7 @@ public class BPEWordsUtil {
 	}
 	
 	public static List<String> GenerateBPEMerges(Map<String, Integer> vocab, int num_merges) {
+//		PrintUtil.PrintMap(vocab, "to_merge_vocab");
 		List<String> merges = new LinkedList<String>();
 		Map<String, Integer> vocab_r = new TreeMap<String, Integer>(vocab);
 //		if (num_merges == -1) {

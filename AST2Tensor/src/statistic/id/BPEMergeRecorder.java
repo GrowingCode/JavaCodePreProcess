@@ -27,9 +27,9 @@ public class BPEMergeRecorder {
 	
 	public void GenerateBPEMerges(int merge_num) {
 //		PrintUtil.PrintMap(token_times, "token_times");
-		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
+//		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 //		PrintUtil.PrintMap(sub_words, "sub_words");
-		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(sub_words);
+		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(token_times);// sub_words
 //		PrintUtil.PrintMap(n_vob, "n_vob");
 		List<String> mgs = BPEWordsUtil.GenerateBPEMerges(n_vob, merge_num);
 //		PrintUtil.PrintList(mgs, "mgs");
