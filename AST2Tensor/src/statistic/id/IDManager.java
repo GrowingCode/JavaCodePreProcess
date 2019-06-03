@@ -22,6 +22,7 @@ import statistic.IDTools;
 import util.ContentUtil;
 import util.FileUtil;
 import util.MapUtil;
+import util.PrintUtil;
 
 public class IDManager {
 	
@@ -628,18 +629,18 @@ public class IDManager {
 		Set<String> inserted_nht_keys = BPEWordsUtil.InsertSpaceToTokens(nht_keys);
 		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
 		
+		Map<String, String> origin_after = new TreeMap<String, String>();
+		origin_after.putAll(hit_res.origin_after);
+		origin_after.putAll(not_hit_res.origin_after);
+		
+		PrintUtil.PrintMap(origin_after, "origin_after");
+
 		// in train
 		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
 		// not in train
 		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
 		not_in_train_vobs.removeAll(in_train_vobs);
 		System.out.println("Not_In_Train_Vobs_Size:" + not_in_train_vobs.size() + "#In_Train_Vobs_Size:" + in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
-		
-		Map<String, String> origin_after = new TreeMap<String, String>();
-		origin_after.putAll(hit_res.origin_after);
-		origin_after.putAll(not_hit_res.origin_after);
-		
-//		PrintUtil.PrintMap(origin_after, "origin_after");
 		
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
