@@ -640,8 +640,9 @@ public class IDManager {
 		// not in train
 		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
 		not_in_train_vobs.removeAll(in_train_vobs);
-		System.out.println("Not_In_Train_Vobs_Size:" + not_in_train_vobs.size() + "#In_Train_Vobs_Size:" + in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
-		
+		System.out.println("Not_In_Train_Sub_Vobs_Size:" + not_in_train_vobs.size() + "#In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
+//		PrintUtil.PrintSet(in_train_vobs, "in_train_vobs");
+//		PrintUtil.PrintSet(not_in_train_vobs, "not_in_train_vobs");
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
@@ -718,7 +719,7 @@ public class IDManager {
 			Assert.isTrue((token).equals(exp_tk), "token:"+token+"#expected:"+exp_tk);
 			token_subwords.put(exp_tk, sbwds);
 		}
-		System.out.println("=== token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
+		System.out.println("=== unsubword token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
 //		PrintUtil.PrintMap(token_subwords, "token_subwords");
 		
 //		Gson gson0 = new Gson();
@@ -941,7 +942,7 @@ public class IDManager {
 	}
 	
 	public String WordVocabularyInfo() {
-		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size();// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
+		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size() + "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0);// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
 	}
 
 }

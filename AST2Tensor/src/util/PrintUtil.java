@@ -25,4 +25,12 @@ public class PrintUtil {
 		System.out.println("===== list " + extra_info + " print end =====");
 	}
 	
+	public static <K> void PrintSet(Set<K> set, String extra_info) {
+		System.out.println("===== set " + extra_info + " print begin =====");
+		for (K k : set) {
+			System.out.println(k);
+		}
+		System.out.println("===== set " + extra_info + " print end =====");
+	}
+	
 }
