@@ -158,8 +158,8 @@ public class SequenceTensor extends ASTTensor {
 	}
 	
 	private void ValidateStatements() {
-		int all_token_size = stmt_token_info.size();
-		System.out.println("all_token_size:" + all_token_size);
+//		int all_token_size = stmt_token_info.size();
+//		System.out.println("all_token_size:" + all_token_size);
 		int stmt_size = stmt_token_info_start.size();
 		int all_stmt_sword_length = 0;
 		for (int i=0;i<stmt_size;i++) {
