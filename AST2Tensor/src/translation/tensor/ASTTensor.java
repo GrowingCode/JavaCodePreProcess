@@ -371,9 +371,10 @@ public class ASTTensor extends Tensor {
 			stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0, Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
 			stmt_following_legal_info_end.add(stmt_following_legal_info.size()-1);
 		}
+		Validate();
 	}
 	
-	public void Validate() {
+	private void Validate() {
 //		int node_num = 0;
 //		int i=0;
 //		while (i < first_row.size()) {

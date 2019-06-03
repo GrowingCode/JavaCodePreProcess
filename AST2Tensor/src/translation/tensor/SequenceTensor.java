@@ -151,21 +151,26 @@ public class SequenceTensor extends ASTTensor {
 				sword_info.addAll(seqs);
 				token_sword_end.add(sword_info.size()-1);
 			}
+			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
 			Assert.isTrue(sword_info.size() == sword_relative_info.size());
 		}
 		ValidateStatements();
 	}
 	
 	private void ValidateStatements() {
+		int all_token_size = stmt_token_info.size();
+		System.out.println("all_token_size:" + all_token_size);
 		int stmt_size = stmt_token_info_start.size();
 		int all_stmt_sword_length = 0;
 		for (int i=0;i<stmt_size;i++) {
 			Integer stmt_start = stmt_token_info_start.get(i);
 			Integer stmt_end = stmt_token_info_end.get(i);
-			Integer start_token = stmt_token_info.get(stmt_start);
-			Integer end_token = stmt_token_info.get(stmt_end);
-			Integer start_sword_idx = token_sword_start.get(start_token);
-			Integer end_sword_idx = token_sword_end.get(end_token);
+//			Integer start_token = stmt_token_info.get(stmt_start);
+//			Assert.isTrue(start_token < all_token_size);
+//			Integer end_token = stmt_token_info.get(stmt_end);
+//			Assert.isTrue(end_token < all_token_size);
+			Integer start_sword_idx = token_sword_start.get(stmt_start);
+			Integer end_sword_idx = token_sword_end.get(stmt_end);
 			int stmt_sword_length = end_sword_idx - start_sword_idx + 1;
 			all_stmt_sword_length += stmt_sword_length;
 		}

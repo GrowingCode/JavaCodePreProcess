@@ -133,7 +133,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			pre_order_node.clear();
 			node_stmt.clear();
 			curr_tensor.HandleAllDevoured();
-			curr_tensor.Validate();
+//			curr_tensor.Validate();
 			StringTensor st = (StringTensor) tensor_list.getLast();
 			st.SetToString(curr_tensor.toString());
 			st.SetToDebugString(curr_tensor.toDebugString());
