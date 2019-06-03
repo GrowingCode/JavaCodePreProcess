@@ -111,7 +111,7 @@ public class BPEWordsUtil {
 			inserted.addAll(new_inserted);
 			new_inserted.clear();
 		}
-		result.vobs.addAll(inserted);
+		result.vobs.addAll(ExtractAllBPEUnits(inserted));
 		result.origin_after.putAll(origin_after);
 		return result;
 	}
