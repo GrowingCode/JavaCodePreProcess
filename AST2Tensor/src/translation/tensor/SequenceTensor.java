@@ -136,6 +136,7 @@ public class SequenceTensor extends ASTTensor {
 				Integer end = im.each_subword_sequence_end.get(ti);
 				List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
 				int j_len = seqs.size();
+				Assert.isTrue(j_len > 0);
 				for (int j = 0; j < j_len; j++) {
 					Integer swi = seqs.get(j);
 					Integer li = latest_index.get(swi);
@@ -152,6 +153,23 @@ public class SequenceTensor extends ASTTensor {
 			}
 			Assert.isTrue(sword_info.size() == sword_relative_info.size());
 		}
+		ValidateStatements();
+	}
+	
+	private void ValidateStatements() {
+		int stmt_size = stmt_token_info_start.size();
+		int all_stmt_sword_length = 0;
+		for (int i=0;i<stmt_size;i++) {
+			Integer stmt_start = stmt_token_info_start.get(i);
+			Integer stmt_end = stmt_token_info_end.get(i);
+			Integer start_token = stmt_token_info.get(stmt_start);
+			Integer end_token = stmt_token_info.get(stmt_end);
+			Integer start_sword_idx = token_sword_start.get(start_token);
+			Integer end_sword_idx = token_sword_end.get(end_token);
+			int stmt_sword_length = end_sword_idx - start_sword_idx + 1;
+			all_stmt_sword_length += stmt_sword_length;
+		}
+		Assert.isTrue(all_stmt_sword_length == sword_info.size());
 	}
 
 	@Override
