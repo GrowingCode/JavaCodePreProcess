@@ -34,7 +34,7 @@ public class IDGenerator extends ASTVisitor {
 		this.cu = cu;
 		this.tool = tool;
 		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
-		System.out.println(icu.getPath().toOSString() + "#role:" + role);
+//		System.out.println(icu.getPath().toOSString() + "#role:" + role);
 //		icu.getElementName()
 //		System.out.println("icu.getPath().toOSString():" + icu.getPath().toOSString());
 	}

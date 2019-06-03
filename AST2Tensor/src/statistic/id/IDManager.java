@@ -22,7 +22,6 @@ import statistic.IDTools;
 import util.ContentUtil;
 import util.FileUtil;
 import util.MapUtil;
-import util.PrintUtil;
 
 public class IDManager {
 	
@@ -617,7 +616,7 @@ public class IDManager {
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
-		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
+//		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
 		
 		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
 		Set<String> ht_keys = ht.keySet();
@@ -640,7 +639,7 @@ public class IDManager {
 		origin_after.putAll(hit_res.origin_after);
 		origin_after.putAll(not_hit_res.origin_after);
 		
-		PrintUtil.PrintMap(origin_after, "origin_after");
+//		PrintUtil.PrintMap(origin_after, "origin_after");
 		
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
@@ -719,7 +718,7 @@ public class IDManager {
 			token_subwords.put(exp_tk, sbwds);
 		}
 		System.out.println("=== token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
-		PrintUtil.PrintMap(token_subwords, "token_subwords");
+//		PrintUtil.PrintMap(token_subwords, "token_subwords");
 		
 //		Gson gson0 = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
