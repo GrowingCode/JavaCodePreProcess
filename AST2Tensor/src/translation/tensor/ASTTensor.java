@@ -2,6 +2,7 @@ package translation.tensor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class ASTTensor extends Tensor {
 	// stmt info of variables: ``|```|``
 	// stmt info of variables start end: se|se|se
 	ArrayList<Integer> stmt_variable_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_variable_position_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_variable_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_variable_info_end = new ArrayList<Integer>();
 
@@ -73,6 +75,7 @@ public class ASTTensor extends Tensor {
 	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
 	
 	ArrayList<Integer> stmt_sword_variable_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_sword_variable_position_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_sword_variable_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_sword_variable_info_end = new ArrayList<Integer>();
 	
@@ -154,6 +157,7 @@ public class ASTTensor extends Tensor {
 				+ StringUtils.join(token_sword_start.toArray(), " ") + separator
 				+ StringUtils.join(token_sword_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_sword_variable_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_sword_variable_position_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_sword_variable_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_sword_variable_info_end.toArray(), " ");
 	}
@@ -221,12 +225,12 @@ public class ASTTensor extends Tensor {
 		}
 		depend_record.put(last_stmt, record);
 		// record conflict (encountered)
-		Set<Integer> current_not_encountered_variables = new TreeSet<Integer>(last_stmt.var_or_type_ids_in_this_stmt);
+		Set<Integer> current_not_encountered_variables = new TreeSet<Integer>(last_stmt.var_or_type_id_with_position_in_this_stmt.keySet());
 		for (int i = dr_size - 1; i >= 0; i--) {
 			if (record.get(i) == false) {
 				// not depend
 				StatementInfo i_si = si_list.get(i);
-				Set<Integer> i_si_vars = i_si.var_or_type_ids_in_this_stmt;
+				Set<Integer> i_si_vars = i_si.var_or_type_id_with_position_in_this_stmt.keySet();
 				Set<Integer> encountered_vars = SetUtil
 						.TheElementsInSetOneExistInSetTwo(current_not_encountered_variables, i_si_vars);
 				if (encountered_vars.size() > 0) {
@@ -386,7 +390,12 @@ public class ASTTensor extends Tensor {
 			stmt_token_info_end.add(stmt_token_info.size() - 1);
 
 			stmt_variable_info_start.add(stmt_variable_info.size());
-			stmt_variable_info.addAll(last_stmt.var_or_type_ids_in_this_stmt);
+			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
+			for (int var : vars) {
+				int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
+				stmt_variable_info.add(var);
+				stmt_variable_position_info.add(position);
+			}
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
 			stmt_following_legal_info_start.add(stmt_following_legal_info.size());
@@ -406,7 +415,7 @@ public class ASTTensor extends Tensor {
 		{
 			Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
 			for (int i = 0; i < i_len; i++) {
-				TreeSet<Integer> sword_ids = new TreeSet<Integer>();
+				TreeMap<Integer, Integer> sword_id_with_position = new TreeMap<Integer, Integer>();
 				Integer st = stmt_token_info_start.get(i);
 				Integer ed = stmt_token_info_end.get(i);
 				for (int t = st; t <= ed; t++) {
@@ -428,7 +437,8 @@ public class ASTTensor extends Tensor {
 								vi = sword_var_id.size() + 1;
 								sword_var_id.put(swi, vi);
 							}
-							sword_ids.add(vi);
+//							sword_ids.add(vi);
+							sword_id_with_position.put(vi, sword_info.size()+j);
 							sword_variable_info.add(vi);
 						} else {
 							sword_variable_info.add(-1);
@@ -439,7 +449,14 @@ public class ASTTensor extends Tensor {
 					token_sword_end.add(sword_info.size() - 1);
 				}
 				stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
-				stmt_sword_variable_info.addAll(sword_ids);
+				Set<Integer> sids = sword_id_with_position.keySet();
+				Iterator<Integer> sid_itr = sids.iterator();
+				while (sid_itr.hasNext()) {
+					Integer sid = sid_itr.next();
+					int position = sword_id_with_position.get(sid);
+					stmt_sword_variable_info.add(sid);
+					stmt_sword_variable_position_info.add(position);
+				}
 				stmt_sword_variable_info_end.add(stmt_sword_variable_info.size()-1);
 			}
 			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
