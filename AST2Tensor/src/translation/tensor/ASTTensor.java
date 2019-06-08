@@ -147,6 +147,7 @@ public class ASTTensor extends Tensor {
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_variable_position_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator
