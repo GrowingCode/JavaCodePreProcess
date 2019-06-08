@@ -380,7 +380,8 @@ public class ASTTensor extends Tensor {
 		int i_len = si_list.size();
 		for (int i = 0; i < i_len; i++) {
 			StatementInfo last_stmt = si_list.get(i);
-			stmt_token_info_start.add(stmt_token_info.size());
+			int ori_size = stmt_token_info.size();
+			stmt_token_info_start.add(ori_size);
 			stmt_token_info.addAll(last_stmt.type_content_id);
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
@@ -394,12 +395,12 @@ public class ASTTensor extends Tensor {
 			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 			if (vars.size() == 0) {
 				stmt_variable_info.add(0);
-				stmt_variable_position_info.add(0);
+				stmt_variable_position_info.add(ori_size);
 			} else {
 				for (int var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 					stmt_variable_info.add(var);
-					stmt_variable_position_info.add(position);
+					stmt_variable_position_info.add(ori_size+position);
 				}
 			}
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
