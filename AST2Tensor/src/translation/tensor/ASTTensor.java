@@ -395,12 +395,12 @@ public class ASTTensor extends Tensor {
 			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 			if (vars.size() == 0) {
 				stmt_variable_info.add(0);
-				stmt_variable_position_info.add(ori_size);
+				stmt_variable_position_info.add(0);
 			} else {
 				for (int var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 					stmt_variable_info.add(var);
-					stmt_variable_position_info.add(ori_size+position);
+					stmt_variable_position_info.add(position);
 				}
 			}
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
@@ -445,7 +445,7 @@ public class ASTTensor extends Tensor {
 								sword_var_id.put(swi, vi);
 							}
 //							sword_ids.add(vi);
-							sword_id_with_position.put(vi, sword_info.size()+j);
+							sword_id_with_position.put(vi, j);
 							sword_variable_info.add(vi);
 						} else {
 							sword_variable_info.add(-1);
