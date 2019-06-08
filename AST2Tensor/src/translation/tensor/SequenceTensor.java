@@ -1,11 +1,9 @@
 package translation.tensor;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
 import statistic.id.IDManager;
@@ -94,13 +92,7 @@ import statistic.id.IDManager;
 //}
 
 public class SequenceTensor extends ASTTensor {
-
-	ArrayList<Integer> sword_info = new ArrayList<Integer>();
-	ArrayList<Integer> sword_relative_info = new ArrayList<Integer>();
-
-	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
-	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
-
+	
 	// String origin_file, origin_file, 
 	public SequenceTensor(IDManager im, int role) {
 		super(im, role);
@@ -109,8 +101,8 @@ public class SequenceTensor extends ASTTensor {
 	@Override
 	public void HandleAllDevoured() {
 		super.HandleAllDevoured();
-		int i_len = stmt_token_info.size();
 		{
+			int i_len = stmt_token_info.size();
 			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
 			ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
 			for (int i = 0; i < i_len; i++) {
@@ -129,69 +121,38 @@ public class SequenceTensor extends ASTTensor {
 			stmt_token_variable_info.addAll(seq_var_info);
 		}
 		{
+			int i_len = sword_variable_info.size();
 			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
+			ArrayList<Integer> sword_var_info = new ArrayList<Integer>();
 			for (int i = 0; i < i_len; i++) {
-				Integer ti = stmt_token_info.get(i);
-				Integer start = im.each_subword_sequence_start.get(ti);
-				Integer end = im.each_subword_sequence_end.get(ti);
-				List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
-				int j_len = seqs.size();
-				Assert.isTrue(j_len > 0);
-				for (int j = 0; j < j_len; j++) {
-					Integer swi = seqs.get(j);
-					Integer li = latest_index.get(swi);
+				Assert.isTrue(sword_var_info.size() == i);
+				Integer ti = sword_variable_info.get(i);
+				if (ti >= 0) {
+					Integer li = latest_index.get(ti);
 					if (li != null) {
-						sword_relative_info.add(li - sword_relative_info.size());
+						sword_var_info.add(li - i);
 					} else {
-						sword_relative_info.add(Integer.MAX_VALUE);
+						sword_var_info.add(Integer.MAX_VALUE);
 					}
-					latest_index.put(swi, i);
+				} else {
+					sword_var_info.add(Integer.MAX_VALUE);
 				}
-				token_sword_start.add(sword_info.size());
-				sword_info.addAll(seqs);
-				token_sword_end.add(sword_info.size()-1);
+				latest_index.put(ti, i);
 			}
-			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
-			Assert.isTrue(sword_info.size() == sword_relative_info.size());
+			Assert.isTrue(sword_variable_info.size() == sword_var_info.size());
+			sword_variable_info.clear();
+			sword_variable_info.addAll(sword_var_info);
 		}
-		ValidateStatements();
-	}
-	
-	private void ValidateStatements() {
-//		int all_token_size = stmt_token_info.size();
-//		System.out.println("all_token_size:" + all_token_size);
-		int stmt_size = stmt_token_info_start.size();
-		int all_stmt_sword_length = 0;
-		for (int i=0;i<stmt_size;i++) {
-			Integer stmt_start = stmt_token_info_start.get(i);
-			Integer stmt_end = stmt_token_info_end.get(i);
-//			Integer start_token = stmt_token_info.get(stmt_start);
-//			Assert.isTrue(start_token < all_token_size);
-//			Integer end_token = stmt_token_info.get(stmt_end);
-//			Assert.isTrue(end_token < all_token_size);
-			Integer start_sword_idx = token_sword_start.get(stmt_start);
-			Integer end_sword_idx = token_sword_end.get(stmt_end);
-			int stmt_sword_length = end_sword_idx - start_sword_idx + 1;
-			all_stmt_sword_length += stmt_sword_length;
-		}
-		Assert.isTrue(all_stmt_sword_length == sword_info.size());
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + "#" + StringUtils.join(sword_info.toArray(), " ") + "#"
-				+ StringUtils.join(sword_relative_info.toArray(), " ") + "#"
-				+ StringUtils.join(token_sword_start.toArray(), " ") + "#"
-				+ StringUtils.join(token_sword_end.toArray(), " ");
+		return super.toString();
 	}
 	
 	@Override
 	public String toDebugString() {
-		String separator = System.getProperty("line.separator");
-		return super.toDebugString() + separator + StringUtils.join(sword_info.toArray(), " ") + separator
-				+ StringUtils.join(sword_relative_info.toArray(), " ") + separator
-				+ StringUtils.join(token_sword_start.toArray(), " ") + separator
-				+ StringUtils.join(token_sword_end.toArray(), " ") + separator + separator;
+		return super.toDebugString();
 	}
 
 }
