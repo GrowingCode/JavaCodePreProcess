@@ -391,10 +391,15 @@ public class ASTTensor extends Tensor {
 
 			stmt_variable_info_start.add(stmt_variable_info.size());
 			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
-			for (int var : vars) {
-				int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
-				stmt_variable_info.add(var);
-				stmt_variable_position_info.add(position);
+			if (vars.size() == 0) {
+				stmt_variable_info.add(0);
+				stmt_variable_position_info.add(0);
+			} else {
+				for (int var : vars) {
+					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
+					stmt_variable_info.add(var);
+					stmt_variable_position_info.add(position);
+				}
 			}
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
@@ -449,13 +454,18 @@ public class ASTTensor extends Tensor {
 					token_sword_end.add(sword_info.size() - 1);
 				}
 				stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
-				Set<Integer> sids = sword_id_with_position.keySet();
-				Iterator<Integer> sid_itr = sids.iterator();
-				while (sid_itr.hasNext()) {
-					Integer sid = sid_itr.next();
-					int position = sword_id_with_position.get(sid);
-					stmt_sword_variable_info.add(sid);
-					stmt_sword_variable_position_info.add(position);
+				if (stmt_sword_variable_info.size() == 0) {
+					stmt_sword_variable_info.add(0);
+					stmt_sword_variable_position_info.add(0);
+				} else {
+					Set<Integer> sids = sword_id_with_position.keySet();
+					Iterator<Integer> sid_itr = sids.iterator();
+					while (sid_itr.hasNext()) {
+						Integer sid = sid_itr.next();
+						int position = sword_id_with_position.get(sid);
+						stmt_sword_variable_info.add(sid);
+						stmt_sword_variable_position_info.add(position);
+					}
 				}
 				stmt_sword_variable_info_end.add(stmt_sword_variable_info.size()-1);
 			}
