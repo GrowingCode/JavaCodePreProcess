@@ -553,15 +553,16 @@ public class ASTTensor extends Tensor {
 		Assert.isTrue(stmt_variable_info_start.size() == stmt_token_info_start.size());
 		int i_len = stmt_variable_info_start.size();
 		for (int i=0; i<i_len; i++) {
+			Integer t_start = stmt_token_info_start.get(i);
 			Integer i_start = stmt_variable_info_start.get(i);
 			Integer i_end = stmt_variable_info_end.get(i);
 			for (int j=i_start; j<=i_end; j++) {
 				int position = stmt_variable_position_info.get(j);
-				int r_pos = i_start + position;
+				int r_pos = t_start + position;
 				if (position == 0) {
 					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
 				} else {
-					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "next_type_content:" + stmt_token_string.get(r_pos+1) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
+					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
 				}
 			}
 		}

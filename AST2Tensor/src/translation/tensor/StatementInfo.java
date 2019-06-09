@@ -45,6 +45,7 @@ public class StatementInfo {
 			Assert.isTrue(token_var_id == is_var);
 		} else {
 			Assert.isTrue(is_var >= 0);
+			System.out.println("var_type_content:" + t_c.GetTypeContent());
 			int token_var_position_in_stmt = type_content_id.size()-1;
 			var_or_type_id_with_position_in_this_stmt.put(token_var_id, token_var_position_in_stmt);
 		}
