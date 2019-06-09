@@ -478,6 +478,7 @@ public class ASTTensor extends Tensor {
 		}
 		Validate();
 		ValidateStatements();
+		ValidateVarialbesInStatements();
 	}
 
 	private void Validate() {
@@ -543,6 +544,25 @@ public class ASTTensor extends Tensor {
 			all_stmt_sword_length += stmt_sword_length;
 		}
 		Assert.isTrue(all_stmt_sword_length == sword_info.size());
+	}
+	
+	private void ValidateVarialbesInStatements() {
+		Assert.isTrue(stmt_variable_info_start.size() == stmt_token_info_start.size());
+		int i_len = stmt_variable_info_start.size();
+		for (int i=0; i<i_len; i++) {
+			Integer i_start = stmt_variable_info_start.get(i);
+			Integer i_end = stmt_variable_info_end.get(i);
+			for (int j=i_start; j<=i_end; j++) {
+				int position = stmt_variable_position_info.get(j);
+				int r_pos = stmt_token_info_start.size() + position;
+				if (position == 0) {
+					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
+				} else {
+					Assert.isTrue(stmt_token_variable_info.get(r_pos) >= 0);
+				}
+				
+			}
+		}
 	}
 
 }
