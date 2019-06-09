@@ -561,7 +561,6 @@ public class ASTTensor extends Tensor {
 				} else {
 					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
 				}
-				
 			}
 		}
 	}
