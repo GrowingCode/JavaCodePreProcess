@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Assert;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import util.BooleanArrayUtil;
+import util.PrintUtil;
 import util.SetUtil;
 
 public class ASTTensor extends Tensor {
@@ -395,18 +396,29 @@ public class ASTTensor extends Tensor {
 
 			stmt_variable_info_start.add(stmt_variable_info.size());
 			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
+			
+			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
+			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
 			if (vars.size() == 0) {
-				stmt_variable_info.add(0);
-				stmt_variable_position_info.add(0);
+				part_stmt_variable_info.add(0);
+				part_stmt_variable_position_info.add(0);
 			} else {
 				for (int var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 //					System.err.println("position:" + position);
 					Assert.isTrue(last_stmt.local_token_id.get(position) >= 0);
-					stmt_variable_info.add(var);
-					stmt_variable_position_info.add(position);
+					part_stmt_variable_info.add(var);
+					part_stmt_variable_position_info.add(position);
 				}
 			}
+			
+			System.out.println("==== var position begin ====");
+			PrintUtil.PrintList(stmt_variable_info, "stmt_variable_info");
+			PrintUtil.PrintList(stmt_variable_position_info, "stmt_variable_position_info");
+			System.out.println("==== var position end ====");
+			
+			stmt_variable_info.addAll(part_stmt_variable_info);
+			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
 			stmt_following_legal_info_start.add(stmt_following_legal_info.size());
