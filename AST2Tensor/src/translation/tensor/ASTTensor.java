@@ -43,7 +43,7 @@ public class ASTTensor extends Tensor {
 	// the second row is the local_token_id
 	// the third row is inner token index
 	// the forth row is api_group this token belongs to
-
+	ArrayList<String> stmt_token_string = new ArrayList<String>();
 	// stmt info of tokens: ...|...|...
 	// memory_index means the local token index also the variable index or type
 	// index
@@ -382,6 +382,7 @@ public class ASTTensor extends Tensor {
 			StatementInfo last_stmt = si_list.get(i);
 			int ori_size = stmt_token_info.size();
 			stmt_token_info_start.add(ori_size);
+			stmt_token_string.addAll(last_stmt.type_content_str);
 			stmt_token_info.addAll(last_stmt.type_content_id);
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
@@ -554,11 +555,11 @@ public class ASTTensor extends Tensor {
 			Integer i_end = stmt_variable_info_end.get(i);
 			for (int j=i_start; j<=i_end; j++) {
 				int position = stmt_variable_position_info.get(j);
-				int r_pos = stmt_token_info_start.size() + position;
+				int r_pos = i_start + position;
 				if (position == 0) {
 					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
 				} else {
-					Assert.isTrue(stmt_token_variable_info.get(r_pos) >= 0);
+					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
 				}
 				
 			}
