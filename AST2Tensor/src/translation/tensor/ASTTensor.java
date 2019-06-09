@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Assert;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import util.BooleanArrayUtil;
-import util.PrintUtil;
 import util.SetUtil;
 
 public class ASTTensor extends Tensor {
@@ -381,7 +380,7 @@ public class ASTTensor extends Tensor {
 		int i_len = si_list.size();
 		for (int i = 0; i < i_len; i++) {
 			StatementInfo last_stmt = si_list.get(i);
-			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
+//			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 			int ori_size = stmt_token_info.size();
 			stmt_token_info_start.add(ori_size);
 			stmt_token_string.addAll(last_stmt.type_content_str);
