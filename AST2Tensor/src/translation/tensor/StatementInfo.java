@@ -24,7 +24,7 @@ public class StatementInfo {
 	
 	ArrayList<Integer> type_content_id = new ArrayList<Integer>();
 	ArrayList<Integer> local_token_id = new ArrayList<Integer>();
-	ArrayList<Integer> is_variable = new ArrayList<Integer>();
+//	ArrayList<Integer> is_variable = new ArrayList<Integer>();
 	ArrayList<Integer> api_group = new ArrayList<Integer>();
 	ArrayList<Integer> api_relative = new ArrayList<Integer>();
 	
@@ -39,7 +39,8 @@ public class StatementInfo {
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
 		local_token_id.add(token_var_id);
-		is_variable.add(is_var);
+//		is_variable.add(is_var);
+		
 		if (token_var_id == -1) {
 			Assert.isTrue(token_var_id == is_var);
 		} else {

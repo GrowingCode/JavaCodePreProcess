@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Assert;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import util.BooleanArrayUtil;
+import util.PrintUtil;
 import util.SetUtil;
 
 public class ASTTensor extends Tensor {
@@ -380,6 +381,7 @@ public class ASTTensor extends Tensor {
 		int i_len = si_list.size();
 		for (int i = 0; i < i_len; i++) {
 			StatementInfo last_stmt = si_list.get(i);
+			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 			int ori_size = stmt_token_info.size();
 			stmt_token_info_start.add(ori_size);
 			stmt_token_string.addAll(last_stmt.type_content_str);
@@ -401,7 +403,7 @@ public class ASTTensor extends Tensor {
 				for (int var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 //					System.err.println("position:" + position);
-					Assert.isTrue(last_stmt.is_variable.get(position) >= 0);
+					Assert.isTrue(last_stmt.local_token_id.get(position) >= 0);
 					stmt_variable_info.add(var);
 					stmt_variable_position_info.add(position);
 				}
@@ -559,7 +561,7 @@ public class ASTTensor extends Tensor {
 				if (position == 0) {
 					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
 				} else {
-					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
+					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "next_type_content:" + stmt_token_string.get(r_pos+1) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
 				}
 			}
 		}
