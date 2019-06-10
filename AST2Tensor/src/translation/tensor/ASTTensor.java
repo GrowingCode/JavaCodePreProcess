@@ -413,8 +413,8 @@ public class ASTTensor extends Tensor {
 			}
 			
 			System.out.println("==== var position begin ====");
-			PrintUtil.PrintList(stmt_variable_info, "stmt_variable_info");
-			PrintUtil.PrintList(stmt_variable_position_info, "stmt_variable_position_info");
+			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
+			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
 			System.out.println("==== var position end ====");
 			
 			stmt_variable_info.addAll(part_stmt_variable_info);

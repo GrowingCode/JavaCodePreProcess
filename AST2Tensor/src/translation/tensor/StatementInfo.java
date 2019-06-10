@@ -47,7 +47,9 @@ public class StatementInfo {
 			Assert.isTrue(is_var >= 0);
 			System.out.println("var_type_content:" + t_c.GetTypeContent());
 			int token_var_position_in_stmt = type_content_id.size()-1;
-			var_or_type_id_with_position_in_this_stmt.put(token_var_id, token_var_position_in_stmt);
+			if (!var_or_type_id_with_position_in_this_stmt.containsKey(token_var_id)) {
+				var_or_type_id_with_position_in_this_stmt.put(token_var_id, token_var_position_in_stmt);
+			}
 		}
 		api_group.add(api_comb_id);
 		api_relative.add(api_relative_id);
