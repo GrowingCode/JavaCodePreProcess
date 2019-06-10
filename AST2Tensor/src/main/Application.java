@@ -87,13 +87,18 @@ public class Application implements IApplication {
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
 		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, gr, ar, cnc);
 		{
+			System.out.println("==== BPECount Begin ====");
 			BPEOneProjectHandle handle = new BPEOneProjectHandle();
 			HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
+			System.out.println("==== BPECount End ====");
 		}
+		
 		System.out.println("==== BPEMerge Begin ====");
 		bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
-		System.out.println("==== BPEMerge Over ====");
+		System.out.println("==== BPEMerge End ====");
+		
 		{
+			System.out.println("==== IDCount Begin ====");
 			CountOneProjectHandle handle = new CountOneProjectHandle();
 			HandleEachProjectFramework(root_dir, handle, id_tool, null);
 			// max_handle_projs, 
@@ -108,8 +113,8 @@ public class Application implements IApplication {
 //					all_size %= RefinePeriod;
 //				}
 //			}
+			System.out.println("==== IDCount End ====");
 		}
-		System.out.println("==== CountProject Over ====");
 		IDManager im = new IDManager(id_tool);
 		{
 			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
@@ -122,6 +127,7 @@ public class Application implements IApplication {
 //			tr.FullFillIDManager(im);
 //		}
 		{
+			System.out.println("==== GenerateTensor Begin ====");
 			TensorTools tensor_tool = new TensorTools(role_assigner, im);
 			if (root_dir.isDirectory()) {
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
@@ -154,6 +160,7 @@ public class Application implements IApplication {
 			} else {
 				DebugLogger.Error("The root path given in parameter should be a directory which contains zip files or with-project directories");
 			}
+			System.out.println("==== GenerateTensor End ====");
 		}
 		System.out.println("==== TranslateProject Over ====");
 		System.out.println(im.WordVocabularyInfo());
