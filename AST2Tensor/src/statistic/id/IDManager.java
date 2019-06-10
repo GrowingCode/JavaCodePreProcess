@@ -702,12 +702,12 @@ public class IDManager {
 		/**
 		 * print statistics
 		 */
-		int in_hit_total_subword_num = 0;
-		int in_hit_max_subword_num_in_one_token = 0;
-		int in_hit_token_num = 0;
-		int not_in_hit_total_subword_num = 0;
-		int not_in_hit_max_subword_num_in_one_token = 0;
-		int not_in_hit_token_num = 0;
+		System.out.println("in_hit_total_subword_num:" + in_hit_total_subword_num);
+		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
+		System.out.println("in_hit_token_num:" + in_hit_token_num);
+		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
+		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
+		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
 		
 		Gson gson4 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
