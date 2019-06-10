@@ -28,11 +28,13 @@ public class JavaImportOperation {
 		
 		IPath src = JavaProjectElementFinder.FindSourceFolder(javaProject);
 		
+		int index = 0;
 		ArrayList<File> filesToImport = new ArrayList<File>();
 		Set<String> dirs = dir_files_map.keySet();
 		Iterator<String> diritr = dirs.iterator();
 		while (diritr.hasNext())
 		{
+			index++;
 			String dir = diritr.next();
 			TreeMap<String, String> files = dir_files_map.get(dir);
 			Set<String> fkeys = files.keySet();
@@ -44,7 +46,8 @@ public class JavaImportOperation {
 				// analysis_classes.add(fkey);
 				filesToImport.add(new File(fvalue));
 			}
-			
+
+			System.out.println("==== Import " + index + "/" + dir_files_map.size() + "#" + dir + ": " + files.size() + " files ====");
 			WaitOverMonitor wom = new WaitOverMonitor();
 			ImportOperation importOperation = new ImportOperation(src, new File(dir),
 					FileSystemStructureProvider.INSTANCE, overwriteQuery, filesToImport);
@@ -55,6 +58,7 @@ public class JavaImportOperation {
 				e.printStackTrace();
 			}
 			wom.WaitToStop();
+//			System.out.println("==== End import " + dir_files_map.size() + " files ====");
 		}
 		// return analysis_classes;
 	}

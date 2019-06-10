@@ -174,7 +174,6 @@ public class AnalysisEnvironment {
 			// Fill the source folder of the project.
 		}
 		JavaImportOperation.ImportFileSystem(java_project, dir_files_map);
-
 //		System.err.println("Debugging, import files:" + dir_files_map);
 
 		PreProcessHelper.PreProcessProject(java_project);
