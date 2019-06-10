@@ -379,7 +379,7 @@ public class ASTTensor extends Tensor {
 	public void HandleAllDevoured() {
 		int i_len = si_list.size();
 		for (int i = 0; i < i_len; i++) {
-			System.out.println("tokens before size:" + stmt_token_info.size());
+//			System.out.println("tokens before size:" + stmt_token_info.size());
 			StatementInfo last_stmt = si_list.get(i);
 			int ori_size = stmt_token_info.size();
 			stmt_token_info_start.add(ori_size);
@@ -434,12 +434,12 @@ public class ASTTensor extends Tensor {
 			stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0,
 					Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
 			stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);
-			System.out.println("tokens after size:" + stmt_token_info.size());
+//			System.out.println("tokens after size:" + stmt_token_info.size());
 		}
 		{
-			System.out.println("subwords before size:" + sword_info.size());
 			Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
 			for (int i = 0; i < i_len; i++) {
+//				System.out.println("subwords before size:" + sword_info.size());
 				TreeMap<Integer, Integer> sword_id_with_position = new TreeMap<Integer, Integer>();
 				Integer st = stmt_token_info_start.get(i);
 				Integer ed = stmt_token_info_end.get(i);
@@ -488,10 +488,10 @@ public class ASTTensor extends Tensor {
 					}
 				}
 				stmt_sword_variable_info_end.add(stmt_sword_variable_info.size()-1);
+//				System.out.println("subwords after size:" + sword_info.size());
 			}
 			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
 			Assert.isTrue(sword_info.size() == sword_variable_info.size());
-			System.out.println("subwords after size:" + sword_info.size());
 		}
 		Validate();
 		ValidateStatements();
