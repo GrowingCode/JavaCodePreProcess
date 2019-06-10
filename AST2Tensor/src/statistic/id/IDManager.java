@@ -648,16 +648,44 @@ public class IDManager {
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 		
+		/**
+		 * statistics
+		 * for output
+		 */
+		int in_hit_total_subword_num = 0;
+		int in_hit_max_subword_num_in_one_token = 0;
+		int in_hit_token_num = 0;
+		int not_in_hit_total_subword_num = 0;
+		int not_in_hit_max_subword_num_in_one_token = 0;
+		int not_in_hit_token_num = 0;
+		
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
 		for (int i=0;i<ati_out.size();i++) {
-			String token = ati_out.get(i);
-			Assert.isTrue(token != null && token.length() > 0);
-			token = BPEWordsUtil.InsertSpaceToToken(token);
+			String ori_token = ati_out.get(i);
+			Assert.isTrue(ori_token != null && ori_token.length() > 0);
+			String token = BPEWordsUtil.InsertSpaceToToken(ori_token);
 			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
-			Assert.isTrue(subwords.size() > 0);
+			int subwords_size = subwords.size();
+			
+			if (id_tool.tr.hit_train.containsKey(ori_token)) {
+				in_hit_total_subword_num += subwords_size;
+				if (in_hit_max_subword_num_in_one_token < subwords_size) {
+					in_hit_max_subword_num_in_one_token = subwords_size;
+				}
+				in_hit_token_num++;
+			} else {
+				Assert.isTrue(id_tool.tr.not_hit_train.containsKey(ori_token));
+				not_in_hit_total_subword_num += subwords_size;
+				if (not_in_hit_max_subword_num_in_one_token < subwords_size) {
+					not_in_hit_max_subword_num_in_one_token = subwords_size;
+				}
+				not_in_hit_token_num++;
+			}
+			
+			Assert.isTrue(subwords_size > 0);
 			each_subword_sequence_start.add(subword_sequences.size());
-			for (int i1=0;i1<subwords.size();i1++) {
+			for (int i1=0;i1<subwords_size;i1++) {
 				String subword = subwords.get(i1);
 //				if (i1 == subwords.size()-1) {
 //					subword = subword + " ";
@@ -670,6 +698,16 @@ public class IDManager {
 			}
 			each_subword_sequence_end.add(subword_sequences.size()-1);
 		}
+		
+		/**
+		 * print statistics
+		 */
+		int in_hit_total_subword_num = 0;
+		int in_hit_max_subword_num_in_one_token = 0;
+		int in_hit_token_num = 0;
+		int not_in_hit_total_subword_num = 0;
+		int not_in_hit_max_subword_num_in_one_token = 0;
+		int not_in_hit_token_num = 0;
 		
 		Gson gson4 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
