@@ -381,7 +381,6 @@ public class ASTTensor extends Tensor {
 		int i_len = si_list.size();
 		for (int i = 0; i < i_len; i++) {
 			StatementInfo last_stmt = si_list.get(i);
-//			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 			int ori_size = stmt_token_info.size();
 			stmt_token_info_start.add(ori_size);
 			stmt_token_string.addAll(last_stmt.type_content_str);
@@ -415,6 +414,7 @@ public class ASTTensor extends Tensor {
 			System.out.println("==== var position begin ====");
 			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
 			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
+			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 			System.out.println("==== var position end ====");
 			
 			stmt_variable_info.addAll(part_stmt_variable_info);
