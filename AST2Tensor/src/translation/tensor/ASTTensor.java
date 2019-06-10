@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Assert;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import util.BooleanArrayUtil;
-import util.PrintUtil;
 import util.SetUtil;
 
 public class ASTTensor extends Tensor {
@@ -379,6 +378,7 @@ public class ASTTensor extends Tensor {
 
 	public void HandleAllDevoured() {
 		int i_len = si_list.size();
+		System.out.println("tokens before size:" + stmt_token_info.size());
 		for (int i = 0; i < i_len; i++) {
 			StatementInfo last_stmt = si_list.get(i);
 			int ori_size = stmt_token_info.size();
@@ -411,11 +411,11 @@ public class ASTTensor extends Tensor {
 				}
 			}
 			
-			System.out.println("==== var position begin ====");
-			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
-			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
-			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
-			System.out.println("==== var position end ====");
+//			System.out.println("==== var position begin ====");
+//			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
+//			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
+//			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
+//			System.out.println("==== var position end ====");
 			
 			stmt_variable_info.addAll(part_stmt_variable_info);
 			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
@@ -435,6 +435,8 @@ public class ASTTensor extends Tensor {
 					Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
 			stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);
 		}
+		System.out.println("tokens after size:" + stmt_token_info.size());
+		System.out.println("subwords before size:" + sword_info.size());
 		{
 			Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
 			for (int i = 0; i < i_len; i++) {
@@ -490,6 +492,7 @@ public class ASTTensor extends Tensor {
 			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
 			Assert.isTrue(sword_info.size() == sword_variable_info.size());
 		}
+		System.out.println("subwords after size:" + sword_info.size());
 		Validate();
 		ValidateStatements();
 		ValidateVarialbesInStatements();
