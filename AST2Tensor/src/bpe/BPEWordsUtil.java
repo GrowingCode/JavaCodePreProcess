@@ -80,7 +80,7 @@ public class BPEWordsUtil {
 			vocab_r = merge_vocab(best, vocab_r);
 			merges.add(best);
 		}
-//		PrintUtil.PrintMap(vocab_r);
+//		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");
 		return merges;
 	}

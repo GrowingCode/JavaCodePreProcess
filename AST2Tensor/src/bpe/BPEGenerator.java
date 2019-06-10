@@ -67,7 +67,7 @@ public class BPEGenerator extends ASTVisitor {
 						String mdname = md.getName();
 						mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
 						if (!mdname.equals(token_str)) {
-							tool.bpe_mr.EncounterToken(token_str, 1);
+							tool.bpe_mr.EncounterToken(mdname, 1);
 						}
 					}
 				}
