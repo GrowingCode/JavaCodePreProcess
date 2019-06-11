@@ -2,12 +2,15 @@ package eclipse.project;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -126,7 +129,24 @@ public class AnalysisEnvironment {
 			IterateAllJarsToFillEntries(dir, entries);
 		}
 		IJavaProject java_project = JavaProjectManager.UniqueManager().CreateJavaProject(pi.getName(), entries);
+		
+		IClasspathEntry[] ori_entries = java_project.getRawClasspath();
+//		for (IClasspathEntry ice : ori_entries) {
+//			System.out.println("one_ice:" + ice);
+//		}
+//		System.exit(1);
+		entries.addAll(Arrays.asList(ori_entries));
 
+//		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
+//		System.arraycopy(entries, 0, newEntries, 0, entries.length);
+//
+//		IPath srcPath= java_project.getPath().append("target/generated-sources");
+//		IClasspathEntry srcEntry= JavaCore.newSourceEntry(srcPath, null);
+//
+//		newEntries[entries.length] = JavaCore.newSourceEntry(srcEntry.getPath());
+//		java_project.setRawClasspath(newEntries, null);
+		
+		
 		Map<String, TreeMap<String, String>> dir_files_map = new TreeMap<String, TreeMap<String, String>>();
 		{
 			// import legal .java files into IJavaProject.
@@ -173,7 +193,15 @@ public class AnalysisEnvironment {
 			}
 			// Fill the source folder of the project.
 		}
-		JavaImportOperation.ImportFileSystem(java_project, dir_files_map);
+//		JavaImportOperation.ImportFileSystem(java_project, dir_files_map);
+		Set<String> r_dirs = dir_files_map.keySet();
+		for (String r_dir : r_dirs) {
+//			IPath srcPath = java_project.getPath().append("target/generated-sources");
+			IPath srcPath = new Path(r_dir);
+			IClasspathEntry srcEntry= JavaCore.newSourceEntry(srcPath, null);
+			entries.add(JavaCore.newSourceEntry(srcEntry.getPath()));
+			java_project.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
+		}
 //		System.err.println("Debugging, import files:" + dir_files_map);
 
 		PreProcessHelper.PreProcessProject(java_project);
