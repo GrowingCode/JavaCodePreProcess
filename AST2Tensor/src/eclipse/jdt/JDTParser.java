@@ -2,16 +2,10 @@ package eclipse.jdt;
 
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jface.text.IDocument;
-
-import eclipse.project.AnalysisEnvironment;
-import eclipse.project.FakeResourceCreationHelper;
 
 public class JDTParser {
 	
@@ -50,28 +44,28 @@ public class JDTParser {
 		return compilationUnit;
 	}
 	
-	public static CompilationUnit ParseJavaContent(String package_name, String unit_name, IDocument doc)
-	{
-		IJavaProject java_project = AnalysisEnvironment.GetDefaultAnalysisEnironment();
-		String file_unit_name = unit_name + ".java";
-		String proj_name = java_project.getElementName();
-		FakeResourceCreationHelper.CreateAndImportFakeJavaFile(proj_name, package_name, file_unit_name, doc);
-		IType it = null;
-		String full_qualified_name = package_name + (package_name.equals("") ? "" : ".") + unit_name;
-		try {
-			it = java_project.findType(full_qualified_name);
-		} catch (JavaModelException e) {
-			e.printStackTrace();
-		}
-		CompilationUnit compilationUnit = null;
-		if (it != null && it.getCompilationUnit() != null) {
-			// parser.setUnitName("/" + proj_name + "/src/" + package_name.replace('.', '/') + (package_name.equals("") ? "" : "/") + file_unit_name);
-			// parser.setSource(doc.get().toCharArray());
-			compilationUnit = ParseICompilationUnit(it.getCompilationUnit());
-		} else {
-			System.err.println("Warning: " + full_qualified_name + " can not be founded!");
-		}
-		return compilationUnit;
-	}
+//	public static CompilationUnit ParseJavaContent(String package_name, String unit_name, IDocument doc)
+//	{
+//		IJavaProject java_project = AnalysisEnvironment.GetDefaultAnalysisEnironment();
+//		String file_unit_name = unit_name + ".java";
+//		String proj_name = java_project.getElementName();
+//		FakeResourceCreationHelper.CreateAndImportFakeJavaFile(proj_name, package_name, file_unit_name, doc);
+//		IType it = null;
+//		String full_qualified_name = package_name + (package_name.equals("") ? "" : ".") + unit_name;
+//		try {
+//			it = java_project.findType(full_qualified_name);
+//		} catch (JavaModelException e) {
+//			e.printStackTrace();
+//		}
+//		CompilationUnit compilationUnit = null;
+//		if (it != null && it.getCompilationUnit() != null) {
+//			// parser.setUnitName("/" + proj_name + "/src/" + package_name.replace('.', '/') + (package_name.equals("") ? "" : "/") + file_unit_name);
+//			// parser.setSource(doc.get().toCharArray());
+//			compilationUnit = ParseICompilationUnit(it.getCompilationUnit());
+//		} else {
+//			System.err.println("Warning: " + full_qualified_name + " can not be founded!");
+//		}
+//		return compilationUnit;
+//	}
 	
 }

@@ -185,11 +185,9 @@ public class FileUtil {
 	}
 
 	public static void CopyDir(String sourcePath, String newPath) throws IOException {
-
 		if (!(new File(newPath)).exists()) {
 			(new File(newPath)).mkdirs();
 		}
-
 		File file = new File(sourcePath);
 		String[] filePath = file.list();
 

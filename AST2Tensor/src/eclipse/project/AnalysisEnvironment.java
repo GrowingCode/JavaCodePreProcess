@@ -2,15 +2,12 @@ package eclipse.project;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -21,7 +18,6 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
 
-import eclipse.FakedProjectEnvironmentMeta;
 import eclipse.exception.NoAnalysisSourceException;
 import eclipse.exception.ProjectAlreadyExistsException;
 import eclipse.jdt.JDTLexicalParser;
@@ -41,23 +37,24 @@ public class AnalysisEnvironment {
 		for (LibraryLocation element : libs) {
 			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 		}
+//		PrintUtil.PrintList(entries, "default_jre_entries");
 	}
 
-	public static IJavaProject GetDefaultAnalysisEnironment() {
-		if (default_project == null) {
-			List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
-			InitializeClassPathWithDefaultJRE(entries);
-			IJavaProject java_project = null;
-			try {
-				java_project = JavaProjectManager.UniqueManager()
-						.CreateJavaProject(FakedProjectEnvironmentMeta.FakedProject, entries);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			default_project = java_project;
-		}
-		return default_project;
-	}
+//	public static IJavaProject GetDefaultAnalysisEnironment() {
+//		if (default_project == null) {
+//			List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+//			InitializeClassPathWithDefaultJRE(entries);
+//			IJavaProject java_project = null;
+//			try {
+//				java_project = JavaProjectManager.UniqueManager()
+//						.CreateJavaProject(FakedProjectEnvironmentMeta.FakedProject, entries);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			default_project = java_project;
+//		}
+//		return default_project;
+//	}
 
 	public static IJavaProject CreateAnalysisEnvironment(ProjectInfo pi)
 			throws NoAnalysisSourceException, ProjectAlreadyExistsException, CoreException {
@@ -128,14 +125,13 @@ public class AnalysisEnvironment {
 			// }
 			IterateAllJarsToFillEntries(dir, entries);
 		}
-		IJavaProject java_project = JavaProjectManager.UniqueManager().CreateJavaProject(pi.getName(), entries);
 		
-		IClasspathEntry[] ori_entries = java_project.getRawClasspath();
+//		IClasspathEntry[] ori_entries = java_project.getRawClasspath();
 //		for (IClasspathEntry ice : ori_entries) {
 //			System.out.println("one_ice:" + ice);
 //		}
 //		System.exit(1);
-		entries.addAll(Arrays.asList(ori_entries));
+//		entries.addAll(Arrays.asList(ori_entries));
 
 //		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
 //		System.arraycopy(entries, 0, newEntries, 0, entries.length);
@@ -193,15 +189,19 @@ public class AnalysisEnvironment {
 			}
 			// Fill the source folder of the project.
 		}
+		
+		IJavaProject java_project = JavaProjectManager.UniqueManager().CreateJavaProject(pi.getName(), entries, dir_files_map);
+		
 //		JavaImportOperation.ImportFileSystem(java_project, dir_files_map);
-		Set<String> r_dirs = dir_files_map.keySet();
-		for (String r_dir : r_dirs) {
-//			IPath srcPath = java_project.getPath().append("target/generated-sources");
-			IPath srcPath = new Path(r_dir);
-			IClasspathEntry srcEntry= JavaCore.newSourceEntry(srcPath, null);
-			entries.add(JavaCore.newSourceEntry(srcEntry.getPath()));
-			java_project.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
-		}
+//		Set<String> r_dirs = dir_files_map.keySet();
+//		for (String r_dir : r_dirs) {
+////			IPath srcPath = java_project.getPath().append("target/generated-sources");
+//			IPath srcPath = new Path(r_dir);
+//			IClasspathEntry srcEntry= JavaCore.newSourceEntry(srcPath, null);
+//			entries.add(JavaCore.newSourceEntry(srcEntry.getPath()));
+//		}
+//		PrintUtil.PrintList(entries, "entries");
+//		java_project.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
 //		System.err.println("Debugging, import files:" + dir_files_map);
 
 		PreProcessHelper.PreProcessProject(java_project);
@@ -222,7 +222,7 @@ public class AnalysisEnvironment {
 	}
 
 	public static void DeleteAllAnalysisEnvironment() throws CoreException {
-		JavaProjectManager.UniqueManager().DeleteAllJavaProject();
+		JavaProjectManager.UniqueManager().DeleteAllJavaProjects();
 	}
 
 }
