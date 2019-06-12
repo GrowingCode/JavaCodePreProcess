@@ -1,11 +1,15 @@
 package statistic.id;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.google.gson.Gson;
+
 import bpe.BPEWordsUtil;
+import util.FileUtil;
 
 public class BPEMergeRecorder {
 	
@@ -14,6 +18,11 @@ public class BPEMergeRecorder {
 	Map<String, Integer> token_times = new TreeMap<String, Integer>();
 	
 	public BPEMergeRecorder() {
+	}
+	
+	public void Initialize(List<String> merges, Map<String, Integer> token_times) {
+		this.merges.addAll(merges);
+		this.token_times.putAll(token_times);
 	}
 	
 	public void EncounterToken(String token, int encounter_time) {
@@ -43,6 +52,11 @@ public class BPEMergeRecorder {
 //		System.out.println("==== end printing vocabulary ====");
 		merges.clear();
 		merges.addAll(mgs);
+	}
+	
+	public void SaveTo(File merges_json, File token_times_json) {
+		FileUtil.WriteToFile(merges_json, new Gson().toJson(merges));
+		FileUtil.WriteToFile(token_times_json, new Gson().toJson(token_times));
 	}
 	
 }

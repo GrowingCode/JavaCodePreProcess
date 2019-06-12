@@ -3,6 +3,7 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.app.IApplication;
@@ -10,6 +11,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 // import org.eclipse.jdt.core.IJavaProject;
 // import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IJavaProject;
+
+import com.google.gson.Gson;
 
 import bpe.BPEGeneratorForProject;
 import eclipse.project.ProjectLoader;
@@ -34,6 +37,10 @@ import util.ZIPUtil;
 public class Application implements IApplication {
 
 	public static final String user_home = System.getProperty("user.home");
+	
+	public static final String bpe_merges_json = user_home + "/YYXWitnessBPEMerges.json";
+	public static final String bpe_token_times_json = user_home + "/YYXWitnessBPETokenTimes.json";
+	
 	public static final String witness = user_home + "/YYXWitness";
 	public static final String data = user_home + "/YYXData";
 
@@ -86,13 +93,26 @@ public class Application implements IApplication {
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
 		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, gr, ar, cnc);
 		{
-			System.out.println("==== BPECount Begin ====");
-			BPEOneProjectHandle handle = new BPEOneProjectHandle();
-			HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
-//			System.out.println("==== BPEMerge Begin ====");
-			bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
-//			System.out.println("==== BPEMerge End ====");
-			System.out.println("==== BPECount End ====");
+			File bpe_mj = new File(bpe_merges_json);
+			File bpe_ttj = new File(bpe_token_times_json);
+			if (bpe_mj.exists()) {
+				Assert.isTrue(bpe_ttj.exists());
+				@SuppressWarnings("unchecked")
+				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), List.class);
+				@SuppressWarnings("unchecked")
+				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), Map.class);
+				bpe_mr.Initialize(merges, token_times);
+				System.out.println("==== BPECount Loaded ====");
+			} else {
+				System.out.println("==== BPECount Begin ====");
+				BPEOneProjectHandle handle = new BPEOneProjectHandle();
+				HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
+	//			System.out.println("==== BPEMerge Begin ====");
+				bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
+	//			System.out.println("==== BPEMerge End ====");
+				bpe_mr.SaveTo(bpe_mj, bpe_ttj);
+				System.out.println("==== BPECount End ====");
+			}
 		}
 		{
 			System.out.println("==== IDCount Begin ====");

@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.ThisExpression;
 
 public class TokenRecorder {
 
@@ -75,7 +76,7 @@ public class TokenRecorder {
 	}
 	
 	public static boolean LeafIsFixed(ASTNode node) {
-		boolean is_fixed_leaf = node instanceof Modifier || node instanceof PrimitiveType || node instanceof BooleanLiteral || node instanceof NullLiteral || node instanceof Dimension;
+		boolean is_fixed_leaf = node instanceof Modifier || node instanceof PrimitiveType || node instanceof BooleanLiteral || node instanceof NullLiteral || node instanceof Dimension || node instanceof ThisExpression;
 		boolean is_unfixed_leaf = node instanceof SimpleName || node instanceof NumberLiteral || node instanceof CharacterLiteral || node instanceof StringLiteral;
 		Assert.isTrue(is_unfixed_leaf || is_fixed_leaf, "Strange node class:" + node.getClass().getSimpleName() + "#node:" + node);
 		return is_fixed_leaf;
