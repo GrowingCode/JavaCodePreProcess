@@ -43,6 +43,9 @@ public class IDGenerator extends ASTVisitor {
 		super.preVisit(node);
 		// handle token
 		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+//		if (node instanceof BreakStatement && children.size() == 0) {
+//			System.out.println("============ encounter BreakStatementL ============");
+//		}
 		int children_size = children == null ? 0 : children.size();
 		// handle GrammarRecorder
 		tool.gr.RecordGrammar(node);

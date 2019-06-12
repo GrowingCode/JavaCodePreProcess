@@ -146,6 +146,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			token_index_record = null;
 			token_local_index = 0;
 //			node_index_map.clear();
+			leafExtraCount = 0;
 			nodeCount = 0;
 		}
 		super.postVisit(node);

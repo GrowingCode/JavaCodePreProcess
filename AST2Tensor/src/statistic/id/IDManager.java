@@ -635,13 +635,18 @@ public class IDManager {
 		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after");
 		origin_after.putAll(not_hit_res.origin_after);
 //		PrintUtil.PrintMap(origin_after, "origin_after");
+		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
+		ts.removeAll(id_tool.tr.hit_train.keySet());
+		ts.removeAll(id_tool.tr.not_hit_train.keySet());
+		PrintUtil.PrintSet(ts, "left things");
+		Assert.isTrue(origin_after.size() == token_id_map.size(), "token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 		
 		// in train
 		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
 		// not in train
 		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
 		not_in_train_vobs.removeAll(in_train_vobs);
-		System.out.println("Not_In_Train_Sub_Vobs_Size:" + not_in_train_vobs.size() + "#In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
+		System.out.println("In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Not_In_Train_Sub_Vobs_Size:" + not_in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
 //		PrintUtil.PrintSet(in_train_vobs, "in_train_vobs");
 //		PrintUtil.PrintSet(not_in_train_vobs, "not_in_train_vobs");
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
@@ -665,6 +670,7 @@ public class IDManager {
 			String ori_token = ati_out.get(i);
 			Assert.isTrue(ori_token != null && ori_token.length() > 0);
 			String token = BPEWordsUtil.InsertSpaceToToken(ori_token);
+			Assert.isTrue(origin_after.get(token) != null, "token:" + token);
 			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
 			int subwords_size = subwords.size();
 			
@@ -976,9 +982,9 @@ public class IDManager {
 //				type_content_huff_tree_list_json.toString());
 	}
 	
-	public GrammarRecorder GetGrammarRecorder() {
-		return id_tool.gr;
-	}
+//	public GrammarRecorder GetGrammarRecorder() {
+//		return id_tool.gr;
+//	}
 	
 	public String WordVocabularyInfo() {
 		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size() + "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0);// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);

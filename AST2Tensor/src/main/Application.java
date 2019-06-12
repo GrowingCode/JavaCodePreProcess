@@ -99,7 +99,9 @@ public class Application implements IApplication {
 			if (bpe_mj.exists()) {
 				Assert.isTrue(bpe_ttj.exists());
 				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<List<String>>(){}.getType());
-				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<Map<String, Integer>>(){}.getType());
+//				String bpe_mj_content = FileUtil.ReadFromFile(bpe_mj);
+//				System.out.println("bpe_mj_content:" + bpe_mj_content);
+				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
 				bpe_mr.Initialize(merges, token_times);
 				System.out.println("==== BPECount Loaded ====");
 			} else {

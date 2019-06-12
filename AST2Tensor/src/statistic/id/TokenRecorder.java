@@ -4,17 +4,27 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.core.dom.BreakStatement;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.Dimension;
+import org.eclipse.jdt.core.dom.EmptyStatement;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SwitchCase;
 import org.eclipse.jdt.core.dom.ThisExpression;
+import org.eclipse.jdt.core.dom.WildcardType;
 
 public class TokenRecorder {
 
@@ -77,7 +87,7 @@ public class TokenRecorder {
 	}
 	
 	public static boolean LeafIsFixed(ASTNode node) {
-		boolean is_fixed_leaf = node instanceof Modifier || node instanceof PrimitiveType || node instanceof BooleanLiteral || node instanceof NullLiteral || node instanceof Dimension || node instanceof ThisExpression || node instanceof Block;
+		boolean is_fixed_leaf = node instanceof Modifier || node instanceof PrimitiveType || node instanceof BooleanLiteral || node instanceof NullLiteral || node instanceof Dimension || node instanceof ThisExpression || node instanceof Block || node instanceof BreakStatement || node instanceof SwitchCase || node instanceof WildcardType || node instanceof ContinueStatement || node instanceof ReturnStatement || node instanceof SuperConstructorInvocation || node instanceof ArrayInitializer || node instanceof EmptyStatement || node instanceof ConstructorInvocation || node instanceof AnonymousClassDeclaration;
 		boolean is_unfixed_leaf = node instanceof SimpleName || node instanceof NumberLiteral || node instanceof CharacterLiteral || node instanceof StringLiteral;
 		Assert.isTrue(is_unfixed_leaf || is_fixed_leaf, "Strange node class:" + node.getClass().getSimpleName() + "#node:" + node);
 		return is_fixed_leaf;

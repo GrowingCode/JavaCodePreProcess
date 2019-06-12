@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
@@ -61,7 +62,7 @@ public class JDTASTHelper {
 
 	public static String GetContentRepresentationForASTNode(ASTNode node) {
 		Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).isEmpty());
-		if (node instanceof Block) {
+		if (node instanceof Block || node instanceof AnonymousClassDeclaration) {
 			return "{}";
 		}
 		return PreProcessContentHelper.PreProcessTypeContent(node.toString());
