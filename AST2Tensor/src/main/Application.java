@@ -13,6 +13,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jdt.core.IJavaProject;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import bpe.BPEGeneratorForProject;
 import eclipse.project.ProjectLoader;
@@ -97,10 +98,8 @@ public class Application implements IApplication {
 			File bpe_ttj = new File(bpe_token_times_json);
 			if (bpe_mj.exists()) {
 				Assert.isTrue(bpe_ttj.exists());
-				@SuppressWarnings("unchecked")
-				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), List.class);
-				@SuppressWarnings("unchecked")
-				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), Map.class);
+				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<List<String>>(){}.getType());
+				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<Map<String, Integer>>(){}.getType());
 				bpe_mr.Initialize(merges, token_times);
 				System.out.println("==== BPECount Loaded ====");
 			} else {
