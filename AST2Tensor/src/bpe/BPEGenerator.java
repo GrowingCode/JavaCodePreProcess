@@ -54,8 +54,8 @@ public class BPEGenerator extends ASTVisitor {
 			SimpleName sn = (SimpleName) node;
 			IBinding ib = sn.resolveBinding();
 			if (ib != null && ib instanceof IMethodBinding) {
-				if (!(sn.getParent() instanceof MethodDeclaration)) {
-					Assert.isTrue(sn.getParent() instanceof MethodInvocation);
+				if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
+//					Assert.isTrue(sn.getParent() instanceof MethodInvocation, sn.getParent().getClass() + "#" + sn.getParent());
 //					System.out.println("sn is method declared name!");
 					IMethodBinding imb = (IMethodBinding) ib;
 					ITypeBinding dc = imb.getDeclaringClass();

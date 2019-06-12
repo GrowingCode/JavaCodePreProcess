@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 
@@ -210,7 +211,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 //						is_var = 0;
 //					}
 					if (ib instanceof IMethodBinding) {
-						if (!(sn.getParent() instanceof MethodDeclaration)) {
+						if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
 							IMethodBinding imb = (IMethodBinding) ib;
 							ITypeBinding dc = imb.getDeclaringClass();
 							IMethodBinding[] mds = dc.getDeclaredMethods();

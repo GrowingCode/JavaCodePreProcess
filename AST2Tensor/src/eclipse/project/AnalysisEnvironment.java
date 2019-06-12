@@ -25,7 +25,7 @@ import eclipse.project.process.PreProcessHelper;
 import util.FileIterator;
 
 public class AnalysisEnvironment {
-
+	
 	protected static IJavaProject default_project = null;
 
 	private static void InitializeClassPathWithDefaultJRE(List<IClasspathEntry> entries) {

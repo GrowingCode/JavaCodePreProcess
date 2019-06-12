@@ -3,7 +3,6 @@ package statistic;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -70,8 +69,8 @@ public class IDGenerator extends ASTVisitor {
 			SimpleName sn = (SimpleName) node;
 			IBinding ib = sn.resolveBinding();
 			if (ib != null && ib instanceof IMethodBinding) {
-				if (!(sn.getParent() instanceof MethodDeclaration)) {
-					Assert.isTrue(sn.getParent() instanceof MethodInvocation);
+				if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
+//					Assert.isTrue(sn.getParent() instanceof MethodInvocation);
 //					System.out.println("sn is method declared name!");
 					IMethodBinding imb = (IMethodBinding) ib;
 					ITypeBinding dc = imb.getDeclaringClass();

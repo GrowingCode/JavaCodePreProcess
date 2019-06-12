@@ -43,11 +43,11 @@ public class EclipseSearchForICompilationUnits {
 				continue;
 			}
 			IJavaElement[] fragments = package_root.getChildren();
-			System.out.println("package_root is open:"+package_root.isOpen() + "#package_root:" + package_root.getElementName() + "#size_of_fragments:" + fragments.length);
+//			System.out.println("package_root is open:"+package_root.isOpen() + "#package_root:" + package_root.getElementName() + "#size_of_fragments:" + fragments.length);
 			for (int j = 0; j < fragments.length; j++) {
 				IPackageFragment fragment = (IPackageFragment) fragments[j];
 				IJavaElement[] javaElements = fragment.getChildren();
-				System.out.println("fragment:" + fragment + "#fragment.containsJavaResources():" + fragment.containsJavaResources() + "#size_of_javaElements:" + javaElements.length);
+//				System.out.println("fragment:" + fragment + "#fragment.containsJavaResources():" + fragment.containsJavaResources() + "#size_of_javaElements:" + javaElements.length);
 				for (int k = 0; k < javaElements.length; k++) {
 					IJavaElement javaElement = javaElements[k];
 					if (javaElement.getElementType() == IJavaElement.COMPILATION_UNIT) {

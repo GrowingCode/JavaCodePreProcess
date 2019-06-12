@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 // import org.eclipse.jdt.core.IJavaProject;
@@ -13,17 +12,16 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jdt.core.IJavaProject;
 
 import bpe.BPEGeneratorForProject;
-import eclipse.project.AnalysisEnvironment;
 import eclipse.project.ProjectLoader;
 import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
 import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
-import statistic.id.TokenRecorder;
 import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
+import statistic.id.TokenRecorder;
 import translation.TensorGeneratorForProject;
 import translation.TensorTools;
 import translation.roles.RoleAssigner;
@@ -38,24 +36,25 @@ public class Application implements IApplication {
 	public static final String user_home = System.getProperty("user.home");
 	public static final String witness = user_home + "/YYXWitness";
 	public static final String data = user_home + "/YYXData";
-	
+
 //	public final static int RefinePeriod = 10000000;
 //	public final static int MinSupport = 3;
 //	public final static int MaxCapacity = 10000000;
-	
+
 	public final static String TemporaryUnzipWorkingSpace = "temp_unzip";
-	
+
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 //		DebugLogger.Log("Start is invoked!");
-//		SystemUtil.Delay(5000);
+//		SystemUtil.Delay(10000);
 //		while (!PlatformUI.isWorkbenchRunning()) {
 //			DebugLogger.Log("Waiting the creation of the workbench.");
 //			SystemUtil.Delay(1000);
 //		}
 		{
 			// Clear data.
-			DebugLogger.Log("===== Data Directory:" + System.getProperty("user.home") + "/AST_Tensors" + "; created!!! =====");
+			DebugLogger.Log(
+					"===== Data Directory:" + System.getProperty("user.home") + "/AST_Tensors" + "; created!!! =====");
 			File dd = new File(MetaOfApp.DataDirectory);
 			if (dd.exists()) {
 				FileUtil.DeleteFile(dd);
@@ -71,10 +70,10 @@ public class Application implements IApplication {
 //		}
 //		String all_proj_paths = args[0];
 		File root_dir = new File(data);
-		
+
 //		String bpe_proj_paths = args[1];
 		File bpe_dir = new File(witness);
-		
+
 //		int max_handle_projs = -1;
 //		if (args.length >= 2) {
 //			max_handle_projs = Integer.parseInt(args[1]);
@@ -90,18 +89,16 @@ public class Application implements IApplication {
 			System.out.println("==== BPECount Begin ====");
 			BPEOneProjectHandle handle = new BPEOneProjectHandle();
 			HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
+//			System.out.println("==== BPEMerge Begin ====");
+			bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
+//			System.out.println("==== BPEMerge End ====");
 			System.out.println("==== BPECount End ====");
 		}
-		
-		System.out.println("==== BPEMerge Begin ====");
-		bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
-		System.out.println("==== BPEMerge End ====");
-		
 		{
 			System.out.println("==== IDCount Begin ====");
 			CountOneProjectHandle handle = new CountOneProjectHandle();
 			HandleEachProjectFramework(root_dir, handle, id_tool, null);
-			// max_handle_projs, 
+			// max_handle_projs,
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 //			Iterator<String> pitr = proj_paths.iterator();
 //			int all_size = 0;
@@ -132,7 +129,7 @@ public class Application implements IApplication {
 			if (root_dir.isDirectory()) {
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
 				HandleEachProjectFramework(root_dir, handle, null, tensor_tool);
-				// max_handle_projs, 
+				// max_handle_projs,
 //				File[] files = root_dir.listFiles();
 //				int count_projs = 0;
 //				for (File f : files) {
@@ -158,7 +155,8 @@ public class Application implements IApplication {
 //					}
 //				}
 			} else {
-				DebugLogger.Error("The root path given in parameter should be a directory which contains zip files or with-project directories");
+				DebugLogger.Error(
+						"The root path given in parameter should be a directory which contains zip files or with-project directories");
 			}
 			System.out.println("==== GenerateTensor End ====");
 		}
@@ -168,9 +166,10 @@ public class Application implements IApplication {
 		SystemUtil.Delay(1000);
 		return IApplication.EXIT_OK;
 	}
-	
+
 	// int max_handle_projs, RoleAssigner role_assigner
-	private static void HandleEachProjectFramework(File root_dir, HandleOneProject run, IDTools id_tool, TensorTools tensor_tool) {
+	private static void HandleEachProjectFramework(File root_dir, HandleOneProject run, IDTools id_tool,
+			TensorTools tensor_tool) {
 //		System.err.println(root_dir.getAbsolutePath());
 		File[] files = root_dir.listFiles();
 //		int count_projs = 0;
@@ -202,7 +201,7 @@ public class Application implements IApplication {
 			}
 		}
 	}
-	
+
 	static int BPEOneProject(IJavaProject java_project, IDTools id_tool) {
 		int project_size = 0;
 		try {
@@ -214,7 +213,7 @@ public class Application implements IApplication {
 		}
 		return project_size;
 	}
-	
+
 	static int CountOneProject(IJavaProject java_project, IDTools id_tool) {
 		int project_size = 0;
 		try {
@@ -226,10 +225,10 @@ public class Application implements IApplication {
 		}
 		return project_size;
 	}
-	
+
 	// , File dest, File debug_dest, File oracle_dest
-	// int total_num_tensors, 
-	// String proj_path, 
+	// int total_num_tensors,
+	// String proj_path,
 	// , TensorGeneratorForProject irgfop, String kind
 	static void TranslateOneProject(IJavaProject java_project, TensorTools tensor_tool) {
 		try {
@@ -242,7 +241,7 @@ public class Application implements IApplication {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 //		finally {
 //			try {
 //				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
@@ -251,12 +250,12 @@ public class Application implements IApplication {
 //			}
 //		}
 	}
-	
+
 	@Override
 	public void stop() {
 		// DebugLogger.Log("Force Stop is invoked!");
 	}
-	
+
 }
 
 interface HandleOneProject {
@@ -285,7 +284,7 @@ class TranslateOneProjectHandle implements HandleOneProject {
 		}
 		return -1;
 	}
-	
+
 }
 
 class CountOneProjectHandle implements HandleOneProject {
@@ -300,8 +299,8 @@ class CountOneProjectHandle implements HandleOneProject {
 			e.printStackTrace();
 		} finally {
 			try {
-				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
-			} catch (CoreException e1) {
+				ProjectLoader.CloseAllProjects();
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
@@ -311,11 +310,11 @@ class CountOneProjectHandle implements HandleOneProject {
 //		}
 		return all_size;
 	}
-	
+
 }
 
 class BPEOneProjectHandle implements HandleOneProject {
-	
+
 	public int Handle(String proj_path, int all_size, IDTools id_tool, TensorTools tensor_tool) {
 		IJavaProject java_project = null;
 		try {
@@ -325,12 +324,12 @@ class BPEOneProjectHandle implements HandleOneProject {
 			e.printStackTrace();
 		} finally {
 			try {
-				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
-			} catch (CoreException e1) {
+				ProjectLoader.CloseAllProjects();
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
 		return all_size;
 	}
-	
+
 }
