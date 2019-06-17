@@ -110,7 +110,9 @@ public class SequenceTensor extends ASTTensor {
 				Integer ti = stmt_token_info.get(i);
 				Integer li = latest_index.get(ti);
 				if (li != null) {
-					seq_var_info.add(i - li);// - i
+					int relative = i - li;
+					seq_var_info.add(relative);// - i
+//					System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
 				} else {
 					seq_var_info.add(-1);// Integer.MAX_VALUE
 				}
@@ -130,7 +132,9 @@ public class SequenceTensor extends ASTTensor {
 				if (ti >= 0) {
 					Integer li = latest_index.get(ti);
 					if (li != null) {
-						sword_var_info.add(i - li);
+						int relative = i - li;
+						sword_var_info.add(relative);
+//						System.out.println("sword_i:" + i + "sword_en:" + ti + "#relative:" + relative);
 					} else {
 						sword_var_info.add(-1);// Integer.MAX_VALUE
 					}
