@@ -638,7 +638,7 @@ public class IDManager {
 		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
 		ts.removeAll(id_tool.tr.hit_train.keySet());
 		ts.removeAll(id_tool.tr.not_hit_train.keySet());
-		PrintUtil.PrintSet(ts, "left things");
+//		PrintUtil.PrintSet(ts, "left things");
 		Assert.isTrue(origin_after.size() == token_id_map.size(), "token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 		
 		// in train

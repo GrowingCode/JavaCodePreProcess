@@ -73,16 +73,21 @@ public class ASTTensor extends Tensor {
 	ArrayList<Integer> sword_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
 	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
-	
+
 	ArrayList<Integer> stmt_sword_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_sword_variable_position_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_sword_variable_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_sword_variable_info_end = new ArrayList<Integer>();
-	
+
 //	ArrayList<Integer> first_row = new ArrayList<Integer>();
 //	ArrayList<Integer> second_row = new ArrayList<Integer>();
 //	ArrayList<Integer> third_row = new ArrayList<Integer>();
 //	ArrayList<Integer> forth_row = new ArrayList<Integer>();
+
+	public static int min_token_number_of_one_statement = Integer.MAX_VALUE;
+	public static int max_token_number_of_one_statement = Integer.MIN_VALUE;
+	public static int total_number_of_tokens = 0;
+	public static int total_number_of_statements = 0;
 
 	public static double min_rate_of_local_token = Double.MAX_VALUE;
 	public static double max_rate_of_local_token = Double.MIN_VALUE;
@@ -226,7 +231,8 @@ public class ASTTensor extends Tensor {
 		}
 		depend_record.put(last_stmt, record);
 		// record conflict (encountered)
-		Set<Integer> current_not_encountered_variables = new TreeSet<Integer>(last_stmt.var_or_type_id_with_position_in_this_stmt.keySet());
+		Set<Integer> current_not_encountered_variables = new TreeSet<Integer>(
+				last_stmt.var_or_type_id_with_position_in_this_stmt.keySet());
 		for (int i = dr_size - 1; i >= 0; i--) {
 			if (record.get(i) == false) {
 				// not depend
@@ -395,7 +401,7 @@ public class ASTTensor extends Tensor {
 
 			stmt_variable_info_start.add(stmt_variable_info.size());
 			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
-			
+
 			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
 			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
 			if (vars.size() == 0) {
@@ -410,13 +416,13 @@ public class ASTTensor extends Tensor {
 					part_stmt_variable_position_info.add(position);
 				}
 			}
-			
+
 //			System.out.println("==== var position begin ====");
 //			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
 //			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
 //			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 //			System.out.println("==== var position end ====");
-			
+
 			stmt_variable_info.addAll(part_stmt_variable_info);
 			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
@@ -487,7 +493,7 @@ public class ASTTensor extends Tensor {
 						stmt_sword_variable_position_info.add(position);
 					}
 				}
-				stmt_sword_variable_info_end.add(stmt_sword_variable_info.size()-1);
+				stmt_sword_variable_info_end.add(stmt_sword_variable_info.size() - 1);
 //				System.out.println("subwords after size:" + sword_info.size());
 			}
 			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
@@ -530,6 +536,14 @@ public class ASTTensor extends Tensor {
 			Integer end_idx = stmt_token_info_end.get(i);
 
 			int one_size = end_idx - start_idx + 1;
+			total_number_of_tokens += one_size;
+			total_number_of_statements += 1;
+			if (min_token_number_of_one_statement > one_size) {
+				min_token_number_of_one_statement = one_size;
+			}
+			if (max_token_number_of_one_statement < one_size) {
+				max_token_number_of_one_statement = one_size;
+			}
 			total_size += one_size;
 			int lc_size = stmt_variable_info_end.get(i) - stmt_variable_info_start.get(i) + 1;
 			double rate = (lc_size * 1.0) / (one_size * 1.0);
@@ -562,24 +576,30 @@ public class ASTTensor extends Tensor {
 		}
 		Assert.isTrue(all_stmt_sword_length == sword_info.size());
 	}
-	
+
 	private void ValidateVarialbesInStatements() {
 		Assert.isTrue(stmt_variable_info_start.size() == stmt_token_info_start.size());
 		int i_len = stmt_variable_info_start.size();
-		for (int i=0; i<i_len; i++) {
+		for (int i = 0; i < i_len; i++) {
 			Integer t_start = stmt_token_info_start.get(i);
 			Integer i_start = stmt_variable_info_start.get(i);
 			Integer i_end = stmt_variable_info_end.get(i);
-			for (int j=i_start; j<=i_end; j++) {
+			for (int j = i_start; j <= i_end; j++) {
 				int position = stmt_variable_position_info.get(j);
 				int r_pos = t_start + position;
 				if (position == 0) {
 					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
 				} else {
-					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0, "type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos + "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
+					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0,
+							"type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos
+									+ "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
 				}
 			}
 		}
+	}
+
+	public static String StatementSummaryInfo() {
+		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement + "#max_token_number_of_one_statement:" + max_token_number_of_one_statement + "#average_token_number_of_one_statement:" + ((total_number_of_tokens*1.0)/(total_number_of_statements*1.0)) + "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token;
 	}
 
 }
