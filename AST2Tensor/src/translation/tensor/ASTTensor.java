@@ -86,7 +86,8 @@ public class ASTTensor extends Tensor {
 
 	public static int min_token_number_of_one_statement = Integer.MAX_VALUE;
 	public static int max_token_number_of_one_statement = Integer.MIN_VALUE;
-	static String max_size_statement = null;
+	public static String max_size_statement_in_tokens = null;
+	public static String max_size_statement = null;
 	public static int total_number_of_tokens = 0;
 	public static int total_number_of_statements = 0;
 
@@ -394,6 +395,7 @@ public class ASTTensor extends Tensor {
 			}
 			if (max_token_number_of_one_statement < one_size) {
 				max_token_number_of_one_statement = one_size;
+				max_size_statement_in_tokens = StringUtils.join(last_stmt.type_content_str, '#');
 				max_size_statement = last_stmt.stmt;
 			}
 			int ori_size = stmt_token_info.size();
@@ -602,7 +604,7 @@ public class ASTTensor extends Tensor {
 	}
 
 	public static String StatementSummaryInfo() {
-		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement + "#max_token_number_of_one_statement:" + max_token_number_of_one_statement + "#average_token_number_of_one_statement:" + ((total_number_of_tokens*1.0)/(total_number_of_statements*1.0)) + "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token + "#max_size_statement:" + max_size_statement;
+		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement + "#max_token_number_of_one_statement:" + max_token_number_of_one_statement + "#average_token_number_of_one_statement:" + ((total_number_of_tokens*1.0)/(total_number_of_statements*1.0)) + "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token + "#max_size_statement:" + max_size_statement + "========= max_size_statement_in_tokens:" + max_size_statement_in_tokens;
 	}
 
 }
