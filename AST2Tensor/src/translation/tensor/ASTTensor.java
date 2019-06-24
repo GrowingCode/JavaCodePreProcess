@@ -86,6 +86,7 @@ public class ASTTensor extends Tensor {
 
 	public static int min_token_number_of_one_statement = Integer.MAX_VALUE;
 	public static int max_token_number_of_one_statement = Integer.MIN_VALUE;
+	static String max_size_statement = null;
 	public static int total_number_of_tokens = 0;
 	public static int total_number_of_statements = 0;
 
@@ -387,6 +388,14 @@ public class ASTTensor extends Tensor {
 		for (int i = 0; i < i_len; i++) {
 //			System.out.println("tokens before size:" + stmt_token_info.size());
 			StatementInfo last_stmt = si_list.get(i);
+			int one_size = last_stmt.type_content_id.size();
+			if (min_token_number_of_one_statement > one_size) {
+				min_token_number_of_one_statement = one_size;
+			}
+			if (max_token_number_of_one_statement < one_size) {
+				max_token_number_of_one_statement = one_size;
+				max_size_statement = last_stmt.stmt;
+			}
 			int ori_size = stmt_token_info.size();
 			stmt_token_info_start.add(ori_size);
 			stmt_token_string.addAll(last_stmt.type_content_str);
@@ -538,12 +547,6 @@ public class ASTTensor extends Tensor {
 			int one_size = end_idx - start_idx + 1;
 			total_number_of_tokens += one_size;
 			total_number_of_statements += 1;
-			if (min_token_number_of_one_statement > one_size) {
-				min_token_number_of_one_statement = one_size;
-			}
-			if (max_token_number_of_one_statement < one_size) {
-				max_token_number_of_one_statement = one_size;
-			}
 			total_size += one_size;
 			int lc_size = stmt_variable_info_end.get(i) - stmt_variable_info_start.get(i) + 1;
 			double rate = (lc_size * 1.0) / (one_size * 1.0);
@@ -599,7 +602,7 @@ public class ASTTensor extends Tensor {
 	}
 
 	public static String StatementSummaryInfo() {
-		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement + "#max_token_number_of_one_statement:" + max_token_number_of_one_statement + "#average_token_number_of_one_statement:" + ((total_number_of_tokens*1.0)/(total_number_of_statements*1.0)) + "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token;
+		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement + "#max_token_number_of_one_statement:" + max_token_number_of_one_statement + "#average_token_number_of_one_statement:" + ((total_number_of_tokens*1.0)/(total_number_of_statements*1.0)) + "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token + "#max_size_statement:" + max_size_statement;
 	}
 
 }
