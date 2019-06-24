@@ -119,8 +119,8 @@ public class StatementTensorGenerator extends TensorGenerator {
 				StatementInfo si = node_stmt.get(an);
 				Assert.isTrue(si != null);
 				curr_tensor.Devour(si);
-//				int si_size = si.Size();
-//				size_of_statements += si_size;
+				int si_size = si.Size();
+				size_of_statements += si_size;
 //				if (min_statement_size > si_size) {
 //					min_statement_size = si_size;
 //					min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
