@@ -102,7 +102,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 	@Override
 	public void postVisit(ASTNode node) {
 		if (begin_generation) {
-			if (IsStatement(node) || begin_generation_node.equals(node)) {
+			if (IsStatement(node) || IsMethodDeclaration(node)) {
 				ASTNode handle_node = in_handling_node.pop();
 				Assert.isTrue(handle_node.equals(node));
 				StatementInfo last_stmt = in_handling_tensor.pop();
