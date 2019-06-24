@@ -42,11 +42,11 @@ public class StatementTensorGenerator extends TensorGenerator {
 		this.tensor_creator = tensor_creator;
 	}
 	
-	public static int min_statement_size = Integer.MAX_VALUE;
-	public static String min_size_statement = null;
+//	public static int min_statement_size = Integer.MAX_VALUE;
+//	public static String min_size_statement = null;
 	
-	public static int max_statement_size = Integer.MIN_VALUE;
-	public static String max_size_statement = null;
+//	public static int max_statement_size = Integer.MIN_VALUE;
+//	public static String max_size_statement = null;
 
 	Class<?> tensor_creator = null;
 	
@@ -119,16 +119,16 @@ public class StatementTensorGenerator extends TensorGenerator {
 				StatementInfo si = node_stmt.get(an);
 				Assert.isTrue(si != null);
 				curr_tensor.Devour(si);
-				int si_size = si.Size();
-				size_of_statements += si_size;
-				if (min_statement_size > si_size) {
-					min_statement_size = si_size;
-					min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-				}
-				if (max_statement_size < si_size) {
-					max_statement_size = si_size;
-					max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-				}
+//				int si_size = si.Size();
+//				size_of_statements += si_size;
+//				if (min_statement_size > si_size) {
+//					min_statement_size = si_size;
+//					min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
+//				}
+//				if (max_statement_size < si_size) {
+//					max_statement_size = si_size;
+//					max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
+//				}
 			}
 			Assert.isTrue((nodeCount + leafExtraCount) == size_of_statements);
 			pre_order_node.clear();
@@ -159,8 +159,18 @@ public class StatementTensorGenerator extends TensorGenerator {
 		return false;
 	}
 	
+	private boolean IsMethodDeclaration(ASTNode node) {
+		if (node instanceof MethodDeclaration) {
+			return true;
+		}
+		return false;
+	}
+	
 	private void HandleOneNode(ASTNode node, boolean is_real, boolean is_root) {
-		if (IsStatement(node) || begin_generation_node.equals(node)) {
+		if (begin_generation_node.equals(node)) {
+			Assert.isTrue(IsMethodDeclaration(node));
+		}
+		if (IsStatement(node) || IsMethodDeclaration(node)) {
 			in_handling_node.add(node);
 			StatementInfo stmt_info = new StatementInfo(token_local_index, node.toString());
 			in_handling_tensor.add(stmt_info);
