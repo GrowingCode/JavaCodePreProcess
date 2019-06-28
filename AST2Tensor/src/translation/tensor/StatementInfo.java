@@ -35,16 +35,16 @@ public class StatementInfo {
 	List<Integer> following_stmts_same_legal_as_this = new LinkedList<Integer>();
 //	ArrayList<Boolean> depend_record = new ArrayList<Boolean>();
 	
-	public void StoreOneNode(IDManager im, TypeContentID t_c, int token_var_id, int is_var, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
+	public void StoreOneNode(IDManager im, TypeContentID t_c, int token_var_id, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
 		local_token_id.add(token_var_id);
 //		is_variable.add(is_var);
 		
 		if (token_var_id == -1) {
-			Assert.isTrue(token_var_id == is_var);
+//			Assert.isTrue(token_var_id == is_var);
 		} else {
-			Assert.isTrue(is_var >= 0);
+			Assert.isTrue(token_var_id >= 0);
 //			System.out.println("var_type_content:" + t_c.GetTypeContent());
 			int token_var_position_in_stmt = type_content_id.size()-1;
 			if (!var_or_type_id_with_position_in_this_stmt.containsKey(token_var_id)) {

@@ -182,7 +182,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			nodeCount++;
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, -1, -1, -1, 0);
+			stmt.StoreOneNode(im, type_content_id, -1, -1, 0);
 		}
 		boolean is_leaf = children.size() == 0;
 		if (is_leaf) {
@@ -190,7 +190,6 @@ public class StatementTensorGenerator extends TensorGenerator {
 //			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			int var_index = -1;
-			int is_var = -1;
 			int api_comb_id = -1;
 			int api_relative_id = -1;
 			if (node instanceof SimpleName) {
@@ -207,21 +206,17 @@ public class StatementTensorGenerator extends TensorGenerator {
 							token_index_record.put(ivb_key, index_record);
 						}
 						var_index = index_record;
-						is_var = 1;
-					}
-//					if (ib instanceof ITypeBinding) {
-//						ITypeBinding itb = (ITypeBinding) ib;
-//						String itb_key = "type!" + itb.getKey() + "#" + sn;
-//						Integer index_record = token_index_record.get(itb_key);
-//						if (index_record == null) {
-//							token_local_index++;
-//							index_record = token_local_index;
-//							token_index_record.put(itb_key, index_record);
-//						}
-//						token_index = index_record;
-//						is_var = 0;
-//					}
-					if (ib instanceof IMethodBinding) {
+					} else if (ib instanceof ITypeBinding) {
+						ITypeBinding itb = (ITypeBinding) ib;
+						String itb_key = "type!" + itb.getKey() + "#" + sn;
+						Integer index_record = token_index_record.get(itb_key);
+						if (index_record == null) {
+							token_local_index++;
+							index_record = token_local_index;
+							token_index_record.put(itb_key, index_record);
+						}
+						var_index = index_record;
+					} else if (ib instanceof IMethodBinding) {
 						if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
 							IMethodBinding imb = (IMethodBinding) ib;
 							ITypeBinding dc = imb.getDeclaringClass();
@@ -238,11 +233,14 @@ public class StatementTensorGenerator extends TensorGenerator {
 							api_comb_id = im.GetAPICombID(joined);
 							api_relative_id = mdnames.indexOf(type_content_id.GetTypeContent());
 						}
+					} else {
+						new Exception("type of unmeet ib:" + ib.getClass()).printStackTrace();
+						System.exit(1);
 					}
 				}
 			}
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, var_index, is_var, api_comb_id, api_relative_id);
+			stmt.StoreOneNode(im, type_content_id, var_index, api_comb_id, api_relative_id);
 		}
 	}
 
