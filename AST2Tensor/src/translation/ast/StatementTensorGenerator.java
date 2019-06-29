@@ -194,28 +194,18 @@ public class StatementTensorGenerator extends TensorGenerator {
 			int api_relative_id = -1;
 			if (node instanceof SimpleName) {
 				SimpleName sn = (SimpleName) node;
+				var_index = HandleVariableIndex(sn.toString());
+//				System.err.println("simple_name:" + sn);
 				IBinding ib = sn.resolveBinding();
 				if (ib != null) {
 					if (ib instanceof IVariableBinding) {
-						IVariableBinding ivb = (IVariableBinding) ib;
-						String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
-						Integer index_record = token_index_record.get(ivb_key);
-						if (index_record == null) {
-							token_local_index++;
-							index_record = token_local_index;
-							token_index_record.put(ivb_key, index_record);
-						}
-						var_index = index_record;
+//						IVariableBinding ivb = (IVariableBinding) ib;
+//						String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
+//						var_index = HandleVariableIndex(ivb_key)
 					} else if (ib instanceof ITypeBinding) {
-						ITypeBinding itb = (ITypeBinding) ib;
-						String itb_key = "type!" + itb.getKey() + "#" + sn;
-						Integer index_record = token_index_record.get(itb_key);
-						if (index_record == null) {
-							token_local_index++;
-							index_record = token_local_index;
-							token_index_record.put(itb_key, index_record);
-						}
-						var_index = index_record;
+//						ITypeBinding itb = (ITypeBinding) ib;
+//						String itb_key = "type!" + itb.getKey() + "#" + sn;
+//						var_index = HandleVariableIndex(itb_key);
 					} else if (ib instanceof IMethodBinding) {
 						if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
 							IMethodBinding imb = (IMethodBinding) ib;
@@ -233,15 +223,26 @@ public class StatementTensorGenerator extends TensorGenerator {
 							api_comb_id = im.GetAPICombID(joined);
 							api_relative_id = mdnames.indexOf(type_content_id.GetTypeContent());
 						}
-					} else {
-						new Exception("type of unmeet ib:" + ib.getClass()).printStackTrace();
-						System.exit(1);
 					}
+//					else {
+//						new Exception("type of unmeet ib:" + ib.getClass()).printStackTrace();
+//						System.exit(1);
+//					}
 				}
 			}
 			StatementInfo stmt = in_handling_tensor.peek();
 			stmt.StoreOneNode(im, type_content_id, var_index, api_comb_id, api_relative_id);
 		}
+	}
+	
+	private Integer HandleVariableIndex(String key) {
+		Integer index_record = token_index_record.get(key);
+		if (index_record == null) {
+			token_local_index++;
+			index_record = token_local_index;
+			token_index_record.put(key, index_record);
+		}
+		return index_record;
 	}
 
 }
