@@ -461,9 +461,9 @@ public class ASTTensor extends Tensor {
 				Integer st = stmt_token_info_start.get(i);
 				Integer ed = stmt_token_info_end.get(i);
 				for (int t = st; t <= ed; t++) {
-					boolean is_var = true;
+					boolean is_var = false;
 					if (stmt_token_variable_info.get(t) >= 0) {
-						is_var = false;
+						is_var = true;
 					}
 					Integer ti = stmt_token_info.get(t);
 					Integer start = im.each_subword_sequence_start.get(ti);
