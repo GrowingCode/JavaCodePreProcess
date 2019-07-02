@@ -492,8 +492,10 @@ public class ASTTensor extends Tensor {
 				}
 				stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
 				if (stmt_sword_variable_info.size() == 0) {
-					stmt_sword_variable_info.add(0);
-					stmt_sword_variable_position_info.add(0);
+					if (MetaOfApp.AddZeroIfNoVariable > 0) {
+						stmt_sword_variable_info.add(0);
+						stmt_sword_variable_position_info.add(0);
+					}
 				} else {
 					Set<Integer> sids = sword_id_with_position.keySet();
 					Iterator<Integer> sid_itr = sids.iterator();
