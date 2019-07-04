@@ -234,14 +234,14 @@ public class ASTTensor extends Tensor {
 		}
 		depend_record.put(last_stmt, record);
 		// record conflict (encountered)
-		Set<Integer> current_not_encountered_variables = new TreeSet<Integer>(
+		Set<String> current_not_encountered_variables = new TreeSet<String>(
 				last_stmt.var_or_type_id_with_position_in_this_stmt.keySet());
 		for (int i = dr_size - 1; i >= 0; i--) {
 			if (record.get(i) == false) {
 				// not depend
 				StatementInfo i_si = si_list.get(i);
-				Set<Integer> i_si_vars = i_si.var_or_type_id_with_position_in_this_stmt.keySet();
-				Set<Integer> encountered_vars = SetUtil
+				Set<String> i_si_vars = i_si.var_or_type_id_with_position_in_this_stmt.keySet();
+				Set<String> encountered_vars = SetUtil
 						.TheElementsInSetOneExistInSetTwo(current_not_encountered_variables, i_si_vars);
 				if (encountered_vars.size() > 0) {
 					current_not_encountered_variables.removeAll(encountered_vars);
@@ -384,8 +384,20 @@ public class ASTTensor extends Tensor {
 //		third_row.addAll(stmt_third_row);
 //		forth_row.addAll(stmt_forth_row);
 //	}
+	
+	private Integer AssignID(TreeMap<String, Integer> token_index_record, String key, TokenIndex ti) {
+		Integer index_record = token_index_record.get(key);
+		if (index_record == null) {
+			index_record = ti.NewIndex();
+			token_index_record.put(key, index_record);
+		}
+		return index_record;
+	}
 
 	public void HandleAllDevoured() {
+		TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
+		TokenIndex ti = new TokenIndex();
+		
 		int i_len = si_list.size();
 		for (int i = 0; i < i_len; i++) {
 //			System.out.println("tokens before size:" + stmt_token_info.size());
@@ -406,8 +418,9 @@ public class ASTTensor extends Tensor {
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
-			for (int l_tid : last_stmt.local_token_id) {
-				Assert.isTrue(l_tid <= stmt_token_variable_info.size(), "last_stmt:"+last_stmt.stmt + "#last_stmt.local_token_id.size():" + last_stmt.local_token_id.size() + "#stmt_token_variable_info.size():" + stmt_token_variable_info.size() + "origin_file:" + origin_file);
+			for (String l_t_str : last_stmt.local_token_str) {
+				int l_tid = AssignID(token_index_record, l_t_str, ti);
+				Assert.isTrue(l_tid <= stmt_token_variable_info.size(), "last_stmt:"+last_stmt.stmt + "#last_stmt.local_token_str.size():" + last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():" + stmt_token_variable_info.size() + "origin_file:" + origin_file);
 				stmt_token_variable_info.add(l_tid);
 			}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
@@ -416,7 +429,7 @@ public class ASTTensor extends Tensor {
 			stmt_token_info_end.add(stmt_token_info.size() - 1);
 
 			stmt_variable_info_start.add(stmt_variable_info.size());
-			Set<Integer> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
+			Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 
 			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
 			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
@@ -424,11 +437,12 @@ public class ASTTensor extends Tensor {
 				part_stmt_variable_info.add(0);
 				part_stmt_variable_position_info.add(0);
 			} else {
-				for (int var : vars) {
+				for (String var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 //					System.err.println("position:" + position);
-					Assert.isTrue(last_stmt.local_token_id.get(position) >= 0);
-					part_stmt_variable_info.add(var);
+					Assert.isTrue(last_stmt.local_token_str.get(position) != null);
+					int v_id = AssignID(token_index_record, var, ti);
+					part_stmt_variable_info.add(v_id);
 					part_stmt_variable_position_info.add(position);
 				}
 			}
@@ -470,9 +484,9 @@ public class ASTTensor extends Tensor {
 					if (stmt_token_variable_info.get(t) >= 0) {
 						is_var = true;
 					}
-					Integer ti = stmt_token_info.get(t);
-					Integer start = im.each_subword_sequence_start.get(ti);
-					Integer end = im.each_subword_sequence_end.get(ti);
+					Integer ti_idx = stmt_token_info.get(t);
+					Integer start = im.each_subword_sequence_start.get(ti_idx);
+					Integer end = im.each_subword_sequence_end.get(ti_idx);
 					List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
 					int j_len = seqs.size();
 					Assert.isTrue(j_len > 0);
@@ -654,4 +668,15 @@ class TokenInCare {
 		return local_cmp;
 	}
 
+}
+
+class TokenIndex {
+	
+	int token_index = 0;
+	
+	public int NewIndex() {
+		token_index++;
+		return token_index;
+	}
+	
 }

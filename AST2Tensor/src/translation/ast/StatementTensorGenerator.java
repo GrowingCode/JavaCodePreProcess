@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -51,7 +50,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 	Class<?> tensor_creator = null;
 	
 	int token_local_index = 0;
-	Map<String, Integer> token_index_record = null;
+//	Map<String, Integer> token_index_record = null;
 	ASTTensor curr_tensor = null;
 	
 	Stack<ASTNode> in_handling_node = new Stack<ASTNode>();
@@ -70,7 +69,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 		super.preVisit(node);
 		if (begin_generation && begin_generation_node.equals(node)) {
 			Assert.isTrue(curr_tensor == null);
-			Assert.isTrue(token_index_record == null);
+//			Assert.isTrue(token_index_record == null);
 			Assert.isTrue(token_local_index == 0);
 			Assert.isTrue(in_handling_node.size() == 0);
 			Assert.isTrue(in_handling_tensor.size() == 0);
@@ -91,7 +90,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 				System.exit(1);
 			}
 //			curr_tensor = new ASTTensor(icu.getElementName(), -1);
-			token_index_record = new TreeMap<String, Integer>();
+//			token_index_record = new TreeMap<String, Integer>();
 			token_local_index = 0;
 		}
 		if (begin_generation) {
@@ -142,8 +141,8 @@ public class StatementTensorGenerator extends TensorGenerator {
 			st.SetSize(curr_tensor.getSize());
 			curr_tensor = null;
 //			PrintUtil.PrintMap(token_index_record);
-			token_index_record.clear();
-			token_index_record = null;
+//			token_index_record.clear();
+//			token_index_record = null;
 			token_local_index = 0;
 //			node_index_map.clear();
 			leafExtraCount = 0;
@@ -167,6 +166,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 	}
 	
 	private void HandleOneNode(ASTNode node, boolean is_real, boolean is_root) {
+//		System.err.println("node:" + node);
 		if (begin_generation_node.equals(node)) {
 			Assert.isTrue(IsMethodDeclaration(node));
 		}
@@ -182,20 +182,22 @@ public class StatementTensorGenerator extends TensorGenerator {
 			nodeCount++;
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, -1, -1, 0);
+			stmt.StoreOneNode(im, type_content_id, null, -1, 0);
 		}
 		boolean is_leaf = children.size() == 0;
 		if (is_leaf) {
 			leafExtraCount++;
 //			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			int var_index = -1;
+//			int var_index = -1;
+			String var = null;
 			int api_comb_id = -1;
 			int api_relative_id = -1;
 			if (node instanceof SimpleName) {
 				SimpleName sn = (SimpleName) node;
-				var_index = HandleVariableIndex(sn.toString());
-//				System.err.println("simple_name:" + sn);
+//				var_index = HandleVariableIndex(sn.toString());
+				var = sn.toString();
+				System.err.println("simple_name:" + sn);
 				IBinding ib = sn.resolveBinding();
 				if (ib != null) {
 					if (ib instanceof IVariableBinding) {
@@ -231,18 +233,19 @@ public class StatementTensorGenerator extends TensorGenerator {
 				}
 			}
 			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, var_index, api_comb_id, api_relative_id);
+			stmt.StoreOneNode(im, type_content_id, var, api_comb_id, api_relative_id);
 		}
 	}
 	
-	private Integer HandleVariableIndex(String key) {
-		Integer index_record = token_index_record.get(key);
-		if (index_record == null) {
-			token_local_index++;
-			index_record = token_local_index;
-			token_index_record.put(key, index_record);
-		}
-		return index_record;
-	}
+//	private Integer HandleVariableIndex(String key) {
+//		Integer index_record = token_index_record.get(key);
+//		if (index_record == null) {
+//			token_local_index++;
+//			index_record = token_local_index;
+//			token_index_record.put(key, index_record);
+//		}
+//		System.err.println("key:" + key + "#index_record:" + index_record);
+//		return index_record;
+//	}
 
 }

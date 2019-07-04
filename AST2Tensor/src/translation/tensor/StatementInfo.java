@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.Assert;
 
 import statistic.id.IDManager;
 import translation.helper.TypeContentID;
@@ -23,32 +22,31 @@ public class StatementInfo {
 	}
 	
 	ArrayList<Integer> type_content_id = new ArrayList<Integer>();
-	ArrayList<Integer> local_token_id = new ArrayList<Integer>();
+	ArrayList<String> local_token_str = new ArrayList<String>();
 //	ArrayList<Integer> is_variable = new ArrayList<Integer>();
 	ArrayList<Integer> api_group = new ArrayList<Integer>();
 	ArrayList<Integer> api_relative = new ArrayList<Integer>();
 	
 	ArrayList<String> type_content_str = new ArrayList<String>();
 	
-	Map<Integer, Integer> var_or_type_id_with_position_in_this_stmt = new TreeMap<Integer, Integer>();
+	Map<String, Integer> var_or_type_id_with_position_in_this_stmt = new TreeMap<String, Integer>();
 	// legal means agree to the variable-define-use graph
 	List<Integer> following_stmts_same_legal_as_this = new LinkedList<Integer>();
 //	ArrayList<Boolean> depend_record = new ArrayList<Boolean>();
 	
-	public void StoreOneNode(IDManager im, TypeContentID t_c, int token_var_id, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
+	public void StoreOneNode(IDManager im, TypeContentID t_c, String token_var, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
-		local_token_id.add(token_var_id);
+		local_token_str.add(token_var);
 //		is_variable.add(is_var);
 		
-		if (token_var_id == -1) {
+		if (token_var == null) {
 //			Assert.isTrue(token_var_id == is_var);
 		} else {
-			Assert.isTrue(token_var_id >= 0);
 //			System.out.println("var_type_content:" + t_c.GetTypeContent());
 			int token_var_position_in_stmt = type_content_id.size()-1;
-			if (!var_or_type_id_with_position_in_this_stmt.containsKey(token_var_id)) {
-				var_or_type_id_with_position_in_this_stmt.put(token_var_id, token_var_position_in_stmt);
+			if (!var_or_type_id_with_position_in_this_stmt.containsKey(token_var)) {
+				var_or_type_id_with_position_in_this_stmt.put(token_var, token_var_position_in_stmt);
 			}
 		}
 		api_group.add(api_comb_id);
