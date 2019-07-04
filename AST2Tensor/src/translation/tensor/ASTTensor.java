@@ -419,7 +419,10 @@ public class ASTTensor extends Tensor {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
 			for (String l_t_str : last_stmt.local_token_str) {
-				int l_tid = AssignID(token_index_record, l_t_str, ti);
+				int l_tid = -1;
+				if (l_t_str != null) {
+					l_tid = AssignID(token_index_record, l_t_str, ti);
+				}
 				Assert.isTrue(l_tid <= stmt_token_variable_info.size(), "last_stmt:"+last_stmt.stmt + "#last_stmt.local_token_str.size():" + last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():" + stmt_token_variable_info.size() + "origin_file:" + origin_file);
 				stmt_token_variable_info.add(l_tid);
 			}
