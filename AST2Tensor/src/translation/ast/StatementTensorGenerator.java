@@ -197,7 +197,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 				SimpleName sn = (SimpleName) node;
 //				var_index = HandleVariableIndex(sn.toString());
 				var = sn.toString();
-				System.err.println("simple_name:" + sn);
+//				System.err.println("simple_name:" + sn);
 				IBinding ib = sn.resolveBinding();
 				if (ib != null) {
 					if (ib instanceof IVariableBinding) {
