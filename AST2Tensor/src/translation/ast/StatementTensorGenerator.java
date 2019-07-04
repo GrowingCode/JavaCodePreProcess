@@ -78,13 +78,13 @@ public class StatementTensorGenerator extends TensorGenerator {
 			Assert.isTrue(node_stmt.size() == 0);
 			Constructor<?> cc = null;
 			try {
-				cc = tensor_creator.getConstructor(IDManager.class, int.class);// , String.class
+				cc = tensor_creator.getConstructor(String.class, IDManager.class, int.class);
 			} catch (NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
 			try {
-				curr_tensor = (ASTTensor) cc.newInstance(im, -1);//, icu.getElementName()
+				curr_tensor = (ASTTensor) cc.newInstance(icu.getElementName(), im, -1);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				e.printStackTrace();

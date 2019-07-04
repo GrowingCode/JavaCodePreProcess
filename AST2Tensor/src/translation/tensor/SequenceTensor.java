@@ -94,8 +94,8 @@ import statistic.id.IDManager;
 public class SequenceTensor extends ASTTensor {
 	
 	// String origin_file, origin_file, 
-	public SequenceTensor(IDManager im, int role) {
-		super(im, role);
+	public SequenceTensor(String origin_file, IDManager im, int role) {
+		super(origin_file, im, role);
 	}
 
 	@Override

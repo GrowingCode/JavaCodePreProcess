@@ -20,10 +20,11 @@ import util.SetUtil;
 
 public class ASTTensor extends Tensor {
 
-//	String origin_file, 
-	public ASTTensor(IDManager im, int role) {
-//		origin_file, 
+	String origin_file = null;
+	
+	public ASTTensor(String origin_file, IDManager im, int role) {
 		super(im, role);
+		this.origin_file = origin_file;
 	}
 
 	ArrayList<StatementInfo> si_list = new ArrayList<StatementInfo>();
@@ -405,7 +406,11 @@ public class ASTTensor extends Tensor {
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
-			stmt_token_variable_info.addAll(last_stmt.local_token_id);
+			for (int l_tid : last_stmt.local_token_id) {
+				Assert.isTrue(l_tid <= stmt_token_variable_info.size(), "last_stmt:"+last_stmt.stmt + "#last_stmt.local_token_id.size():" + last_stmt.local_token_id.size() + "#stmt_token_variable_info.size():" + stmt_token_variable_info.size() + "origin_file:" + origin_file);
+				stmt_token_variable_info.add(l_tid);
+			}
+//			stmt_token_variable_info.addAll(last_stmt.local_token_id);
 			stmt_token_api_info.addAll(last_stmt.api_group);
 			stmt_token_api_relative_info.addAll(last_stmt.api_relative);
 			stmt_token_info_end.add(stmt_token_info.size() - 1);
