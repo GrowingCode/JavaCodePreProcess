@@ -63,6 +63,9 @@ public class StatementTensorGenerator extends TensorGenerator {
 //	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<>();
 	int nodeCount = 0;
 	int leafExtraCount = 0;
+	
+	public int unsuitable_method_count = 0;
+	public int total_method_count = 0;
 
 	@Override
 	public void preVisit(ASTNode node) {
@@ -109,10 +112,11 @@ public class StatementTensorGenerator extends TensorGenerator {
 			}
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
+			total_method_count++;
 			int statement_node_count = nodeCount + leafExtraCount;
 			Assert.isTrue(in_handling_node.size() == 0);
 			Assert.isTrue(in_handling_tensor.size() == 0);
-			if (node_stmt.size() > 3 && statement_node_count > 45) {
+			if (node_stmt.size() > 3 && statement_node_count > 50) {
 				int size_of_statements = 0;
 				Iterator<ASTNode> pot_itr = pre_order_node.iterator();
 				while (pot_itr.hasNext()) {
@@ -141,6 +145,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 				st.SetSize(curr_tensor.getSize());
 			} else {
 				tensor_list.removeLast();
+				unsuitable_method_count++;
 //				System.out.println("Unsuitable statement: node_stmt.size():" + node_stmt.size() + "#statementSize:" + statement_node_count);
 			}
 			curr_tensor = null;

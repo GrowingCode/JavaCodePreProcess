@@ -44,6 +44,8 @@ public class TensorGeneratorForProject {
 		}
 		DebugLogger.Log("Tensor: ICompilationUnit_size:" + units.size());
 		if (units != null) {
+			int total_method_count = 0;
+			int unsuitable_method_count = 0;
 			PriorityQueue<SizePath> pq = new PriorityQueue<SizePath>();
 			for (ICompilationUnit icu : units) {
 //				if (Meta.DetailDebugMode) {
@@ -78,12 +80,14 @@ public class TensorGeneratorForProject {
 					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
 				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
-				TensorGenerator tg_depth_guided_tree = new StatementTensorGenerator(tensor_tool.role_assigner,
+				StatementTensorGenerator tg_depth_guided_tree = new StatementTensorGenerator(tensor_tool.role_assigner,
 						tensor_tool.im, icu, cu, ASTTensor.class);
-				TensorGenerator tg_sequence = new StatementTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+				StatementTensorGenerator tg_sequence = new StatementTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
 						SequenceTensor.class);
 				cu.accept(tg_depth_guided_tree);
 				cu.accept(tg_sequence);
+				total_method_count += tg_sequence.total_method_count;
+				unsuitable_method_count	+= tg_sequence.unsuitable_method_count;
 				List<Tensor> tree_tensors = tg_depth_guided_tree.GetGeneratedTensors();
 				result_tree.AddTensors(tree_tensors);
 				List<Tensor> sequence_tensors = tg_sequence.GetGeneratedTensors();
@@ -93,6 +97,7 @@ public class TensorGeneratorForProject {
 				result_sequence.AddTensors(sequence_tensors);
 				Assert.isTrue(tree_tensors.size() == sequence_tensors.size());
 			}
+			System.out.println("total_method_count:" + total_method_count + "#unsuitable_method_count:" + unsuitable_method_count);
 		}
 		return result;
 	}
