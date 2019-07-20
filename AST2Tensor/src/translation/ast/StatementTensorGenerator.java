@@ -109,37 +109,43 @@ public class StatementTensorGenerator extends TensorGenerator {
 			}
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
+			int statement_node_count = nodeCount + leafExtraCount;
 			Assert.isTrue(in_handling_node.size() == 0);
 			Assert.isTrue(in_handling_tensor.size() == 0);
-			int size_of_statements = 0;
-			Iterator<ASTNode> pot_itr = pre_order_node.iterator();
-			while (pot_itr.hasNext()) {
-				ASTNode an = pot_itr.next();
-				StatementInfo si = node_stmt.get(an);
-				Assert.isTrue(si != null);
-				curr_tensor.Devour(si);
-				int si_size = si.Size();
-				size_of_statements += si_size;
-//				if (min_statement_size > si_size) {
-//					min_statement_size = si_size;
-//					min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-//				}
-//				if (max_statement_size < si_size) {
-//					max_statement_size = si_size;
-//					max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-//				}
+			if (node_stmt.size() > 3 && statement_node_count > 50) {
+				int size_of_statements = 0;
+				Iterator<ASTNode> pot_itr = pre_order_node.iterator();
+				while (pot_itr.hasNext()) {
+					ASTNode an = pot_itr.next();
+					StatementInfo si = node_stmt.get(an);
+					Assert.isTrue(si != null);
+					curr_tensor.Devour(si);
+					int si_size = si.Size();
+					size_of_statements += si_size;
+//					if (min_statement_size > si_size) {
+//						min_statement_size = si_size;
+//						min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
+//					}
+//					if (max_statement_size < si_size) {
+//						max_statement_size = si_size;
+//						max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
+//					}
+				}
+				Assert.isTrue(statement_node_count == size_of_statements);
+				curr_tensor.HandleAllDevoured();
+//				curr_tensor.Validate();
+				StringTensor st = (StringTensor) tensor_list.getLast();
+				st.SetToString(curr_tensor.toString());
+				st.SetToDebugString(curr_tensor.toDebugString());
+				st.SetToOracleString(curr_tensor.toOracleString());
+				st.SetSize(curr_tensor.getSize());
+			} else {
+				tensor_list.removeLast();
+				System.out.println("Unsuitable statement: node_stmt.size():" + node_stmt.size() + "#statementSize:" + statement_node_count);
 			}
-			Assert.isTrue((nodeCount + leafExtraCount) == size_of_statements);
+			curr_tensor = null;
 			pre_order_node.clear();
 			node_stmt.clear();
-			curr_tensor.HandleAllDevoured();
-//			curr_tensor.Validate();
-			StringTensor st = (StringTensor) tensor_list.getLast();
-			st.SetToString(curr_tensor.toString());
-			st.SetToDebugString(curr_tensor.toDebugString());
-			st.SetToOracleString(curr_tensor.toOracleString());
-			st.SetSize(curr_tensor.getSize());
-			curr_tensor = null;
 //			PrintUtil.PrintMap(token_index_record);
 //			token_index_record.clear();
 //			token_index_record = null;
