@@ -116,7 +116,7 @@ public class StatementTensorGenerator extends TensorGenerator {
 			int statement_node_count = nodeCount + leafExtraCount;
 			Assert.isTrue(in_handling_node.size() == 0);
 			Assert.isTrue(in_handling_tensor.size() == 0);
-			if (node_stmt.size() >= 3 && statement_node_count >= 35) {
+			if (node_stmt.size() >= 4 && statement_node_count >= 40) {
 				int size_of_statements = 0;
 				Iterator<ASTNode> pot_itr = pre_order_node.iterator();
 				while (pot_itr.hasNext()) {
