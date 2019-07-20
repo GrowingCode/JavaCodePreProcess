@@ -21,6 +21,7 @@ public class EnvClear {
 		if (f.exists()) {
 			FileUtil.DeleteFile(f);
 		}
+		System.out.println("Environment has been Cleared Successfully!");
 	}
 	
 }
