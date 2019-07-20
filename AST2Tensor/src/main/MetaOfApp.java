@@ -43,9 +43,9 @@ public class MetaOfApp {
 	
 	public final static boolean InBPEForm = true;
 	
-	public final static boolean StatementNoLimit = false;
-	
 	public final static int number_of_merges = 1000;
+	
+	public static boolean StatementNoLimit = false;
 	
 	public static void SaveToDirectory(String dir) {
 		Gson gson = new Gson();
