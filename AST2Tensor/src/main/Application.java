@@ -205,6 +205,7 @@ public class Application implements IApplication {
 //				count_projs++;
 				all_size = run.Handle(f.getAbsolutePath(), all_size, id_tool, tensor_tool);
 			} else {
+				Assert.isTrue(false);
 				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
 				if (unzip_out_dir.exists()) {
 					FileUtil.DeleteFile(unzip_out_dir);
