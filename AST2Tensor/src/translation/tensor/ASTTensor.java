@@ -434,19 +434,24 @@ public class ASTTensor extends Tensor {
 			stmt_variable_info_start.add(stmt_variable_info.size());
 			Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 
-			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
-			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
+			Map<Integer, Integer> part_stmt_variable_info_with_position_info = new TreeMap<Integer, Integer>();
+//			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
+//			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
 			if (vars.size() == 0) {
-				part_stmt_variable_info.add(0);
-				part_stmt_variable_position_info.add(0);
+				if (MetaOfApp.AddZeroIfNoVariable > 0) {
+					part_stmt_variable_info_with_position_info.put(0, 0);
+//					part_stmt_variable_info.add(0);
+//					part_stmt_variable_position_info.add(0);
+				}
 			} else {
 				for (String var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 //					System.err.println("position:" + position);
 					Assert.isTrue(last_stmt.local_token_str.get(position) != null);
 					int v_id = AssignID(token_index_record, var, ti);
-					part_stmt_variable_info.add(v_id);
-					part_stmt_variable_position_info.add(position);
+					part_stmt_variable_info_with_position_info.put(v_id, position);
+//					part_stmt_variable_info.add(v_id);
+//					part_stmt_variable_position_info.add(position);
 				}
 			}
 
@@ -455,9 +460,17 @@ public class ASTTensor extends Tensor {
 //			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
 //			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 //			System.out.println("==== var position end ====");
-
-			stmt_variable_info.addAll(part_stmt_variable_info);
-			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
+			
+			Set<Integer> vi_set = part_stmt_variable_info_with_position_info.keySet();
+			Iterator<Integer> vi_itr = vi_set.iterator();
+			while (vi_itr.hasNext()) {
+				Integer vi = vi_itr.next();
+				Integer pi = part_stmt_variable_info_with_position_info.get(vi);
+				stmt_variable_info.add(vi);
+				stmt_variable_position_info.add(pi);
+			}
+//			stmt_variable_info.addAll(part_stmt_variable_info);
+//			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
 			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
 			stmt_following_legal_info_start.add(stmt_following_legal_info.size());
