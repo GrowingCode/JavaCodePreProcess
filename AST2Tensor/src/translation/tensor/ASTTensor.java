@@ -61,6 +61,7 @@ public class ASTTensor extends Tensor {
 	// stmt info of variables start end: se|se|se
 	ArrayList<Integer> stmt_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_variable_position_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_variable_type_content_en_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_variable_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_variable_info_end = new ArrayList<Integer>();
 
@@ -156,6 +157,7 @@ public class ASTTensor extends Tensor {
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_position_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_variable_type_content_en_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator
@@ -435,11 +437,13 @@ public class ASTTensor extends Tensor {
 			Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 
 			Map<Integer, Integer> part_stmt_variable_info_with_position_info = new TreeMap<Integer, Integer>();
+			Map<Integer, Integer> part_stmt_variable_info_with_type_content_en_info = new TreeMap<Integer, Integer>();
 //			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
 //			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
 			if (vars.size() == 0) {
 				if (MetaOfApp.AddZeroIfNoVariable > 0) {
 					part_stmt_variable_info_with_position_info.put(0, 0);
+					part_stmt_variable_info_with_type_content_en_info.put(0, 0);
 //					part_stmt_variable_info.add(0);
 //					part_stmt_variable_position_info.add(0);
 				}
@@ -447,9 +451,10 @@ public class ASTTensor extends Tensor {
 				for (String var : vars) {
 					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 //					System.err.println("position:" + position);
-					Assert.isTrue(last_stmt.local_token_str.get(position) != null);
+					Assert.isTrue(last_stmt.local_token_str.get(position) != null && var.equals(last_stmt.local_token_str.get(position)));
 					int v_id = AssignID(token_index_record, var, ti);
 					part_stmt_variable_info_with_position_info.put(v_id, position);
+					part_stmt_variable_info_with_type_content_en_info.put(v_id, last_stmt.type_content_id.get(position));
 //					part_stmt_variable_info.add(v_id);
 //					part_stmt_variable_position_info.add(position);
 				}
@@ -466,8 +471,10 @@ public class ASTTensor extends Tensor {
 			while (vi_itr.hasNext()) {
 				Integer vi = vi_itr.next();
 				Integer pi = part_stmt_variable_info_with_position_info.get(vi);
+				Integer v_en = part_stmt_variable_info_with_type_content_en_info.get(vi);
 				stmt_variable_info.add(vi);
 				stmt_variable_position_info.add(pi);
+				stmt_variable_type_content_en_info.add(v_en);
 			}
 //			stmt_variable_info.addAll(part_stmt_variable_info);
 //			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
