@@ -102,19 +102,23 @@ public class SequenceTensor extends ASTTensor {
 	public void HandleAllDevoured() {
 		super.HandleAllDevoured();
 		{
-			int i_len = stmt_token_info.size();
+			int i_len = stmt_token_variable_info.size();
 			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
 			ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
 			for (int i = 0; i < i_len; i++) {
 				Assert.isTrue(seq_var_info.size() == i);
-				Integer ti = stmt_token_info.get(i);
-				Integer li = latest_index.get(ti);
-				if (li != null) {
-					int relative = i - li;
-					seq_var_info.add(relative);// - i
-//					System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
+				Integer ti = stmt_token_variable_info.get(i);
+				if (ti >= 0) {
+					Integer li = latest_index.get(ti);
+					if (li != null) {
+						int relative = i - li;
+						seq_var_info.add(relative);// - i
+//						System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
+					} else {
+						seq_var_info.add(-1);// Integer.MAX_VALUE
+					}
 				} else {
-					seq_var_info.add(-1);// Integer.MAX_VALUE
+					seq_var_info.add(-1);
 				}
 				latest_index.put(ti, i);
 			}
