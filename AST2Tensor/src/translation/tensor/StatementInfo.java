@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.helper.TypeContentID;
 
@@ -37,6 +38,9 @@ public class StatementInfo {
 	public void StoreOneNode(IDManager im, TypeContentID t_c, String token_var, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
+		if (MetaOfApp.VariableNoLimit) {
+			token_var = t_c.GetTypeContent();
+		}
 		local_token_str.add(token_var);
 //		is_variable.add(is_var);
 		
