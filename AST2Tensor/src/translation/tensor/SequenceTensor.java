@@ -1,11 +1,5 @@
 package translation.tensor;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.eclipse.core.runtime.Assert;
-
 import statistic.id.IDManager;
 
 //public class SequenceTensor extends Tensor {
@@ -96,61 +90,6 @@ public class SequenceTensor extends ASTTensor {
 	// String origin_file, origin_file, 
 	public SequenceTensor(String origin_file, IDManager im, int role) {
 		super(origin_file, im, role);
-	}
-
-	@Override
-	public void HandleAllDevoured() {
-		super.HandleAllDevoured();
-		{
-			int i_len = stmt_token_variable_info.size();
-			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
-			ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
-			for (int i = 0; i < i_len; i++) {
-				Assert.isTrue(seq_var_info.size() == i);
-				Integer ti = stmt_token_variable_info.get(i);
-				if (ti >= 0) {
-					Integer li = latest_index.get(ti);
-					if (li != null) {
-						int relative = i - li;
-						seq_var_info.add(relative);// - i
-//						System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
-					} else {
-						seq_var_info.add(-1);// Integer.MAX_VALUE
-					}
-				} else {
-					seq_var_info.add(-1);
-				}
-				latest_index.put(ti, i);
-			}
-			Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
-			stmt_token_variable_info.clear();
-			stmt_token_variable_info.addAll(seq_var_info);
-		}
-		{
-			int i_len = sword_variable_info.size();
-			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
-			ArrayList<Integer> sword_var_info = new ArrayList<Integer>();
-			for (int i = 0; i < i_len; i++) {
-				Assert.isTrue(sword_var_info.size() == i);
-				Integer ti = sword_variable_info.get(i);
-				if (ti >= 0) {
-					Integer li = latest_index.get(ti);
-					if (li != null) {
-						int relative = i - li;
-						sword_var_info.add(relative);
-//						System.out.println("sword_i:" + i + "sword_en:" + ti + "#relative:" + relative);
-					} else {
-						sword_var_info.add(-1);// Integer.MAX_VALUE
-					}
-				} else {
-					sword_var_info.add(-1);// Integer.MAX_VALUE
-				}
-				latest_index.put(ti, i);
-			}
-			Assert.isTrue(sword_variable_info.size() == sword_var_info.size());
-			sword_variable_info.clear();
-			sword_variable_info.addAll(sword_var_info);
-		}
 	}
 
 	@Override

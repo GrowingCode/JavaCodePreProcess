@@ -21,7 +21,7 @@ import util.SetUtil;
 public class ASTTensor extends Tensor {
 
 	String origin_file = null;
-	
+
 	public ASTTensor(String origin_file, IDManager im, int role) {
 		super(im, role);
 		this.origin_file = origin_file;
@@ -52,6 +52,7 @@ public class ASTTensor extends Tensor {
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
@@ -73,6 +74,7 @@ public class ASTTensor extends Tensor {
 
 	ArrayList<Integer> sword_info = new ArrayList<Integer>();
 	ArrayList<Integer> sword_variable_info = new ArrayList<Integer>();
+	ArrayList<Integer> sword_variable_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
 	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
 
@@ -151,6 +153,7 @@ public class ASTTensor extends Tensor {
 //		separator + StringUtils.join(stmt_token_inner_index_info.toArray(), " ") + 
 		return StringUtils.join(stmt_token_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
@@ -165,6 +168,7 @@ public class ASTTensor extends Tensor {
 				+ StringUtils.join(stmt_following_legal_info_end.toArray(), " ") + separator
 				+ StringUtils.join(sword_info.toArray(), " ") + separator
 				+ StringUtils.join(sword_variable_info.toArray(), " ") + separator
+				+ StringUtils.join(sword_variable_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(token_sword_start.toArray(), " ") + separator
 				+ StringUtils.join(token_sword_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_sword_variable_info.toArray(), " ") + separator
@@ -386,7 +390,7 @@ public class ASTTensor extends Tensor {
 //		third_row.addAll(stmt_third_row);
 //		forth_row.addAll(stmt_forth_row);
 //	}
-	
+
 	private Integer AssignID(TreeMap<String, Integer> token_index_record, String key, TokenIndex ti) {
 		Integer index_record = token_index_record.get(key);
 		if (index_record == null) {
@@ -397,162 +401,218 @@ public class ASTTensor extends Tensor {
 	}
 
 	public void HandleAllDevoured() {
-		TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
-		TokenIndex ti = new TokenIndex();
-		
-		int i_len = si_list.size();
-		for (int i = 0; i < i_len; i++) {
+		{
+			TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
+			TokenIndex ti = new TokenIndex();
+
+			int i_len = si_list.size();
+			for (int i = 0; i < i_len; i++) {
 //			System.out.println("tokens before size:" + stmt_token_info.size());
-			StatementInfo last_stmt = si_list.get(i);
-			int one_size = last_stmt.type_content_id.size();
-			if (min_token_number_of_one_statement > one_size) {
-				min_token_number_of_one_statement = one_size;
-			}
-			if (max_token_number_of_one_statement < one_size) {
-				max_token_number_of_one_statement = one_size;
-				max_size_statement_in_tokens = StringUtils.join(last_stmt.type_content_str, '#');
-				max_size_statement = last_stmt.stmt;
-			}
-			int ori_size = stmt_token_info.size();
-			stmt_token_info_start.add(ori_size);
-			stmt_token_string.addAll(last_stmt.type_content_str);
-			stmt_token_info.addAll(last_stmt.type_content_id);
+				StatementInfo last_stmt = si_list.get(i);
+				int one_size = last_stmt.type_content_id.size();
+				if (min_token_number_of_one_statement > one_size) {
+					min_token_number_of_one_statement = one_size;
+				}
+				if (max_token_number_of_one_statement < one_size) {
+					max_token_number_of_one_statement = one_size;
+					max_size_statement_in_tokens = StringUtils.join(last_stmt.type_content_str, '#');
+					max_size_statement = last_stmt.stmt;
+				}
+				int ori_size = stmt_token_info.size();
+				stmt_token_info_start.add(ori_size);
+				stmt_token_string.addAll(last_stmt.type_content_str);
+				stmt_token_info.addAll(last_stmt.type_content_id);
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
-			for (String l_t_str : last_stmt.local_token_str) {
-				int l_tid = -1;
-				if (l_t_str != null) {
-					l_tid = AssignID(token_index_record, l_t_str, ti);
+				for (String l_t_str : last_stmt.local_token_str) {
+					int l_tid = -1;
+					if (l_t_str != null) {
+						l_tid = AssignID(token_index_record, l_t_str, ti);
+					}
+					Assert.isTrue(l_tid <= stmt_token_variable_info.size(),
+							"last_stmt:" + last_stmt.stmt + "#last_stmt.local_token_str.size():"
+									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
+									+ stmt_token_variable_info.size() + "origin_file:" + origin_file);
+					stmt_token_variable_info.add(l_tid);
 				}
-				Assert.isTrue(l_tid <= stmt_token_variable_info.size(), "last_stmt:"+last_stmt.stmt + "#last_stmt.local_token_str.size():" + last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():" + stmt_token_variable_info.size() + "origin_file:" + origin_file);
-				stmt_token_variable_info.add(l_tid);
-			}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
-			stmt_token_api_info.addAll(last_stmt.api_group);
-			stmt_token_api_relative_info.addAll(last_stmt.api_relative);
-			stmt_token_info_end.add(stmt_token_info.size() - 1);
+				stmt_token_api_info.addAll(last_stmt.api_group);
+				stmt_token_api_relative_info.addAll(last_stmt.api_relative);
+				stmt_token_info_end.add(stmt_token_info.size() - 1);
 
-			stmt_variable_info_start.add(stmt_variable_info.size());
-			Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
+				stmt_variable_info_start.add(stmt_variable_info.size());
+				Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 
-			Map<Integer, Integer> part_stmt_variable_info_with_position_info = new TreeMap<Integer, Integer>();
-			Map<Integer, Integer> part_stmt_variable_info_with_type_content_en_info = new TreeMap<Integer, Integer>();
+				Map<Integer, Integer> part_stmt_variable_info_with_position_info = new TreeMap<Integer, Integer>();
+				Map<Integer, Integer> part_stmt_variable_info_with_type_content_en_info = new TreeMap<Integer, Integer>();
 //			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
 //			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
-			if (vars.size() == 0) {
-				if (MetaOfApp.AddZeroIfNoVariable > 0) {
-					part_stmt_variable_info_with_position_info.put(0, 0);
-					part_stmt_variable_info_with_type_content_en_info.put(0, 0);
+				if (vars.size() == 0) {
+					if (MetaOfApp.AddZeroIfNoVariable > 0) {
+						part_stmt_variable_info_with_position_info.put(0, 0);
+						part_stmt_variable_info_with_type_content_en_info.put(0, 0);
 //					part_stmt_variable_info.add(0);
 //					part_stmt_variable_position_info.add(0);
-				}
-			} else {
-				for (String var : vars) {
-					int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
+					}
+				} else {
+					for (String var : vars) {
+						int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
 //					System.err.println("position:" + position);
-					Assert.isTrue(last_stmt.local_token_str.get(position) != null && var.equals(last_stmt.local_token_str.get(position)));
-					int v_id = AssignID(token_index_record, var, ti);
-					part_stmt_variable_info_with_position_info.put(v_id, position);
-					part_stmt_variable_info_with_type_content_en_info.put(v_id, last_stmt.type_content_id.get(position));
+						Assert.isTrue(last_stmt.local_token_str.get(position) != null
+								&& var.equals(last_stmt.local_token_str.get(position)));
+						int v_id = AssignID(token_index_record, var, ti);
+						part_stmt_variable_info_with_position_info.put(v_id, position);
+						part_stmt_variable_info_with_type_content_en_info.put(v_id,
+								last_stmt.type_content_id.get(position));
 //					part_stmt_variable_info.add(v_id);
 //					part_stmt_variable_position_info.add(position);
+					}
 				}
-			}
 
 //			System.out.println("==== var position begin ====");
 //			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
 //			PrintUtil.PrintList(part_stmt_variable_position_info, "stmt_variable_position_info");
 //			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 //			System.out.println("==== var position end ====");
-			
-			Set<Integer> vi_set = part_stmt_variable_info_with_position_info.keySet();
-			Iterator<Integer> vi_itr = vi_set.iterator();
-			while (vi_itr.hasNext()) {
-				Integer vi = vi_itr.next();
-				Integer pi = part_stmt_variable_info_with_position_info.get(vi);
-				Integer v_en = part_stmt_variable_info_with_type_content_en_info.get(vi);
-				stmt_variable_info.add(vi);
-				stmt_variable_position_info.add(pi);
-				stmt_variable_type_content_en_info.add(v_en);
-			}
+
+				Set<Integer> vi_set = part_stmt_variable_info_with_position_info.keySet();
+				Iterator<Integer> vi_itr = vi_set.iterator();
+				while (vi_itr.hasNext()) {
+					Integer vi = vi_itr.next();
+					Integer pi = part_stmt_variable_info_with_position_info.get(vi);
+					Integer v_en = part_stmt_variable_info_with_type_content_en_info.get(vi);
+					stmt_variable_info.add(vi);
+					stmt_variable_position_info.add(pi);
+					stmt_variable_type_content_en_info.add(v_en);
+				}
 //			stmt_variable_info.addAll(part_stmt_variable_info);
 //			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
-			stmt_variable_info_end.add(stmt_variable_info.size() - 1);
+				stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
-			stmt_following_legal_info_start.add(stmt_following_legal_info.size());
-			int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
-			if (MetaOfApp.DetailFollowStatementDebugMode) {
-				System.out.println("stmt:" + last_stmt.stmt + "#last_stmt_legal_follows:" + last_stmt_legal_follows);
-				System.out.println("==== follow stmts begin ====");
-				for (Integer follow_i : last_stmt.following_stmts_same_legal_as_this) {
-					System.out.println("follow stmt:" + si_list.get(follow_i));
-				}
-				System.out.println("==== follow stmts end ====");
-			}
-			stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0,
-					Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
-			stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);
-//			System.out.println("tokens after size:" + stmt_token_info.size());
-		}
-		{
-			Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
-			for (int i = 0; i < i_len; i++) {
-//				System.out.println("subwords before size:" + sword_info.size());
-				TreeMap<Integer, Integer> sword_id_with_position = new TreeMap<Integer, Integer>();
-				Integer st = stmt_token_info_start.get(i);
-				Integer ed = stmt_token_info_end.get(i);
-				for (int t = st; t <= ed; t++) {
-					boolean is_var = false;
-					if (stmt_token_variable_info.get(t) >= 0) {
-						is_var = true;
+				stmt_following_legal_info_start.add(stmt_following_legal_info.size());
+				int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
+				if (MetaOfApp.DetailFollowStatementDebugMode) {
+					System.out
+							.println("stmt:" + last_stmt.stmt + "#last_stmt_legal_follows:" + last_stmt_legal_follows);
+					System.out.println("==== follow stmts begin ====");
+					for (Integer follow_i : last_stmt.following_stmts_same_legal_as_this) {
+						System.out.println("follow stmt:" + si_list.get(follow_i));
 					}
-					Integer ti_idx = stmt_token_info.get(t);
-					Integer start = im.each_subword_sequence_start.get(ti_idx);
-					Integer end = im.each_subword_sequence_end.get(ti_idx);
-					List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
-					int j_len = seqs.size();
-					Assert.isTrue(j_len > 0);
-					for (int j = 0; j < j_len; j++) {
-						if (is_var) {
-							Integer swi = seqs.get(j);
-							Integer vi = sword_var_id.get(swi);
-							if (vi == null) {
-								vi = sword_var_id.size() + 1;
-								sword_var_id.put(swi, vi);
-							}
+					System.out.println("==== follow stmts end ====");
+				}
+				stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0,
+						Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
+				stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);
+//			System.out.println("tokens after size:" + stmt_token_info.size());
+			}
+			{
+				Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
+				for (int i = 0; i < i_len; i++) {
+//				System.out.println("subwords before size:" + sword_info.size());
+					TreeMap<Integer, Integer> sword_id_with_position = new TreeMap<Integer, Integer>();
+					Integer st = stmt_token_info_start.get(i);
+					Integer ed = stmt_token_info_end.get(i);
+					for (int t = st; t <= ed; t++) {
+						boolean is_var = false;
+						if (stmt_token_variable_info.get(t) >= 0) {
+							is_var = true;
+						}
+						Integer ti_idx = stmt_token_info.get(t);
+						Integer start = im.each_subword_sequence_start.get(ti_idx);
+						Integer end = im.each_subword_sequence_end.get(ti_idx);
+						List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
+						int j_len = seqs.size();
+						Assert.isTrue(j_len > 0);
+						for (int j = 0; j < j_len; j++) {
+							if (is_var) {
+								Integer swi = seqs.get(j);
+								Integer vi = sword_var_id.get(swi);
+								if (vi == null) {
+									vi = sword_var_id.size() + 1;
+									sword_var_id.put(swi, vi);
+								}
 //							sword_ids.add(vi);
-							sword_id_with_position.put(vi, j);
-							sword_variable_info.add(vi);
-						} else {
-							sword_variable_info.add(-1);
+								sword_id_with_position.put(vi, j);
+								sword_variable_info.add(vi);
+							} else {
+								sword_variable_info.add(-1);
+							}
+						}
+						token_sword_start.add(sword_info.size());
+						sword_info.addAll(seqs);
+						token_sword_end.add(sword_info.size() - 1);
+					}
+					stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
+					if (stmt_sword_variable_info.size() == 0) {
+						if (MetaOfApp.AddZeroIfNoVariable > 0) {
+							stmt_sword_variable_info.add(0);
+							stmt_sword_variable_position_info.add(0);
+						}
+					} else {
+						Set<Integer> sids = sword_id_with_position.keySet();
+						Iterator<Integer> sid_itr = sids.iterator();
+						while (sid_itr.hasNext()) {
+							Integer sid = sid_itr.next();
+							int position = sword_id_with_position.get(sid);
+							stmt_sword_variable_info.add(sid);
+							stmt_sword_variable_position_info.add(position);
 						}
 					}
-					token_sword_start.add(sword_info.size());
-					sword_info.addAll(seqs);
-					token_sword_end.add(sword_info.size() - 1);
+					stmt_sword_variable_info_end.add(stmt_sword_variable_info.size() - 1);
+//				System.out.println("subwords after size:" + sword_info.size());
 				}
-				stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
-				if (stmt_sword_variable_info.size() == 0) {
-					if (MetaOfApp.AddZeroIfNoVariable > 0) {
-						stmt_sword_variable_info.add(0);
-						stmt_sword_variable_position_info.add(0);
+				Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
+				Assert.isTrue(sword_info.size() == sword_variable_info.size());
+			}
+		}
+		{
+			int i_len = stmt_token_variable_info.size();
+			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
+			ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
+			for (int i = 0; i < i_len; i++) {
+				Assert.isTrue(seq_var_info.size() == i);
+				Integer ti = stmt_token_variable_info.get(i);
+				if (ti >= 0) {
+					Integer li = latest_index.get(ti);
+					if (li != null) {
+						int relative = i - li;
+						seq_var_info.add(relative);// - i
+//						System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
+					} else {
+						seq_var_info.add(-1);// Integer.MAX_VALUE
 					}
 				} else {
-					Set<Integer> sids = sword_id_with_position.keySet();
-					Iterator<Integer> sid_itr = sids.iterator();
-					while (sid_itr.hasNext()) {
-						Integer sid = sid_itr.next();
-						int position = sword_id_with_position.get(sid);
-						stmt_sword_variable_info.add(sid);
-						stmt_sword_variable_position_info.add(position);
-					}
+					seq_var_info.add(-1);
 				}
-				stmt_sword_variable_info_end.add(stmt_sword_variable_info.size() - 1);
-//				System.out.println("subwords after size:" + sword_info.size());
+				latest_index.put(ti, i);
 			}
-			Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
-			Assert.isTrue(sword_info.size() == sword_variable_info.size());
+			Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
+			stmt_token_variable_relative_info.addAll(seq_var_info);
+		}
+		{
+			int i_len = sword_variable_info.size();
+			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
+			ArrayList<Integer> sword_var_info = new ArrayList<Integer>();
+			for (int i = 0; i < i_len; i++) {
+				Assert.isTrue(sword_var_info.size() == i);
+				Integer ti = sword_variable_info.get(i);
+				if (ti >= 0) {
+					Integer li = latest_index.get(ti);
+					if (li != null) {
+						int relative = i - li;
+						sword_var_info.add(relative);
+//						System.out.println("sword_i:" + i + "sword_en:" + ti + "#relative:" + relative);
+					} else {
+						sword_var_info.add(-1);// Integer.MAX_VALUE
+					}
+				} else {
+					sword_var_info.add(-1);// Integer.MAX_VALUE
+				}
+				latest_index.put(ti, i);
+			}
+			Assert.isTrue(sword_variable_info.size() == sword_var_info.size());
+			sword_variable_relative_info.addAll(sword_var_info);
 		}
 		Validate();
 		ValidateStatements();
@@ -648,7 +708,13 @@ public class ASTTensor extends Tensor {
 	}
 
 	public static String StatementSummaryInfo() {
-		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement + "#max_token_number_of_one_statement:" + max_token_number_of_one_statement + "#average_token_number_of_one_statement:" + ((total_number_of_tokens*1.0)/(total_number_of_statements*1.0)) + "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token + "#max_size_statement:" + max_size_statement + "========= max_size_statement_in_tokens:" + max_size_statement_in_tokens;
+		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement
+				+ "#max_token_number_of_one_statement:" + max_token_number_of_one_statement
+				+ "#average_token_number_of_one_statement:"
+				+ ((total_number_of_tokens * 1.0) / (total_number_of_statements * 1.0)) + "#min_rate_of_local_token:"
+				+ min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token
+				+ "#max_size_statement:" + max_size_statement + "========= max_size_statement_in_tokens:"
+				+ max_size_statement_in_tokens;
 	}
 
 }
@@ -694,12 +760,12 @@ class TokenInCare {
 }
 
 class TokenIndex {
-	
+
 	int token_index = 0;
-	
+
 	public int NewIndex() {
 		token_index++;
 		return token_index;
 	}
-	
+
 }
