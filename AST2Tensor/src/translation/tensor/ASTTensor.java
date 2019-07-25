@@ -430,10 +430,10 @@ public class ASTTensor extends Tensor {
 					if (l_t_str != null) {
 						l_tid = AssignID(token_index_record, l_t_str, ti);
 					}
-					Assert.isTrue(l_tid <= stmt_token_variable_info.size(),
+					Assert.isTrue(l_tid <= stmt_token_variable_info.size()+1,
 							"last_stmt:" + last_stmt.stmt + "#last_stmt.local_token_str.size():"
 									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
-									+ stmt_token_variable_info.size() + "origin_file:" + origin_file);
+									+ stmt_token_variable_info.size() + "#origin_file:" + origin_file);
 					stmt_token_variable_info.add(l_tid);
 				}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
@@ -697,7 +697,7 @@ public class ASTTensor extends Tensor {
 				int position = stmt_variable_position_info.get(j);
 				int r_pos = t_start + position;
 				if (position == 0) {
-					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
+//					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
 				} else {
 					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0,
 							"type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos
