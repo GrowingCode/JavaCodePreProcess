@@ -29,6 +29,9 @@ public class IDManager {
 	public static final String Leaf = "L";
 	public static final String NonLeaf = "N";
 	
+	public static final String Zero = "!!@@##YYX_Default_So_Strange_Is_It_Right_Ha_Ha##@@!!";
+	public static final String Unk = "@#!Unk!#@";
+	
 //	public static String DefaultPart = "@Default";
 //	public static String LeafType = "LeafDefault";
 //	public static String InitialLeaf = "InitialLeafASTType";
@@ -116,6 +119,10 @@ public class IDManager {
 		}
 		
 		// token regist
+		Set<String> reserved_words = new TreeSet<String>();
+		reserved_words.add(Zero);
+		reserved_words.add(Unk);
+		Regist(token_id_map, reserved_words);
 		Regist(token_id_map, g_set);
 		Regist(token_id_map, id_tool.gr.fixed_tokens);
 		Regist(token_id_map, id_tool.gr.unfixed_tokens);
