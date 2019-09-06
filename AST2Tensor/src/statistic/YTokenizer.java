@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 
 public class YTokenizer {
 
-	public static final String TokenReg = "\\||\\.|\\s+|(|)|{|}|+|-|*|/|%|\"|'|:|&|^|~|!|++|--|==|!=|>|<|>=|<=|=|+=|-=|*=|/=|%=|&=|^=|\\|=|<<=|>>=|<<|>>|>>>|&&|\\|\\|;";
+//	public static final String TokenReg = "\\||\\.|\\s+|(|)|{|}|+|-|*|/|%|\"|'|:|&|^|~|!|++|--|==|!=|>|<|>=|<=|=|+=|-=|*=|/=|%=|&=|^=|\\|=|<<=|>>=|<<|>>|>>>|&&|\\|\\|;";
 	public static final String TokenDelim = "|.(){}+-*/%\"':&^~!=><\\;";
 
 	public static ArrayList<String> GetTokens(String content) {
