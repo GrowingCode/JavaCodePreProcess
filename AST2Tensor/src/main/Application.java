@@ -21,7 +21,6 @@ import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
 import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
-import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
@@ -91,9 +90,9 @@ public class Application implements IApplication {
 		RoleAssigner role_assigner = new RoleAssigner();
 		TokenRecorder tr = new TokenRecorder();
 		GrammarRecorder gr = new GrammarRecorder();
-		APIRecorder ar = new APIRecorder();
+//		APIRecorder ar = new APIRecorder();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
-		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, gr, ar, cnc);
+		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr);//, gr, ar, cnc
 		{
 			File bpe_mj = new File(bpe_merges_json);
 			File bpe_ttj = new File(bpe_token_times_json);

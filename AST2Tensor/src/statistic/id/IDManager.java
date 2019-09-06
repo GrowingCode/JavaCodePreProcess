@@ -70,7 +70,7 @@ public class IDManager {
 	
 //	private Set<String> not_hit_words = new TreeSet<String>();
 	
-	private TreeMap<String, Integer> api_comb_id_map = new TreeMap<String, Integer>();
+//	private TreeMap<String, Integer> api_comb_id_map = new TreeMap<String, Integer>();
 	
 //	private int api_comb_hit_num = -1;
 	
@@ -113,28 +113,32 @@ public class IDManager {
 		this.id_tool = id_tool;
 //		token_id_map.putAll(id_tool.gr.node_type_id);
 //		grammar_token_num = token_id_map.size();
-		Set<String> g_set = id_tool.gr.self_children_map.keySet();
-		for (String g : g_set) {
-			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
-		}
+//		Set<String> g_set = id_tool.gr.self_children_map.keySet();
+//		for (String g : g_set) {
+//			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
+//		}
 		
 		// token regist
 		Set<String> reserved_words = new TreeSet<String>();
 		reserved_words.add(Zero);
 		reserved_words.add(Unk);
 		Regist(token_id_map, reserved_words);
-		Regist(token_id_map, g_set);
-		Regist(token_id_map, id_tool.gr.fixed_tokens);
-		Regist(token_id_map, id_tool.gr.unfixed_tokens);
+//		Regist(token_id_map, g_set);
+		
+		Regist(token_id_map, id_tool.tr.hit_train.keySet());
+		Regist(token_id_map, id_tool.tr.not_hit_train.keySet());
+		
+//		Regist(token_id_map, id_tool.gr.fixed_tokens);
+//		Regist(token_id_map, id_tool.gr.unfixed_tokens);
 		
 //		token_hit_num = token_id_map.size();
 //		Assert.isTrue(token_hit_num > 0);
 //		Regist(token_id_map, id_tool.tr.not_hit_train);
 		
 		// api comb regist
-		Regist(api_comb_id_map, id_tool.ar.api_combs);
+//		Regist(api_comb_id_map, id_tool.ar.api_combs);
 		
-		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
+//		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
 		
 //		api_comb_hit_num = api_comb_id_map.size();
 //		Assert.isTrue(api_comb_hit_num > 0);
@@ -288,11 +292,11 @@ public class IDManager {
 //		return RegistNotHitTypeContentID(type_content);
 	}
 	// type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
-	public int GetAPICombID(String api_comb) {
-		Integer id = api_comb_id_map.get(api_comb);
-		Assert.isTrue(id != null);
-		return id;
-	}
+//	public int GetAPICombID(String api_comb) {
+//		Integer id = api_comb_id_map.get(api_comb);
+//		Assert.isTrue(id != null);
+//		return id;
+//	}
 	
 //	private int RegistNotHitTypeContentID(String type_content) {
 //		Integer id = not_hit_ast_type_content_id_map.get(type_content);
@@ -867,51 +871,51 @@ public class IDManager {
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
-		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
+//		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
 //		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
 	}
 	
-	private void GenerateAPIJson(String dir) {
-		int all_size = api_comb_id_map.size();
-		String[] strs = new String[all_size];
-		Set<String> api_keys = api_comb_id_map.keySet();
-		Iterator<String> api_k_itr = api_keys.iterator();
-		while (api_k_itr.hasNext()) {
-			String api_k = api_k_itr.next();
-			Integer idx = api_comb_id_map.get(api_k);
-			strs[idx] = api_k;
-		}
-		
-		ArrayList<Integer> api_comb_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_api_comb_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_api_comb_end = new ArrayList<Integer>();
-		
-		for (int i=0;i<all_size;i++) {
-			String str = strs[i];
-			String[] to_compare_apis = str.split("#");
-			each_api_comb_start.add(api_comb_sequences.size());
-			for (String tc_api : to_compare_apis) {
-				api_comb_sequences.add(GetTypeContentID(tc_api));
-			}
-			each_api_comb_end.add(api_comb_sequences.size()-1);
-		}
-		// add default api_comb
-		each_api_comb_start.add(api_comb_sequences.size());
-		api_comb_sequences.add(-1);
-		each_api_comb_end.add(api_comb_sequences.size()-1);
-		
-		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_api_comb_sequences.json"),
-				gson.toJson(api_comb_sequences));
-		Gson gson2 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_start.json"),
-				gson2.toJson(each_api_comb_start));
-		Gson gson3 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_end.json"),
-				gson3.toJson(each_api_comb_end));
-	}
+//	private void GenerateAPIJson(String dir) {
+//		int all_size = api_comb_id_map.size();
+//		String[] strs = new String[all_size];
+//		Set<String> api_keys = api_comb_id_map.keySet();
+//		Iterator<String> api_k_itr = api_keys.iterator();
+//		while (api_k_itr.hasNext()) {
+//			String api_k = api_k_itr.next();
+//			Integer idx = api_comb_id_map.get(api_k);
+//			strs[idx] = api_k;
+//		}
+//		
+//		ArrayList<Integer> api_comb_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_api_comb_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_api_comb_end = new ArrayList<Integer>();
+//		
+//		for (int i=0;i<all_size;i++) {
+//			String str = strs[i];
+//			String[] to_compare_apis = str.split("#");
+//			each_api_comb_start.add(api_comb_sequences.size());
+//			for (String tc_api : to_compare_apis) {
+//				api_comb_sequences.add(GetTypeContentID(tc_api));
+//			}
+//			each_api_comb_end.add(api_comb_sequences.size()-1);
+//		}
+//		// add default api_comb
+//		each_api_comb_start.add(api_comb_sequences.size());
+//		api_comb_sequences.add(-1);
+//		each_api_comb_end.add(api_comb_sequences.size()-1);
+//		
+//		Gson gson = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_api_comb_sequences.json"),
+//				gson.toJson(api_comb_sequences));
+//		Gson gson2 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_start.json"),
+//				gson2.toJson(each_api_comb_start));
+//		Gson gson3 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_end.json"),
+//				gson3.toJson(each_api_comb_end));
+//	}
 
 	public void SaveToDirectory(String dir) {
 //		GenerateIDJson(dir, ast_type_content_id_map, "type");
@@ -935,11 +939,11 @@ public class IDManager {
 		}
 		// only for debug
 		GenerateIDJson(dir, token_id_map, "token");
-		GenerateIDJson(dir, api_comb_id_map, "api_comb");
+//		GenerateIDJson(dir, api_comb_id_map, "api_comb");
 		// for real tensor usage
 		GenerateIDHitJson(dir);
 		GenerateIDSummary(dir);
-		GenerateAPIJson(dir);
+//		GenerateAPIJson(dir);
 //		GenerateTypeAndSummaryJson(dir, ast_type_content_id_map, "type");
 //		GenerateAndSaveHuffTree(dir, ast_type_content_id_count_map, "type_content", MetaOfApp.TypeContentHuffTreeStandardChildrenNum);
 //		Set<String> akeys = ati.keySet();
@@ -994,7 +998,8 @@ public class IDManager {
 //	}
 	
 	public String WordVocabularyInfo() {
-		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size() + "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0);// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
+//		 + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size() + "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0
+		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size();// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
 	}
 
 }

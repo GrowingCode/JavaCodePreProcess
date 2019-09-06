@@ -1,23 +1,11 @@
 package statistic;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.SimpleName;
 
-import eclipse.jdt.JDTASTHelper;
-import eclipse.search.JDTSearchForChildrenOfASTNode;
-import main.MetaOfApp;
-import statistic.id.PreProcessContentHelper;
 import translation.roles.RoleAssigner;
 
 public class IDGenerator extends ASTVisitor {
@@ -39,77 +27,20 @@ public class IDGenerator extends ASTVisitor {
 	}
 
 	@Override
-	public void preVisit(ASTNode node) {
-		super.preVisit(node);
-		// handle token
-		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-//		if (node instanceof BreakStatement && children.size() == 0) {
-//			System.out.println("============ encounter BreakStatementL ============");
-//		}
-		int children_size = children == null ? 0 : children.size();
-		// handle GrammarRecorder
-		tool.gr.RecordGrammar(node);
-		if (children_size == 0) {
-			tool.gr.RecordExtraGrammarForLeaf(node, null);
-		}
-		// handle TokenRecorder
-		String type_content = JDTASTHelper.GetTypeRepresentationForASTNode(node);
-		if (role <= RoleAssigner.train_seen_k) {
-			tool.tr.TokenHitInTrainSet(type_content, 1);
-		} else {
-			tool.tr.TokenNotHitInTrainSet(type_content, 1);
-		}
-		if (children_size == 0) {
-			String token_str = JDTASTHelper.GetContentRepresentationForASTNode(node);
-			if (role <= RoleAssigner.train_seen_k) {
-				tool.tr.TokenHitInTrainSet(token_str, 1);
-			} else {
-				tool.tr.TokenNotHitInTrainSet(token_str, 1);
-			}
-		}
-		// handle APIRecorder
-		if (node instanceof SimpleName) {
-			SimpleName sn = (SimpleName) node;
-			IBinding ib = sn.resolveBinding();
-			if (ib != null && ib instanceof IMethodBinding) {
-				if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
-//					Assert.isTrue(sn.getParent() instanceof MethodInvocation);
-//					System.out.println("sn is method declared name!");
-					IMethodBinding imb = (IMethodBinding) ib;
-					ITypeBinding dc = imb.getDeclaringClass();
-					IMethodBinding[] mds = dc.getDeclaredMethods();
-//					System.out.println("==== start print md ====");
-					LinkedList<String> mdnames = new LinkedList<String>();
-					for (IMethodBinding md : mds) {
-//						System.out.println(md);
-						String mdname = md.getName();
-						mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
-						if (!mdnames.contains(mdname)) {
-							mdnames.add(mdname);
-						}
-						tool.gr.RecordExtraGrammarForLeaf(node, mdname);
-						if (role <= RoleAssigner.train_seen_k) {
-							tool.tr.TokenHitInTrainSet(mdname, 0);
-						} else {
-							tool.tr.TokenHitInTrainSet(mdname, 0);
-						}
-					}
-					String joined = String.join("#", mdnames);
-					tool.ar.RecordAPIComb(joined);
-//					System.out.println("mds:" + joined);
-//					System.out.println("==== end print md ====");
+	public boolean preVisit2(ASTNode node) {
+		if (node instanceof MethodDeclaration) {
+			String content = node.toString();
+			String[] tks = content.split("\\||\\.|\\s+|(|)|{|}|+|-|*|/|%|\"|'|:|&|^|~|!|++|--|==|!=|>|<|>=|<=|=|+=|-=|*=|/=|%=|&=|^=|\\|=|<<=|>>=|<<|>>|>>>|&&|\\|\\|");
+			for (String tk : tks) {
+				if (role <= RoleAssigner.train_seen_k) {
+					tool.tr.TokenHitInTrainSet(tk, 1);
+				} else {
+					tool.tr.TokenNotHitInTrainSet(tk, 1);
 				}
 			}
+			return false;
 		}
-		if (MetaOfApp.ClassLevelTensorGeneration) {
-			if (node.getParent() != null) {
-				tool.cnc.EncounterChildrenNum(children_size+2);
-			}
-		} else {
-			if (node.getParent() != null && node.getParent().getParent() != null) {
-				tool.cnc.EncounterChildrenNum(children_size+2);
-			}
-		}
+		return super.preVisit2(node);
 	}
 	
 }
