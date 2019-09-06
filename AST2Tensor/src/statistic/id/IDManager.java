@@ -29,8 +29,8 @@ public class IDManager {
 	public static final String Leaf = "L";
 	public static final String NonLeaf = "N";
 	
-	public static final String Zero = "!!@@##YYX_Default_So_Strange_Is_It_Right_Ha_Ha##@@!!";
-	public static final String Unk = "@#!Unk!#@";
+	public static final String Zero = "@!ZK!@";
+	public static final String Unk = "Unk";
 	
 //	public static String DefaultPart = "@Default";
 //	public static String LeafType = "LeafDefault";

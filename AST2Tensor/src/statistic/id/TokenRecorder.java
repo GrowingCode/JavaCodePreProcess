@@ -49,6 +49,8 @@ public class TokenRecorder {
 	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
 	
 	public TokenRecorder() {
+		TokenHitInTrainSet(IDManager.Unk, 1);
+		TokenHitInTrainSet(IDManager.Zero, 1);
 	}
 	
 //	private void RegistTypeIsLeaf(String type, boolean is_leaf) {
