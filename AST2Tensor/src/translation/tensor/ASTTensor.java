@@ -708,13 +708,14 @@ public class ASTTensor extends Tensor {
 	}
 
 	public static String StatementSummaryInfo() {
-		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement
-				+ "#max_token_number_of_one_statement:" + max_token_number_of_one_statement
-				+ "#average_token_number_of_one_statement:"
-				+ ((total_number_of_tokens * 1.0) / (total_number_of_statements * 1.0)) + "#min_rate_of_local_token:"
-				+ min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token
-				+ "#max_size_statement:" + max_size_statement + "========= max_size_statement_in_tokens:"
-				+ max_size_statement_in_tokens;
+		return "";
+//				"StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement
+//				+ "#max_token_number_of_one_statement:" + max_token_number_of_one_statement
+//				+ "#average_token_number_of_one_statement:"
+//				+ ((total_number_of_tokens * 1.0) / (total_number_of_statements * 1.0)) + "#min_rate_of_local_token:"
+//				+ min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token
+//				+ "#max_size_statement:" + max_size_statement + "========= max_size_statement_in_tokens:"
+//				+ max_size_statement_in_tokens;
 	}
 
 }
