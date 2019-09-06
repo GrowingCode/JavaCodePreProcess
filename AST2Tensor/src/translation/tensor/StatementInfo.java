@@ -15,10 +15,10 @@ import translation.helper.TypeContentID;
 public class StatementInfo {
 	
 	String stmt = null;
-	int max_token_id_before_visiting_this_statement = -1;
+//	int max_token_id_before_visiting_this_statement = -1;
 	
-	public StatementInfo(int max_token_id_before_visiting_this_statement, String stmt) {
-		this.max_token_id_before_visiting_this_statement = max_token_id_before_visiting_this_statement;
+	public StatementInfo(String stmt) {
+//		this.max_token_id_before_visiting_this_statement = max_token_id_before_visiting_this_statement;
 		this.stmt = stmt;
 	}
 	
@@ -35,7 +35,7 @@ public class StatementInfo {
 	List<Integer> following_stmts_same_legal_as_this = new LinkedList<Integer>();
 //	ArrayList<Boolean> depend_record = new ArrayList<Boolean>();
 	
-	public void StoreOneNode(IDManager im, TypeContentID t_c, String token_var, int api_comb_id, int api_relative_id) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
+	public void StoreOneNode(IDManager im, TypeContentID t_c, String token_var) {// , TypeContentID parent_t_c, int up_relative_use_num, int right_relative_use_num, int node_to_encode, int isExisted, int lastIndex, int node_is_real, int up_contingent_index, int right_contingent_index,
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
 		if (MetaOfApp.VariableNoLimit) {
@@ -53,8 +53,8 @@ public class StatementInfo {
 				var_or_type_id_with_position_in_this_stmt.put(token_var, token_var_position_in_stmt);
 			}
 		}
-		api_group.add(api_comb_id);
-		api_relative.add(api_relative_id);
+		api_group.add(-1);
+		api_relative.add(-1);
 		
 		type_content_str.add(t_c.GetTypeContent());
 	}

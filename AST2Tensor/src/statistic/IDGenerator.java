@@ -1,5 +1,7 @@
 package statistic;
 
+import java.util.ArrayList;
+
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -9,7 +11,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import translation.roles.RoleAssigner;
 
 public class IDGenerator extends ASTVisitor {
-
+	
 	ICompilationUnit icu = null;
 	CompilationUnit cu = null;
 	IDTools tool = null;
@@ -21,16 +23,13 @@ public class IDGenerator extends ASTVisitor {
 		this.cu = cu;
 		this.tool = tool;
 		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
-//		System.out.println(icu.getPath().toOSString() + "#role:" + role);
-//		icu.getElementName()
-//		System.out.println("icu.getPath().toOSString():" + icu.getPath().toOSString());
 	}
 
 	@Override
 	public boolean preVisit2(ASTNode node) {
 		if (node instanceof MethodDeclaration) {
 			String content = node.toString();
-			String[] tks = content.split("\\||\\.|\\s+|(|)|{|}|+|-|*|/|%|\"|'|:|&|^|~|!|++|--|==|!=|>|<|>=|<=|=|+=|-=|*=|/=|%=|&=|^=|\\|=|<<=|>>=|<<|>>|>>>|&&|\\|\\|");
+			ArrayList<String> tks = YTokenizer.GetTokens(content);
 			for (String tk : tks) {
 				if (role <= RoleAssigner.train_seen_k) {
 					tool.tr.TokenHitInTrainSet(tk, 1);
