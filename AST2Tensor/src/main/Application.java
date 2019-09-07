@@ -20,7 +20,6 @@ import eclipse.project.ProjectLoader;
 import logger.DebugLogger;
 import statistic.IDGeneratorForProject;
 import statistic.IDTools;
-import statistic.ast.ChildrenNumCounter;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
@@ -91,7 +90,7 @@ public class Application implements IApplication {
 		TokenRecorder tr = new TokenRecorder();
 		GrammarRecorder gr = new GrammarRecorder();
 //		APIRecorder ar = new APIRecorder();
-		ChildrenNumCounter cnc = new ChildrenNumCounter();
+//		ChildrenNumCounter cnc = new ChildrenNumCounter();
 		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr);//, gr, ar, cnc
 		{
 			File bpe_mj = new File(bpe_merges_json);
@@ -136,7 +135,7 @@ public class Application implements IApplication {
 		IDManager im = new IDManager(id_tool);
 		{
 			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
-			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
+//			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
 			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
 		}
