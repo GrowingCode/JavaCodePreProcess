@@ -204,7 +204,6 @@ public class ASTTensor extends Tensor {
 	public String toString() {
 		String separator = "#";
 		String result = toBaseString(separator);
-//		+ separator + toBaseExceptString(separator);
 		return result.trim();
 	}
 
@@ -212,7 +211,6 @@ public class ASTTensor extends Tensor {
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
 		String result = toBaseString(separator);
-//		+ separator + toBaseExceptString(separator);
 		return result;
 	}
 
@@ -220,7 +218,6 @@ public class ASTTensor extends Tensor {
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
 		String result = toOracleBaseString(separator);
-//		+ separator + toBaseExceptString(separator);
 		return result;
 	}
 
