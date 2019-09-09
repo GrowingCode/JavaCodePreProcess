@@ -43,7 +43,8 @@ public class TreeTensorGenerator extends TensorGenerator {
 
 	TreeTensor curr_tensor = null;
 
-	Map<ASTNode, Integer> token_index_record = new HashMap<ASTNode, Integer>();
+	Map<ASTNode, Integer> node_pre_order_index = new HashMap<ASTNode, Integer>();
+	Map<ASTNode, Integer> node_post_order_index = new HashMap<ASTNode, Integer>();
 
 	@Override
 	public void preVisit(ASTNode node) {
@@ -54,25 +55,24 @@ public class TreeTensorGenerator extends TensorGenerator {
 			curr_tensor = new TreeTensor(im, -1);
 		}
 		if (begin_generation) {
-			HandleOneNode(node, true, begin_generation_node.equals(node));
+//			boolean is_root = begin_generation_node.equals(node);
+			node_pre_order_index.put(node, node_pre_order_index.size());
+			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
+			curr_tensor.StorePreOrderNodeEnInfo(type_content_id.GetTypeContentID());
 		}
 	}
 
 	@Override
 	public void postVisit(ASTNode node) {
 		if (begin_generation) {
-			if (IsStatement(node) || IsMethodDeclaration(node)) {
-				ASTNode handle_node = in_handling_node.pop();
-				Assert.isTrue(handle_node.equals(node));
-				StatementInfo last_stmt = in_handling_tensor.pop();
-				Assert.isTrue(last_stmt == node_stmt.get(node));
-			}
+			node_post_order_index.put(node, node_post_order_index.size());
+			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
+			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+			
+			
+			curr_tensor.StorePostOrderNodeInfo(type_content_id.GetTypeContentID(), node_pre_order_index.get(node), c_start, c_end, children);
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
-			total_method_count++;
-			int statement_node_count = nodeCount + leafExtraCount;
-			Assert.isTrue(in_handling_node.size() == 0);
-			Assert.isTrue(in_handling_tensor.size() == 0);
 			if (MetaOfApp.StatementNoLimit || (node_stmt.size() >= MetaOfApp.MinimumNumberOfStatementsInAST
 					&& statement_node_count >= MetaOfApp.MinimumNumberOfNodesInAST)) {
 				int size_of_statements = 0;
@@ -84,18 +84,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 					curr_tensor.Devour(si);
 					int si_size = si.Size();
 					size_of_statements += si_size;
-//					if (min_statement_size > si_size) {
-//						min_statement_size = si_size;
-//						min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-//					}
-//					if (max_statement_size < si_size) {
-//						max_statement_size = si_size;
-//						max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-//					}
 				}
-				Assert.isTrue(statement_node_count == size_of_statements);
-				curr_tensor.HandleAllDevoured();
-//				curr_tensor.Validate();
 				StringTensor st = (StringTensor) tensor_list.getLast();
 				st.SetToString(curr_tensor.toString());
 				st.SetToDebugString(curr_tensor.toDebugString());
@@ -103,19 +92,8 @@ public class TreeTensorGenerator extends TensorGenerator {
 				st.SetSize(curr_tensor.getSize());
 			} else {
 				tensor_list.removeLast();
-				unsuitable_method_count++;
-//				System.out.println("Unsuitable statement: node_stmt.size():" + node_stmt.size() + "#statementSize:" + statement_node_count);
 			}
 			curr_tensor = null;
-			pre_order_node.clear();
-			node_stmt.clear();
-//			PrintUtil.PrintMap(token_index_record);
-//			token_index_record.clear();
-//			token_index_record = null;
-			token_local_index = 0;
-//			node_index_map.clear();
-			leafExtraCount = 0;
-			nodeCount = 0;
 		}
 		super.postVisit(node);
 	}
