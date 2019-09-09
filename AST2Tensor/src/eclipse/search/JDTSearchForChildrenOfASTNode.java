@@ -9,8 +9,8 @@ import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 public class JDTSearchForChildrenOfASTNode {
 
 	@SuppressWarnings("unchecked")
-	public static List<ASTNode> GetChildren(ASTNode node) {
-		List<ASTNode> children = new LinkedList<ASTNode>();
+	public static LinkedList<ASTNode> GetChildren(ASTNode node) {
+		LinkedList<ASTNode> children = new LinkedList<ASTNode>();
 		List<StructuralPropertyDescriptor> list = node.structuralPropertiesForType();
 		for (int i = 0; i < list.size(); i++) {
 			StructuralPropertyDescriptor curr = (StructuralPropertyDescriptor) list.get(i);

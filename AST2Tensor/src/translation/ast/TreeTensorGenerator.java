@@ -1,37 +1,23 @@
 package translation.ast;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
-import statistic.id.PreProcessContentHelper;
 import translation.TensorGenerator;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
 import translation.roles.RoleAssigner;
-import translation.tensor.ASTTensor;
-import translation.tensor.StatementInfo;
 import translation.tensor.StringTensor;
 import translation.tensor.TreeTensor;
 
@@ -58,34 +44,38 @@ public class TreeTensorGenerator extends TensorGenerator {
 //			boolean is_root = begin_generation_node.equals(node);
 			node_pre_order_index.put(node, node_pre_order_index.size());
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			curr_tensor.StorePreOrderNodeEnInfo(type_content_id.GetTypeContentID());
+			curr_tensor.StorePreOrderNodeInfo(type_content_id.GetTypeContentID());
 		}
 	}
 
 	@Override
 	public void postVisit(ASTNode node) {
 		if (begin_generation) {
-			node_post_order_index.put(node, node_post_order_index.size());
+			int post_order_index = node_post_order_index.size();
+			node_post_order_index.put(node, post_order_index);
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-			
-			
-			curr_tensor.StorePostOrderNodeInfo(type_content_id.GetTypeContentID(), node_pre_order_index.get(node), c_start, c_end, children);
+			LinkedList<ASTNode> children_nodes = JDTSearchForChildrenOfASTNode.GetChildren(node);
+			ArrayList<Integer> children_index = new ArrayList<Integer>();
+			int c_start = 0;
+			int c_end = -1;
+			if (children_nodes != null && children_nodes.size() > 0) {
+				c_start = node_post_order_index.get(children_nodes.getFirst());
+				c_end = node_post_order_index.get(children_nodes.getLast());
+				Iterator<ASTNode> n_itr = children_nodes.iterator();
+				while (n_itr.hasNext()) {
+					ASTNode n = n_itr.next();
+					children_index.add(node_post_order_index.get(n));
+				}
+			}
+			int pre_index = node_pre_order_index.get(node);
+			curr_tensor.StorePostOrderNodeInfo(type_content_id.GetTypeContentID(), pre_index, c_start, c_end, children_index);
+			curr_tensor.StorePreOrderNodePostOrderIndexInfo(pre_index, post_order_index);
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
-			if (MetaOfApp.StatementNoLimit || (node_stmt.size() >= MetaOfApp.MinimumNumberOfStatementsInAST
-					&& statement_node_count >= MetaOfApp.MinimumNumberOfNodesInAST)) {
-				int size_of_statements = 0;
-				Iterator<ASTNode> pot_itr = pre_order_node.iterator();
-				while (pot_itr.hasNext()) {
-					ASTNode an = pot_itr.next();
-					StatementInfo si = node_stmt.get(an);
-					Assert.isTrue(si != null);
-					curr_tensor.Devour(si);
-					int si_size = si.Size();
-					size_of_statements += si_size;
-				}
+			// >= MetaOfApp.MinimumNumberOfStatementsInAST
+			if (MetaOfApp.StatementNoLimit || (curr_tensor.getSize() >= MetaOfApp.MinimumNumberOfNodesInAST)) {
 				StringTensor st = (StringTensor) tensor_list.getLast();
+				curr_tensor.Validate();
 				st.SetToString(curr_tensor.toString());
 				st.SetToDebugString(curr_tensor.toDebugString());
 				st.SetToOracleString(curr_tensor.toOracleString());
@@ -94,95 +84,10 @@ public class TreeTensorGenerator extends TensorGenerator {
 				tensor_list.removeLast();
 			}
 			curr_tensor = null;
+			node_pre_order_index.clear();
+			node_post_order_index.clear();
 		}
 		super.postVisit(node);
 	}
-
-	private boolean IsStatement(ASTNode node) {
-		if (node instanceof Statement && !(node instanceof Block)) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean IsMethodDeclaration(ASTNode node) {
-		if (node instanceof MethodDeclaration) {
-			return true;
-		}
-		return false;
-	}
-
-	private void HandleOneNode(ASTNode node, boolean is_real, boolean is_root) {
-//		System.err.println("node:" + node);
-		if (begin_generation_node.equals(node)) {
-			Assert.isTrue(IsMethodDeclaration(node));
-		}
-		if (IsStatement(node) || IsMethodDeclaration(node)) {
-			in_handling_node.add(node);
-			StatementInfo stmt_info = new StatementInfo(token_local_index, node.toString());
-			in_handling_tensor.add(stmt_info);
-			pre_order_node.add(node);
-			node_stmt.put(node, stmt_info);
-		}
-		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		{
-			nodeCount++;
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
-			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, null, -1, 0);
-		}
-		boolean is_leaf = children.size() == 0;
-		if (is_leaf) {
-			leafExtraCount++;
-//			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-//			int var_index = -1;
-			String var = null;
-			int api_comb_id = -1;
-			int api_relative_id = -1;
-			if (node instanceof SimpleName) {
-				SimpleName sn = (SimpleName) node;
-//				var_index = HandleVariableIndex(sn.toString());
-				var = sn.toString();
-//				System.err.println("simple_name:" + sn);
-				IBinding ib = sn.resolveBinding();
-				if (ib != null) {
-					if (ib instanceof IVariableBinding) {
-//						IVariableBinding ivb = (IVariableBinding) ib;
-//						String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
-//						var_index = HandleVariableIndex(ivb_key)
-					} else if (ib instanceof ITypeBinding) {
-//						ITypeBinding itb = (ITypeBinding) ib;
-//						String itb_key = "type!" + itb.getKey() + "#" + sn;
-//						var_index = HandleVariableIndex(itb_key);
-					} else if (ib instanceof IMethodBinding) {
-						if (!(sn.getParent() instanceof MethodDeclaration)
-								&& (sn.getParent() instanceof MethodInvocation)) {
-							IMethodBinding imb = (IMethodBinding) ib;
-							ITypeBinding dc = imb.getDeclaringClass();
-							IMethodBinding[] mds = dc.getDeclaredMethods();
-							LinkedList<String> mdnames = new LinkedList<String>();
-							for (IMethodBinding md : mds) {
-								String mdname = md.getName();
-								mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
-								if (!mdnames.contains(mdname)) {
-									mdnames.add(mdname);
-								}
-							}
-							String joined = String.join("#", mdnames);
-							api_comb_id = im.GetAPICombID(joined);
-							api_relative_id = mdnames.indexOf(type_content_id.GetTypeContent());
-						}
-					}
-//					else {
-//						new Exception("type of unmeet ib:" + ib.getClass()).printStackTrace();
-//						System.exit(1);
-//					}
-				}
-			}
-			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, var, api_comb_id, api_relative_id);
-		}
-	}
-
+	
 }

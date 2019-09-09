@@ -31,13 +31,13 @@ public class TreeTensor extends Tensor {
 		post_order_node_children.addAll(children);
 	}
 	
-	public void StorePreOrderNodeEnInfo(int en) {
+	public void StorePreOrderNodeInfo(int en) {
 		pre_order_node_type_content_en.add(en);
+		pre_order_node_post_order_index.add(-1);
 	}
 	
-	public void StorePreOrderNodePostOrderIndexInfo(int post_order_index) {
-		int pre_index = pre_order_node_post_order_index.size();
-		pre_order_node_post_order_index.add(post_order_index);
+	public void StorePreOrderNodePostOrderIndexInfo(int pre_index, int post_order_index) {
+		pre_order_node_post_order_index.set(pre_index, post_order_index);
 		Assert.isTrue(post_order_node_type_content_en.get(post_order_index) == pre_order_node_type_content_en.get(pre_index));
 		Assert.isTrue(post_order_node_pre_order_index.get(post_order_index) == pre_index);
 	}
@@ -76,6 +76,12 @@ public class TreeTensor extends Tensor {
 		String separator = System.getProperty("line.separator");
 		String result = ToStmtInfo(separator);
 		return result;
+	}
+
+	public void Validate() {
+		for (Integer p : pre_order_node_post_order_index) {
+			Assert.isTrue(p >= 0);
+		}
 	}
 
 }
