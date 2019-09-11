@@ -3,7 +3,6 @@ package translation.tensor;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.Assert;
 
 import statistic.id.IDManager;
 
@@ -20,8 +19,9 @@ public class TreeTensor extends Tensor {
 	ArrayList<Integer> post_order_node_child_end = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_children = new ArrayList<Integer>();
 	
-	ArrayList<Integer> pre_order_node_type_content_en = new ArrayList<Integer>();
-	ArrayList<Integer> pre_order_node_post_order_index = new ArrayList<Integer>();	
+	ArrayList<Integer> pre_post_order_node_type_content_en = new ArrayList<Integer>();
+	ArrayList<Integer> pre_post_order_node_state = new ArrayList<Integer>();
+	ArrayList<Integer> pre_post_order_node_post_order_index = new ArrayList<Integer>();	
 
 	public void StorePostOrderNodeInfo(int en, int pre_order_index, int c_start, int c_end, ArrayList<Integer> children) {
 		post_order_node_type_content_en.add(en);
@@ -31,16 +31,17 @@ public class TreeTensor extends Tensor {
 		post_order_node_children.addAll(children);
 	}
 	
-	public void StorePreOrderNodeInfo(int en) {
-		pre_order_node_type_content_en.add(en);
-		pre_order_node_post_order_index.add(-1);
+	public void StorePrePostOrderNodeInfo(int en, int state, int post_order_index) {
+		pre_post_order_node_type_content_en.add(en);
+		pre_post_order_node_state.add(state);
+		pre_post_order_node_post_order_index.add(post_order_index);
 	}
 	
-	public void StorePreOrderNodePostOrderIndexInfo(int pre_index, int post_order_index) {
-		pre_order_node_post_order_index.set(pre_index, post_order_index);
-		Assert.isTrue(post_order_node_type_content_en.get(post_order_index) == pre_order_node_type_content_en.get(pre_index));
-		Assert.isTrue(post_order_node_pre_order_index.get(post_order_index) == pre_index);
-	}
+//	public void StorePreOrderNodePostOrderIndexInfo(int pre_index, int post_order_index) {
+//		pre_order_node_post_order_index.set(pre_index, post_order_index);
+//		Assert.isTrue(post_order_node_type_content_en.get(post_order_index) == pre_order_node_type_content_en.get(pre_index));
+//		Assert.isTrue(post_order_node_pre_order_index.get(post_order_index) == pre_index);
+//	}
 	
 	@Override
 	public int getSize() {
@@ -53,8 +54,9 @@ public class TreeTensor extends Tensor {
 				+ StringUtils.join(post_order_node_child_start.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_child_end.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_children.toArray(), " ") + separator
-				+ StringUtils.join(pre_order_node_type_content_en.toArray(), " ") + separator
-				+ StringUtils.join(pre_order_node_post_order_index.toArray(), " ");
+				+ StringUtils.join(pre_post_order_node_type_content_en.toArray(), " ") + separator
+				+ StringUtils.join(pre_post_order_node_state.toArray(), " ") + separator
+				+ StringUtils.join(pre_post_order_node_post_order_index.toArray(), " ");
 	}
 
 	@Override
@@ -79,9 +81,9 @@ public class TreeTensor extends Tensor {
 	}
 
 	public void Validate() {
-		for (Integer p : pre_order_node_post_order_index) {
-			Assert.isTrue(p >= 0);
-		}
+//		for (Integer p : pre_order_node_post_order_index) {
+//			Assert.isTrue(p >= 0);
+//		}
 	}
 
 }

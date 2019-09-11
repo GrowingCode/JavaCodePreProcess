@@ -44,7 +44,10 @@ public class TreeTensorGenerator extends TensorGenerator {
 //			boolean is_root = begin_generation_node.equals(node);
 			node_pre_order_index.put(node, node_pre_order_index.size());
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			curr_tensor.StorePreOrderNodeInfo(type_content_id.GetTypeContentID());
+			LinkedList<ASTNode> children_nodes = JDTSearchForChildrenOfASTNode.GetChildren(node);
+			if (children_nodes != null && children_nodes.size() > 0) {
+				curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), 0, -1);
+			}
 		}
 	}
 
@@ -58,7 +61,8 @@ public class TreeTensorGenerator extends TensorGenerator {
 			ArrayList<Integer> children_index = new ArrayList<Integer>();
 			int c_start = 0;
 			int c_end = -1;
-			if (children_nodes != null && children_nodes.size() > 0) {
+			boolean has_children = children_nodes != null && children_nodes.size() > 0;
+			if (has_children) {
 				c_start = node_post_order_index.get(children_nodes.getFirst());
 				c_end = node_post_order_index.get(children_nodes.getLast());
 				Iterator<ASTNode> n_itr = children_nodes.iterator();
@@ -69,7 +73,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 			}
 			int pre_index = node_pre_order_index.get(node);
 			curr_tensor.StorePostOrderNodeInfo(type_content_id.GetTypeContentID(), pre_index, c_start, c_end, children_index);
-			curr_tensor.StorePreOrderNodePostOrderIndexInfo(pre_index, post_order_index);
+			curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), has_children ? 2 : 1, post_order_index);
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
 			// >= MetaOfApp.MinimumNumberOfStatementsInAST
