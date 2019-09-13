@@ -29,7 +29,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 
 	TreeTensor curr_tensor = null;
 
-	Map<ASTNode, Integer> inpre_node_pre_post_order_index = new HashMap<ASTNode, Integer>();
+//	Map<ASTNode, Integer> inpre_node_pre_post_order_index = new HashMap<ASTNode, Integer>();
 	Map<ASTNode, Integer> node_post_order_index = new HashMap<ASTNode, Integer>();
 
 	@Override
@@ -45,28 +45,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
 			LinkedList<ASTNode> children_nodes = JDTSearchForChildrenOfASTNode.GetChildren(node);
 			if (children_nodes != null && children_nodes.size() > 0) {
-				int pre_post_order_index = curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), 0, -1, GeneratePreviousPrePostOrderIndex(node));
-				
-			}
-		}
-	}
-	
-	private int GenerateState(ASTNode node) {
-		
-	}
-	
-	private int GeneratePreviousPrePostOrderIndex(ASTNode node) {
-		boolean is_root = begin_generation_node.equals(node);
-		if (is_root) {
-			return -1;
-		} else {
-			ASTNode parent = node.getParent();
-			LinkedList<ASTNode> siblings = JDTSearchForChildrenOfASTNode.GetChildren(parent);
-			int index = siblings.indexOf(node);
-			if (index == 0) {
-				return inpre_node_pre_post_order_index.get(parent);
-			} else {
-				return inpre_node_pre_post_order_index.get(siblings.get(index-1));
+				curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), 0, -1);
 			}
 		}
 	}
@@ -94,8 +73,7 @@ public class TreeTensorGenerator extends TensorGenerator {
 					c_end, children_index);
 			Assert.isTrue(post_order_index == node_post_order_index.size());
 			node_post_order_index.put(node, post_order_index);
-			curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), has_children ? 2 : 1,
-					post_order_index, previous_pre_post_order_index);
+			curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), has_children ? 2 : 1, post_order_index);
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
 			// >= MetaOfApp.MinimumNumberOfStatementsInAST

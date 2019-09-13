@@ -13,7 +13,6 @@ public class TreeTensor extends Tensor {
 	}
 	
 	ArrayList<Integer> post_order_node_type_content_en = new ArrayList<Integer>();
-//	ArrayList<Integer> post_order_node_pre_order_index = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_child_start = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_child_end = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_children = new ArrayList<Integer>();
@@ -21,24 +20,21 @@ public class TreeTensor extends Tensor {
 	ArrayList<Integer> pre_post_order_node_type_content_en = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_state = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_post_order_index = new ArrayList<Integer>();
-	ArrayList<Integer> pre_post_order_node_previous_pre_post_order_index = new ArrayList<Integer>();
 
 	public int StorePostOrderNodeInfo(int en, int c_start, int c_end, ArrayList<Integer> children) {
 		int index = post_order_node_type_content_en.size();
 		post_order_node_type_content_en.add(en);
-//		post_order_node_pre_order_index.add(pre_order_index);
 		post_order_node_child_start.add(c_start);
 		post_order_node_child_end.add(c_end);
 		post_order_node_children.addAll(children);
 		return index;
 	}
 	
-	public int StorePrePostOrderNodeInfo(int en, int state, int post_order_index, int previous_pre_post_order_index) {
+	public int StorePrePostOrderNodeInfo(int en, int state, int post_order_index) {
 		int index = pre_post_order_node_type_content_en.size();
 		pre_post_order_node_type_content_en.add(en);
 		pre_post_order_node_state.add(state);
 		pre_post_order_node_post_order_index.add(post_order_index);
-		pre_post_order_node_previous_pre_post_order_index.add(previous_pre_post_order_index);
 		return index;
 	}
 	
@@ -55,7 +51,6 @@ public class TreeTensor extends Tensor {
 
 	private String ToStmtInfo(String separator) {
 		return  StringUtils.join(post_order_node_type_content_en.toArray(), " ") + separator
-//				+ StringUtils.join(post_order_node_pre_order_index.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_child_start.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_child_end.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_children.toArray(), " ") + separator
