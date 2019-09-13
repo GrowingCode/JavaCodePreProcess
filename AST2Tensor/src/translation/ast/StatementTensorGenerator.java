@@ -25,9 +25,9 @@ import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
+import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
-import translation.TensorGenerator;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
 import translation.roles.RoleAssigner;
@@ -35,7 +35,7 @@ import translation.tensor.ASTTensor;
 import translation.tensor.StatementInfo;
 import translation.tensor.StringTensor;
 
-public class StatementTensorGenerator extends TensorGenerator {
+public class StatementTensorGenerator extends BasicGenerator {
 
 	public StatementTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, Class<?> tensor_creator) {
 		super(role_assigner, im, icu, cu);

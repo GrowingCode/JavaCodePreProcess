@@ -1,8 +1,11 @@
-package translation;
+package statis.trans.common;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -11,6 +14,8 @@ import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
+import eclipse.jdt.JDTASTHelper;
+import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.helper.DecodeType;
@@ -18,8 +23,9 @@ import translation.helper.TestDataDecodeType;
 import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
 import translation.tensor.Tensor;
+import tree.TreeNode;
 
-public class TensorGenerator extends ASTVisitor {
+public class BasicGenerator extends ASTVisitor {
 	
 	protected RoleAssigner role_assigner = null;
 	protected IDManager im = null;
@@ -31,7 +37,7 @@ public class TensorGenerator extends ASTVisitor {
 	
 	protected LinkedList<Tensor> tensor_list = new LinkedList<Tensor>();
 	
-	public TensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
+	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
 			CompilationUnit cu) {
 		this.role_assigner = role_assigner;
 		this.im = im;
@@ -46,6 +52,7 @@ public class TensorGenerator extends ASTVisitor {
 	protected ASTNode cared_parent = null;
 	protected boolean begin_generation = false;
 	protected ASTNode begin_generation_node = null;
+	protected Map<ASTNode, TreeNode> tree = new HashMap<ASTNode, TreeNode>();
 
 	@Override
 	public void preVisit(ASTNode node) {
@@ -61,6 +68,26 @@ public class TensorGenerator extends ASTVisitor {
 			begin_generation = true;
 			begin_generation_node = node;
 		}
+		if (begin_generation) {
+			String type = JDTASTHelper.GetTypeRepresentationForASTNode(node);
+			TreeNode tn = new TreeNode(node.getClass(), type);
+			tree.put(node, tn);
+			ASTNode parent = node.getParent();
+			TreeNode parent_tn = tree.get(parent);
+			if (parent_tn == null) {
+				Assert.isTrue(node.equals(begin_generation_node));
+			} else {
+				parent_tn.AppendToChildren(tn);
+			}
+			
+			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+			boolean is_leaf = children.size() == 0;
+			if (is_leaf) {
+				String content = JDTASTHelper.GetContentRepresentationForASTNode(node);
+				TreeNode chd_tn = new TreeNode(String.class, content);
+				tn.AppendToChildren(chd_tn);
+			}
+		}
 	}
 
 	@Override
@@ -71,9 +98,13 @@ public class TensorGenerator extends ASTVisitor {
 		}
 		if (begin_generation) {
 			if (begin_generation_node.equals(node)) {
+				TreeNode root = tree.get(node);
+				
+				
 				decode_type_generator = null;
 				begin_generation = false;
 				begin_generation_node = null;
+				tree.clear();
 			}
 		}
 		super.postVisit(node);

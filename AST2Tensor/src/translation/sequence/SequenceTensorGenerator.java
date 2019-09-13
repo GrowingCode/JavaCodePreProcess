@@ -5,12 +5,12 @@ import java.util.HashMap;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
-import translation.TensorGenerator;
 import translation.roles.RoleAssigner;
 import translation.tensor.SequenceTensor;
 
-public class SequenceTensorGenerator extends TensorGenerator {
+public class SequenceTensorGenerator extends BasicGenerator {
 	
 	SequenceTensor curr_tensor = null;
 	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<String, Integer>();

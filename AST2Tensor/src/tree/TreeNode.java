@@ -6,11 +6,13 @@ import org.eclipse.core.runtime.Assert;
 
 public class TreeNode {
 	
+	Class<?> clazz = null;
 	String content = null;
 	TreeNode parent = null;
 	ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 	
-	public TreeNode(String content) {
+	public TreeNode(Class<?> clazz, String content) {
+		this.clazz = clazz;
 		this.content = content;
 	}
 	

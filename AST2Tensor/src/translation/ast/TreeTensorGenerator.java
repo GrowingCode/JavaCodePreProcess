@@ -13,15 +13,15 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
+import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
-import translation.TensorGenerator;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
 import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
 import translation.tensor.TreeTensor;
 
-public class TreeTensorGenerator extends TensorGenerator {
+public class TreeTensorGenerator extends BasicGenerator {
 
 	public TreeTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
 		super(role_assigner, im, icu, cu);
