@@ -24,9 +24,11 @@ import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
 import translation.tensor.Tensor;
 import tree.TreeNode;
+import tree.TreeVisit;
+import tree.TreeVisitor;
 
 public class BasicGenerator extends ASTVisitor {
-	
+
 	protected RoleAssigner role_assigner = null;
 	protected IDManager im = null;
 
@@ -34,21 +36,24 @@ public class BasicGenerator extends ASTVisitor {
 	protected CompilationUnit cu = null;
 
 	protected DecodeType decode_type_generator = null;
-	
+
 	protected LinkedList<Tensor> tensor_list = new LinkedList<Tensor>();
-	
-	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
-			CompilationUnit cu) {
+
+	protected TreeVisitor visitor = null;
+
+	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu,
+			TreeVisitor visitor) {
 		this.role_assigner = role_assigner;
 		this.im = im;
 		this.icu = icu;
 		this.cu = cu;
+		this.visitor = visitor;
 	}
-	
+
 	public List<Tensor> GetGeneratedTensors() {
 		return tensor_list;
 	}
-	
+
 	protected ASTNode cared_parent = null;
 	protected boolean begin_generation = false;
 	protected ASTNode begin_generation_node = null;
@@ -61,9 +66,8 @@ public class BasicGenerator extends ASTVisitor {
 		if (node_parent == null) {
 			cared_parent = node;
 		}
-		if (cared_parent != null && StandAtRootNodeOfTensorGeneration(node, node_parent) && UnHandledASTNodesFilterPassed(node)) {
-			int role = role_assigner.GetRole(icu.getPath().toOSString());
-			tensor_list.add(new StringTensor(role));// icu.getElementName(), 
+		if (cared_parent != null && StandAtRootNodeOfTensorGeneration(node, node_parent)
+				&& UnHandledASTNodesFilterPassed(node)) {
 			decode_type_generator = new TestDataDecodeType();
 			begin_generation = true;
 			begin_generation_node = node;
@@ -79,7 +83,7 @@ public class BasicGenerator extends ASTVisitor {
 			} else {
 				parent_tn.AppendToChildren(tn);
 			}
-			
+
 			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 			boolean is_leaf = children.size() == 0;
 			if (is_leaf) {
@@ -99,8 +103,10 @@ public class BasicGenerator extends ASTVisitor {
 		if (begin_generation) {
 			if (begin_generation_node.equals(node)) {
 				TreeNode root = tree.get(node);
-				
-				
+				TreeVisit.Visit(root, visitor);
+				StringTensor st = visitor.GetStringTensor();
+				st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+				tensor_list.add(st);
 				decode_type_generator = null;
 				begin_generation = false;
 				begin_generation_node = null;
@@ -124,12 +130,12 @@ public class BasicGenerator extends ASTVisitor {
 		}
 		return to_generate;
 	}
-	
+
 	private boolean UnHandledASTNodesFilterPassed(ASTNode node) {
 		if ((node instanceof PackageDeclaration) || (node instanceof ImportDeclaration)) {
 			return false;
 		}
 		return true;
 	}
-	
+
 }

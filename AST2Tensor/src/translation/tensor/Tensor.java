@@ -26,6 +26,10 @@ public abstract class Tensor {
 //		return origin_file;
 //	}
 	
+	public void SetRole(int role) {
+		this.role = role;
+	}
+	
 	public int GetRole() {
 		return role;
 	}
