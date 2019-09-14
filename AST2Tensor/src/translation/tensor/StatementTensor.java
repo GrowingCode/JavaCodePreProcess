@@ -22,8 +22,8 @@ public class StatementTensor extends Tensor {
 
 	String origin_file = null;
 
-	public StatementTensor(String origin_file, IDManager im) {// , int role
-		super(im);// , role
+	public StatementTensor(String origin_file) {// , int role
+		super();
 		this.origin_file = origin_file;
 	}
 
@@ -397,7 +397,7 @@ public class StatementTensor extends Tensor {
 		return index_record;
 	}
 
-	public void HandleAllDevoured() {
+	public void HandleAllDevoured(IDManager im) {
 		{
 			TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 			TokenIndex ti = new TokenIndex();

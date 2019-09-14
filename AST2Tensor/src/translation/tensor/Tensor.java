@@ -3,11 +3,9 @@ package translation.tensor;
 import java.util.Map;
 import java.util.TreeMap;
 
-import statistic.id.IDManager;
-
 public abstract class Tensor {
 
-	IDManager im = null;
+//	IDManager im = null;
 //	String origin_file = null;
 	int role = -1;
 
@@ -16,8 +14,8 @@ public abstract class Tensor {
 	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
 
 //	String origin_file, 
-	public Tensor(IDManager im) {// , int role
-		this.im = im;
+	public Tensor() {// IDManager im, int role
+//		this.im = im;
 //		this.origin_file = origin_file;
 //		this.role = role;
 	}

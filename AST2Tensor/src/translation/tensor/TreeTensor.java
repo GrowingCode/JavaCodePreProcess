@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
-import statistic.id.IDManager;
-
 public class TreeTensor extends Tensor {
 
-	public TreeTensor(IDManager im) {// , int role
-		super(im);// , role
-	}
+//	public TreeTensor(IDManager im) {// , int role
+//		super(im);// , role
+//	}
 
 	ArrayList<Integer> post_order_node_type_content_en = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_child_start = new ArrayList<Integer>();
@@ -21,12 +19,18 @@ public class TreeTensor extends Tensor {
 	ArrayList<Integer> pre_post_order_node_state = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_post_order_index = new ArrayList<Integer>();
 
-	public int StorePostOrderNodeInfo(int en, int c_start, int c_end, ArrayList<Integer> children) {
+	public int StorePostOrderNodeInfo(int en, ArrayList<Integer> children) {
 		int index = post_order_node_type_content_en.size();
 		post_order_node_type_content_en.add(en);
+		int c_start = post_order_node_children.size();
+		post_order_node_children.addAll(children);
+		int c_end = post_order_node_children.size()-1;
+//		if (children.size() == 0) {
+//			c_start = 0;
+//			c_end = -1;
+//		}
 		post_order_node_child_start.add(c_start);
 		post_order_node_child_end.add(c_end);
-		post_order_node_children.addAll(children);
 		return index;
 	}
 

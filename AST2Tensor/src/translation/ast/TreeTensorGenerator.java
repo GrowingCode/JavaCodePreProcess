@@ -3,16 +3,11 @@ package translation.ast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.core.dom.ASTNode;
 
-import eclipse.search.JDTSearchForChildrenOfASTNode;
-import main.MetaOfApp;
-import translation.helper.TypeContentID;
-import translation.helper.TypeContentIDFetcher;
+import statistic.id.IDManager;
 import translation.tensor.StringTensor;
 import translation.tensor.TreeTensor;
 import tree.TreeNode;
@@ -20,96 +15,58 @@ import tree.TreeVisitor;
 
 public class TreeTensorGenerator extends TreeVisitor {
 	
-	TreeTensor curr_tensor = null;
-
-//	Map<ASTNode, Integer> inpre_node_pre_post_order_index = new HashMap<ASTNode, Integer>();
-	Map<ASTNode, Integer> node_post_order_index = new HashMap<ASTNode, Integer>();
-
-	@Override
-	public void preVisit(ASTNode node) {
-		super.preVisit(node);
-		if (begin_generation && begin_generation_node.equals(node)) {
-			Assert.isTrue(curr_tensor == null);
-//			Assert.isTrue(token_index_record == null);
-			curr_tensor = new TreeTensor(im, -1);
-		}
-		if (begin_generation) {
-//			node_pre_order_index.put(node, node_pre_order_index.size());
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			LinkedList<ASTNode> children_nodes = JDTSearchForChildrenOfASTNode.GetChildren(node);
-			if (children_nodes != null && children_nodes.size() > 0) {
-				curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), 0, -1);
-			}
-		}
+	public TreeTensorGenerator(IDManager im) {
+		super(im);
 	}
 
-	@Override
-	public void postVisit(ASTNode node) {
-		if (begin_generation) {
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-			LinkedList<ASTNode> children_nodes = JDTSearchForChildrenOfASTNode.GetChildren(node);
-			ArrayList<Integer> children_index = new ArrayList<Integer>();
-			int c_start = 0;
-			int c_end = -1;
-			boolean has_children = children_nodes != null && children_nodes.size() > 0;
-			if (has_children) {
-				c_start = node_post_order_index.get(children_nodes.getFirst());
-				c_end = node_post_order_index.get(children_nodes.getLast());
-				Iterator<ASTNode> n_itr = children_nodes.iterator();
-				while (n_itr.hasNext()) {
-					ASTNode n = n_itr.next();
-					children_index.add(node_post_order_index.get(n));
-				}
-			}
-//			int pre_index = node_pre_order_index.get(node);
-			int post_order_index = curr_tensor.StorePostOrderNodeInfo(type_content_id.GetTypeContentID(), c_start,
-					c_end, children_index);
-			Assert.isTrue(post_order_index == node_post_order_index.size());
-			node_post_order_index.put(node, post_order_index);
-			curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), has_children ? 2 : 1,
-					post_order_index);
-		}
-		if (begin_generation && begin_generation_node.equals(node)) {
-			// >= MetaOfApp.MinimumNumberOfStatementsInAST
-			if (MetaOfApp.StatementNoLimit || (curr_tensor.getSize() >= MetaOfApp.MinimumNumberOfNodesInAST)) {
-				StringTensor st = (StringTensor) tensor_list.getLast();
-				curr_tensor.Validate();
-				st.SetToString(curr_tensor.toString());
-				st.SetToDebugString(curr_tensor.toDebugString());
-				st.SetToOracleString(curr_tensor.toOracleString());
-				st.SetSize(curr_tensor.getSize());
-			} else {
-				tensor_list.removeLast();
-			}
-			curr_tensor = null;
-//			node_pre_order_index.clear();
-			node_post_order_index.clear();
-		}
-		super.postVisit(node);
-	}
-
+	TreeTensor curr_tensor = new TreeTensor();
+	
+	Map<TreeNode, Integer> node_post_order_index = new HashMap<TreeNode, Integer>();
+	
 	@Override
 	public boolean PreVisit(TreeNode node) {
-		// TODO Auto-generated method stub
-		return false;
+		int type_content_id = im.GetTypeContentID(node.GetContent());
+		ArrayList<TreeNode> children_nodes = node.GetChildren();
+		if (children_nodes != null && children_nodes.size() > 0) {
+			curr_tensor.StorePrePostOrderNodeInfo(type_content_id, 0, -1);
+		}
+		return true;
 	}
 
 	@Override
 	public void PostVisit(TreeNode node) {
-		// TODO Auto-generated method stub
-
+		int type_content_id = im.GetTypeContentID(node.GetContent());
+		ArrayList<TreeNode> children_nodes = node.GetChildren();
+		ArrayList<Integer> children_index = new ArrayList<Integer>();
+		boolean has_children = children_nodes != null && children_nodes.size() > 0;
+		if (has_children) {
+			Iterator<TreeNode> n_itr = children_nodes.iterator();
+			while (n_itr.hasNext()) {
+				TreeNode n = n_itr.next();
+				children_index.add(node_post_order_index.get(n));
+			}
+		}
+		int post_order_index = curr_tensor.StorePostOrderNodeInfo(type_content_id, children_index);
+		Assert.isTrue(post_order_index == node_post_order_index.size());
+		node_post_order_index.put(node, post_order_index);
+		curr_tensor.StorePrePostOrderNodeInfo(type_content_id, has_children ? 2 : 1, post_order_index);
 	}
 
 	@Override
 	public StringTensor GetStringTensor() {
-		// TODO Auto-generated method stub
-		return null;
+		StringTensor st = new StringTensor();
+		curr_tensor.Validate();
+		st.SetToString(curr_tensor.toString());
+		st.SetToDebugString(curr_tensor.toDebugString());
+		st.SetToOracleString(curr_tensor.toOracleString());
+		st.SetSize(curr_tensor.getSize());
+		return st;
 	}
 
 	@Override
 	public void Clear() {
-		// TODO Auto-generated method stub
-
+		curr_tensor = new TreeTensor();
+		node_post_order_index.clear();
 	}
 
 }

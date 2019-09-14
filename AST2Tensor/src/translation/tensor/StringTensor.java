@@ -7,11 +7,6 @@ public class StringTensor extends Tensor {
 	String oracle_str = null;
 	int size = -1;
 	
-//	String origin_file, 
-	public StringTensor() {
-		super(null);
-	}
-	
 	public void SetToString(String str) {
 		this.str = str;
 	}

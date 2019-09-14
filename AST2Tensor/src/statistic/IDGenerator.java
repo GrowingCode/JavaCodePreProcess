@@ -16,6 +16,7 @@ public class IDGenerator extends TreeVisitor {
 	int role = -1;
 
 	public IDGenerator(IDTools tool, ICompilationUnit icu) {// CompilationUnit cu, IDTools tool
+		super(null);
 //		this.icu = icu;
 //		this.cu = cu;
 		this.tool = tool;
