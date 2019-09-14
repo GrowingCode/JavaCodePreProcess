@@ -29,7 +29,7 @@ import statistic.id.TokenRecorder;
 import translation.TensorGeneratorForProject;
 import translation.TensorTools;
 import translation.roles.RoleAssigner;
-import translation.tensor.ASTTensor;
+import translation.tensor.StatementTensor;
 import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
 import util.FileUtil;
@@ -184,7 +184,7 @@ public class Application implements IApplication {
 		}
 		System.out.println("==== TranslateProject Over ====");
 		System.out.println(im.WordVocabularyInfo());
-		System.out.println(ASTTensor.StatementSummaryInfo());
+		System.out.println(StatementTensor.StatementSummaryInfo());
 		SystemUtil.Flush();
 		SystemUtil.Delay(1000);
 		return IApplication.EXIT_OK;

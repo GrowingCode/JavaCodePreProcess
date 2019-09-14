@@ -10,38 +10,38 @@ public abstract class Tensor {
 	IDManager im = null;
 //	String origin_file = null;
 	int role = -1;
-	
+
 	// processed
 	int inner_index = -1;
 	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
-	
+
 //	String origin_file, 
-	public Tensor(IDManager im, int role) {
+	public Tensor(IDManager im) {// , int role
 		this.im = im;
 //		this.origin_file = origin_file;
-		this.role = role;
+//		this.role = role;
 	}
-	
+
 //	public String GetOriginFile() {
 //		return origin_file;
 //	}
-	
+
 	public void SetRole(int role) {
 		this.role = role;
 	}
-	
+
 	public int GetRole() {
 		return role;
 	}
-	
+
 	public abstract int getSize();
-	
+
 	public abstract String toString();
-	
+
 	public abstract String toDebugString();
-	
+
 	public abstract String toOracleString();
-	
+
 	public Integer GenerateInnerIndexForTypeContent(int type_content_index) {
 		Integer inner = inner_index_map.get(type_content_index);
 		if (inner == null) {
@@ -51,7 +51,7 @@ public abstract class Tensor {
 		}
 		return inner;
 	}
-	
+
 //	public ArrayList<Integer> GenerateInnerIndexesForTypeContents() {
 //		ArrayList<Integer> inner_id_type_content_id = new ArrayList<Integer>();
 //		List<Entry<Integer, Integer>> inner_index_array = MapUtil.SortMapByValue(inner_index_map);
@@ -66,5 +66,5 @@ public abstract class Tensor {
 //		}
 //		return inner_id_type_content_id;
 //	}
-	
+
 }

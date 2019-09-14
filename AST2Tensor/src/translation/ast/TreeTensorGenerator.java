@@ -7,26 +7,19 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
-import statis.trans.common.BasicGenerator;
-import statistic.id.IDManager;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
-import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
 import translation.tensor.TreeTensor;
+import tree.TreeNode;
+import tree.TreeVisitor;
 
-public class TreeTensorGenerator extends BasicGenerator {
-
-	public TreeTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
-		super(role_assigner, im, icu, cu);
-	}
-
+public class TreeTensorGenerator extends TreeVisitor {
+	
 	TreeTensor curr_tensor = null;
 
 //	Map<ASTNode, Integer> inpre_node_pre_post_order_index = new HashMap<ASTNode, Integer>();
@@ -73,7 +66,8 @@ public class TreeTensorGenerator extends BasicGenerator {
 					c_end, children_index);
 			Assert.isTrue(post_order_index == node_post_order_index.size());
 			node_post_order_index.put(node, post_order_index);
-			curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), has_children ? 2 : 1, post_order_index);
+			curr_tensor.StorePrePostOrderNodeInfo(type_content_id.GetTypeContentID(), has_children ? 2 : 1,
+					post_order_index);
 		}
 		if (begin_generation && begin_generation_node.equals(node)) {
 			// >= MetaOfApp.MinimumNumberOfStatementsInAST
@@ -92,6 +86,30 @@ public class TreeTensorGenerator extends BasicGenerator {
 			node_post_order_index.clear();
 		}
 		super.postVisit(node);
+	}
+
+	@Override
+	public boolean PreVisit(TreeNode node) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void PostVisit(TreeNode node) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public StringTensor GetStringTensor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void Clear() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

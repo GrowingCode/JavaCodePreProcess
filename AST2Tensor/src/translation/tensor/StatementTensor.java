@@ -18,11 +18,11 @@ import statistic.id.IDManager;
 import util.BooleanArrayUtil;
 import util.SetUtil;
 
-public class ASTTensor extends Tensor {
+public class StatementTensor extends Tensor {
 
 	String origin_file = null;
 
-	public ASTTensor(String origin_file, IDManager im, int role) {
+	public StatementTensor(String origin_file, IDManager im, int role) {
 		super(im, role);
 		this.origin_file = origin_file;
 	}

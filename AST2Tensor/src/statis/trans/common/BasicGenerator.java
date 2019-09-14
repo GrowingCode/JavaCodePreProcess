@@ -40,7 +40,10 @@ public class BasicGenerator extends ASTVisitor {
 	protected LinkedList<Tensor> tensor_list = new LinkedList<Tensor>();
 
 	protected TreeVisitor visitor = null;
-
+	
+	public int unsuitable_method_count = 0;
+	public int total_method_count = 0;
+	
 	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu,
 			TreeVisitor visitor) {
 		this.role_assigner = role_assigner;
@@ -71,6 +74,7 @@ public class BasicGenerator extends ASTVisitor {
 			decode_type_generator = new TestDataDecodeType();
 			begin_generation = true;
 			begin_generation_node = node;
+			Assert.isTrue(cared_parent == null && begin_generation == false && begin_generation_node == null && tree.isEmpty());
 		}
 		if (begin_generation) {
 			String type = JDTASTHelper.GetTypeRepresentationForASTNode(node);
@@ -102,15 +106,18 @@ public class BasicGenerator extends ASTVisitor {
 		}
 		if (begin_generation) {
 			if (begin_generation_node.equals(node)) {
-				TreeNode root = tree.get(node);
-				TreeVisit.Visit(root, visitor);
-				StringTensor st = visitor.GetStringTensor();
-				st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
-				tensor_list.add(st);
-				decode_type_generator = null;
-				begin_generation = false;
-				begin_generation_node = null;
-				tree.clear();
+				if (MetaOfApp.StatementNoLimit || (tree.size() >= MetaOfApp.MinimumNumberOfNodesInAST)) {
+					TreeNode root = tree.get(node);
+					visitor.Clear();
+					TreeVisit.Visit(root, visitor);
+					StringTensor st = visitor.GetStringTensor();
+					st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+					tensor_list.add(st);
+					decode_type_generator = null;
+					begin_generation = false;
+					begin_generation_node = null;
+					tree.clear();
+				}
 			}
 		}
 		super.postVisit(node);

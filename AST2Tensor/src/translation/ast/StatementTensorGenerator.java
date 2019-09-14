@@ -31,16 +31,18 @@ import statistic.id.PreProcessContentHelper;
 import translation.helper.TypeContentID;
 import translation.helper.TypeContentIDFetcher;
 import translation.roles.RoleAssigner;
-import translation.tensor.ASTTensor;
+import translation.tensor.StatementTensor;
 import translation.tensor.StatementInfo;
 import translation.tensor.StringTensor;
+import tree.TreeNode;
+import tree.TreeVisitor;
 
-public class StatementTensorGenerator extends BasicGenerator {
+public class StatementTensorGenerator extends TreeVisitor {
 
-	public StatementTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, Class<?> tensor_creator) {
-		super(role_assigner, im, icu, cu);
-		this.tensor_creator = tensor_creator;
-	}
+//	public StatementTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, Class<?> tensor_creator) {
+//		super(role_assigner, im, icu, cu);
+//		this.tensor_creator = tensor_creator;
+//	}
 	
 //	public static int min_statement_size = Integer.MAX_VALUE;
 //	public static String min_size_statement = null;
@@ -48,11 +50,9 @@ public class StatementTensorGenerator extends BasicGenerator {
 //	public static int max_statement_size = Integer.MIN_VALUE;
 //	public static String max_size_statement = null;
 
-	Class<?> tensor_creator = null;
-	
 	int token_local_index = 0;
 //	Map<String, Integer> token_index_record = null;
-	ASTTensor curr_tensor = null;
+	StatementTensor curr_tensor = null;
 	
 	Stack<ASTNode> in_handling_node = new Stack<ASTNode>();
 	Stack<StatementInfo> in_handling_tensor = new Stack<StatementInfo>();
@@ -62,12 +62,9 @@ public class StatementTensorGenerator extends BasicGenerator {
 	
 //	HashMap<ASTNode, Integer> node_index_map = new HashMap<ASTNode, Integer>();
 //	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<>();
-	int nodeCount = 0;
-	int leafExtraCount = 0;
+//	int nodeCount = 0;
+//	int leafExtraCount = 0;
 	
-	public int unsuitable_method_count = 0;
-	public int total_method_count = 0;
-
 	@Override
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
@@ -87,7 +84,7 @@ public class StatementTensorGenerator extends BasicGenerator {
 				System.exit(1);
 			}
 			try {
-				curr_tensor = (ASTTensor) cc.newInstance(icu.getElementName(), im, -1);
+				curr_tensor = (StatementTensor) cc.newInstance(icu.getElementName(), im, -1);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				e.printStackTrace();
@@ -248,6 +245,30 @@ public class StatementTensorGenerator extends BasicGenerator {
 			StatementInfo stmt = in_handling_tensor.peek();
 			stmt.StoreOneNode(im, type_content_id, var, api_comb_id, api_relative_id);
 		}
+	}
+
+	@Override
+	public boolean PreVisit(TreeNode node) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void PostVisit(TreeNode node) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public StringTensor GetStringTensor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void Clear() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 //	private Integer HandleVariableIndex(String key) {

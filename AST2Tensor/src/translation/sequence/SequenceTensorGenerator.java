@@ -1,25 +1,17 @@
 package translation.sequence;
 
-import java.util.HashMap;
+import translation.ast.StatementTensorGenerator;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-
-import statis.trans.common.BasicGenerator;
-import statistic.id.IDManager;
-import translation.roles.RoleAssigner;
-import translation.tensor.SequenceTensor;
-
-public class SequenceTensorGenerator extends BasicGenerator {
+public class SequenceTensorGenerator extends StatementTensorGenerator {
 	
-	SequenceTensor curr_tensor = null;
-	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<String, Integer>();
-	int nodeCount = 0;
-
-	public SequenceTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
-			CompilationUnit cu) {
-		super(role_assigner, im, icu, cu);
-	}
+//	SequenceTensor curr_tensor = null;
+//	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<String, Integer>();
+//	int nodeCount = 0;
+//
+//	public SequenceTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
+//			CompilationUnit cu) {
+//		super(role_assigner, im, icu, cu);
+//	}
 	
 //	@Override
 //	public void preVisit(ASTNode node) {

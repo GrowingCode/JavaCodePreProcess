@@ -7,5 +7,6 @@ public abstract class TreeVisitor {
 	public abstract boolean PreVisit(TreeNode node);
 	public abstract void PostVisit(TreeNode node);
 	public abstract StringTensor GetStringTensor();
+	public abstract void Clear();
 	
 }
