@@ -25,4 +25,12 @@ public class TreeNode {
 		}
 	}
 	
+	public String GetContent() {
+		return content;
+	}
+	
+	public ArrayList<TreeNode> GetChildren() {
+		return children;
+	}
+	
 }

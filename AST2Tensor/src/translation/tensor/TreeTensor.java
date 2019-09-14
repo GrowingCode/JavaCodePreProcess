@@ -8,15 +8,15 @@ import statistic.id.IDManager;
 
 public class TreeTensor extends Tensor {
 
-	public TreeTensor(IDManager im, int role) {
-		super(im, role);
+	public TreeTensor(IDManager im) {// , int role
+		super(im);// , role
 	}
-	
+
 	ArrayList<Integer> post_order_node_type_content_en = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_child_start = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_child_end = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_children = new ArrayList<Integer>();
-	
+
 	ArrayList<Integer> pre_post_order_node_type_content_en = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_state = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_post_order_index = new ArrayList<Integer>();
@@ -29,7 +29,7 @@ public class TreeTensor extends Tensor {
 		post_order_node_children.addAll(children);
 		return index;
 	}
-	
+
 	public int StorePrePostOrderNodeInfo(int en, int state, int post_order_index) {
 		int index = pre_post_order_node_type_content_en.size();
 		pre_post_order_node_type_content_en.add(en);
@@ -37,20 +37,20 @@ public class TreeTensor extends Tensor {
 		pre_post_order_node_post_order_index.add(post_order_index);
 		return index;
 	}
-	
+
 //	public void StorePreOrderNodePostOrderIndexInfo(int pre_index, int post_order_index) {
 //		pre_order_node_post_order_index.set(pre_index, post_order_index);
 //		Assert.isTrue(post_order_node_type_content_en.get(post_order_index) == pre_order_node_type_content_en.get(pre_index));
 //		Assert.isTrue(post_order_node_pre_order_index.get(post_order_index) == pre_index);
 //	}
-	
+
 	@Override
 	public int getSize() {
 		return post_order_node_type_content_en.size();
 	}
 
 	private String ToStmtInfo(String separator) {
-		return  StringUtils.join(post_order_node_type_content_en.toArray(), " ") + separator
+		return StringUtils.join(post_order_node_type_content_en.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_child_start.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_child_end.toArray(), " ") + separator
 				+ StringUtils.join(post_order_node_children.toArray(), " ") + separator

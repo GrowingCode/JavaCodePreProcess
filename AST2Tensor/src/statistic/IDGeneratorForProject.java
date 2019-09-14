@@ -11,17 +11,18 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
+import statis.trans.common.BasicGenerator;
 
 public class IDGeneratorForProject {
-	
+
 	IJavaProject java_project = null;
 	IDTools tool = null;
-	
+
 	public IDGeneratorForProject(IJavaProject java_project, IDTools tool) {
 		this.java_project = java_project;
 		this.tool = tool;
 	}
-	
+
 	public int GenerateForOneProject() {
 		List<ICompilationUnit> units = null;
 		try {
@@ -37,11 +38,12 @@ public class IDGeneratorForProject {
 				length += cu.getLength();
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
-				IDGenerator tg = new IDGenerator(icu, cu, tool);
+				IDGenerator tg_id_visitor = new IDGenerator(tool, icu);
+				BasicGenerator tg = new BasicGenerator(tool.role_assigner, null, icu, cu, tg_id_visitor);
 				cu.accept(tg);
 			}
 		}
 		return length;
 	}
-	
+
 }

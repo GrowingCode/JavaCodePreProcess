@@ -22,8 +22,8 @@ public class StatementTensor extends Tensor {
 
 	String origin_file = null;
 
-	public StatementTensor(String origin_file, IDManager im, int role) {
-		super(im, role);
+	public StatementTensor(String origin_file, IDManager im) {// , int role
+		super(im);// , role
 		this.origin_file = origin_file;
 	}
 

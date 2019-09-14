@@ -111,8 +111,10 @@ public class BasicGenerator extends ASTVisitor {
 					visitor.Clear();
 					TreeVisit.Visit(root, visitor);
 					StringTensor st = visitor.GetStringTensor();
-					st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
-					tensor_list.add(st);
+					if (st != null) {
+						st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+						tensor_list.add(st);
+					}
 					decode_type_generator = null;
 					begin_generation = false;
 					begin_generation_node = null;
