@@ -83,9 +83,9 @@ public class TensorGeneratorForProject {
 					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
 				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
-				StatementTensorGenerator tg_stmt_tree_visitor = new StatementTensorGenerator();
-				TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator();
-				SequenceTensorGenerator tg_stmt_sequence_visitor = new SequenceTensorGenerator();
+				StatementTensorGenerator tg_stmt_tree_visitor = new StatementTensorGenerator(tensor_tool.im);
+				TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator(tensor_tool.im);
+				SequenceTensorGenerator tg_stmt_sequence_visitor = new SequenceTensorGenerator(tensor_tool.im);
 				BasicGenerator tg_stmt_tree = new BasicGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
 						tg_stmt_tree_visitor);
 				BasicGenerator tg_tree = new BasicGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,

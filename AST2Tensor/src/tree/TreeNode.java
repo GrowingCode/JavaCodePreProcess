@@ -25,6 +25,10 @@ public class TreeNode {
 		}
 	}
 	
+	public Class<?> GetClazz() {
+		return clazz;
+	}
+	
 	public String GetContent() {
 		return content;
 	}

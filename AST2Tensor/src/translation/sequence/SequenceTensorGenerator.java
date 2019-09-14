@@ -1,8 +1,13 @@
 package translation.sequence;
 
+import statistic.id.IDManager;
 import translation.ast.StatementTensorGenerator;
 
 public class SequenceTensorGenerator extends StatementTensorGenerator {
+
+	public SequenceTensorGenerator(IDManager im) {
+		super(im);
+	}
 	
 //	SequenceTensor curr_tensor = null;
 //	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<String, Integer>();

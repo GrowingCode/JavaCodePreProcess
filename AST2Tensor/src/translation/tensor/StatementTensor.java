@@ -20,11 +20,11 @@ import util.SetUtil;
 
 public class StatementTensor extends Tensor {
 
-	String origin_file = null;
+//	String origin_file = null;
 
-	public StatementTensor(String origin_file) {// , int role
+	public StatementTensor() {// String origin_file, int role
 		super();
-		this.origin_file = origin_file;
+//		this.origin_file = origin_file;
 	}
 
 	ArrayList<StatementInfo> si_list = new ArrayList<StatementInfo>();
@@ -430,7 +430,7 @@ public class StatementTensor extends Tensor {
 					Assert.isTrue(l_tid <= stmt_token_variable_info.size()+1,
 							"last_stmt:" + last_stmt.stmt + "#last_stmt.local_token_str.size():"
 									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
-									+ stmt_token_variable_info.size() + "#origin_file:" + origin_file);
+									+ stmt_token_variable_info.size() + "#origin_file:" + "CommonName");// origin_file
 					stmt_token_variable_info.add(l_tid);
 				}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);

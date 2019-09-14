@@ -1,285 +1,152 @@
 package translation.ast;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 
-import eclipse.search.JDTSearchForChildrenOfASTNode;
-import main.MetaOfApp;
-import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
-import statistic.id.PreProcessContentHelper;
 import translation.helper.TypeContentID;
-import translation.helper.TypeContentIDFetcher;
-import translation.roles.RoleAssigner;
-import translation.tensor.StatementTensor;
 import translation.tensor.StatementInfo;
+import translation.tensor.StatementTensor;
 import translation.tensor.StringTensor;
 import tree.TreeNode;
 import tree.TreeVisitor;
 
 public class StatementTensorGenerator extends TreeVisitor {
-
-//	public StatementTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, Class<?> tensor_creator) {
-//		super(role_assigner, im, icu, cu);
-//		this.tensor_creator = tensor_creator;
-//	}
 	
-//	public static int min_statement_size = Integer.MAX_VALUE;
-//	public static String min_size_statement = null;
+	public StatementTensorGenerator(IDManager im) {
+		super(im);
+	}
 	
-//	public static int max_statement_size = Integer.MIN_VALUE;
-//	public static String max_size_statement = null;
-
-	int token_local_index = 0;
-//	Map<String, Integer> token_index_record = null;
-	StatementTensor curr_tensor = null;
-	
-	Stack<ASTNode> in_handling_node = new Stack<ASTNode>();
+	Stack<TreeNode> in_handling_node = new Stack<TreeNode>();
 	Stack<StatementInfo> in_handling_tensor = new Stack<StatementInfo>();
+
+	LinkedList<TreeNode> pre_order_node = new LinkedList<TreeNode>();
+	Map<TreeNode, StatementInfo> node_stmt = new HashMap<TreeNode, StatementInfo>();
 	
-	LinkedList<ASTNode> pre_order_node = new LinkedList<ASTNode>();
-	Map<ASTNode, StatementInfo> node_stmt = new HashMap<ASTNode, StatementInfo>();
-	
-//	HashMap<ASTNode, Integer> node_index_map = new HashMap<ASTNode, Integer>();
-//	HashMap<String, Integer> leafNodeLastIndexMap = new HashMap<>();
-//	int nodeCount = 0;
-//	int leafExtraCount = 0;
-	
-	@Override
-	public void preVisit(ASTNode node) {
-		super.preVisit(node);
-		if (begin_generation && begin_generation_node.equals(node)) {
-			Assert.isTrue(curr_tensor == null);
-//			Assert.isTrue(token_index_record == null);
-			Assert.isTrue(token_local_index == 0);
-			Assert.isTrue(in_handling_node.size() == 0);
-			Assert.isTrue(in_handling_tensor.size() == 0);
-			Assert.isTrue(pre_order_node.size() == 0);
-			Assert.isTrue(node_stmt.size() == 0);
-			Constructor<?> cc = null;
-			try {
-				cc = tensor_creator.getConstructor(String.class, IDManager.class, int.class);
-			} catch (NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-			try {
-				curr_tensor = (StatementTensor) cc.newInstance(icu.getElementName(), im, -1);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-//			curr_tensor = new ASTTensor(icu.getElementName(), -1);
-//			token_index_record = new TreeMap<String, Integer>();
-			token_local_index = 0;
+	private boolean IsStatement(TreeNode node) {
+		if (Statement.class.isAssignableFrom(node.GetClazz()) && !(Block.class.isAssignableFrom(node.GetClazz()))) {
+			return true;
 		}
-		if (begin_generation) {
-			HandleOneNode(node, true, begin_generation_node.equals(node));
-		}
+		return false;
 	}
 
-	@Override
-	public void postVisit(ASTNode node) {
-		if (begin_generation) {
-			if (IsStatement(node) || IsMethodDeclaration(node)) {
-				ASTNode handle_node = in_handling_node.pop();
-				Assert.isTrue(handle_node.equals(node));
-				StatementInfo last_stmt = in_handling_tensor.pop();
-				Assert.isTrue(last_stmt == node_stmt.get(node));
-			}
-		}
-		if (begin_generation && begin_generation_node.equals(node)) {
-			total_method_count++;
-			int statement_node_count = nodeCount + leafExtraCount;
-			Assert.isTrue(in_handling_node.size() == 0);
-			Assert.isTrue(in_handling_tensor.size() == 0);
-//			node_stmt.size() >= MetaOfApp.MinimumNumberOfStatementsInAST && 
-			if (MetaOfApp.StatementNoLimit || (statement_node_count >= MetaOfApp.MinimumNumberOfNodesInAST)) {
-				int size_of_statements = 0;
-				Iterator<ASTNode> pot_itr = pre_order_node.iterator();
-				while (pot_itr.hasNext()) {
-					ASTNode an = pot_itr.next();
-					StatementInfo si = node_stmt.get(an);
-					Assert.isTrue(si != null);
-					curr_tensor.Devour(si);
-					int si_size = si.Size();
-					size_of_statements += si_size;
-//					if (min_statement_size > si_size) {
-//						min_statement_size = si_size;
-//						min_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-//					}
-//					if (max_statement_size < si_size) {
-//						max_statement_size = si_size;
-//						max_size_statement = si.GetStatement() + "\n" + "==== type_content ====" + "\n" + si.GetTypeContentOfStatement();
-//					}
-				}
-				Assert.isTrue(statement_node_count == size_of_statements);
-				curr_tensor.HandleAllDevoured();
-//				curr_tensor.Validate();
-				StringTensor st = (StringTensor) tensor_list.getLast();
-				st.SetToString(curr_tensor.toString());
-				st.SetToDebugString(curr_tensor.toDebugString());
-				st.SetToOracleString(curr_tensor.toOracleString());
-				st.SetSize(curr_tensor.getSize());
-			} else {
-				tensor_list.removeLast();
-				unsuitable_method_count++;
-//				System.out.println("Unsuitable statement: node_stmt.size():" + node_stmt.size() + "#statementSize:" + statement_node_count);
-			}
-			curr_tensor = null;
-			pre_order_node.clear();
-			node_stmt.clear();
-//			PrintUtil.PrintMap(token_index_record);
-//			token_index_record.clear();
-//			token_index_record = null;
-			token_local_index = 0;
-//			node_index_map.clear();
-			leafExtraCount = 0;
-			nodeCount = 0;
-		}
-		super.postVisit(node);
-	}
-
-	private boolean IsStatement(ASTNode node) {
-		if (node instanceof Statement && !(node instanceof Block)) {
+	private boolean IsMethodDeclaration(TreeNode node) {
+		if (MethodDeclaration.class.isAssignableFrom(node.GetClazz())) {
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean IsMethodDeclaration(ASTNode node) {
-		if (node instanceof MethodDeclaration) {
-			return true;
-		}
-		return false;
-	}
-	
-	private void HandleOneNode(ASTNode node, boolean is_real, boolean is_root) {
-//		System.err.println("node:" + node);
-		if (begin_generation_node.equals(node)) {
-			Assert.isTrue(IsMethodDeclaration(node));
-		}
+	@Override
+	public boolean PreVisit(TreeNode node) {
 		if (IsStatement(node) || IsMethodDeclaration(node)) {
 			in_handling_node.add(node);
-			StatementInfo stmt_info = new StatementInfo(token_local_index, node.toString());
+			StatementInfo stmt_info = new StatementInfo(node.toString());
 			in_handling_tensor.add(stmt_info);
 			pre_order_node.add(node);
 			node_stmt.put(node, stmt_info);
 		}
-		List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-		{
-			nodeCount++;
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchTypeID(node, im);
-			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, null, -1, 0);
-		}
+		String var = null;
+		int type_content_id = im.GetTypeContentID(node.GetContent());
+		TypeContentID tid = new TypeContentID(node.GetContent(), type_content_id);
+		ArrayList<TreeNode> children = node.GetChildren();
 		boolean is_leaf = children.size() == 0;
-		if (is_leaf) {
-			leafExtraCount++;
-//			Assert.isTrue(node instanceof SimpleName, "wrong node class:" + node.getClass() + "#simple name:" + node);
-			TypeContentID type_content_id = TypeContentIDFetcher.FetchContentID(node, im);
-//			int var_index = -1;
-			String var = null;
-			int api_comb_id = -1;
-			int api_relative_id = -1;
-			if (node instanceof SimpleName) {
-				SimpleName sn = (SimpleName) node;
+		if (!is_leaf) {
+//			StatementInfo stmt = in_handling_tensor.peek();
+//			stmt.StoreOneNode(tid, null, -1, -1);
+		} else {
+//			int api_comb_id = -1;
+//			int api_relative_id = -1;
+			if (SimpleName.class.isAssignableFrom(node.GetClazz())) {
+//				SimpleName sn = (SimpleName) node;
 //				var_index = HandleVariableIndex(sn.toString());
-				var = sn.toString();
+//				var = sn.toString();
+				var = node.GetContent();
 //				System.err.println("simple_name:" + sn);
-				IBinding ib = sn.resolveBinding();
-				if (ib != null) {
-					if (ib instanceof IVariableBinding) {
-//						IVariableBinding ivb = (IVariableBinding) ib;
-//						String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
-//						var_index = HandleVariableIndex(ivb_key)
-					} else if (ib instanceof ITypeBinding) {
-//						ITypeBinding itb = (ITypeBinding) ib;
-//						String itb_key = "type!" + itb.getKey() + "#" + sn;
-//						var_index = HandleVariableIndex(itb_key);
-					} else if (ib instanceof IMethodBinding) {
-						if (!(sn.getParent() instanceof MethodDeclaration) && (sn.getParent() instanceof MethodInvocation)) {
-							IMethodBinding imb = (IMethodBinding) ib;
-							ITypeBinding dc = imb.getDeclaringClass();
-							IMethodBinding[] mds = dc.getDeclaredMethods();
-							LinkedList<String> mdnames = new LinkedList<String>();
-							for (IMethodBinding md : mds) {
-								String mdname = md.getName();
-								mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
-								if (!mdnames.contains(mdname)) {
-									mdnames.add(mdname);
-								}
-							}
-							String joined = String.join("#", mdnames);
-							api_comb_id = im.GetAPICombID(joined);
-							api_relative_id = mdnames.indexOf(type_content_id.GetTypeContent());
-						}
-					}
-//					else {
-//						new Exception("type of unmeet ib:" + ib.getClass()).printStackTrace();
-//						System.exit(1);
+//				IBinding ib = sn.resolveBinding();
+//				if (ib != null) {
+//					if (ib instanceof IVariableBinding) {
+////						IVariableBinding ivb = (IVariableBinding) ib;
+////						String ivb_key = "var!" + ivb.getVariableId() + "#" + sn;
+////						var_index = HandleVariableIndex(ivb_key)
+//					} else if (ib instanceof ITypeBinding) {
+////						ITypeBinding itb = (ITypeBinding) ib;
+////						String itb_key = "type!" + itb.getKey() + "#" + sn;
+////						var_index = HandleVariableIndex(itb_key);
+//					} else if (ib instanceof IMethodBinding) {
+//						if (!(sn.getParent() instanceof MethodDeclaration)
+//								&& (sn.getParent() instanceof MethodInvocation)) {
+//							IMethodBinding imb = (IMethodBinding) ib;
+//							ITypeBinding dc = imb.getDeclaringClass();
+//							IMethodBinding[] mds = dc.getDeclaredMethods();
+//							LinkedList<String> mdnames = new LinkedList<String>();
+//							for (IMethodBinding md : mds) {
+//								String mdname = md.getName();
+//								mdname = PreProcessContentHelper.PreProcessTypeContent(mdname);
+//								if (!mdnames.contains(mdname)) {
+//									mdnames.add(mdname);
+//								}
+//							}
+//							String joined = String.join("#", mdnames);
+//							api_comb_id = im.GetAPICombID(joined);
+//							api_relative_id = mdnames.indexOf(type_content_id.GetTypeContent());
+//						}
 //					}
-				}
+//				}
 			}
-			StatementInfo stmt = in_handling_tensor.peek();
-			stmt.StoreOneNode(im, type_content_id, var, api_comb_id, api_relative_id);
+//			StatementInfo stmt = in_handling_tensor.peek();
+//			stmt.StoreOneNode(tid, var, api_comb_id, api_relative_id);
 		}
-	}
-
-	@Override
-	public boolean PreVisit(TreeNode node) {
-		// TODO Auto-generated method stub
-		return false;
+		StatementInfo stmt = in_handling_tensor.peek();
+		stmt.StoreOneNode(tid, var, -1, -1);
+		return true;
 	}
 
 	@Override
 	public void PostVisit(TreeNode node) {
-		// TODO Auto-generated method stub
-		
+		if (IsStatement(node) || IsMethodDeclaration(node)) {
+			TreeNode handle_node = in_handling_node.pop();
+			Assert.isTrue(handle_node.equals(node));
+			StatementInfo last_stmt = in_handling_tensor.pop();
+			Assert.isTrue(last_stmt == node_stmt.get(node));
+		}
 	}
 
 	@Override
 	public StringTensor GetStringTensor() {
-		// TODO Auto-generated method stub
-		return null;
+		StatementTensor curr_tensor = new StatementTensor();
+		Iterator<TreeNode> pot_itr = pre_order_node.iterator();
+		while (pot_itr.hasNext()) {
+			TreeNode an = pot_itr.next();
+			StatementInfo si = node_stmt.get(an);
+			Assert.isTrue(si != null);
+			curr_tensor.Devour(si);
+		}
+		curr_tensor.HandleAllDevoured(im);
+		StringTensor st = new StringTensor();
+		st.SetToString(curr_tensor.toString());
+		st.SetToDebugString(curr_tensor.toDebugString());
+		st.SetToOracleString(curr_tensor.toOracleString());
+		st.SetSize(curr_tensor.getSize());
+		return st;
 	}
 
 	@Override
 	public void Clear() {
-		// TODO Auto-generated method stub
-		
+		in_handling_node.clear();
+		in_handling_tensor.clear();
+		pre_order_node.clear();
+		node_stmt.clear();
 	}
 	
-//	private Integer HandleVariableIndex(String key) {
-//		Integer index_record = token_index_record.get(key);
-//		if (index_record == null) {
-//			token_local_index++;
-//			index_record = token_local_index;
-//			token_index_record.put(key, index_record);
-//		}
-//		System.err.println("key:" + key + "#index_record:" + index_record);
-//		return index_record;
-//	}
-
 }
