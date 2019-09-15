@@ -132,7 +132,7 @@ public class GrammarRecorder {
 			TreeSet<String> childrens = self_children_map.get(sc);
 			Assert.isTrue(childrens.size() > 0);
 			Integer tid = im.GetTypeContentID(sc);
-			Assert.isTrue(tid < raw.size());
+//			Assert.isTrue(tid < raw.size());
 			LinkedList<Integer> ll = raw.get(tid);
 			for (String child : childrens) {
 				Integer child_nti = im.GetTypeContentID(child);
