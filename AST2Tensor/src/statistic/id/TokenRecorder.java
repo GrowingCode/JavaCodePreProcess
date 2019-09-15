@@ -2,30 +2,6 @@ package statistic.id;
 
 import java.util.TreeMap;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.ArrayInitializer;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BooleanLiteral;
-import org.eclipse.jdt.core.dom.BreakStatement;
-import org.eclipse.jdt.core.dom.CharacterLiteral;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.ContinueStatement;
-import org.eclipse.jdt.core.dom.Dimension;
-import org.eclipse.jdt.core.dom.EmptyStatement;
-import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.NullLiteral;
-import org.eclipse.jdt.core.dom.NumberLiteral;
-import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.SwitchCase;
-import org.eclipse.jdt.core.dom.ThisExpression;
-import org.eclipse.jdt.core.dom.WildcardType;
-
 public class TokenRecorder {
 
 	// private static IDManager unique = new IDManager();
@@ -35,22 +11,24 @@ public class TokenRecorder {
 	// }
 
 //	private TreeMap<String, Boolean> type_is_leaf = new TreeMap<String, Boolean>();
-	
+
 //	private TreeMap<String, Boolean> type_content_is_leaf = new TreeMap<String, Boolean>();
 
 //	private TreeMap<String, Integer> type_count = new TreeMap<String, Integer>();
 //	private TreeMap<String, TreeMap<String, Integer>> type_content_count = new TreeMap<String, TreeMap<String, Integer>>();
-	
+
 //	private TreeMap<String, Integer> type_content_count = new TreeMap<String, Integer>();
-	
+
 //	private TreeMap<String, Boolean> ast_type_is_leaf = new TreeMap<String, Boolean>();
-	
+
 	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
 	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
-	
+
 	public TokenRecorder() {
+		TokenHitInTrainSet(IDManager.ZDFT, 100);
+		TokenHitInTrainSet(IDManager.Unk, 100);
 	}
-	
+
 //	private void RegistTypeIsLeaf(String type, boolean is_leaf) {
 //		if (ast_type_is_leaf.containsKey(type)) {
 //			Assert.isTrue(is_leaf == ast_type_is_leaf.get(type).booleanValue(), "Wrong type:" + type);
@@ -58,7 +36,7 @@ public class TokenRecorder {
 //			ast_type_is_leaf.put(type, is_leaf);
 //		}
 //	}
-	
+
 	public void TokenHitInTrainSet(String type_content, Integer count) {
 //		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 //		hit_train.add(type_content);
@@ -73,7 +51,7 @@ public class TokenRecorder {
 		}
 		hit_train.put(type_content, h_count);
 	}
-	
+
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {
 //		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 		if (!hit_train.containsKey(type_content)) {
@@ -85,14 +63,14 @@ public class TokenRecorder {
 			not_hit_train.put(type_content, nh_count);
 		}
 	}
-	
-	public static boolean LeafIsFixed(ASTNode node) {
-		boolean is_fixed_leaf = node instanceof Modifier || node instanceof PrimitiveType || node instanceof BooleanLiteral || node instanceof NullLiteral || node instanceof Dimension || node instanceof ThisExpression || node instanceof Block || node instanceof BreakStatement || node instanceof SwitchCase || node instanceof WildcardType || node instanceof ContinueStatement || node instanceof ReturnStatement || node instanceof SuperConstructorInvocation || node instanceof ArrayInitializer || node instanceof EmptyStatement || node instanceof ConstructorInvocation || node instanceof AnonymousClassDeclaration;
-		boolean is_unfixed_leaf = node instanceof SimpleName || node instanceof NumberLiteral || node instanceof CharacterLiteral || node instanceof StringLiteral;
-		Assert.isTrue(is_unfixed_leaf || is_fixed_leaf, "Strange node class:" + node.getClass().getSimpleName() + "#node:" + node);
-		return is_fixed_leaf;
-	}
-	
+
+//	public static boolean LeafIsFixed(ASTNode node) {
+//		boolean is_fixed_leaf = node instanceof Modifier || node instanceof PrimitiveType || node instanceof BooleanLiteral || node instanceof NullLiteral || node instanceof Dimension || node instanceof ThisExpression || node instanceof Block || node instanceof BreakStatement || node instanceof SwitchCase || node instanceof WildcardType || node instanceof ContinueStatement || node instanceof ReturnStatement || node instanceof SuperConstructorInvocation || node instanceof ArrayInitializer || node instanceof EmptyStatement || node instanceof ConstructorInvocation || node instanceof AnonymousClassDeclaration;
+//		boolean is_unfixed_leaf = node instanceof SimpleName || node instanceof NumberLiteral || node instanceof CharacterLiteral || node instanceof StringLiteral;
+//		Assert.isTrue(is_unfixed_leaf || is_fixed_leaf, "Strange node class:" + node.getClass().getSimpleName() + "#node:" + node);
+//		return is_fixed_leaf;
+//	}
+
 //	public void EncounterANode(String type_content, boolean is_leaf) {
 ////		int pos = type_content.indexOf('#');
 ////		String type = type_content.substring(0, pos);
@@ -125,7 +103,7 @@ public class TokenRecorder {
 ////			tcc.put(content, cc);
 ////		}
 //	}
-	
+
 	// warning: this version can only be invoked once
 //	public void RefineAllStatistics(int minsupport, int maxcapacity) {
 //		if (!MetaOfApp.ReplaceLeastWithUnk) {
@@ -167,7 +145,7 @@ public class TokenRecorder {
 //			}
 //		}
 //	}
-	
+
 //	public void RefineAllStatistics(int minsupport, int maxcapacity) {
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateTypeContentCount();
 //		// now, all data in type_content_count has already been put into pre_classified_type_content_count
@@ -205,7 +183,7 @@ public class TokenRecorder {
 ////		}
 ////		count.clear();
 //	}
-	
+
 //	private TreeMap<String, TreeMap<String, Integer>> GenerateInternalTypeContentCascadedMap() {
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = new TreeMap<String, TreeMap<String, Integer>>();
 //		Set<String> tc_keys = type_content_count.keySet();

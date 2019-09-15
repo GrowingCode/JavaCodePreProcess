@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -25,18 +27,18 @@ import util.MapUtil;
 import util.PrintUtil;
 
 public class IDManager {
-	
+
 	public static final String Leaf = "L";
 	public static final String NonLeaf = "N";
-	
-	public static final String Zero = "!!@@##YYX_Default_So_Strange_Is_It_Right_Ha_Ha##@@!!";
-	public static final String Unk = "@#!Unk!#@";
-	
+
+	public static final String ZDFT = "#YZDFT#";
+	public static final String Unk = "#Unk#";
+
 //	public static String DefaultPart = "@Default";
 //	public static String LeafType = "LeafDefault";
 //	public static String InitialLeaf = "InitialLeafASTType";
 //	public static String TerminalLeaf = "TerminalLeafASTType";
-	
+
 //	public static String LeafTypeDefault = LeafType + "#" + DefaultPart;
 //	public static String LeafTypeDefault = "LeafDefault" + "#" + DefaultPart;
 
@@ -52,11 +54,11 @@ public class IDManager {
 	// public static String StringLiteralLeafDefault = "\"@str!\"";
 	// public static String NullLiteralLeafDefault = "null";
 	// public static String TerminalLeafDefault = "TermDefault";
-	
+
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
 //	private int grammar_token_num = -1;
 //	private int token_hit_num = -1;
-	
+
 //	private TreeMap<String, Integer> ast_type_content_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<String, Integer> not_hit_ast_type_content_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<String, Integer> ast_type_id_map = new TreeMap<String, Integer>();
@@ -64,23 +66,23 @@ public class IDManager {
 //	private TreeMap<Integer, Integer> ast_type_content_id_type_id_map = new TreeMap<Integer, Integer>();
 //	private TreeMap<Integer, Integer> ast_type_content_id_count_map = new TreeMap<Integer, Integer>();
 //	private ArrayList<Integer> ast_type_content_is_leaf = new ArrayList<Integer>();
-	
+
 	// only for type id
 //	int type_id = 0;
-	
+
 //	private Set<String> not_hit_words = new TreeSet<String>();
-	
+
 	private TreeMap<String, Integer> api_comb_id_map = new TreeMap<String, Integer>();
-	
+
 //	private int api_comb_hit_num = -1;
-	
+
 	private int char_num = -1;
-	
+
 //	private TreeMap<String, Integer> not_hit_api_comb_id_map = new TreeMap<String, Integer>();
-	
+
 	// this does not need trim and should be separated.
 //	private TreeMap<String, Boolean> ast_type_is_leaf = new TreeMap<String, Boolean>();
-	
+
 //	{
 //		ast_type_is_leaf.put(DefaultPart, false);
 //		ast_type_is_leaf.put(Block.class.getSimpleName(), false);
@@ -89,11 +91,11 @@ public class IDManager {
 //		ast_type_is_leaf.put("NonLeafDefault", false);
 //		ast_type_is_leaf.put("LeafDefault", true);
 //	}
-	
+
 //	private TreeMap<String, Integer> ast_type_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<Integer, Integer> ast_type_id_count_map = new TreeMap<Integer, Integer>();
 //	private ArrayList<Integer> ast_type_is_leaf = new ArrayList<Integer>()
-	
+
 //	private TreeMap<String, Integer> ast_content_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<Integer, Integer> ast_content_id_count_map = new TreeMap<Integer, Integer>();
 
@@ -102,9 +104,9 @@ public class IDManager {
 	// private TreeMap<Integer, TreeMap<Integer, Integer>>
 	// ast_type_content_id_count_map = new TreeMap<Integer, TreeMap<Integer,
 	// Integer>>();
-	
+
 	IDTools id_tool = null;
-	
+
 	public ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 	public ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 	public ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
@@ -117,30 +119,30 @@ public class IDManager {
 		for (String g : g_set) {
 			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
 		}
-		
+
 		// token regist
-		Set<String> reserved_words = new TreeSet<String>();
-		reserved_words.add(Zero);
+		List<String> reserved_words = new LinkedList<String>();
+		reserved_words.add(ZDFT);
 		reserved_words.add(Unk);
 		Regist(token_id_map, reserved_words);
-		Regist(token_id_map, g_set);
-		Regist(token_id_map, id_tool.gr.fixed_tokens);
-		Regist(token_id_map, id_tool.gr.unfixed_tokens);
-		
+		Regist(token_id_map, new ArrayList<String>(g_set));
+		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
+		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
+
 //		token_hit_num = token_id_map.size();
 //		Assert.isTrue(token_hit_num > 0);
 //		Regist(token_id_map, id_tool.tr.not_hit_train);
-		
+
 		// api comb regist
-		Regist(api_comb_id_map, id_tool.ar.api_combs);
-		
+		Regist(api_comb_id_map, new ArrayList<String>(id_tool.ar.api_combs));
+
 		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
-		
+
 //		api_comb_hit_num = api_comb_id_map.size();
 //		Assert.isTrue(api_comb_hit_num > 0);
-		
+
 //		Regist(api_comb_id_map, id_tool.ar.not_hit_train);
-		
+
 //		RegistTypeContentID(LeafTypeDefault, true, 0);
 //		RegistTypeContentID(RootDefault, false, 0);
 		// non leaf
@@ -157,8 +159,8 @@ public class IDManager {
 //		ast_type_content_type_id_map.put(TerminalLeaf, id++);
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
 	}
-	
-	private static void Regist(Map<String, Integer> reg_map, Set<String> ele_set) {
+
+	private static void Regist(Map<String, Integer> reg_map, List<String> ele_set) {
 		Iterator<String> ele_itr = ele_set.iterator();
 		while (ele_itr.hasNext()) {
 			String ele = ele_itr.next();
@@ -167,7 +169,7 @@ public class IDManager {
 			}
 		}
 	}
-	
+
 //	private int RegistTypeContentID(String type_content) {// , boolean is_leaf, int count
 //		Integer id = ast_type_content_id_map.get(type_content);
 //		if (id == null) {
@@ -183,7 +185,7 @@ public class IDManager {
 ////		ast_type_content_id_count_map.put(id, ct);
 //		return id;
 //	}
-	
+
 //	public void GenerateTypeSummary() {
 //		Set<String> to_keys = ast_type_content_id_map.keySet();
 //		Iterator<String> tk_itr = to_keys.iterator();
@@ -200,11 +202,11 @@ public class IDManager {
 //			ast_type_content_id_type_id_map.put(ast_type_content_id_map.get(type_content), t_id);
 //		}
 //	}
-	
+
 //	public int GetTypeNum() {
 //		return type_id;
 //	}
-	
+
 //	public void RegistTypeIsLeaf(TreeMap<String, Boolean> ast_type_is_leaf) {
 //		this.ast_type_is_leaf.putAll(ast_type_is_leaf);
 //	}
@@ -241,35 +243,35 @@ public class IDManager {
 //	}
 
 //	public void EnsureDefaultValue() {
-		// GetTypeID(TerminalLeafASTType);
-		// GetTypeID(SimpleName.class.getSimpleName());
-		// GetTypeID(NumberLiteral.class.getSimpleName());
-		// GetTypeID(CharacterLiteral.class.getSimpleName());
-		// GetTypeID(StringLiteral.class.getSimpleName());
-		// GetTypeID(NullLiteral.class.getSimpleName());
+	// GetTypeID(TerminalLeafASTType);
+	// GetTypeID(SimpleName.class.getSimpleName());
+	// GetTypeID(NumberLiteral.class.getSimpleName());
+	// GetTypeID(CharacterLiteral.class.getSimpleName());
+	// GetTypeID(StringLiteral.class.getSimpleName());
+	// GetTypeID(NullLiteral.class.getSimpleName());
 
-		// GetContentID(TerminalLeafASTType, TerminalLeafDefault);
-		// GetContentID(SimpleName.class.getSimpleName(),
-		// SimpleName.class.getSimpleName() + SimpleNameLeafDefault);
-		// GetContentID(NumberLiteral.class.getSimpleName(), NumberLiteralLeafDefault);
-		// GetContentID(CharacterLiteral.class.getSimpleName(),
-		// CharacterLiteralLeafDefault);
-		// GetContentID(StringLiteral.class.getSimpleName(), StringLiteralLeafDefault);
-		// GetContentID(NullLiteral.class.getSimpleName(), NullLiteralLeafDefault);
+	// GetContentID(TerminalLeafASTType, TerminalLeafDefault);
+	// GetContentID(SimpleName.class.getSimpleName(),
+	// SimpleName.class.getSimpleName() + SimpleNameLeafDefault);
+	// GetContentID(NumberLiteral.class.getSimpleName(), NumberLiteralLeafDefault);
+	// GetContentID(CharacterLiteral.class.getSimpleName(),
+	// CharacterLiteralLeafDefault);
+	// GetContentID(StringLiteral.class.getSimpleName(), StringLiteralLeafDefault);
+	// GetContentID(NullLiteral.class.getSimpleName(), NullLiteralLeafDefault);
 
-		// Set<String> akeys = ast_type_id_map.keySet();
-		// Iterator<String> aitr = akeys.iterator();
-		// while (aitr.hasNext()) {
-		// String ak = aitr.next();
-		// RegistTypeID(ak, 0);
-		// Integer aid = ast_type_id_map.get(ak);
-		// TreeMap<String, Integer> cidm = ast_type_content_id_map.get(aid);
-		// if (!cidm.containsKey(ak + SimpleNameLeafDefault)) {
-		// GetContentID(ak, ak + SimpleNameLeafDefault);
-		// }
-		// }
+	// Set<String> akeys = ast_type_id_map.keySet();
+	// Iterator<String> aitr = akeys.iterator();
+	// while (aitr.hasNext()) {
+	// String ak = aitr.next();
+	// RegistTypeID(ak, 0);
+	// Integer aid = ast_type_id_map.get(ak);
+	// TreeMap<String, Integer> cidm = ast_type_content_id_map.get(aid);
+	// if (!cidm.containsKey(ak + SimpleNameLeafDefault)) {
+	// GetContentID(ak, ak + SimpleNameLeafDefault);
+	// }
+	// }
 //	}
-	
+
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
 		Assert.isTrue(id != null, "unseen type_content:" + type_content);
@@ -287,13 +289,14 @@ public class IDManager {
 //		System.out.println("Using LeafTypeDefault:" + type_content);
 //		return RegistNotHitTypeContentID(type_content);
 	}
+
 	// type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 	public int GetAPICombID(String api_comb) {
 		Integer id = api_comb_id_map.get(api_comb);
 		Assert.isTrue(id != null);
 		return id;
 	}
-	
+
 //	private int RegistNotHitTypeContentID(String type_content) {
 //		Integer id = not_hit_ast_type_content_id_map.get(type_content);
 //		if (id == null) {
@@ -302,7 +305,7 @@ public class IDManager {
 //		}
 //		return id;
 //	}
-	
+
 //	public int GetTypeID(String type_content) {
 //		Integer id = ast_type_content_type_id_map.get(type_content);
 //		if (id != null) {
@@ -327,7 +330,7 @@ public class IDManager {
 //		}
 //		return 0;
 //	}
-	
+
 	private void GenerateIDHitJson(String dir) {
 		ArrayList<Integer> id_is_hit = new ArrayList<Integer>();
 //		Map<Object, Object> ati_objs = new HashMap<Object, Object>();
@@ -368,7 +371,7 @@ public class IDManager {
 		Gson gson = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_id.json"), gson.toJson(ati_out));// type_id_json.toString()
 	}
-	
+
 //	private void GenerateTypeAndSummaryJson(String dir, TreeMap<String, Integer> to_gen, String desc) {
 //		Gson gson = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_type_id.json"), gson.toJson(ast_type_content_type_id_map));
@@ -389,7 +392,7 @@ public class IDManager {
 //		summary.put("TypeNum", type_id);
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_summary.json"), gson_summary.toJson(summary));
 //	}
-	
+
 //	private void GenerateAndSaveHuffTree(String dir, TreeMap<Integer, Integer> count_map, String desc, int huff_tree_standard_children_num) {
 //		GenerateHuffmanTreeTensor gen = new GenerateHuffmanTreeTensor(huff_tree_standard_children_num, count_map);
 //		WordInfo wi = gen.GetWordInfo();
@@ -420,7 +423,7 @@ public class IDManager {
 ////		JSONArray type_huff_tree_json = JSONArray.fromObject(huffman_tree_tensor);
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_huff_tree.json"), gson4.toJson(huffman_tree_tensor));// type_huff_tree_json.toString()
 //	}
-	
+
 //	private void GenerateAndSaveCharSequence(String dir, TreeMap<String, Integer> hit, TreeMap<String, Integer> not_hit, String desc) {
 //		TreeMap<String, Integer> to_gen = new TreeMap<String, Integer>();
 //		to_gen.putAll(hit);
@@ -483,18 +486,18 @@ public class IDManager {
 //		String char_seq_meta = "HitNumber:" + hit.size() + "\n" + "MaxCharSequenceLength:" + max_length + "\n" + "TotalNumberOfChar:" + char_idx.size();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_char_sequence_summary.txt"), char_seq_meta);
 //	}
-	
+
 //	private Map<String, Integer> HandleSubWord(String dir, Map<Integer, String> ati_out) {
 //	
 //		
 //		return subword_index;
 //	}
-	
+
 	private void GenerateAndSaveCharSequenceInCascadeForm(String dir) {
 		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
-		
+
 		// handle char index
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
 		Set<Character> c_set = new TreeSet<Character>();
@@ -503,7 +506,7 @@ public class IDManager {
 		while (aitr.hasNext()) {
 			String tc = aitr.next();
 			int tc_len = tc.length();
-			for (int i=0;i<tc_len;i++) {
+			for (int i = 0; i < tc_len; i++) {
 				char c = tc.charAt(i);
 				c_set.add(c);
 			}
@@ -515,21 +518,21 @@ public class IDManager {
 			char_idx.put(c, char_idx.size());
 		}
 		char_num = char_idx.size();
-		
+
 		// handle sub words
 //		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
-		
+
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
-		for (int i=0;i<ati_out.size();i++) {
+		for (int i = 0; i < ati_out.size(); i++) {
 			String token = ati_out.get(i);
 			Assert.isTrue(token != null && token.length() > 0);
 			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
 			Assert.isTrue(subwords.size() > 0);
 			each_subword_sequence_start.add(subword_sequences.size());
-			for (int i1=0;i1<subwords.size();i1++) {
+			for (int i1 = 0; i1 < subwords.size(); i1++) {
 				String subword = subwords.get(i1);
 				if (!subword_index.containsKey(subword)) {
 					subword_index.put(subword, subword_index.size());
@@ -537,12 +540,11 @@ public class IDManager {
 				Integer idx = subword_index.get(subword);
 				subword_sequences.add(idx);
 			}
-			each_subword_sequence_end.add(subword_sequences.size()-1);
+			each_subword_sequence_end.add(subword_sequences.size() - 1);
 		}
-		
+
 		Gson gson4 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"),
-				gson4.toJson(subword_sequences));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
 		Gson gson5 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
 				gson5.toJson(each_subword_sequence_start));
@@ -554,9 +556,9 @@ public class IDManager {
 //			Assert.isTrue(token != null && token.length() > 0);
 //			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
 //			for (int i1=0;i1<subwords.size();i1++) {
-		
+
 		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
-		
+
 		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> sw_keys = sw_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
@@ -570,18 +572,18 @@ public class IDManager {
 				subword_is_end_of_token.add(0);
 			}
 			each_char_sequence_start.add(char_sequences.size());
-			for (int i11=0;i11<subword.length();i11++) {
+			for (int i11 = 0; i11 < subword.length(); i11++) {
 				char c = subword.charAt(i11);
 				int idx = char_idx.get(c);
 				char_sequences.add(idx);
 			}
-			each_char_sequence_end.add(char_sequences.size()-1);
+			each_char_sequence_end.add(char_sequences.size() - 1);
 		}
-		
+
 		Gson gson0 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
 				gson0.toJson(subword_is_end_of_token));
-		
+
 //				String subword = subwords.get(i1);
 //				Assert.isTrue(subword != null && subword.length() > 0);
 //				if (!subword_index.containsKey(subword)) {
@@ -608,10 +610,9 @@ public class IDManager {
 //				each_char_sequence_end.add(char_sequences.size()-1);
 //			}
 //		}
-		
+
 		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
-				gson.toJson(char_sequences));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"), gson.toJson(char_sequences));
 		Gson gson2 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
 				gson2.toJson(each_char_sequence_start));
@@ -625,17 +626,17 @@ public class IDManager {
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
 //		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
-		
+
 		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
 		Set<String> ht_keys = ht.keySet();
 		Set<String> inserted_ht_keys = BPEWordsUtil.InsertSpaceToTokens(ht_keys);
 		BPEHandledResult hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_ht_keys);
-		
+
 		TreeMap<String, Integer> nht = id_tool.tr.not_hit_train;
 		Set<String> nht_keys = nht.keySet();
 		Set<String> inserted_nht_keys = BPEWordsUtil.InsertSpaceToTokens(nht_keys);
 		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
-		
+
 		Map<String, String> origin_after = new TreeMap<String, String>();
 		PrintUtil.PrintMap(hit_res.origin_after, "hit_res.origin_after");
 		origin_after.putAll(hit_res.origin_after);
@@ -646,23 +647,25 @@ public class IDManager {
 		ts.removeAll(id_tool.tr.hit_train.keySet());
 		ts.removeAll(id_tool.tr.not_hit_train.keySet());
 //		PrintUtil.PrintSet(ts, "left things");
-		Assert.isTrue(origin_after.size() == token_id_map.size(), "token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
-		
+		Assert.isTrue(origin_after.size() == token_id_map.size(),
+				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
+
 		// in train
 		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
 		// not in train
 		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
 		not_in_train_vobs.removeAll(in_train_vobs);
-		System.out.println("In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Not_In_Train_Sub_Vobs_Size:" + not_in_train_vobs.size() + "#Unseen_Rate:" + (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
+		System.out.println("In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Not_In_Train_Sub_Vobs_Size:"
+				+ not_in_train_vobs.size() + "#Unseen_Rate:"
+				+ (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
 //		PrintUtil.PrintSet(in_train_vobs, "in_train_vobs");
 //		PrintUtil.PrintSet(not_in_train_vobs, "not_in_train_vobs");
 //		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
-		
+
 		/**
-		 * statistics
-		 * for output
+		 * statistics for output
 		 */
 		int in_hit_total_subword_num = 0;
 		int in_hit_max_subword_num_in_one_token = 0;
@@ -670,17 +673,17 @@ public class IDManager {
 		int not_in_hit_total_subword_num = 0;
 		int not_in_hit_max_subword_num_in_one_token = 0;
 		int not_in_hit_token_num = 0;
-		
+
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
-		for (int i=0;i<ati_out.size();i++) {
+		for (int i = 0; i < ati_out.size(); i++) {
 			String ori_token = ati_out.get(i);
 			Assert.isTrue(ori_token != null && ori_token.length() > 0);
 			String token = BPEWordsUtil.InsertSpaceToToken(ori_token);
 			Assert.isTrue(origin_after.get(token) != null, "token:" + token);
 			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
 			int subwords_size = subwords.size();
-			
+
 			if (id_tool.tr.hit_train.containsKey(ori_token)) {
 				in_hit_total_subword_num += subwords_size;
 				if (in_hit_max_subword_num_in_one_token < subwords_size) {
@@ -695,10 +698,10 @@ public class IDManager {
 				}
 				not_in_hit_token_num++;
 			}
-			
+
 			Assert.isTrue(subwords_size > 0);
 			each_subword_sequence_start.add(subword_sequences.size());
-			for (int i1=0;i1<subwords_size;i1++) {
+			for (int i1 = 0; i1 < subwords_size; i1++) {
 				String subword = subwords.get(i1);
 //				if (i1 == subwords.size()-1) {
 //					subword = subword + " ";
@@ -709,34 +712,35 @@ public class IDManager {
 				Integer idx = subword_index.get(subword);
 				subword_sequences.add(idx);
 			}
-			each_subword_sequence_end.add(subword_sequences.size()-1);
+			each_subword_sequence_end.add(subword_sequences.size() - 1);
 		}
-		
+
 		/**
 		 * print statistics
 		 */
-		System.out.println("in_hit_average_subword_num_in_one_token:" + ((in_hit_total_subword_num*1.0) / (in_hit_token_num*1.0)));
+		System.out.println("in_hit_average_subword_num_in_one_token:"
+				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
 		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
 //		System.out.println("in_hit_token_num:" + in_hit_token_num);
-		System.out.println("not_in_hit_average_subword_num_in_one_token:" + ((not_in_hit_total_subword_num*1.0) / (not_in_hit_token_num*1.0)));
+		System.out.println("not_in_hit_average_subword_num_in_one_token:"
+				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
 		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
 //		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
-		
+
 		Gson gson4 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"),
-				gson4.toJson(subword_sequences));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"), gson4.toJson(subword_sequences));
 		Gson gson5 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
 				gson5.toJson(each_subword_sequence_start));
 		Gson gson6 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
-		
+
 		char_num = subword_index.size();
 		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
 
 		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
-		
+
 		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> sw_keys = sw_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
@@ -750,17 +754,17 @@ public class IDManager {
 				subword_is_end_of_token.add(0);
 			}
 		}
-		
+
 		// validate token subwords
 		Map<String, String> token_subwords = new TreeMap<String, String>();
 		int i_len = each_subword_sequence_start.size();
-		for (int i=0;i<i_len;i++) {
+		for (int i = 0; i < i_len; i++) {
 			Integer st = each_subword_sequence_start.get(i);
 			Integer ed = each_subword_sequence_end.get(i);
 			Assert.isTrue(ed >= st);
 			String token = "";
 			String sbwds = "";
-			for (int j=st;j<=ed;j++) {
+			for (int j = st; j <= ed; j++) {
 				Integer subword_idx = subword_sequences.get(j);
 				String subsord = sw_out.get(subword_idx);
 				token += subsord;
@@ -768,16 +772,17 @@ public class IDManager {
 			}
 //			token = token.substring(0, token.length()-1);
 			String exp_tk = ati_out.get(i);// .replace(" ", "")
-			Assert.isTrue((token).equals(exp_tk), "token:"+token+"#expected:"+exp_tk);
+			Assert.isTrue((token).equals(exp_tk), "token:" + token + "#expected:" + exp_tk);
 			token_subwords.put(exp_tk, sbwds);
 		}
-		System.out.println("=== unsubword token num:" + token_subwords.size() + "#number_of_merges:" + MetaOfApp.number_of_merges + " ===");
+		System.out.println("=== unsubword token num:" + token_subwords.size() + "#number_of_merges:"
+				+ MetaOfApp.number_of_merges + " ===");
 //		PrintUtil.PrintMap(token_subwords, "token_subwords");
-		
+
 //		Gson gson0 = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
 //				gson0.toJson(subword_is_end_of_token));
-		
+
 //		return subword_index;
 //		// handle sub words
 //		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
@@ -806,7 +811,7 @@ public class IDManager {
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
 //				gson3.toJson(each_char_sequence_end));
 	}
-	
+
 //	private void GenerateAndSaveCharSequence(String dir) {
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
@@ -858,7 +863,7 @@ public class IDManager {
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
 //				gson3.toJson(each_char_sequence_end));
 //	}
-	
+
 	private void GenerateIDSummary(String dir) {
 		Gson gson = new Gson();
 		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
@@ -872,7 +877,7 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
 //		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
 	}
-	
+
 	private void GenerateAPIJson(String dir) {
 		int all_size = api_comb_id_map.size();
 		String[] strs = new String[all_size];
@@ -883,28 +888,27 @@ public class IDManager {
 			Integer idx = api_comb_id_map.get(api_k);
 			strs[idx] = api_k;
 		}
-		
+
 		ArrayList<Integer> api_comb_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_api_comb_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_api_comb_end = new ArrayList<Integer>();
-		
-		for (int i=0;i<all_size;i++) {
+
+		for (int i = 0; i < all_size; i++) {
 			String str = strs[i];
 			String[] to_compare_apis = str.split("#");
 			each_api_comb_start.add(api_comb_sequences.size());
 			for (String tc_api : to_compare_apis) {
 				api_comb_sequences.add(GetTypeContentID(tc_api));
 			}
-			each_api_comb_end.add(api_comb_sequences.size()-1);
+			each_api_comb_end.add(api_comb_sequences.size() - 1);
 		}
 		// add default api_comb
 		each_api_comb_start.add(api_comb_sequences.size());
 		api_comb_sequences.add(-1);
-		each_api_comb_end.add(api_comb_sequences.size()-1);
-		
+		each_api_comb_end.add(api_comb_sequences.size() - 1);
+
 		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_api_comb_sequences.json"),
-				gson.toJson(api_comb_sequences));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_api_comb_sequences.json"), gson.toJson(api_comb_sequences));
 		Gson gson2 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_api_comb_sequence_start.json"),
 				gson2.toJson(each_api_comb_start));
@@ -988,13 +992,20 @@ public class IDManager {
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_huff_tree.json"),
 //				type_content_huff_tree_list_json.toString());
 	}
-	
+
 //	public GrammarRecorder GetGrammarRecorder() {
 //		return id_tool.gr;
 //	}
-	
+
 	public String WordVocabularyInfo() {
-		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size() + "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0);// + "#OutOfVocabulary_API_Comb_Size:" + (api_comb_id_map.size() - api_comb_hit_num);
+		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:"
+				+ id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size()
+				+ "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0);// +
+																													// "#OutOfVocabulary_API_Comb_Size:"
+																													// +
+																													// (api_comb_id_map.size()
+																													// -
+																													// api_comb_hit_num);
 	}
 
 }
