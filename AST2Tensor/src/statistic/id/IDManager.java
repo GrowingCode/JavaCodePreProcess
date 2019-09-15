@@ -31,7 +31,7 @@ public class IDManager {
 	public static final String Leaf = "L";
 	public static final String NonLeaf = "N";
 
-	public static final String ZDFT = "#YZDFT#";
+	public static final String ZDFT = "#Dft#";
 	public static final String Unk = "#Unk#";
 	
 	public static final List<String> reserved_words = new LinkedList<String>();
