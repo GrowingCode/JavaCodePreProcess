@@ -33,6 +33,13 @@ public class IDManager {
 
 	public static final String ZDFT = "#YZDFT#";
 	public static final String Unk = "#Unk#";
+	
+	public static final List<String> reserved_words = new LinkedList<String>();
+	
+	static {
+		reserved_words.add(ZDFT);
+		reserved_words.add(Unk);
+	}
 
 //	public static String DefaultPart = "@Default";
 //	public static String LeafType = "LeafDefault";
@@ -121,9 +128,6 @@ public class IDManager {
 		}
 
 		// token regist
-		List<String> reserved_words = new LinkedList<String>();
-		reserved_words.add(ZDFT);
-		reserved_words.add(Unk);
 		Regist(token_id_map, reserved_words);
 		Regist(token_id_map, new ArrayList<String>(g_set));
 		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
@@ -874,6 +878,7 @@ public class IDManager {
 		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
 		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
+		meta_of_ast2tensor.put("ReservedNumberOfWords", reserved_words.size());
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
 //		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
 	}

@@ -121,7 +121,7 @@ public class GrammarRecorder {
 	
 	public void SaveToDirectory(String dir, IDManager im) {
 		ArrayList<LinkedList<Integer>> raw = new ArrayList<LinkedList<Integer>>();
-		int nti_size = self_children_map.size();
+		int nti_size = self_children_map.size() + IDManager.reserved_words.size();
 		for (int i=0;i<nti_size;i++) {
 			raw.add(new LinkedList<Integer>());
 		}
