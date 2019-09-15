@@ -41,8 +41,8 @@ public class BasicGenerator extends ASTVisitor {
 
 	protected TreeVisitor visitor = null;
 	
-	public int unsuitable_method_count = 0;
 	public int total_method_count = 0;
+	public int unsuitable_method_count = 0;
 	
 	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu,
 			TreeVisitor visitor) {
@@ -106,6 +106,7 @@ public class BasicGenerator extends ASTVisitor {
 		}
 		if (begin_generation) {
 			if (begin_generation_node.equals(node)) {
+				total_method_count++;
 				if (MetaOfApp.StatementNoLimit || (tree.size() >= MetaOfApp.MinimumNumberOfNodesInAST)) {
 					TreeNode root = tree.get(node);
 					visitor.Clear();
@@ -119,6 +120,8 @@ public class BasicGenerator extends ASTVisitor {
 					begin_generation = false;
 					begin_generation_node = null;
 					tree.clear();
+				} else {
+					unsuitable_method_count++;
 				}
 			}
 		}
