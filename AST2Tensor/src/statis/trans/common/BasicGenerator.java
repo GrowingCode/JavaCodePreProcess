@@ -111,12 +111,12 @@ public class BasicGenerator extends ASTVisitor {
 						st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
 						tensor_list.add(st);
 					}
-					begin_generation = false;
-					begin_generation_node = null;
-					tree.clear();
 				} else {
 					unsuitable_method_count++;
 				}
+				begin_generation = false;
+				begin_generation_node = null;
+				tree.clear();
 			}
 		}
 		super.postVisit(node);
