@@ -35,17 +35,17 @@ public class GrammarRecorder {
 		if (children.size() > 0) {
 			Assert.isTrue(!unfixed_tokens.contains(node.GetContent()));
 			fixed_tokens.add(node.GetContent());
+			TreeSet<String> children_nt = self_children_map.get(node.GetContent());
+			if (children_nt == null) {
+				children_nt = new TreeSet<String>();
+				self_children_map.put(node.GetContent(), children_nt);
+			}
+			for (TreeNode child : children) {
+				children_nt.add(child.GetContent());
+			}
 		} else {
 			Assert.isTrue(!fixed_tokens.contains(node.GetContent()));
 			unfixed_tokens.add(node.GetContent());
-		}
-		TreeSet<String> children_nt = self_children_map.get(node.GetContent());
-		if (children_nt == null) {
-			children_nt = new TreeSet<String>();
-			self_children_map.put(node.GetContent(), children_nt);
-		}
-		for (TreeNode child : children) {
-			children_nt.add(child.GetContent());
 		}
 	}
 	
