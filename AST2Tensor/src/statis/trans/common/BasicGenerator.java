@@ -18,8 +18,6 @@ import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
-import translation.helper.DecodeType;
-import translation.helper.TestDataDecodeType;
 import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
 import translation.tensor.Tensor;
@@ -35,15 +33,13 @@ public class BasicGenerator extends ASTVisitor {
 	protected ICompilationUnit icu = null;
 	protected CompilationUnit cu = null;
 
-	protected DecodeType decode_type_generator = null;
-
 	protected LinkedList<Tensor> tensor_list = new LinkedList<Tensor>();
 
 	protected TreeVisitor visitor = null;
-	
+
 	public int total_method_count = 0;
 	public int unsuitable_method_count = 0;
-	
+
 	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu,
 			TreeVisitor visitor) {
 		this.role_assigner = role_assigner;
@@ -71,10 +67,9 @@ public class BasicGenerator extends ASTVisitor {
 		}
 		if (cared_parent != null && StandAtRootNodeOfTensorGeneration(node, node_parent)
 				&& UnHandledASTNodesFilterPassed(node)) {
-			decode_type_generator = new TestDataDecodeType();
+			Assert.isTrue(begin_generation == false && begin_generation_node == null && tree.isEmpty(), "begin_generation:" + begin_generation + "#begin_generation_node:" + (begin_generation_node == null) + "#tree.isEmpty():" + tree.isEmpty());
 			begin_generation = true;
 			begin_generation_node = node;
-			Assert.isTrue(cared_parent == null && begin_generation == false && begin_generation_node == null && tree.isEmpty());
 		}
 		if (begin_generation) {
 			String type = JDTASTHelper.GetTypeRepresentationForASTNode(node);
@@ -116,7 +111,6 @@ public class BasicGenerator extends ASTVisitor {
 						st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
 						tensor_list.add(st);
 					}
-					decode_type_generator = null;
 					begin_generation = false;
 					begin_generation_node = null;
 					tree.clear();
