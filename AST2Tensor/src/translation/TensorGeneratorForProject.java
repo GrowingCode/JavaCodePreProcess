@@ -109,7 +109,7 @@ public class TensorGeneratorForProject {
 					Assert.isTrue(s.GetRole() == t.GetRole());
 					StringTensor r = new StringTensor();
 					r.SetRole(s.GetRole());
-					Assert.isTrue(s.getSize() == t.getSize());
+					Assert.isTrue(s.getSize()+1 == t.getSize(), "s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
 					r.SetSize(s.getSize());
 					r.SetToString(s.toString() + "$" + t.toString());
 					r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString());

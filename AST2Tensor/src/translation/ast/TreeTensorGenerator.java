@@ -48,7 +48,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 			}
 		}
 		int post_order_index = curr_tensor.StorePostOrderNodeInfo(type_content_id, children_index);
-		Assert.isTrue(post_order_index == node_post_order_index.size());
+		Assert.isTrue(post_order_index == node_post_order_index.size()+1);
 		node_post_order_index.put(node, post_order_index);
 		curr_tensor.StorePrePostOrderNodeInfo(type_content_id, has_children ? 2 : 1, post_order_index);
 	}
