@@ -9,6 +9,13 @@ public class TreeTensor extends Tensor {
 //	public TreeTensor(IDManager im) {// , int role
 //		super(im);// , role
 //	}
+	
+	public TreeTensor() {
+		super();
+		post_order_node_type_content_en.add(0);
+		post_order_node_child_start.add(0);
+		post_order_node_child_end.add(-1);
+	}
 
 	ArrayList<Integer> post_order_node_type_content_en = new ArrayList<Integer>();
 	ArrayList<Integer> post_order_node_child_start = new ArrayList<Integer>();
