@@ -112,8 +112,8 @@ public class TensorGeneratorForProject {
 					Assert.isTrue(s.getSize() == t.getSize());
 					r.SetSize(s.getSize());
 					r.SetToString(s.toString() + "$" + t.toString());
-					r.SetToDebugString(s.toDebugString() + "$" + s.toDebugString());
-					r.SetToOracleString(s.toOracleString() + "$" + s.toOracleString());
+					r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + s.toDebugString());
+					r.SetToOracleString(s.toOracleString() + "\n\n\n\n$\n\n\n\n" + s.toOracleString());
 					tree_result_tensors.add(r);
 				}
 				result_tree.AddTensors(tree_result_tensors);
