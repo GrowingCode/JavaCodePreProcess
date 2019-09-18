@@ -45,7 +45,7 @@ public class MetaOfApp {
 	
 	public final static int number_of_merges = 1000;
 	
-	public final static int MinimumNumberOfStatementsInAST = 10;
+//	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 100;
 	
 	public static boolean StatementNoLimit = false;
