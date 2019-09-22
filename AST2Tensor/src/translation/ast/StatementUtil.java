@@ -20,8 +20,6 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 
-import util.PrintUtil;
-
 public class StatementUtil {
 
 	public static boolean IsStatement(Class<?> clazz) {// node.GetClazz()
@@ -42,7 +40,7 @@ public class StatementUtil {
 		SkeletonVisitor sv = new SkeletonVisitor(icu);
 		node.accept(sv);
 		ArrayList<String> result = sv.GetResult();
-		PrintUtil.PrintList(result, "skeleton of statement:" + node);
+//		PrintUtil.PrintList(result, "skeleton of statement:" + node);
 		return result;
 	}
 
@@ -113,13 +111,14 @@ class SkeletonVisitor extends ASTVisitor {
 			int start = node.getStartPosition();
 			for (Range r : ranges) {
 //				System.out.println("start:" + start + "#r.buf_start:" + r.buf_start);
-				String pre = cnt.substring(start, r.buf_start).trim();
+				String pre = cnt.substring(start, r.buf_start);
 				if (!pre.equals("")) {
 					parts.add(pre);
 				}
 				switch (r.kind) {
 				case replace:
 					String nt = cnt.substring(r.buf_start, r.buf_end + 1);
+//					System.out.println("nt:" + nt);
 					String r_nt = nt.replace(r.ei.content, "#" + r.ei.index);
 					parts.add(r_nt);
 					break;
