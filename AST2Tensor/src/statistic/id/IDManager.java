@@ -130,12 +130,15 @@ public class IDManager {
 			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
 		}
 
+		// skeleton regist
+		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
+		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
 		// token regist
 		Regist(token_id_map, reserved_words);
 		Regist(token_id_map, new ArrayList<String>(g_set));
 		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
 		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
-
+		
 //		token_hit_num = token_id_map.size();
 //		Assert.isTrue(token_hit_num > 0);
 //		Regist(token_id_map, id_tool.tr.not_hit_train);
