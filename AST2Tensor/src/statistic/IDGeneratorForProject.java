@@ -11,7 +11,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
-import statis.trans.common.BasicGenerator;
+import statis.trans.common.YTreeGenerator;
 
 public class IDGeneratorForProject {
 
@@ -39,7 +39,7 @@ public class IDGeneratorForProject {
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
 				IDGenerator tg_id_visitor = new IDGenerator(tool, icu);
-				BasicGenerator tg = new BasicGenerator(tool.role_assigner, null, icu, cu, tg_id_visitor);
+				YTreeGenerator tg = new YTreeGenerator(tool.role_assigner, null, icu, cu, tg_id_visitor);
 				cu.accept(tg);
 			}
 		}

@@ -8,10 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.Statement;
 
 import statistic.id.IDManager;
 import translation.helper.TypeContentID;
@@ -33,23 +30,9 @@ public class StatementTensorGenerator extends TreeVisitor {
 	LinkedList<TreeNode> pre_order_node = new LinkedList<TreeNode>();
 	Map<TreeNode, StatementInfo> node_stmt = new HashMap<TreeNode, StatementInfo>();
 	
-	private boolean IsStatement(TreeNode node) {
-		if (Statement.class.isAssignableFrom(node.GetClazz()) && !(Block.class.isAssignableFrom(node.GetClazz()))) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean IsMethodDeclaration(TreeNode node) {
-		if (MethodDeclaration.class.isAssignableFrom(node.GetClazz())) {
-			return true;
-		}
-		return false;
-	}
-	
 	@Override
 	public boolean PreVisit(TreeNode node) {
-		if (IsStatement(node) || IsMethodDeclaration(node)) {
+		if (StatementUtil.IsStatement(node.GetClazz()) || StatementUtil.IsMethodDeclaration(node.GetClazz())) {
 			in_handling_node.add(node);
 			StatementInfo stmt_info = new StatementInfo(node.toString());
 			in_handling_tensor.add(stmt_info);
@@ -114,7 +97,7 @@ public class StatementTensorGenerator extends TreeVisitor {
 
 	@Override
 	public void PostVisit(TreeNode node) {
-		if (IsStatement(node) || IsMethodDeclaration(node)) {
+		if (StatementUtil.IsStatement(node.GetClazz()) || StatementUtil.IsMethodDeclaration(node.GetClazz())) {
 			TreeNode handle_node = in_handling_node.pop();
 			Assert.isTrue(handle_node.equals(node));
 			StatementInfo last_stmt = in_handling_tensor.pop();

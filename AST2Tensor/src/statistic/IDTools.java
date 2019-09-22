@@ -12,14 +12,16 @@ public class IDTools {
 	public BPEMergeRecorder bpe_mr = null;
 	public RoleAssigner role_assigner = null;
 	public TokenRecorder tr = null;
+	public TokenRecorder sr = null;
 	public GrammarRecorder gr = null;
 	public APIRecorder ar = null;
 	public ChildrenNumCounter cnc = null;
 	
-	public IDTools(BPEMergeRecorder bpe_mr, RoleAssigner role_assigner, TokenRecorder tr, GrammarRecorder gr, APIRecorder ar, ChildrenNumCounter cnc) {
+	public IDTools(BPEMergeRecorder bpe_mr, RoleAssigner role_assigner, TokenRecorder tr, TokenRecorder sr, GrammarRecorder gr, APIRecorder ar, ChildrenNumCounter cnc) {
 		this.bpe_mr = bpe_mr;
 		this.role_assigner = role_assigner;
 		this.tr = tr;
+		this.sr = sr;
 		this.gr = gr;
 		this.ar = ar;
 		this.cnc = cnc;

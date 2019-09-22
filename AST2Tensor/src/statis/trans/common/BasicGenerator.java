@@ -1,9 +1,7 @@
 package statis.trans.common;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -14,16 +12,10 @@ import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
-import eclipse.jdt.JDTASTHelper;
-import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.roles.RoleAssigner;
-import translation.tensor.StringTensor;
 import translation.tensor.Tensor;
-import tree.TreeNode;
-import tree.TreeVisit;
-import tree.TreeVisitor;
 
 public class BasicGenerator extends ASTVisitor {
 
@@ -35,18 +27,15 @@ public class BasicGenerator extends ASTVisitor {
 
 	protected LinkedList<Tensor> tensor_list = new LinkedList<Tensor>();
 
-	protected TreeVisitor visitor = null;
-
 	public int total_method_count = 0;
 	public int unsuitable_method_count = 0;
+	protected int method_node_count = 0;
 
-	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu,
-			TreeVisitor visitor) {
+	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
 		this.role_assigner = role_assigner;
 		this.im = im;
 		this.icu = icu;
 		this.cu = cu;
-		this.visitor = visitor;
 	}
 
 	public List<Tensor> GetGeneratedTensors() {
@@ -56,8 +45,7 @@ public class BasicGenerator extends ASTVisitor {
 	protected ASTNode cared_parent = null;
 	protected boolean begin_generation = false;
 	protected ASTNode begin_generation_node = null;
-	protected Map<ASTNode, TreeNode> tree = new HashMap<ASTNode, TreeNode>();
-
+	
 	@Override
 	public void preVisit(ASTNode node) {
 		super.preVisit(node);
@@ -67,29 +55,13 @@ public class BasicGenerator extends ASTVisitor {
 		}
 		if (cared_parent != null && StandAtRootNodeOfTensorGeneration(node, node_parent)
 				&& UnHandledASTNodesFilterPassed(node)) {
-			Assert.isTrue(begin_generation == false && begin_generation_node == null && tree.isEmpty(), "begin_generation:" + begin_generation + "#begin_generation_node:" + (begin_generation_node == null) + "#tree.isEmpty():" + tree.isEmpty());
+			Assert.isTrue(begin_generation == false && begin_generation_node == null && method_node_count == 0,// && tree.isEmpty()
+					"begin_generation:" + begin_generation + "#begin_generation_node:" + (begin_generation_node == null));// + "#tree.isEmpty():" + tree.isEmpty()
 			begin_generation = true;
 			begin_generation_node = node;
 		}
 		if (begin_generation) {
-			String type = JDTASTHelper.GetTypeRepresentationForASTNode(node);
-			TreeNode tn = new TreeNode(node.getClass(), type);
-			tree.put(node, tn);
-			ASTNode parent = node.getParent();
-			TreeNode parent_tn = tree.get(parent);
-			if (parent_tn == null) {
-				Assert.isTrue(node.equals(begin_generation_node));
-			} else {
-				parent_tn.AppendToChildren(tn);
-			}
-
-			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-			boolean is_leaf = children.size() == 0;
-			if (is_leaf) {
-				String content = JDTASTHelper.GetContentRepresentationForASTNode(node);
-				TreeNode chd_tn = new TreeNode(String.class, content);
-				tn.AppendToChildren(chd_tn);
-			}
+			method_node_count++;
 		}
 	}
 
@@ -102,24 +74,24 @@ public class BasicGenerator extends ASTVisitor {
 		if (begin_generation) {
 			if (begin_generation_node.equals(node)) {
 				total_method_count++;
-				if (MetaOfApp.StatementNoLimit || (tree.size() >= MetaOfApp.MinimumNumberOfNodesInAST)) {
-					TreeNode root = tree.get(node);
-					visitor.Clear();
-					TreeVisit.Visit(root, visitor);
-					StringTensor st = visitor.GetStringTensor();
-					if (st != null) {
-						st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
-						tensor_list.add(st);
-					}
+				if (MetaOfApp.StatementNoLimit || (method_node_count >= MetaOfApp.MinimumNumberOfNodesInAST)) {
+					WholePostHandle(node);
 				} else {
 					unsuitable_method_count++;
 				}
+				WholePostClear(node);
 				begin_generation = false;
 				begin_generation_node = null;
-				tree.clear();
+				method_node_count = 0;
 			}
 		}
 		super.postVisit(node);
+	}
+	
+	protected void WholePostHandle(ASTNode node) {
+	}
+	
+	protected void WholePostClear(ASTNode node) {
 	}
 
 	private boolean StandAtRootNodeOfTensorGeneration(ASTNode node, ASTNode node_parent) {

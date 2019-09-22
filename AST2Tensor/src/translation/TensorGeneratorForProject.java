@@ -15,7 +15,7 @@ import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
 import main.MetaOfApp;
-import statis.trans.common.BasicGenerator;
+import statis.trans.common.YTreeGenerator;
 import translation.ast.StatementTensorGenerator;
 import translation.ast.TreeTensorGenerator;
 import translation.sequence.SequenceTensorGenerator;
@@ -86,11 +86,11 @@ public class TensorGeneratorForProject {
 				StatementTensorGenerator tg_stmt_tree_visitor = new StatementTensorGenerator(tensor_tool.im);
 				TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator(tensor_tool.im);
 				SequenceTensorGenerator tg_stmt_sequence_visitor = new SequenceTensorGenerator(tensor_tool.im);
-				BasicGenerator tg_stmt_tree = new BasicGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+				YTreeGenerator tg_stmt_tree = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
 						tg_stmt_tree_visitor);
-				BasicGenerator tg_tree = new BasicGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+				YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
 						tg_tree_visitor);
-				BasicGenerator tg_stmt_sequence = new BasicGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+				YTreeGenerator tg_stmt_sequence = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
 						tg_stmt_sequence_visitor);
 				cu.accept(tg_stmt_tree);
 				cu.accept(tg_tree);
@@ -109,7 +109,8 @@ public class TensorGeneratorForProject {
 					Assert.isTrue(s.GetRole() == t.GetRole());
 					StringTensor r = new StringTensor();
 					r.SetRole(s.GetRole());
-					Assert.isTrue(s.getSize()+1 == t.getSize(), "s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
+					Assert.isTrue(s.getSize() + 1 == t.getSize(),
+							"s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
 					r.SetSize(s.getSize());
 					r.SetToString(s.toString() + "$" + t.toString());
 					r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString());

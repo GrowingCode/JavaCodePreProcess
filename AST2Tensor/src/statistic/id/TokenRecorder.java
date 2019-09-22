@@ -25,7 +25,7 @@ public class TokenRecorder {
 	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
 
 	public TokenRecorder() {
-		TokenHitInTrainSet(IDManager.ZDFT, 100);
+		TokenHitInTrainSet(IDManager.ZDft, 100);
 		TokenHitInTrainSet(IDManager.Unk, 100);
 	}
 

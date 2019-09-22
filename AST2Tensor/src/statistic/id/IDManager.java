@@ -31,14 +31,16 @@ public class IDManager {
 	public static final String Leaf = "L";
 	public static final String NonLeaf = "N";
 
-	public static final String ZDFT = "#Dft#";
+	public static final String ZDft = "#Dft#";
 	public static final String Unk = "#Unk#";
+	public static final String Rep = "#Rep#";
 	
 	public static final List<String> reserved_words = new LinkedList<String>();
 	
 	static {
-		reserved_words.add(ZDFT);
+		reserved_words.add(ZDft);
 		reserved_words.add(Unk);
+		reserved_words.add(Rep);
 	}
 
 //	public static String DefaultPart = "@Default";
@@ -61,7 +63,8 @@ public class IDManager {
 	// public static String StringLiteralLeafDefault = "\"@str!\"";
 	// public static String NullLiteralLeafDefault = "null";
 	// public static String TerminalLeafDefault = "TermDefault";
-
+	
+	private TreeMap<String, Integer> skeleton_id_map = new TreeMap<String, Integer>();
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
 //	private int grammar_token_num = -1;
 //	private int token_hit_num = -1;
@@ -275,6 +278,12 @@ public class IDManager {
 	// }
 	// }
 //	}
+	
+	public int GetSkeletonID(String skeleton) {
+		Integer id = skeleton_id_map.get(skeleton);
+		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
+		return id;
+	}
 
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
