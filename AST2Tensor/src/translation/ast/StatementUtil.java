@@ -20,6 +20,8 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 
+import util.PrintUtil;
+
 public class StatementUtil {
 	
 	public static boolean IsStatement(Class<?> clazz) {// node.GetClazz()
@@ -40,6 +42,7 @@ public class StatementUtil {
 		SkeletonVisitor sv = new SkeletonVisitor(icu);
 		node.accept(sv);
 		ArrayList<String> result = sv.GetResult();
+		PrintUtil.PrintList(result, "skeleton of statement:" + node);
 		return result;
 	}
 	

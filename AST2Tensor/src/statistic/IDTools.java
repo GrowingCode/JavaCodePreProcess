@@ -13,6 +13,7 @@ public class IDTools {
 	public RoleAssigner role_assigner = null;
 	public TokenRecorder tr = null;
 	public TokenRecorder sr = null;
+	public TokenRecorder str = null;
 	public GrammarRecorder gr = null;
 	public APIRecorder ar = null;
 	public ChildrenNumCounter cnc = null;

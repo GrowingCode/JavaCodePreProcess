@@ -20,7 +20,7 @@ public class SkeletonIDGenerator extends BasicGenerator {
 	public SkeletonIDGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
 		super(role_assigner, im, icu, cu);
 		this.tool = tool;
-		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
+		this.role = tool.role_assigner.GetRole(icu.getPath().toOSString());
 	}
 	
 	@Override
@@ -46,9 +46,9 @@ public class SkeletonIDGenerator extends BasicGenerator {
 			for (int i=1;i<stmt.size();i++) {
 				String tk = stmt.get(i);
 				if (role <= RoleAssigner.train_seen_k) {
-					tool.tr.TokenHitInTrainSet(tk, 1);
+					tool.str.TokenHitInTrainSet(tk, 1);
 				} else {
-					tool.tr.TokenNotHitInTrainSet(tk, 1);
+					tool.str.TokenNotHitInTrainSet(tk, 1);
 				}
 			}
 		}
