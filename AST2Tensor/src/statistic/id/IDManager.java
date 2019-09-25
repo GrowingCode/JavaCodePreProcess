@@ -126,16 +126,16 @@ public class IDManager {
 		this.id_tool = id_tool;
 //		token_id_map.putAll(id_tool.gr.node_type_id);
 //		grammar_token_num = token_id_map.size();
-		Set<String> g_set = id_tool.gr.self_children_map.keySet();
-		for (String g : g_set) {
-			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
-		}
-
 		// skeleton regist
 		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
 		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
 		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
 		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
+		
+		Set<String> g_set = id_tool.gr.self_children_map.keySet();
+		for (String g : g_set) {
+			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
+		}
 		// token regist
 		Regist(token_id_map, reserved_words);
 		Regist(token_id_map, new ArrayList<String>(g_set));

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -110,7 +111,7 @@ class SkeletonVisitor extends ASTVisitor {
 			}
 			int start = node.getStartPosition();
 			for (Range r : ranges) {
-//				System.out.println("start:" + start + "#r.buf_start:" + r.buf_start);
+				Assert.isTrue(start < r.buf_start, "start:" + start + "#r.buf_start:" + "strange node:" + node.toString());
 				String pre = cnt.substring(start, r.buf_start);
 				if (!pre.equals("")) {
 					parts.add(pre);
