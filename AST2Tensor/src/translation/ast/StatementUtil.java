@@ -111,7 +111,7 @@ class SkeletonVisitor extends ASTVisitor {
 			}
 			int start = node.getStartPosition();
 			for (Range r : ranges) {
-				Assert.isTrue(start < r.buf_start, "start:" + start + "#r.buf_start:" + "#range_content:" + r.ei.content + "#strange node:" + node.toString());
+				Assert.isTrue(start < r.buf_start, "start:" + start + "#r.buf_start:" + r.buf_start + "#range_content:" + r.ei + "#strange node:" + node.toString());
 				String pre = cnt.substring(start, r.buf_start);
 				if (!pre.equals("")) {
 					parts.add(pre);
@@ -165,6 +165,11 @@ class SkeletonVisitor extends ASTVisitor {
 		@Override
 		public int compareTo(ElementInfo o) {
 			return new Integer(index).compareTo(new Integer(o.index));
+		}
+		
+		@Override
+		public String toString() {
+			return "index:" + index + "#content:" + content;
 		}
 
 	}
