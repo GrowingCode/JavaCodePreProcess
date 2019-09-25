@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 
 public class StatementUtil {
@@ -110,8 +111,18 @@ class SkeletonVisitor extends ASTVisitor {
 				e.printStackTrace();
 			}
 			int start = node.getStartPosition();
-			for (Range r : ranges) {
-				Assert.isTrue(start < r.buf_start, "start:" + start + "#r.buf_start:" + r.buf_start + "#range_content:" + r.ei + "#strange node:" + node.toString());
+			for (int i = 0; i < ranges.size(); i++) {
+				Range r = ranges.get(i);
+				Range pr = null;
+				String pre_r_cnt = null;
+				if (i > 0) {
+					pr = ranges.get(i-1);
+					pre_r_cnt = cnt.substring(pr.buf_start, pr.buf_end + 1);
+				}
+				Assert.isTrue(start <= r.buf_start,
+						"start:" + start + "#r.buf_start:" + r.buf_start + "#range_content:" + r.ei + "#range_cnt:"
+								+ cnt.substring(r.buf_start, r.buf_end + 1) + "#previous r_cnt:" + pre_r_cnt + "#strange node:" + node.toString()
+								+ "#parent strange node:" + node.getParent().toString());
 				String pre = cnt.substring(start, r.buf_start);
 				if (!pre.equals("")) {
 					parts.add(pre);
@@ -166,7 +177,7 @@ class SkeletonVisitor extends ASTVisitor {
 		public int compareTo(ElementInfo o) {
 			return new Integer(index).compareTo(new Integer(o.index));
 		}
-		
+
 		@Override
 		public String toString() {
 			return "index:" + index + "#content:" + content;
