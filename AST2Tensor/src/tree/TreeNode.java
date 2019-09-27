@@ -37,4 +37,8 @@ public class TreeNode {
 		return children;
 	}
 	
+	public TreeNode GetParent() {
+		return parent;
+	}
+	
 }

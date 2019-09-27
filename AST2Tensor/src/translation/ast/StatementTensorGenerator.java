@@ -91,7 +91,7 @@ public class StatementTensorGenerator extends TreeVisitor {
 //			stmt.StoreOneNode(tid, var, api_comb_id, api_relative_id);
 		}
 		StatementInfo stmt = in_handling_tensor.peek();
-		stmt.StoreOneNode(tid, var, -1, -1);
+		stmt.StoreOneNode(tid, var, node, node.GetParent(), -1, -1);
 		return true;
 	}
 
