@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
 import statistic.id.IDManager;
+import tree.TreeNode;
 import util.BooleanArrayUtil;
 import util.SetUtil;
 
@@ -34,7 +35,9 @@ public class StatementTensor extends Tensor {
 	// local_token_id means the id for variable (memory address)
 	// inner id is the id for current training example (due to for every token,
 	// running char sequence is impossible)
-
+	
+	Map<TreeNode, Integer> node_index = new HashMap<TreeNode, Integer>();
+	
 	// for tensor
 	// base data
 	// the first two columns are indicators.
@@ -50,6 +53,7 @@ public class StatementTensor extends Tensor {
 	// index
 	// stmt info of tokens start end: se|se|se
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
@@ -152,6 +156,7 @@ public class StatementTensor extends Tensor {
 	private String ToStmtInfo(String separator) {
 //		separator + StringUtils.join(stmt_token_inner_index_info.toArray(), " ") + 
 		return StringUtils.join(stmt_token_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
@@ -419,6 +424,22 @@ public class StatementTensor extends Tensor {
 				stmt_token_info_start.add(ori_size);
 				stmt_token_string.addAll(last_stmt.type_content_str);
 				stmt_token_info.addAll(last_stmt.type_content_id);
+				
+				int j_len = last_stmt.self.size();
+				for (int j=0;j<j_len;j++) {
+					TreeNode self_n = last_stmt.self.get(j);
+					TreeNode parent_n = last_stmt.parent.get(j);
+					Assert.isTrue(!node_index.containsKey(self_n));
+					node_index.put(self_n, node_index.size());
+					if (parent_n == null) {//  || !node_index.containsKey(parent_n)
+						Assert.isTrue(stmt_token_parent_relative_info.size() == 0);
+						stmt_token_parent_relative_info.add(0);
+					} else {
+						int parent_relative = node_index.get(self_n)-node_index.get(parent_n);
+						Assert.isTrue(parent_relative > 0);
+						stmt_token_parent_relative_info.add(parent_relative);
+					}
+				}
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}

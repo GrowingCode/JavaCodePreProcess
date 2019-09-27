@@ -1,14 +1,12 @@
 package translation.tensor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
 import translation.helper.TypeContentID;
@@ -21,12 +19,11 @@ public class StatementInfo {
 	public StatementInfo(String stmt) {
 		this.stmt = stmt;
 	}
-	
-	Map<TreeNode, Integer> node_index = new HashMap<TreeNode, Integer>();
 
 	ArrayList<Integer> type_content_id = new ArrayList<Integer>();
-	ArrayList<Integer> parent_relative_index = new ArrayList<Integer>();
 	ArrayList<String> local_token_str = new ArrayList<String>();
+	ArrayList<TreeNode> self = new ArrayList<TreeNode>();
+	ArrayList<TreeNode> parent = new ArrayList<TreeNode>();
 //	ArrayList<Integer> is_variable = new ArrayList<Integer>();
 	ArrayList<Integer> api_group = new ArrayList<Integer>();
 	ArrayList<Integer> api_relative = new ArrayList<Integer>();
@@ -45,16 +42,8 @@ public class StatementInfo {
 			token_var = t_c.GetTypeContent();
 		}
 		local_token_str.add(token_var);
-		Assert.isTrue(!node_index.containsKey(self_n));
-		node_index.put(self_n, node_index.size());
-		if (parent_n == null || !node_index.containsKey(parent_n)) {
-			if (parent_n != null) {
-				Assert.isTrue(parent_relative_index.size() == 0);
-			}
-			parent_relative_index.add(0);
-		} else {
-			parent_relative_index.add(node_index.get(self_n)-node_index.get(parent_n));
-		}
+		self.add(self_n);
+		parent.add(parent_n);
 //		is_variable.add(is_var);
 
 		if (token_var == null) {
