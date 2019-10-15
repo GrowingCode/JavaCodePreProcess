@@ -50,7 +50,7 @@ public class MetaOfApp {
 	
 	public static boolean StatementNoLimit = false;
 	
-	public static boolean VariableNoLimit = false;
+	public static boolean VariableNoLimit = true;
 	
 	public static void SaveToDirectory(String dir) {
 		Gson gson = new Gson();
