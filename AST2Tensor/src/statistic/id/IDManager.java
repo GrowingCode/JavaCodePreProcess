@@ -964,6 +964,7 @@ public class IDManager {
 			GenerateAndSaveCharSequenceInCascadeForm(dir);
 		}
 		// only for debug
+		GenerateIDJson(dir, skeleton_id_map, "skeleton");
 		GenerateIDJson(dir, token_id_map, "token");
 		GenerateIDJson(dir, api_comb_id_map, "api_comb");
 		// for real tensor usage
