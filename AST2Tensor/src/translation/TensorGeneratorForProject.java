@@ -119,8 +119,8 @@ public class TensorGeneratorForProject {
 					r.SetRole(s.GetRole());
 					Assert.isTrue(s.getSize() + 1 == t.getSize(),
 							"s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
-					Assert.isTrue(s.getSize() == sst.getSize(),
-							"s.getSize():" + s.getSize() + ";sst.getSize():" + sst.getSize());
+//					Assert.isTrue(s.getSize() == sst.getSize(),
+//							"s.getSize():" + s.getSize() + ";sst.getSize():" + sst.getSize());
 					r.SetSize(s.getSize());
 					r.SetToString(s.toString() + "$" + t.toString() + "$" + sst.toString());
 					r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString() + "\n\n\n\n$\n\n\n\n" + sst.toDebugString());
