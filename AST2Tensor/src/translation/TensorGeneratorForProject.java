@@ -16,6 +16,7 @@ import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
 import main.MetaOfApp;
 import statis.trans.common.YTreeGenerator;
+import translation.ast.StatementSkeletonTensorGenerator;
 import translation.ast.StatementTensorGenerator;
 import translation.ast.TreeTensorGenerator;
 import translation.sequence.SequenceTensorGenerator;
@@ -95,26 +96,35 @@ public class TensorGeneratorForProject {
 				cu.accept(tg_stmt_tree);
 				cu.accept(tg_tree);
 				cu.accept(tg_stmt_sequence);
+				StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu);
+				cu.accept(tg_stmt_skt);
 				total_method_count += tg_stmt_sequence.total_method_count;
 				unsuitable_method_count += tg_stmt_sequence.unsuitable_method_count;
 				List<Tensor> stmt_tensors = tg_stmt_tree.GetGeneratedTensors();
 				List<Tensor> tree_tensors = tg_tree.GetGeneratedTensors();
+				List<Tensor> stmt_skt_tensors = tg_stmt_skt.GetGeneratedTensors();
 				Assert.isTrue(stmt_tensors.size() == tree_tensors.size());
+				Assert.isTrue(tree_tensors.size() == stmt_skt_tensors.size());
 				List<Tensor> tree_result_tensors = new LinkedList<Tensor>();
 				Iterator<Tensor> s_itr = stmt_tensors.iterator();
 				Iterator<Tensor> t_itr = tree_tensors.iterator();
+				Iterator<Tensor> sst_itr = stmt_skt_tensors.iterator();
 				while (s_itr.hasNext()) {
 					StringTensor s = (StringTensor) s_itr.next();
 					StringTensor t = (StringTensor) t_itr.next();
+					StringTensor sst = (StringTensor) sst_itr.next();
 					Assert.isTrue(s.GetRole() == t.GetRole());
+					Assert.isTrue(t.GetRole() == sst.GetRole());
 					StringTensor r = new StringTensor();
 					r.SetRole(s.GetRole());
 					Assert.isTrue(s.getSize() + 1 == t.getSize(),
 							"s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
+					Assert.isTrue(s.getSize() == sst.getSize(),
+							"s.getSize():" + s.getSize() + ";sst.getSize():" + sst.getSize());
 					r.SetSize(s.getSize());
-					r.SetToString(s.toString() + "$" + t.toString());
-					r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString());
-					r.SetToOracleString(s.toOracleString() + "\n\n\n\n$\n\n\n\n" + t.toOracleString());
+					r.SetToString(s.toString() + "$" + t.toString() + "$" + sst.toString());
+					r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString() + "\n\n\n\n$\n\n\n\n" + sst.toDebugString());
+					r.SetToOracleString(s.toOracleString() + "\n\n\n\n$\n\n\n\n" + t.toOracleString() + "\n\n\n\n$\n\n\n\n" + sst.toOracleString());
 					tree_result_tensors.add(r);
 				}
 				result_tree.AddTensors(tree_result_tensors);
