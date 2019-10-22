@@ -94,12 +94,11 @@ public class Application implements IApplication {
 		tr.TokenHitInTrainSet(IDManager.Unk, 100);
 		tr.TokenHitInTrainSet(IDManager.Rep, 100);
 		TokenRecorder sr = new TokenRecorder();
-//		TokenRecorder str = new TokenRecorder();
+		TokenRecorder str = new TokenRecorder();
 		GrammarRecorder gr = new GrammarRecorder();
 		APIRecorder ar = new APIRecorder();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
-//		str, 
-		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, sr, gr, ar, cnc);
+		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, sr, str, gr, ar, cnc);
 		{
 			File bpe_mj = new File(bpe_merges_json);
 			File bpe_ttj = new File(bpe_token_times_json);

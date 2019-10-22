@@ -46,11 +46,11 @@ public class SkeletonIDGenerator extends BasicGenerator {
 			for (int i=1;i<stmt.size();i++) {
 				String tk = stmt.get(i);
 				if (role <= RoleAssigner.train_seen_k) {
-					tool.tr.TokenHitInTrainSet(tk, 1);
-//					tool.str.TokenHitInTrainSet(tk, 1);
+//					tool.tr.TokenHitInTrainSet(tk, 1);
+					tool.str.TokenHitInTrainSet(tk, 1);
 				} else {
-					tool.tr.TokenHitInTrainSet(tk, 1);
-//					tool.str.TokenNotHitInTrainSet(tk, 1);
+//					tool.tr.TokenHitInTrainSet(tk, 1);
+					tool.str.TokenNotHitInTrainSet(tk, 1);
 				}
 			}
 		}

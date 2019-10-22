@@ -65,7 +65,7 @@ public class IDManager {
 	// public static String TerminalLeafDefault = "TermDefault";
 	
 	private TreeMap<String, Integer> skeleton_id_map = new TreeMap<String, Integer>();
-//	private TreeMap<String, Integer> skeleton_token_id_map = new TreeMap<String, Integer>();
+	private TreeMap<String, Integer> skeleton_token_id_map = new TreeMap<String, Integer>();
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
 //	private int grammar_token_num = -1;
 //	private int token_hit_num = -1;
@@ -129,8 +129,8 @@ public class IDManager {
 		// skeleton regist
 		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
 		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
-//		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
-//		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
+		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
+		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
 		
 		Set<String> g_set = id_tool.gr.self_children_map.keySet();
 		for (String g : g_set) {
@@ -291,11 +291,11 @@ public class IDManager {
 		return id;
 	}
 	
-//	public int GetSkeletonTypeContentID(String type_content) {
-//		Integer id = skeleton_token_id_map.get(type_content);
-//		Assert.isTrue(id != null, "unseen skeleton type_content:" + type_content);
-//		return id;
-//	}
+	public int GetSkeletonTypeContentID(String type_content) {
+		Integer id = skeleton_token_id_map.get(type_content);
+		Assert.isTrue(id != null, "unseen skeleton type_content:" + type_content);
+		return id;
+	}
 
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
