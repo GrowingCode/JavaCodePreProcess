@@ -65,7 +65,7 @@ public class IDManager {
 	// public static String TerminalLeafDefault = "TermDefault";
 	
 	private TreeMap<String, Integer> skeleton_id_map = new TreeMap<String, Integer>();
-	private TreeMap<String, Integer> skeleton_token_id_map = new TreeMap<String, Integer>();
+//	private TreeMap<String, Integer> skeleton_token_id_map = new TreeMap<String, Integer>();
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
 //	private int grammar_token_num = -1;
 //	private int token_hit_num = -1;
@@ -129,8 +129,11 @@ public class IDManager {
 		// skeleton regist
 		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
 		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
-		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
-		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
+//		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
+//		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
+		
+//		PrintUtil.PrintSet(id_tool.tr.hit_train.keySet(), "id_tool.tr.hit_train.keySet()" + ";size:" + id_tool.tr.hit_train.keySet().size());
+//		PrintUtil.PrintSet(id_tool.str.hit_train.keySet(), "id_tool.str.hit_train.keySet()" + ";size:" + id_tool.str.hit_train.keySet().size());
 		
 		Set<String> g_set = id_tool.gr.self_children_map.keySet();
 		for (String g : g_set) {
@@ -291,11 +294,11 @@ public class IDManager {
 		return id;
 	}
 	
-	public int GetSkeletonTypeContentID(String type_content) {
-		Integer id = skeleton_token_id_map.get(type_content);
-		Assert.isTrue(id != null, "unseen skeleton type_content:" + type_content);
-		return id;
-	}
+//	public int GetSkeletonTypeContentID(String type_content) {
+//		Integer id = skeleton_token_id_map.get(type_content);
+//		Assert.isTrue(id != null, "unseen skeleton type_content:" + type_content);
+//		return id;
+//	}
 
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
@@ -671,7 +674,8 @@ public class IDManager {
 		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
 		ts.removeAll(id_tool.tr.hit_train.keySet());
 		ts.removeAll(id_tool.tr.not_hit_train.keySet());
-//		PrintUtil.PrintSet(ts, "left things");
+		PrintUtil.PrintSet(ts, "left things");
+		
 		Assert.isTrue(origin_after.size() == token_id_map.size(),
 				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 

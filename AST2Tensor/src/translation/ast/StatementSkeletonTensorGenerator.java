@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
+import statistic.id.PreProcessContentHelper;
 import translation.roles.RoleAssigner;
 import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.StringTensor;
@@ -40,7 +41,8 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 			int sk_id = im.GetSkeletonID(lls.get(0));
 			ids.add(sk_id);
 			for (int i=1;i<lls.size();i++) {
-				int tk_id = im.GetSkeletonTypeContentID(lls.get(i));
+				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(lls.get(i));
+				int tk_id = im.GetTypeContentID(pp_tk);
 //				int tk_id = im.GetTypeContentID(lls.get(i));
 				ids.add(tk_id);
 			}

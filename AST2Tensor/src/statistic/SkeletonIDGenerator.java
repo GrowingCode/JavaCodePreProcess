@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
+import statistic.id.PreProcessContentHelper;
 import translation.ast.StatementUtil;
 import translation.roles.RoleAssigner;
 
@@ -45,12 +46,13 @@ public class SkeletonIDGenerator extends BasicGenerator {
 			}
 			for (int i=1;i<stmt.size();i++) {
 				String tk = stmt.get(i);
+				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(tk);
 				if (role <= RoleAssigner.train_seen_k) {
-//					tool.tr.TokenHitInTrainSet(tk, 1);
-					tool.str.TokenHitInTrainSet(tk, 1);
+					tool.tr.TokenHitInTrainSet(pp_tk, 1);
+//					tool.str.TokenHitInTrainSet(pp_tk, 1);
 				} else {
-//					tool.tr.TokenHitInTrainSet(tk, 1);
-					tool.str.TokenNotHitInTrainSet(tk, 1);
+					tool.tr.TokenHitInTrainSet(pp_tk, 1);
+//					tool.str.TokenNotHitInTrainSet(pp_tk, 1);
 				}
 			}
 		}
