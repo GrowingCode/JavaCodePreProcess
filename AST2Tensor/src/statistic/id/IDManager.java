@@ -135,15 +135,16 @@ public class IDManager {
 //		PrintUtil.PrintSet(id_tool.tr.hit_train.keySet(), "id_tool.tr.hit_train.keySet()" + ";size:" + id_tool.tr.hit_train.keySet().size());
 //		PrintUtil.PrintSet(id_tool.str.hit_train.keySet(), "id_tool.str.hit_train.keySet()" + ";size:" + id_tool.str.hit_train.keySet().size());
 		
-		Set<String> g_set = id_tool.gr.self_children_map.keySet();
-		for (String g : g_set) {
-			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
-		}
+//		Set<String> g_set = id_tool.gr.self_children_map.keySet();
+//		for (String g : g_set) {
+//			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
+//		}
 		// token regist
 		Regist(token_id_map, reserved_words);
-		Regist(token_id_map, new ArrayList<String>(g_set));
-		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
-		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
+		Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(1)));
+//		Regist(token_id_map, new ArrayList<String>(g_set));
+//		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
+//		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
 		
 //		token_hit_num = token_id_map.size();
 //		Assert.isTrue(token_hit_num > 0);
@@ -152,7 +153,7 @@ public class IDManager {
 		// api comb regist
 		Regist(api_comb_id_map, new ArrayList<String>(id_tool.ar.api_combs));
 
-		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
+//		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
 
 //		api_comb_hit_num = api_comb_id_map.size();
 //		Assert.isTrue(api_comb_hit_num > 0);
@@ -302,10 +303,11 @@ public class IDManager {
 
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
-		Assert.isTrue(id != null, "unseen type_content:" + type_content);
-//		if (id != null) {
+//		Assert.isTrue(id != null, "unseen type_content:" + type_content);
+		if (id == null) {
+			return token_id_map.get(Unk);
+		}
 		return id;
-//		}
 //		not_hit_words.add(type_content);
 //		int pos = type_content.indexOf('#');
 //		String type = type_content.substring(0, pos);
@@ -901,7 +903,7 @@ public class IDManager {
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
-		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
+//		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		meta_of_ast2tensor.put("ReservedNumberOfWords", reserved_words.size());
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));

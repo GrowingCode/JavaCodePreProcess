@@ -1,6 +1,12 @@
 package statistic.id;
 
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
+
+import util.MapUtil;
 
 public class TokenRecorder {
 
@@ -103,11 +109,16 @@ public class TokenRecorder {
 //	}
 
 	// warning: this version can only be invoked once
-//	public void RefineAllStatistics(int minsupport, int maxcapacity) {
-//		if (!MetaOfApp.ReplaceLeastWithUnk) {
-////			System.out.println("return executed!");
-//			return;
-//		}
+	public Set<String> RefineHitTrain(int removes) {
+		List<Entry<String, Integer>> ht = MapUtil.SortMapByValue(hit_train);
+		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
+		Set<String> remove_keys = new TreeSet<String>();
+		for (int i=0;i<removes;i++) {
+			remove_keys.add(ht.get(i).getKey());
+		}
+		Set<String> ks = hit_train.keySet();
+		ks.removeAll(remove_keys);
+		return ks;
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateInternalTypeContentCascadedMap();
 //		type_content_count.clear();
 //		// now, all data in type_content_count has already been put into
@@ -142,7 +153,7 @@ public class TokenRecorder {
 //				type_content_count.put(tc, content_count);
 //			}
 //		}
-//	}
+	}
 
 //	public void RefineAllStatistics(int minsupport, int maxcapacity) {
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateTypeContentCount();

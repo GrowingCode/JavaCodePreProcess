@@ -23,7 +23,6 @@ import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
 import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
-import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
 import statistic.id.TokenRecorder;
 import translation.TensorGeneratorForProject;
@@ -95,11 +94,11 @@ public class Application implements IApplication {
 		tr.TokenHitInTrainSet(IDManager.Rep, 100);
 		TokenRecorder sr = new TokenRecorder();
 //		TokenRecorder str = new TokenRecorder();
-		GrammarRecorder gr = new GrammarRecorder();
+//		GrammarRecorder gr = new GrammarRecorder();
 		APIRecorder ar = new APIRecorder();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
-//		str, 
-		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, sr, gr, ar, cnc);
+//		str, gr, 
+		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, sr, ar, cnc);
 		{
 			File bpe_mj = new File(bpe_merges_json);
 			File bpe_ttj = new File(bpe_token_times_json);
@@ -145,7 +144,7 @@ public class Application implements IApplication {
 			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
 			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
-			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
+//			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
 		}
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);
