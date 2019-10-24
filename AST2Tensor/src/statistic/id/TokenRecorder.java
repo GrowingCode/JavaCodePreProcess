@@ -1,12 +1,14 @@
 package statistic.id;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import util.MapUtil;
+import util.PrintUtil;
 
 public class TokenRecorder {
 
@@ -15,7 +17,9 @@ public class TokenRecorder {
 	// public static IDManager Instance() {
 	// return unique;
 	// }
-
+	
+	public static final int MaxParentTypeRemoveTimes = 1;
+	
 //	private TreeMap<String, Boolean> type_is_leaf = new TreeMap<String, Boolean>();
 
 //	private TreeMap<String, Boolean> type_content_is_leaf = new TreeMap<String, Boolean>();
@@ -29,6 +33,9 @@ public class TokenRecorder {
 
 	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
 	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
+	
+	TreeMap<String, String> hit_train_parent_type = new TreeMap<String, String>();
+//	TreeMap<String, String> not_hit_train_parent_type = new TreeMap<String, String>();
 
 	public TokenRecorder() {
 	}
@@ -41,7 +48,7 @@ public class TokenRecorder {
 //		}
 //	}
 
-	public void TokenHitInTrainSet(String type_content, Integer count) {
+	public void TokenHitInTrainSet(String parent_type_content, String type_content, Integer count) {
 //		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 //		hit_train.add(type_content);
 		Integer h_count = hit_train.get(type_content);
@@ -49,23 +56,24 @@ public class TokenRecorder {
 			h_count = 0;
 		}
 		h_count += count;
-		Integer val = not_hit_train.remove(type_content);
-		if (val != null) {
+//		Integer val = not_hit_train.remove(type_content);
+//		if (val != null) {
 //			h_count += val;
-		}
+//		}
 		hit_train.put(type_content, h_count);
+		hit_train_parent_type.put(type_content, parent_type_content);
 	}
 
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {
 //		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
-		if (!hit_train.containsKey(type_content)) {
-			Integer nh_count = not_hit_train.get(type_content);
-			if (nh_count == null) {
-				nh_count = 0;
-			}
-			nh_count += count;
-			not_hit_train.put(type_content, nh_count);
-		}
+//		if (!hit_train.containsKey(type_content)) {
+//			Integer nh_count = not_hit_train.get(type_content);
+//			if (nh_count == null) {
+//				nh_count = 0;
+//			}
+//			nh_count += count;
+//			not_hit_train.put(type_content, nh_count);
+//		}
 	}
 
 //	public static boolean LeafIsFixed(ASTNode node) {
@@ -111,12 +119,31 @@ public class TokenRecorder {
 	// warning: this version can only be invoked once
 	public Set<String> RefineHitTrain(int removes) {
 		List<Entry<String, Integer>> ht = MapUtil.SortMapByValue(hit_train);
-		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
+//		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
 		Set<String> remove_keys = new TreeSet<String>();
-		for (int i=0;i<removes;i++) {
-			remove_keys.add(ht.get(i).getKey());
+		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer> ();
+		int a_rm = 0;
+		for (int i=0;i<ht.size();i++) {
+			String key = ht.get(i).getKey();
+			String parent_type = hit_train_parent_type.get(key);
+			if (parent_type.endsWith("L")) {
+				Integer rm = parent_type_remove_num.get(parent_type);
+				if (rm == null) {
+					rm = 0;
+				}
+				rm++;
+				parent_type_remove_num.put(parent_type, rm);
+				if (rm <= MaxParentTypeRemoveTimes) {
+					remove_keys.add(key);
+					a_rm++;
+				}
+			}
+			if (a_rm == removes) {
+				break;
+			}
 		}
 		Set<String> ks = hit_train.keySet();
+		PrintUtil.PrintSet(remove_keys, "Unk TypeContent");
 		ks.removeAll(remove_keys);
 		return ks;
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateInternalTypeContentCascadedMap();

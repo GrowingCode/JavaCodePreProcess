@@ -8,7 +8,6 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
-import statistic.id.PreProcessContentHelper;
 import translation.ast.StatementUtil;
 import translation.roles.RoleAssigner;
 
@@ -37,25 +36,25 @@ public class SkeletonIDGenerator extends BasicGenerator {
 
 	@Override
 	protected void WholePostHandle(ASTNode node) {
-		for (ArrayList<String> stmt : stmts) {
-			String sk = stmt.get(0);
-			if (role <= RoleAssigner.train_seen_k) {
-				tool.sr.TokenHitInTrainSet(sk, 1);
-			} else {
-				tool.sr.TokenNotHitInTrainSet(sk, 1);
-			}
-			for (int i=1;i<stmt.size();i++) {
-				String tk = stmt.get(i);
-				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(tk);
-				if (role <= RoleAssigner.train_seen_k) {
-					tool.tr.TokenHitInTrainSet(pp_tk, 1);
-//					tool.str.TokenHitInTrainSet(pp_tk, 1);
-				} else {
-					tool.tr.TokenHitInTrainSet(pp_tk, 1);
-//					tool.str.TokenNotHitInTrainSet(pp_tk, 1);
-				}
-			}
-		}
+//		for (ArrayList<String> stmt : stmts) {
+//			String sk = stmt.get(0);
+//			if (role <= RoleAssigner.train_seen_k) {
+//				tool.sr.TokenHitInTrainSet(sk, 1);
+//			} else {
+//				tool.sr.TokenNotHitInTrainSet(sk, 1);
+//			}
+//			for (int i=1;i<stmt.size();i++) {
+//				String tk = stmt.get(i);
+//				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(tk);
+//				if (role <= RoleAssigner.train_seen_k) {
+//					tool.tr.TokenHitInTrainSet(pp_tk, 1);
+////					tool.str.TokenHitInTrainSet(pp_tk, 1);
+//				} else {
+//					tool.tr.TokenHitInTrainSet(pp_tk, 1);
+////					tool.str.TokenNotHitInTrainSet(pp_tk, 1);
+//				}
+//			}
+//		}
 	}
 	
 	@Override
