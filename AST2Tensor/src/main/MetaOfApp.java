@@ -48,7 +48,7 @@ public class MetaOfApp {
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 50;
 	
-	public static boolean TakeUnseenWordAsUnk = false;
+	public static boolean TakeUnseenAsUnk = false;
 	public static boolean StatementNoLimit = false;
 	public static boolean VariableNoLimit = true;
 	

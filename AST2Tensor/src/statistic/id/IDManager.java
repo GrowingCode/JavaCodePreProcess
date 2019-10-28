@@ -129,8 +129,13 @@ public class IDManager {
 //		token_id_map.putAll(id_tool.gr.node_type_id);
 //		grammar_token_num = token_id_map.size();
 		// skeleton regist
-		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
-		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
+		Regist(skeleton_id_map, reserved_words);
+		if (MetaOfApp.TakeUnseenAsUnk) {
+			Regist(skeleton_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(NumberOfUnk)));
+		} else {
+			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
+			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
+		}
 //		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
 //		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
 		
@@ -143,7 +148,7 @@ public class IDManager {
 //		}
 		// token regist
 		Regist(token_id_map, reserved_words);
-		if (MetaOfApp.TakeUnseenWordAsUnk) {
+		if (MetaOfApp.TakeUnseenAsUnk) {
 			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(NumberOfUnk)));
 		} else {
 			Regist(token_id_map, new ArrayList<String>(id_tool.tr.hit_train.keySet()));
