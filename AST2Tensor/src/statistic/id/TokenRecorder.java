@@ -34,7 +34,7 @@ public class TokenRecorder {
 	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
 	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
 	
-	TreeMap<String, String> hit_train_parent_type = new TreeMap<String, String>();
+	TreeMap<String, String> hit_train_parent_type_content = new TreeMap<String, String>();
 //	TreeMap<String, String> not_hit_train_parent_type = new TreeMap<String, String>();
 
 	public TokenRecorder() {
@@ -56,24 +56,24 @@ public class TokenRecorder {
 			h_count = 0;
 		}
 		h_count += count;
-//		Integer val = not_hit_train.remove(type_content);
-//		if (val != null) {
+		Integer val = not_hit_train.remove(type_content);
+		if (val != null) {
 //			h_count += val;
-//		}
+		}
 		hit_train.put(type_content, h_count);
-		hit_train_parent_type.put(type_content, parent_type_content);
+		hit_train_parent_type_content.put(type_content, parent_type_content);
 	}
 
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {
-//		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
-//		if (!hit_train.containsKey(type_content)) {
-//			Integer nh_count = not_hit_train.get(type_content);
-//			if (nh_count == null) {
-//				nh_count = 0;
-//			}
-//			nh_count += count;
-//			not_hit_train.put(type_content, nh_count);
-//		}
+		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
+		if (!hit_train.containsKey(type_content)) {
+			Integer nh_count = not_hit_train.get(type_content);
+			if (nh_count == null) {
+				nh_count = 0;
+			}
+			nh_count += count;
+			not_hit_train.put(type_content, nh_count);
+		}
 	}
 
 //	public static boolean LeafIsFixed(ASTNode node) {
@@ -125,7 +125,7 @@ public class TokenRecorder {
 		int a_rm = 0;
 		for (int i=0;i<ht.size();i++) {
 			String key = ht.get(i).getKey();
-			String parent_type = hit_train_parent_type.get(key);
+			String parent_type = hit_train_parent_type_content.get(key);
 			if (parent_type.endsWith("L")) {
 				Integer rm = parent_type_remove_num.get(parent_type);
 				if (rm == null) {

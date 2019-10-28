@@ -37,6 +37,8 @@ public class IDManager {
 	
 	public static final List<String> reserved_words = new LinkedList<String>();
 	
+	public static final int NumberOfUnk = 5;
+	
 	static {
 		reserved_words.add(ZDft);
 		reserved_words.add(Unk);
@@ -141,7 +143,12 @@ public class IDManager {
 //		}
 		// token regist
 		Regist(token_id_map, reserved_words);
-		Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(1)));
+		if (MetaOfApp.TakeUnseenWordAsUnk) {
+			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(NumberOfUnk)));
+		} else {
+			Regist(token_id_map, new ArrayList<String>(id_tool.tr.hit_train.keySet()));
+			Regist(token_id_map, new ArrayList<String>(id_tool.tr.not_hit_train.keySet()));
+		}
 //		Regist(token_id_map, new ArrayList<String>(g_set));
 //		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
 //		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
@@ -289,12 +296,12 @@ public class IDManager {
 	// }
 //	}
 	
-	public int GetSkeletonID(String skeleton) {
+//	public int GetSkeletonID(String skeleton) {
 //		Integer id = skeleton_id_map.get(skeleton);
 //		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
 //		return id;
-		return -1;
-	}
+//		return -1;
+//	}
 	
 //	public int GetSkeletonTypeContentID(String type_content) {
 //		Integer id = skeleton_token_id_map.get(type_content);

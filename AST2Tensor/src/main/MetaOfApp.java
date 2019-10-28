@@ -46,10 +46,10 @@ public class MetaOfApp {
 	public final static int number_of_merges = 1000;
 	
 //	public final static int MinimumNumberOfStatementsInAST = 10;
-	public final static int MinimumNumberOfNodesInAST = 100;
+	public final static int MinimumNumberOfNodesInAST = 50;
 	
+	public static boolean TakeUnseenWordAsUnk = false;
 	public static boolean StatementNoLimit = false;
-	
 	public static boolean VariableNoLimit = true;
 	
 	public static void SaveToDirectory(String dir) {
