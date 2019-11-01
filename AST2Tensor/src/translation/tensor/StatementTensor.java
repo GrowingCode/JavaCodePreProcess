@@ -76,16 +76,16 @@ public class StatementTensor extends Tensor {
 	ArrayList<Integer> stmt_following_legal_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_following_legal_info_end = new ArrayList<Integer>();
 
-	ArrayList<Integer> sword_info = new ArrayList<Integer>();
-	ArrayList<Integer> sword_variable_info = new ArrayList<Integer>();
-	ArrayList<Integer> sword_variable_relative_info = new ArrayList<Integer>();
-	ArrayList<Integer> token_sword_start = new ArrayList<Integer>();
-	ArrayList<Integer> token_sword_end = new ArrayList<Integer>();
+//	ArrayList<Integer> sword_info = new ArrayList<Integer>();
+//	ArrayList<Integer> sword_variable_info = new ArrayList<Integer>();
+//	ArrayList<Integer> sword_variable_relative_info = new ArrayList<Integer>();
+//	ArrayList<Integer> sword_info_start = new ArrayList<Integer>();
+//	ArrayList<Integer> sword_info_end = new ArrayList<Integer>();
 
-	ArrayList<Integer> stmt_sword_variable_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_sword_variable_position_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_sword_variable_info_start = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_sword_variable_info_end = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_sword_variable_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_sword_variable_position_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_sword_variable_info_start = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_sword_variable_info_end = new ArrayList<Integer>();
 
 //	ArrayList<Integer> first_row = new ArrayList<Integer>();
 //	ArrayList<Integer> second_row = new ArrayList<Integer>();
@@ -170,16 +170,16 @@ public class StatementTensor extends Tensor {
 				+ StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator
-				+ StringUtils.join(stmt_following_legal_info_end.toArray(), " ") + separator
-				+ StringUtils.join(sword_info.toArray(), " ") + separator
-				+ StringUtils.join(sword_variable_info.toArray(), " ") + separator
-				+ StringUtils.join(sword_variable_relative_info.toArray(), " ") + separator
-				+ StringUtils.join(token_sword_start.toArray(), " ") + separator
-				+ StringUtils.join(token_sword_end.toArray(), " ") + separator
-				+ StringUtils.join(stmt_sword_variable_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_sword_variable_position_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_sword_variable_info_start.toArray(), " ") + separator
-				+ StringUtils.join(stmt_sword_variable_info_end.toArray(), " ");
+				+ StringUtils.join(stmt_following_legal_info_end.toArray(), " ");// + separator
+//				+ StringUtils.join(sword_info.toArray(), " ") + separator
+//				+ StringUtils.join(sword_variable_info.toArray(), " ") + separator
+//				+ StringUtils.join(sword_variable_relative_info.toArray(), " ") + separator
+//				+ StringUtils.join(sword_info_start.toArray(), " ") + separator
+//				+ StringUtils.join(sword_info_end.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_sword_variable_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_sword_variable_position_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_sword_variable_info_start.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_sword_variable_info_end.toArray(), " ");
 	}
 
 	public String toBaseString(String separator) {
@@ -524,65 +524,65 @@ public class StatementTensor extends Tensor {
 				stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);
 //			System.out.println("tokens after size:" + stmt_token_info.size());
 			}
-			{
-				Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
-				for (int i = 0; i < i_len; i++) {
-//				System.out.println("subwords before size:" + sword_info.size());
-					TreeMap<Integer, Integer> sword_id_with_position = new TreeMap<Integer, Integer>();
-					Integer st = stmt_token_info_start.get(i);
-					Integer ed = stmt_token_info_end.get(i);
-					for (int t = st; t <= ed; t++) {
-						boolean is_var = false;
-						if (stmt_token_variable_info.get(t) >= 0) {
-							is_var = true;
-						}
-						Integer ti_idx = stmt_token_info.get(t);
-						Integer start = im.each_subword_sequence_start.get(ti_idx);
-						Integer end = im.each_subword_sequence_end.get(ti_idx);
-						List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
-						int j_len = seqs.size();
-						Assert.isTrue(j_len > 0);
-						for (int j = 0; j < j_len; j++) {
-							if (is_var) {
-								Integer swi = seqs.get(j);
-								Integer vi = sword_var_id.get(swi);
-								if (vi == null) {
-									vi = sword_var_id.size() + 1;
-									sword_var_id.put(swi, vi);
-								}
-//							sword_ids.add(vi);
-								sword_id_with_position.put(vi, j);
-								sword_variable_info.add(vi);
-							} else {
-								sword_variable_info.add(-1);
-							}
-						}
-						token_sword_start.add(sword_info.size());
-						sword_info.addAll(seqs);
-						token_sword_end.add(sword_info.size() - 1);
-					}
-					stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
-					if (stmt_sword_variable_info.size() == 0) {
-						if (MetaOfApp.AddZeroIfNoVariable > 0) {
-							stmt_sword_variable_info.add(0);
-							stmt_sword_variable_position_info.add(0);
-						}
-					} else {
-						Set<Integer> sids = sword_id_with_position.keySet();
-						Iterator<Integer> sid_itr = sids.iterator();
-						while (sid_itr.hasNext()) {
-							Integer sid = sid_itr.next();
-							int position = sword_id_with_position.get(sid);
-							stmt_sword_variable_info.add(sid);
-							stmt_sword_variable_position_info.add(position);
-						}
-					}
-					stmt_sword_variable_info_end.add(stmt_sword_variable_info.size() - 1);
-//				System.out.println("subwords after size:" + sword_info.size());
-				}
-				Assert.isTrue(token_sword_start.size() == stmt_token_info.size());
-				Assert.isTrue(sword_info.size() == sword_variable_info.size());
-			}
+//			{
+//				Map<Integer, Integer> sword_var_id = new TreeMap<Integer, Integer>();
+//				for (int i = 0; i < i_len; i++) {
+////				System.out.println("subwords before size:" + sword_info.size());
+//					TreeMap<Integer, Integer> sword_id_with_position = new TreeMap<Integer, Integer>();
+//					Integer st = stmt_token_info_start.get(i);
+//					Integer ed = stmt_token_info_end.get(i);
+//					for (int t = st; t <= ed; t++) {
+//						boolean is_var = false;
+//						if (stmt_token_variable_info.get(t) >= 0) {
+//							is_var = true;
+//						}
+//						Integer ti_idx = stmt_token_info.get(t);
+//						Integer start = im.each_subword_sequence_start.get(ti_idx);
+//						Integer end = im.each_subword_sequence_end.get(ti_idx);
+//						List<Integer> seqs = im.subword_sequences.subList(start, end + 1);
+//						int j_len = seqs.size();
+//						Assert.isTrue(j_len > 0);
+//						for (int j = 0; j < j_len; j++) {
+//							if (is_var) {
+//								Integer swi = seqs.get(j);
+//								Integer vi = sword_var_id.get(swi);
+//								if (vi == null) {
+//									vi = sword_var_id.size() + 1;
+//									sword_var_id.put(swi, vi);
+//								}
+////							sword_ids.add(vi);
+//								sword_id_with_position.put(vi, j);
+//								sword_variable_info.add(vi);
+//							} else {
+//								sword_variable_info.add(-1);
+//							}
+//						}
+//						sword_info_start.add(sword_info.size());
+//						sword_info.addAll(seqs);
+//						sword_info_end.add(sword_info.size() - 1);
+//					}
+//					stmt_sword_variable_info_start.add(stmt_sword_variable_info.size());
+//					if (stmt_sword_variable_info.size() == 0) {
+//						if (MetaOfApp.AddZeroIfNoVariable > 0) {
+//							stmt_sword_variable_info.add(0);
+//							stmt_sword_variable_position_info.add(0);
+//						}
+//					} else {
+//						Set<Integer> sids = sword_id_with_position.keySet();
+//						Iterator<Integer> sid_itr = sids.iterator();
+//						while (sid_itr.hasNext()) {
+//							Integer sid = sid_itr.next();
+//							int position = sword_id_with_position.get(sid);
+//							stmt_sword_variable_info.add(sid);
+//							stmt_sword_variable_position_info.add(position);
+//						}
+//					}
+//					stmt_sword_variable_info_end.add(stmt_sword_variable_info.size() - 1);
+////				System.out.println("subwords after size:" + sword_info.size());
+//				}
+//				Assert.isTrue(sword_info_start.size() == stmt_token_info.size());
+//				Assert.isTrue(sword_info.size() == sword_variable_info.size());
+//			}
 		}
 		{
 			int i_len = stmt_token_variable_info.size();
@@ -608,30 +608,30 @@ public class StatementTensor extends Tensor {
 			Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
 			stmt_token_variable_relative_info.addAll(seq_var_info);
 		}
-		{
-			int i_len = sword_variable_info.size();
-			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
-			ArrayList<Integer> sword_var_info = new ArrayList<Integer>();
-			for (int i = 0; i < i_len; i++) {
-				Assert.isTrue(sword_var_info.size() == i);
-				Integer ti = sword_variable_info.get(i);
-				if (ti >= 0) {
-					Integer li = latest_index.get(ti);
-					if (li != null) {
-						int relative = i - li;
-						sword_var_info.add(relative);
-//						System.out.println("sword_i:" + i + "sword_en:" + ti + "#relative:" + relative);
-					} else {
-						sword_var_info.add(-1);// Integer.MAX_VALUE
-					}
-				} else {
-					sword_var_info.add(-1);// Integer.MAX_VALUE
-				}
-				latest_index.put(ti, i);
-			}
-			Assert.isTrue(sword_variable_info.size() == sword_var_info.size());
-			sword_variable_relative_info.addAll(sword_var_info);
-		}
+//		{
+//			int i_len = sword_variable_info.size();
+//			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
+//			ArrayList<Integer> sword_var_info = new ArrayList<Integer>();
+//			for (int i = 0; i < i_len; i++) {
+//				Assert.isTrue(sword_var_info.size() == i);
+//				Integer ti = sword_variable_info.get(i);
+//				if (ti >= 0) {
+//					Integer li = latest_index.get(ti);
+//					if (li != null) {
+//						int relative = i - li;
+//						sword_var_info.add(relative);
+////						System.out.println("sword_i:" + i + "sword_en:" + ti + "#relative:" + relative);
+//					} else {
+//						sword_var_info.add(-1);// Integer.MAX_VALUE
+//					}
+//				} else {
+//					sword_var_info.add(-1);// Integer.MAX_VALUE
+//				}
+//				latest_index.put(ti, i);
+//			}
+//			Assert.isTrue(sword_variable_info.size() == sword_var_info.size());
+//			sword_variable_relative_info.addAll(sword_var_info);
+//		}
 		Validate();
 		ValidateStatements();
 		ValidateVarialbesInStatements();
@@ -685,23 +685,23 @@ public class StatementTensor extends Tensor {
 	}
 
 	private void ValidateStatements() {
-//		int all_token_size = stmt_token_info.size();
-//		System.out.println("all_token_size:" + all_token_size);
-		int stmt_size = stmt_token_info_start.size();
-		int all_stmt_sword_length = 0;
-		for (int i = 0; i < stmt_size; i++) {
-			Integer stmt_start = stmt_token_info_start.get(i);
-			Integer stmt_end = stmt_token_info_end.get(i);
-//			Integer start_token = stmt_token_info.get(stmt_start);
-//			Assert.isTrue(start_token < all_token_size);
-//			Integer end_token = stmt_token_info.get(stmt_end);
-//			Assert.isTrue(end_token < all_token_size);
-			Integer start_sword_idx = token_sword_start.get(stmt_start);
-			Integer end_sword_idx = token_sword_end.get(stmt_end);
-			int stmt_sword_length = end_sword_idx - start_sword_idx + 1;
-			all_stmt_sword_length += stmt_sword_length;
-		}
-		Assert.isTrue(all_stmt_sword_length == sword_info.size());
+////		int all_token_size = stmt_token_info.size();
+////		System.out.println("all_token_size:" + all_token_size);
+//		int stmt_size = stmt_token_info_start.size();
+//		int all_stmt_sword_length = 0;
+//		for (int i = 0; i < stmt_size; i++) {
+//			Integer stmt_start = stmt_token_info_start.get(i);
+//			Integer stmt_end = stmt_token_info_end.get(i);
+////			Integer start_token = stmt_token_info.get(stmt_start);
+////			Assert.isTrue(start_token < all_token_size);
+////			Integer end_token = stmt_token_info.get(stmt_end);
+////			Assert.isTrue(end_token < all_token_size);
+//			Integer start_sword_idx = sword_info_start.get(stmt_start);
+//			Integer end_sword_idx = sword_info_end.get(stmt_end);
+//			int stmt_sword_length = end_sword_idx - start_sword_idx + 1;
+//			all_stmt_sword_length += stmt_sword_length;
+//		}
+//		Assert.isTrue(all_stmt_sword_length == sword_info.size());
 	}
 
 	private void ValidateVarialbesInStatements() {
