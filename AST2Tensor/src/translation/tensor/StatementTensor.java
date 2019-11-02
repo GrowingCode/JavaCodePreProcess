@@ -15,6 +15,9 @@ import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
 import statistic.id.IDManager;
+import translation.tensor.util.IDRedistribution;
+import translation.tensor.util.RepetitionUtil;
+import translation.tensor.util.TokenIndex;
 import tree.TreeNode;
 import util.BooleanArrayUtil;
 import util.SetUtil;
@@ -35,9 +38,9 @@ public class StatementTensor extends Tensor {
 	// local_token_id means the id for variable (memory address)
 	// inner id is the id for current training example (due to for every token,
 	// running char sequence is impossible)
-	
+
 	Map<TreeNode, Integer> node_index = new HashMap<TreeNode, Integer>();
-	
+
 	// for tensor
 	// base data
 	// the first two columns are indicators.
@@ -393,15 +396,6 @@ public class StatementTensor extends Tensor {
 //		forth_row.addAll(stmt_forth_row);
 //	}
 
-	private Integer AssignID(TreeMap<String, Integer> token_index_record, String key, TokenIndex ti) {
-		Integer index_record = token_index_record.get(key);
-		if (index_record == null) {
-			index_record = ti.NewIndex();
-			token_index_record.put(key, index_record);
-		}
-		return index_record;
-	}
-
 	public void HandleAllDevoured(IDManager im) {
 		{
 			TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
@@ -424,18 +418,18 @@ public class StatementTensor extends Tensor {
 				stmt_token_info_start.add(ori_size);
 				stmt_token_string.addAll(last_stmt.type_content_str);
 				stmt_token_info.addAll(last_stmt.type_content_id);
-				
+
 				int j_len = last_stmt.self.size();
-				for (int j=0;j<j_len;j++) {
+				for (int j = 0; j < j_len; j++) {
 					TreeNode self_n = last_stmt.self.get(j);
 					TreeNode parent_n = last_stmt.parent.get(j);
 					Assert.isTrue(!node_index.containsKey(self_n));
 					node_index.put(self_n, node_index.size());
-					if (parent_n == null) {//  || !node_index.containsKey(parent_n)
+					if (parent_n == null) {// || !node_index.containsKey(parent_n)
 						Assert.isTrue(stmt_token_parent_relative_info.size() == 0);
 						stmt_token_parent_relative_info.add(0);
 					} else {
-						int parent_relative = node_index.get(self_n)-node_index.get(parent_n);
+						int parent_relative = node_index.get(self_n) - node_index.get(parent_n);
 						Assert.isTrue(parent_relative > 0);
 						stmt_token_parent_relative_info.add(parent_relative);
 					}
@@ -446,12 +440,12 @@ public class StatementTensor extends Tensor {
 				for (String l_t_str : last_stmt.local_token_str) {
 					int l_tid = -1;
 					if (l_t_str != null) {
-						l_tid = AssignID(token_index_record, l_t_str, ti);
+						l_tid = IDRedistribution.AssignID(token_index_record, l_t_str, ti);
 					}
-					Assert.isTrue(l_tid <= stmt_token_variable_info.size()+1,
-							"last_stmt:" + last_stmt.stmt + "#last_stmt.local_token_str.size():"
-									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
-									+ stmt_token_variable_info.size() + "#origin_file:" + "CommonName");// origin_file
+//					Assert.isTrue(l_tid <= stmt_token_variable_info.size()+1,
+//							"last_stmt:" + last_stmt.stmt + "#last_stmt.local_token_str.size():"
+//									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
+//									+ stmt_token_variable_info.size() + "#origin_file:" + "CommonName");// origin_file
 					stmt_token_variable_info.add(l_tid);
 				}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
@@ -479,7 +473,7 @@ public class StatementTensor extends Tensor {
 //					System.err.println("position:" + position);
 						Assert.isTrue(last_stmt.local_token_str.get(position) != null
 								&& var.equals(last_stmt.local_token_str.get(position)));
-						int v_id = AssignID(token_index_record, var, ti);
+						int v_id = IDRedistribution.AssignID(token_index_record, var, ti);
 						part_stmt_variable_info_with_position_info.put(v_id, position);
 						part_stmt_variable_info_with_type_content_en_info.put(v_id,
 								last_stmt.type_content_id.get(position));
@@ -584,30 +578,7 @@ public class StatementTensor extends Tensor {
 //				Assert.isTrue(sword_info.size() == sword_variable_info.size());
 //			}
 		}
-		{
-			int i_len = stmt_token_variable_info.size();
-			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
-			ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
-			for (int i = 0; i < i_len; i++) {
-				Assert.isTrue(seq_var_info.size() == i);
-				Integer ti = stmt_token_variable_info.get(i);
-				if (ti >= 0) {
-					Integer li = latest_index.get(ti);
-					if (li != null) {
-						int relative = i - li;
-						seq_var_info.add(relative);// - i
-//						System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
-					} else {
-						seq_var_info.add(-1);// Integer.MAX_VALUE
-					}
-				} else {
-					seq_var_info.add(-1);
-				}
-				latest_index.put(ti, i);
-			}
-			Assert.isTrue(stmt_token_variable_info.size() == seq_var_info.size());
-			stmt_token_variable_relative_info.addAll(seq_var_info);
-		}
+		stmt_token_variable_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_variable_info));
 //		{
 //			int i_len = sword_variable_info.size();
 //			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
@@ -773,17 +744,6 @@ class TokenInCare {
 	public int LocalIDCompareTo(TokenInCare o) {
 		int local_cmp = ((Integer) local_token_id).compareTo(o.local_token_id);
 		return local_cmp;
-	}
-
-}
-
-class TokenIndex {
-
-	int token_index = 0;
-
-	public int NewIndex() {
-		token_index++;
-		return token_index;
 	}
 
 }
