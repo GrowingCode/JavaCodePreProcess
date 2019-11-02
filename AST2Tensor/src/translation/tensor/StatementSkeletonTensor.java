@@ -41,6 +41,8 @@ public class StatementSkeletonTensor extends Tensor {
 	
 	private String ToStmtInfo(String separator) {
 		return StringUtils.join(stmt_token_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_leaf_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_leaf_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ");
 	}
