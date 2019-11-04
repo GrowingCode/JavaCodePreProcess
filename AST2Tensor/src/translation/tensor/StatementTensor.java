@@ -461,12 +461,13 @@ public class StatementTensor extends Tensor {
 //			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
 //			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
 				if (vars.size() == 0) {
-					if (MetaOfApp.AddZeroIfNoVariable > 0) {
-						part_stmt_variable_info_with_position_info.put(0, 0);
-						part_stmt_variable_info_with_type_content_en_info.put(0, 0);
+//					if (MetaOfApp.AddZeroIfNoVariable > 0) {
+//						part_stmt_variable_info_with_position_info.put(0, 0);
+//						part_stmt_variable_info_with_type_content_en_info.put(0, 0);
 //					part_stmt_variable_info.add(0);
 //					part_stmt_variable_position_info.add(0);
-					}
+//					}
+					Assert.isTrue(false);
 				} else {
 					for (String var : vars) {
 						int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);

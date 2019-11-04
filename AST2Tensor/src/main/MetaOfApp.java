@@ -35,7 +35,7 @@ public class MetaOfApp {
 	
 	public final static int MaximumFollowingStatements = 5;
 	
-	public static int AddZeroIfNoVariable = 0;
+//	public static int AddZeroIfNoVariable = 0;
 	
 //	public final static boolean ReplaceLeastWithUnk = false;
 	
@@ -55,7 +55,7 @@ public class MetaOfApp {
 	public static void SaveToDirectory(String dir) {
 		Gson gson = new Gson();
 		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
-		meta_of_ast2tensor.put("AddZeroIfNoVariable", AddZeroIfNoVariable);
+//		meta_of_ast2tensor.put("AddZeroIfNoVariable", AddZeroIfNoVariable);
 //		meta_of_ast2tensor.put("MaximumHandlingNodeNumInOneTree", MaximumHandlingNodeNumInOneTree);
 //		meta_of_ast2tensor.put("MaximumStringLength", MaximumStringLength);
 		FileUtil.WriteToFile(new File(dir + "/" + "Meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
