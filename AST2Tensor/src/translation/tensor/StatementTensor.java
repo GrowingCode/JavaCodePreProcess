@@ -438,6 +438,7 @@ public class StatementTensor extends Tensor {
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
+				Set<Integer> l_ts = new TreeSet<Integer>();
 				for (String l_t_str : last_stmt.local_token_str) {
 					int l_tid = -1;
 					if (l_t_str != null) {
@@ -448,6 +449,12 @@ public class StatementTensor extends Tensor {
 //									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
 //									+ stmt_token_variable_info.size() + "#origin_file:" + "CommonName");// origin_file
 					stmt_token_variable_info.add(l_tid);
+					int first_encounter = 0;
+					if (l_tid >= 0 && !l_ts.contains(l_tid)) {
+						l_ts.add(l_tid);
+						first_encounter = 1;
+					}
+					stmt_token_first_encounter_info.add(first_encounter);
 				}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
 				stmt_token_api_info.addAll(last_stmt.api_group);
