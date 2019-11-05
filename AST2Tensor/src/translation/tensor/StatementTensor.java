@@ -2,7 +2,6 @@ package translation.tensor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -62,16 +61,17 @@ public class StatementTensor extends Tensor {
 	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_first_encounter_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
 
 	// stmt info of variables: ``|```|``
 	// stmt info of variables start end: se|se|se
-	ArrayList<Integer> stmt_variable_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_variable_position_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_variable_type_content_en_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_variable_info_start = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_variable_info_end = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_variable_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_variable_position_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_variable_type_content_en_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_variable_info_start = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_variable_info_end = new ArrayList<Integer>();
 
 	// following legal stmt index: ,,|,,|,,,
 	// following legal stmt index start end: se|se|se
@@ -164,13 +164,14 @@ public class StatementTensor extends Tensor {
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_first_encounter_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ") + separator
-				+ StringUtils.join(stmt_variable_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_variable_position_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_variable_type_content_en_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator
-				+ StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_variable_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_variable_position_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_variable_type_content_en_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_following_legal_info_end.toArray(), " ");// + separator
@@ -452,36 +453,36 @@ public class StatementTensor extends Tensor {
 				stmt_token_api_info.addAll(last_stmt.api_group);
 				stmt_token_api_relative_info.addAll(last_stmt.api_relative);
 				stmt_token_info_end.add(stmt_token_info.size() - 1);
+				
+//				stmt_variable_info_start.add(stmt_variable_info.size());
+//				Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
 
-				stmt_variable_info_start.add(stmt_variable_info.size());
-				Set<String> vars = last_stmt.var_or_type_id_with_position_in_this_stmt.keySet();
-
-				Map<Integer, Integer> part_stmt_variable_info_with_position_info = new TreeMap<Integer, Integer>();
-				Map<Integer, Integer> part_stmt_variable_info_with_type_content_en_info = new TreeMap<Integer, Integer>();
+//				Map<Integer, Integer> part_stmt_variable_info_with_position_info = new TreeMap<Integer, Integer>();
+//				Map<Integer, Integer> part_stmt_variable_info_with_type_content_en_info = new TreeMap<Integer, Integer>();
 //			ArrayList<Integer> part_stmt_variable_info = new ArrayList<Integer>();
 //			ArrayList<Integer> part_stmt_variable_position_info = new ArrayList<Integer>();
-				if (vars.size() == 0) {
+//				if (vars.size() == 0) {
 //					if (MetaOfApp.AddZeroIfNoVariable > 0) {
 //						part_stmt_variable_info_with_position_info.put(0, 0);
 //						part_stmt_variable_info_with_type_content_en_info.put(0, 0);
 //					part_stmt_variable_info.add(0);
 //					part_stmt_variable_position_info.add(0);
+////					}
+//					Assert.isTrue(false);
+//				} else {
+//					for (String var : vars) {
+//						int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
+////					System.err.println("position:" + position);
+//						Assert.isTrue(last_stmt.local_token_str.get(position) != null
+//								&& var.equals(last_stmt.local_token_str.get(position)));
+//						int v_id = IDRedistribution.AssignID(token_index_record, var, ti);
+//						part_stmt_variable_info_with_position_info.put(v_id, position);
+//						part_stmt_variable_info_with_type_content_en_info.put(v_id,
+//								last_stmt.type_content_id.get(position));
+////					part_stmt_variable_info.add(v_id);
+////					part_stmt_variable_position_info.add(position);
 //					}
-					Assert.isTrue(false);
-				} else {
-					for (String var : vars) {
-						int position = last_stmt.var_or_type_id_with_position_in_this_stmt.get(var);
-//					System.err.println("position:" + position);
-						Assert.isTrue(last_stmt.local_token_str.get(position) != null
-								&& var.equals(last_stmt.local_token_str.get(position)));
-						int v_id = IDRedistribution.AssignID(token_index_record, var, ti);
-						part_stmt_variable_info_with_position_info.put(v_id, position);
-						part_stmt_variable_info_with_type_content_en_info.put(v_id,
-								last_stmt.type_content_id.get(position));
-//					part_stmt_variable_info.add(v_id);
-//					part_stmt_variable_position_info.add(position);
-					}
-				}
+//				}
 
 //			System.out.println("==== var position begin ====");
 //			PrintUtil.PrintList(part_stmt_variable_info, "stmt_variable_info");
@@ -489,19 +490,19 @@ public class StatementTensor extends Tensor {
 //			PrintUtil.PrintList(last_stmt.type_content_str, "stmt_type_content_str");
 //			System.out.println("==== var position end ====");
 
-				Set<Integer> vi_set = part_stmt_variable_info_with_position_info.keySet();
-				Iterator<Integer> vi_itr = vi_set.iterator();
-				while (vi_itr.hasNext()) {
-					Integer vi = vi_itr.next();
-					Integer pi = part_stmt_variable_info_with_position_info.get(vi);
-					Integer v_en = part_stmt_variable_info_with_type_content_en_info.get(vi);
-					stmt_variable_info.add(vi);
-					stmt_variable_position_info.add(pi);
-					stmt_variable_type_content_en_info.add(v_en);
-				}
-//			stmt_variable_info.addAll(part_stmt_variable_info);
-//			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
-				stmt_variable_info_end.add(stmt_variable_info.size() - 1);
+//				Set<Integer> vi_set = part_stmt_variable_info_with_position_info.keySet();
+//				Iterator<Integer> vi_itr = vi_set.iterator();
+//				while (vi_itr.hasNext()) {
+//					Integer vi = vi_itr.next();
+//					Integer pi = part_stmt_variable_info_with_position_info.get(vi);
+//					Integer v_en = part_stmt_variable_info_with_type_content_en_info.get(vi);
+//					stmt_variable_info.add(vi);
+//					stmt_variable_position_info.add(pi);
+//					stmt_variable_type_content_en_info.add(v_en);
+//				}
+////			stmt_variable_info.addAll(part_stmt_variable_info);
+////			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
+//				stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
 				stmt_following_legal_info_start.add(stmt_following_legal_info.size());
 				int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
@@ -644,14 +645,14 @@ public class StatementTensor extends Tensor {
 			total_number_of_tokens += one_size;
 			total_number_of_statements += 1;
 			total_size += one_size;
-			int lc_size = stmt_variable_info_end.get(i) - stmt_variable_info_start.get(i) + 1;
-			double rate = (lc_size * 1.0) / (one_size * 1.0);
-			if (min_rate_of_local_token > rate) {
-				min_rate_of_local_token = rate;
-			}
-			if (max_rate_of_local_token < rate) {
-				max_rate_of_local_token = rate;
-			}
+//			int lc_size = stmt_variable_info_end.get(i) - stmt_variable_info_start.get(i) + 1;
+//			double rate = (lc_size * 1.0) / (one_size * 1.0);
+//			if (min_rate_of_local_token > rate) {
+//				min_rate_of_local_token = rate;
+//			}
+//			if (max_rate_of_local_token < rate) {
+//				max_rate_of_local_token = rate;
+//			}
 		}
 		Assert.isTrue(total_size == stmt_token_info.size());
 	}
@@ -677,24 +678,24 @@ public class StatementTensor extends Tensor {
 	}
 
 	private void ValidateVarialbesInStatements() {
-		Assert.isTrue(stmt_variable_info_start.size() == stmt_token_info_start.size());
-		int i_len = stmt_variable_info_start.size();
-		for (int i = 0; i < i_len; i++) {
-			Integer t_start = stmt_token_info_start.get(i);
-			Integer i_start = stmt_variable_info_start.get(i);
-			Integer i_end = stmt_variable_info_end.get(i);
-			for (int j = i_start; j <= i_end; j++) {
-				int position = stmt_variable_position_info.get(j);
-				int r_pos = t_start + position;
-				if (position == 0) {
-//					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
-				} else {
-					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0,
-							"type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos
-									+ "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
-				}
-			}
-		}
+//		Assert.isTrue(stmt_variable_info_start.size() == stmt_token_info_start.size());
+//		int i_len = stmt_variable_info_start.size();
+//		for (int i = 0; i < i_len; i++) {
+//			Integer t_start = stmt_token_info_start.get(i);
+//			Integer i_start = stmt_variable_info_start.get(i);
+//			Integer i_end = stmt_variable_info_end.get(i);
+//			for (int j = i_start; j <= i_end; j++) {
+//				int position = stmt_variable_position_info.get(j);
+//				int r_pos = t_start + position;
+//				if (position == 0) {
+////					Assert.isTrue(stmt_token_variable_info.get(r_pos) == -1);
+//				} else {
+//					Assert.isTrue(stmt_token_variable_info.get(r_pos) > 0,
+//							"type_content:" + stmt_token_string.get(r_pos) + "#pos:" + position + "#r_pos:" + r_pos
+//									+ "#stmt_token_variable_info.get(r_pos):" + stmt_token_variable_info.get(r_pos));
+//				}
+//			}
+//		}
 	}
 
 	public static String StatementSummaryInfo() {
