@@ -424,15 +424,20 @@ public class StatementTensor extends Tensor {
 				for (int j = 0; j < j_len; j++) {
 					TreeNode self_n = last_stmt.self.get(j);
 					TreeNode parent_n = last_stmt.parent.get(j);
-					Assert.isTrue(!node_index.containsKey(self_n));
-					node_index.put(self_n, node_index.size());
-					if (parent_n == null) {// || !node_index.containsKey(parent_n)
-						Assert.isTrue(stmt_token_parent_relative_info.size() == 0);
+					if (self_n == null) {
+						Assert.isTrue(parent_n == null);
 						stmt_token_parent_relative_info.add(0);
 					} else {
-						int parent_relative = node_index.get(self_n) - node_index.get(parent_n);
-						Assert.isTrue(parent_relative > 0);
-						stmt_token_parent_relative_info.add(parent_relative);
+						Assert.isTrue(!node_index.containsKey(self_n));
+						node_index.put(self_n, node_index.size());
+						if (parent_n == null) {// || !node_index.containsKey(parent_n)
+							Assert.isTrue(stmt_token_parent_relative_info.size() == 0);
+							stmt_token_parent_relative_info.add(0);
+						} else {
+							int parent_relative = node_index.get(self_n) - node_index.get(parent_n);
+							Assert.isTrue(parent_relative > 0);
+							stmt_token_parent_relative_info.add(parent_relative);
+						}
 					}
 				}
 //			for (Integer tid : last_stmt.type_content_id) {

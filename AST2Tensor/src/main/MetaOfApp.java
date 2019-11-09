@@ -40,6 +40,8 @@ public class MetaOfApp {
 //	public final static boolean ReplaceLeastWithUnk = false;
 	
 //	public final static boolean CharInCascadeForm = false;
+
+	public final static boolean UseLexicalToken = false;
 	
 	public final static boolean InBPEForm = true;
 	

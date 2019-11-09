@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
+import main.MetaOfApp;
 import statis.trans.common.YTreeGenerator;
 
 public class IDGeneratorForProject {
@@ -38,11 +39,16 @@ public class IDGeneratorForProject {
 				length += cu.getLength();
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
-				IDGenerator tg_id_visitor = new IDGenerator(tool, icu);
-				YTreeGenerator tg = new YTreeGenerator(tool.role_assigner, null, icu, cu, tg_id_visitor);
-				cu.accept(tg);
-				SkeletonIDGenerator skg = new SkeletonIDGenerator(tool.role_assigner, null, icu, cu, tool);
-				cu.accept(skg);
+				if (MetaOfApp.UseLexicalToken) {
+					LexicalTokenGenerator ltg = new LexicalTokenGenerator(icu, cu, tool);
+					cu.accept(ltg);
+				} else {
+					IDGenerator tg_id_visitor = new IDGenerator(tool, icu);
+					YTreeGenerator tg = new YTreeGenerator(tool.role_assigner, null, icu, cu, tg_id_visitor);
+					cu.accept(tg);
+					SkeletonIDGenerator skg = new SkeletonIDGenerator(tool.role_assigner, null, icu, cu, tool);
+					cu.accept(skg);
+				}
 			}
 		}
 		return length;
