@@ -48,6 +48,7 @@ public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
 		st.SetSize(curr_tensor.getSize());
+		st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
 		tensor_list.add(st);
 	}
 	

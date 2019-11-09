@@ -54,10 +54,8 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
 		st.SetSize(curr_tensor.getSize());
-		if (st != null) {
-			st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
-			tensor_list.add(st);
-		}
+		st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+		tensor_list.add(st);
 	}
 	
 	@Override

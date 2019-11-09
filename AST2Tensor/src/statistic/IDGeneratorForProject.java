@@ -40,7 +40,7 @@ public class IDGeneratorForProject {
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
 				if (MetaOfApp.UseLexicalToken) {
-					LexicalTokenGenerator ltg = new LexicalTokenGenerator(icu, cu, tool);
+					LexicalTokenGenerator ltg = new LexicalTokenGenerator(tool.role_assigner, null, icu, cu, tool);
 					cu.accept(ltg);
 				} else {
 					IDGenerator tg_id_visitor = new IDGenerator(tool, icu);

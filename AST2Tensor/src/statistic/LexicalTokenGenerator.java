@@ -4,30 +4,27 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
+import statis.trans.common.BasicGenerator;
 import statis.trans.common.YTokenizer;
+import statistic.id.IDManager;
 import translation.roles.RoleAssigner;
 
-public class LexicalTokenGenerator extends ASTVisitor {
+public class LexicalTokenGenerator extends BasicGenerator {
 	
-	ICompilationUnit icu = null;
-	CompilationUnit cu = null;
 	IDTools tool = null;
-	
 	int role = -1;
 
-	public LexicalTokenGenerator(ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
-		this.icu = icu;
-		this.cu = cu;
+	public LexicalTokenGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
+		super(role_assigner, im, icu, cu);
 		this.tool = tool;
-		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
+		this.role = tool.role_assigner.GetRole(icu.getPath().toOSString());
 	}
-
+	
 	@Override
-	public boolean preVisit2(ASTNode node) {
+	protected void WholePostHandle(ASTNode node) {
 		if (node instanceof MethodDeclaration) {
 			String content = node.toString();
 			ArrayList<String> tks = YTokenizer.GetTokens(content);
@@ -38,9 +35,7 @@ public class LexicalTokenGenerator extends ASTVisitor {
 					tool.tr.TokenNotHitInTrainSet(tk, 1);
 				}
 			}
-			return false;
 		}
-		return super.preVisit2(node);
 	}
 	
 }
