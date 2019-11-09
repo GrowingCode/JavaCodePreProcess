@@ -41,15 +41,13 @@ public class MetaOfApp {
 	
 //	public final static boolean CharInCascadeForm = false;
 
-	public final static boolean UseLexicalToken = false;
-	
-	public final static boolean InBPEForm = true;
-	
 	public final static int number_of_merges = 1000;
 	
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 100;
 	
+	public static boolean InBPEForm = true;
+	public static boolean UseLexicalToken = false;
 	public static boolean TakeUnseenAsUnk = false;
 	public static boolean StatementNoLimit = false;
 	public static boolean VariableNoLimit = true;
