@@ -20,7 +20,7 @@ public class LexicalTokenGenerator extends BasicGenerator {
 	public LexicalTokenGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
 		super(role_assigner, im, icu, cu);
 		this.tool = tool;
-		this.role = tool.role_assigner.GetRole(icu.getPath().toOSString());
+		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
 	}
 	
 	@Override
