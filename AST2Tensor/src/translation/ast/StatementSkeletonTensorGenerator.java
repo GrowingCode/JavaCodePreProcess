@@ -46,7 +46,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 //				int tk_id = im.GetTypeContentID(lls.get(i));
 				ids.add(tk_id);
 			}
-			curr_tensor.StoreStatementSkeletonInfo(ids);
+			curr_tensor.StoreStatementSkeletonInfo(lls, ids);
 		}
 		
 		StringTensor st = new StringTensor();
