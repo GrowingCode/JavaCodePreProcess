@@ -225,8 +225,9 @@ public class StatementTensor extends Tensor {
 
 	@Override
 	public String toOracleString() {
-		String separator = System.getProperty("line.separator");
-		String result = toOracleBaseString(separator);
+//		String separator = System.getProperty("line.separator");
+//		String result = toOracleBaseString(separator);
+		String result = StringUtils.join(stmt_token_string.toArray(), " ");
 		return result;
 	}
 

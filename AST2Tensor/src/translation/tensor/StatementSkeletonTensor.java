@@ -10,6 +10,8 @@ import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndex;
 
 public class StatementSkeletonTensor extends Tensor {
+	
+	ArrayList<String> stmt_token_str = new ArrayList<String>();
 
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_leaf_info = new ArrayList<Integer>();
@@ -20,7 +22,9 @@ public class StatementSkeletonTensor extends Tensor {
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex ti = new TokenIndex();
 	
-	public void StoreStatementSkeletonInfo(ArrayList<Integer> info) {
+	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info) {
+		stmt_token_str.addAll(info_str);
+		
 		stmt_token_info_start.add(stmt_token_info.size());
 		stmt_token_info.addAll(info);
 		stmt_token_info_end.add(stmt_token_info.size()-1);
