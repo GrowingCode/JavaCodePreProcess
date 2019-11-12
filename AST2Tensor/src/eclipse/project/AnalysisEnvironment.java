@@ -22,6 +22,7 @@ import eclipse.exception.NoAnalysisSourceException;
 import eclipse.exception.ProjectAlreadyExistsException;
 import eclipse.jdt.JDTLexicalParser;
 import eclipse.project.process.PreProcessHelper;
+import main.MetaOfApp;
 import util.FileIterator;
 
 public class AnalysisEnvironment {
@@ -143,7 +144,8 @@ public class AnalysisEnvironment {
 //		java_project.setRawClasspath(newEntries, null);
 		
 		
-		Map<String, TreeMap<String, String>> dir_files_map = new TreeMap<String, TreeMap<String, String>>();
+//		Map<String, TreeMap<String, String>> dir_files_map = new TreeMap<String, TreeMap<String, String>>();
+		Map<String, String> file_full_qualified_name_file_path_map = new TreeMap<String, String>();
 		{
 			// import legal .java files into IJavaProject.
 			FileIterator fi = new FileIterator(dir.getAbsolutePath(), ".+(?<!-yyx-copy)\\.java$");
@@ -163,34 +165,28 @@ public class AnalysisEnvironment {
 				String packagepath_with_classfile = packagepath + "/" + fname;
 				String class_full_qualified_name = packagename + "."
 						+ fname.substring(0, fname.lastIndexOf(".java"));
-				if (f_norm_path.endsWith(packagepath_with_classfile)) {
-					String f_dir = f_norm_path.substring(0, f_norm_path.lastIndexOf(packagepath_with_classfile))
-							.replace('\\', '/');
-					while (f_dir.endsWith("/")) {
-						f_dir = f_dir.substring(0, f_dir.length() - 1);
-					}
-					TreeMap<String, String> files_in_dir = dir_files_map.get(f_dir);
-					if (files_in_dir == null) {
-						files_in_dir = new TreeMap<String, String>();
-						dir_files_map.put(f_dir, files_in_dir);
-					}
-					// How to judge which java file is more complete? Currently, just judge the last
-					// update time of a file.
-					if (files_in_dir.containsKey(class_full_qualified_name)) {
-						String full_name = files_in_dir.get(class_full_qualified_name);
-						File full_f = new File(full_name);
-						if (f.lastModified() > full_f.lastModified()) {
-							files_in_dir.put(class_full_qualified_name, f_norm_path);
-						}
-					} else {
-						files_in_dir.put(class_full_qualified_name, f_norm_path);
-					}
+				if (MetaOfApp.JavaFileNoLimit) {
+					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path, f);
+				} else if (f_norm_path.endsWith(packagepath_with_classfile)) {
+//					String f_dir = f_norm_path.substring(0, f_norm_path.lastIndexOf(packagepath_with_classfile))
+//							.replace('\\', '/');
+//					while (f_dir.endsWith("/")) {
+//						f_dir = f_dir.substring(0, f_dir.length() - 1);
+//					}
+//					TreeMap<String, String> files_in_dir = dir_files_map.get(f_dir);
+//					if (files_in_dir == null) {
+//						files_in_dir = new TreeMap<String, String>();
+//						dir_files_map.put(f_dir, files_in_dir);
+//					}
+//					UpdateFileQualifiedNameWithFilePathMap(files_in_dir, class_full_qualified_name, f_norm_path, f);
+					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path, f);
 				}
 			}
 			// Fill the source folder of the project.
 		}
 		
-		IJavaProject java_project = JavaProjectManager.UniqueManager().CreateJavaProject(pi.getName(), entries, dir_files_map);
+//		IJavaProject java_project = JavaProjectManager.UniqueManager().CreateJavaProject(pi.getName(), entries, dir_files_map);
+		IJavaProject java_project = JavaProjectManager.UniqueManager().CreateJavaProject(pi.getName(), entries, file_full_qualified_name_file_path_map);
 		
 //		JavaImportOperation.ImportFileSystem(java_project, dir_files_map);
 //		Set<String> r_dirs = dir_files_map.keySet();
@@ -214,6 +210,20 @@ public class AnalysisEnvironment {
 		while (fitr.hasNext()) {
 			File f = fitr.next();
 			entries.add(JavaCore.newLibraryEntry(new Path(f.getAbsolutePath()), null, null));
+		}
+	}
+	
+	private static void UpdateFileQualifiedNameWithFilePathMap(Map<String, String> file_full_qualified_name_file_path_map, String class_full_qualified_name, String f_norm_path, File f) {
+		// How to judge which java file is more complete? Currently, just judge the last
+		// update time of a file.
+		if (file_full_qualified_name_file_path_map.containsKey(class_full_qualified_name)) {
+			String full_name = file_full_qualified_name_file_path_map.get(class_full_qualified_name);
+			File full_f = new File(full_name);
+			if (f.lastModified() > full_f.lastModified()) {
+				file_full_qualified_name_file_path_map.put(class_full_qualified_name, f_norm_path);
+			}
+		} else {
+			file_full_qualified_name_file_path_map.put(class_full_qualified_name, f_norm_path);
 		}
 	}
 

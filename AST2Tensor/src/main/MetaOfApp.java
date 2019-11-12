@@ -51,6 +51,7 @@ public class MetaOfApp {
 	public static boolean TakeUnseenAsUnk = false;
 	public static boolean StatementNoLimit = false;
 	public static boolean VariableNoLimit = true;
+	public static boolean JavaFileNoLimit = true;
 	
 	public static void SaveToDirectory(String dir) {
 		Gson gson = new Gson();

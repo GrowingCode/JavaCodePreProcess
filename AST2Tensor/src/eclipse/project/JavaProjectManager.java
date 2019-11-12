@@ -33,8 +33,9 @@ public class JavaProjectManager {
 
 	private JavaProjectManager() {
 	}
-
-	public IJavaProject CreateJavaProject(String projname, List<IClasspathEntry> entries, Map<String, TreeMap<String, String>> dir_files_map) throws ProjectAlreadyExistsException, CoreException {
+	
+//	Map<String, TreeMap<String, String>> dir_files_map
+	public IJavaProject CreateJavaProject(String projname, List<IClasspathEntry> entries, Map<String, String> file_full_qualified_name_file_path_map) throws ProjectAlreadyExistsException, CoreException {
 		IProject project = null;
 		IJavaProject java_project = null;
 		{
@@ -68,16 +69,18 @@ public class JavaProjectManager {
 			IPath source_folder_path = project.getFullPath().append("src");
 
 			TreeMap<String, TreeMap<String, String>> package_classes = new TreeMap<String, TreeMap<String, String>>();
-			Set<String> dirs = dir_files_map.keySet();
-			Iterator<String> dir_itr = dirs.iterator();
-			while (dir_itr.hasNext()) {
-				String dir = dir_itr.next();
-				TreeMap<String, String> files = dir_files_map.get(dir);
-				Set<String> f_keys = files.keySet();
+//			Set<String> dirs = dir_files_map.keySet();
+//			Iterator<String> dir_itr = dirs.iterator();
+//			while (dir_itr.hasNext()) {
+//				String dir = dir_itr.next();
+//				TreeMap<String, String> files = dir_files_map.get(dir);
+//				Set<String> f_keys = files.keySet();
+				Set<String> f_keys = file_full_qualified_name_file_path_map.keySet();
 				Iterator<String> f_itr = f_keys.iterator();
 				while (f_itr.hasNext()) {
 					String f_full_qualified = f_itr.next();
-					String file = files.get(f_full_qualified);
+//					String file = files.get(f_full_qualified);
+					String file = file_full_qualified_name_file_path_map.get(f_full_qualified);
 					int f_idx = f_full_qualified.lastIndexOf('.');
 					String package_name = f_full_qualified.substring(0, f_idx);
 					String class_name = f_full_qualified.substring(f_idx+1);
@@ -88,7 +91,7 @@ public class JavaProjectManager {
 					}
 					class_files.put(class_name, file);
 				}
-			}
+//			}
 
 			IPackageFragmentRoot root_src = java_project.getPackageFragmentRoot(sourceFolder);
 			IClasspathEntry[] oldEntries = java_project.getRawClasspath();
@@ -102,7 +105,10 @@ public class JavaProjectManager {
 			Iterator<String> pc_itr = pc_pack.iterator();
 			while (pc_itr.hasNext()) {
 				String package_name = pc_itr.next();
-				IPackageFragment pack = root_src.createPackageFragment(package_name, false, null);
+				IPackageFragment pack = root_src.getPackageFragment(package_name);
+				if (pack == null || !pack.exists()) {
+					pack = root_src.createPackageFragment(package_name, false, null);
+				}
 				TreeMap<String, String> class_files = package_classes.get(package_name);
 				Set<String> class_names = class_files.keySet();
 				Iterator<String> cn_itr = class_names.iterator();
