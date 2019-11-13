@@ -34,7 +34,7 @@ public class StatementTensorGenerator extends TreeVisitor {
 	public boolean PreVisit(TreeNode node) {
 		if (StatementUtil.IsStatement(node.GetClazz()) || StatementUtil.IsMethodDeclaration(node.GetClazz())) {
 			in_handling_node.add(node);
-			StatementInfo stmt_info = new StatementInfo(node.toString());
+			StatementInfo stmt_info = new StatementInfo(node.GetTreeWholeContent());
 			in_handling_tensor.add(stmt_info);
 			pre_order_node.add(node);
 			node_stmt.put(node, stmt_info);

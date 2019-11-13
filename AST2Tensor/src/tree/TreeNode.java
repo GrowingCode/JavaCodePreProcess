@@ -8,12 +8,14 @@ public class TreeNode {
 	
 	Class<?> clazz = null;
 	String content = null;
+	String tree_whole_content = null;
 	TreeNode parent = null;
 	ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 	
-	public TreeNode(Class<?> clazz, String content) {
+	public TreeNode(Class<?> clazz, String content, String tree_whole_content) {
 		this.clazz = clazz;
 		this.content = content;
+		this.tree_whole_content = tree_whole_content;
 	}
 	
 	public void AppendToChildren(TreeNode tn) {
@@ -31,6 +33,10 @@ public class TreeNode {
 	
 	public String GetContent() {
 		return content;
+	}
+	
+	public String GetTreeWholeContent() {
+		return tree_whole_content;
 	}
 	
 	public ArrayList<TreeNode> GetChildren() {

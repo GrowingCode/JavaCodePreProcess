@@ -17,6 +17,7 @@ import translation.tensor.StringTensor;
 import tree.TreeNode;
 import tree.TreeVisit;
 import tree.TreeVisitor;
+import util.visitor.SkeletonVisitor;
 
 public class YTreeGenerator extends BasicGenerator {
 
@@ -35,7 +36,11 @@ public class YTreeGenerator extends BasicGenerator {
 		super.preVisit(node);
 		if (begin_generation) {
 			String type = JDTASTHelper.GetTypeRepresentationForASTNode(node);
-			TreeNode tn = new TreeNode(node.getClass(), type);
+			SkeletonVisitor sv = new SkeletonVisitor(icu);
+			node.accept(sv);
+			Assert.isTrue(sv.GetResult().size() == 1);
+			String stmt_content = sv.GetResult().get(0);
+			TreeNode tn = new TreeNode(node.getClass(), type, stmt_content);
 			tree.put(node, tn);
 			ASTNode parent = node.getParent();
 			TreeNode parent_tn = tree.get(parent);
@@ -44,12 +49,11 @@ public class YTreeGenerator extends BasicGenerator {
 			} else {
 				parent_tn.AppendToChildren(tn);
 			}
-
 			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 			boolean is_leaf = children.size() == 0;
 			if (is_leaf) {
 				String content = JDTASTHelper.GetContentRepresentationForASTNode(node);
-				TreeNode chd_tn = new TreeNode(String.class, content);
+				TreeNode chd_tn = new TreeNode(String.class, content, stmt_content);
 				tn.AppendToChildren(chd_tn);
 			}
 		}

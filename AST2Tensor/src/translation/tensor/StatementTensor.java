@@ -97,6 +97,8 @@ public class StatementTensor extends Tensor {
 
 	public static int min_token_number_of_one_statement = Integer.MAX_VALUE;
 	public static int max_token_number_of_one_statement = Integer.MIN_VALUE;
+	public static String min_size_statement_in_tokens = null;
+	public static String min_size_statement = null;
 	public static String max_size_statement_in_tokens = null;
 	public static String max_size_statement = null;
 	public static int total_number_of_tokens = 0;
@@ -410,6 +412,8 @@ public class StatementTensor extends Tensor {
 				int one_size = last_stmt.type_content_id.size();
 				if (min_token_number_of_one_statement > one_size) {
 					min_token_number_of_one_statement = one_size;
+					min_size_statement_in_tokens = StringUtils.join(last_stmt.type_content_str, '#');
+					min_size_statement = last_stmt.stmt;
 				}
 				if (max_token_number_of_one_statement < one_size) {
 					max_token_number_of_one_statement = one_size;
@@ -712,13 +716,16 @@ public class StatementTensor extends Tensor {
 	}
 
 	public static String StatementSummaryInfo() {
-		return "StatementSummary-- min_token_number_of_one_statement:" + min_token_number_of_one_statement
+		return "StatementSummary -- min_token_number_of_one_statement:" + min_token_number_of_one_statement
 				+ "#max_token_number_of_one_statement:" + max_token_number_of_one_statement
 				+ "#average_token_number_of_one_statement:"
-				+ ((total_number_of_tokens * 1.0) / (total_number_of_statements * 1.0)) + "#min_rate_of_local_token:"
-				+ min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token
+				+ ((total_number_of_tokens * 1.0) / (total_number_of_statements * 1.0))
+//				+ "#min_rate_of_local_token:" + min_rate_of_local_token + "max_rate_of_local_token:" + max_rate_of_local_token
+				+ "#min_size_statement:" + min_size_statement + "========= min_size_statement_in_tokens:"
+				+ min_size_statement_in_tokens
 				+ "#max_size_statement:" + max_size_statement + "========= max_size_statement_in_tokens:"
-				+ max_size_statement_in_tokens;
+				+ max_size_statement_in_tokens
+				;
 	}
 
 }

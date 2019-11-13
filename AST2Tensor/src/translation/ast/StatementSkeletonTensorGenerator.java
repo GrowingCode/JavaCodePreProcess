@@ -36,7 +36,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 	@Override
 	protected void WholePostHandle(ASTNode node) {
 		for (ASTNode stmt_root : stmt_roots) {
-			ArrayList<String> lls = StatementUtil.ProcessSkeleton(icu, stmt_root);
+			ArrayList<String> lls = StatementUtil.ProcessTokenHandleSkeleton(icu, stmt_root);
 			ArrayList<Integer> ids = new ArrayList<Integer>();
 			int sk_id = im.GetTypeContentID(lls.get(0));
 			ids.add(sk_id);

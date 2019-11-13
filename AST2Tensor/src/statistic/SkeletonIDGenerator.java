@@ -29,7 +29,7 @@ public class SkeletonIDGenerator extends BasicGenerator {
 		super.preVisit(node);
 		if (begin_generation) {
 			if (StatementUtil.IsStatement(node.getClass()) || StatementUtil.IsMethodDeclaration(node.getClass())) {
-				ArrayList<String> lls = StatementUtil.ProcessSkeleton(icu, node);
+				ArrayList<String> lls = StatementUtil.ProcessTokenHandleSkeleton(icu, node);
 				stmts.add(lls);
 			}
 		}
