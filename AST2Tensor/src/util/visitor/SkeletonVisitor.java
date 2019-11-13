@@ -38,13 +38,15 @@ public class SkeletonVisitor extends ASTVisitor {
 			root = node;
 		}
 		Range r = null;
-		if (node instanceof Statement) {
-			Assert.isTrue(node instanceof Block);
-			r = new Range(null, node.getStartPosition(), node.getStartPosition() + node.getLength() - 1,
-					OperationKind.remove);
-			if_ctn = if_ctn && false;
-		} else {
-			r = HandleNonStatement(node);
+		if (root != node) {
+			if (node instanceof Statement && !(node instanceof Block)) {
+//				Assert.isTrue(node instanceof Block, "node class:" + node.getClass() + ";root:" + root + ";node:" + node);
+				r = new Range(null, node.getStartPosition(), node.getStartPosition() + node.getLength() - 1,
+						OperationKind.remove);
+				if_ctn = if_ctn && false;
+			} else {
+				r = HandleNonStatement(node);
+			}
 		}
 		if (r != null) {
 			ranges.add(r);
@@ -80,7 +82,7 @@ public class SkeletonVisitor extends ASTVisitor {
 						"start:" + start + "#r.buf_start:" + r.buf_start + "#range_content:" + r.ei + "#range_cnt:"
 								+ cnt.substring(r.buf_start, r.buf_end + 1) + "#previous r_cnt:" + pre_r_cnt + "#strange node:" + node.toString()
 								+ "#parent strange node:" + node.getParent().toString());
-				String pre = cnt.substring(start, r.buf_start);
+				String pre = cnt.substring(start, r.buf_start).trim();
 				if (!pre.equals("")) {
 					parts.add(pre);
 				}
@@ -101,7 +103,7 @@ public class SkeletonVisitor extends ASTVisitor {
 			}
 			int end = node.getStartPosition() + node.getLength();
 			if (start < end) {
-				parts.add(cnt.substring(start, end));
+				parts.add(cnt.substring(start, end).trim());
 			}
 			String c = StringUtils.join(parts, "");
 
