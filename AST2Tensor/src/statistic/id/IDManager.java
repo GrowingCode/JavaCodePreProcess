@@ -1045,14 +1045,19 @@ public class IDManager {
 //	}
 
 	public String WordVocabularyInfo() {
-		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size() + "#OutOfVocabulary_Word_Size:"
-				+ id_tool.tr.not_hit_train.size() + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size()
-				+ "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0);// +
-																													// "#OutOfVocabulary_API_Comb_Size:"
+		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size()
+				+ "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size()
+				+ "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0)
+				+ "Summary -- Vocabulary_Skeleton_Size:" + id_tool.sr.hit_train.size()
+				+ "#OutOfVocabulary_Skeleton_Size:" + id_tool.sr.not_hit_train.size()
+				+ "#Unseen_Rate:" + (id_tool.sr.not_hit_train.size() * 1.0) / (id_tool.sr.hit_train.size() * 1.0)
+				;
+																													// + "#OutOfVocabulary_API_Comb_Size:"
 																													// +
 																													// (api_comb_id_map.size()
 																													// -
 																													// api_comb_hit_num);
+		//  + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size()
 	}
 
 }
