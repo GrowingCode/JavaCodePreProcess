@@ -23,6 +23,7 @@ import eclipse.exception.ProjectAlreadyExistsException;
 import eclipse.jdt.JDTLexicalParser;
 import eclipse.project.process.PreProcessHelper;
 import main.MetaOfApp;
+import util.DataSetUtil;
 import util.FileIterator;
 
 public class AnalysisEnvironment {
@@ -163,10 +164,11 @@ public class AnalysisEnvironment {
 				String fname = f.getName();
 				String packagepath = packagename.replace('.', '/');
 				String packagepath_with_classfile = packagepath + "/" + fname;
-				String class_full_qualified_name = packagename + "."
-						+ fname.substring(0, fname.lastIndexOf(".java"));
+				String file_simple_name_without_suffix = fname.substring(0, fname.lastIndexOf(".java"));
+				String r_file_simple_name_without_suffix = DataSetUtil.FilterNumberPrefix(file_simple_name_without_suffix);
+				String class_full_qualified_name = packagename + "." + r_file_simple_name_without_suffix;
 				if (MetaOfApp.JavaFileNoLimit) {
-					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path, f);
+					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path);
 				} else if (f_norm_path.endsWith(packagepath_with_classfile)) {
 //					String f_dir = f_norm_path.substring(0, f_norm_path.lastIndexOf(packagepath_with_classfile))
 //							.replace('\\', '/');
@@ -179,7 +181,7 @@ public class AnalysisEnvironment {
 //						dir_files_map.put(f_dir, files_in_dir);
 //					}
 //					UpdateFileQualifiedNameWithFilePathMap(files_in_dir, class_full_qualified_name, f_norm_path, f);
-					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path, f);
+					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path);
 				}
 			}
 			// Fill the source folder of the project.
@@ -213,11 +215,12 @@ public class AnalysisEnvironment {
 		}
 	}
 	
-	private static void UpdateFileQualifiedNameWithFilePathMap(Map<String, String> file_full_qualified_name_file_path_map, String class_full_qualified_name, String f_norm_path, File f) {
+	private static void UpdateFileQualifiedNameWithFilePathMap(Map<String, String> file_full_qualified_name_file_path_map, String class_full_qualified_name, String f_norm_path) {
 		// How to judge which java file is more complete? Currently, just judge the last
 		// update time of a file.
 		if (file_full_qualified_name_file_path_map.containsKey(class_full_qualified_name)) {
 			String full_name = file_full_qualified_name_file_path_map.get(class_full_qualified_name);
+			File f = new File(f_norm_path);
 			File full_f = new File(full_name);
 			if (f.lastModified() > full_f.lastModified()) {
 				file_full_qualified_name_file_path_map.put(class_full_qualified_name, f_norm_path);
