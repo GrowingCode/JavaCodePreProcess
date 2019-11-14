@@ -21,7 +21,6 @@ import bpe.BPEHandledResult;
 import bpe.BPEWordsUtil;
 import main.MetaOfApp;
 import statistic.IDTools;
-import util.ContentUtil;
 import util.FileUtil;
 import util.MapUtil;
 import util.PrintUtil;
@@ -119,10 +118,6 @@ public class IDManager {
 	// Integer>>();
 
 	IDTools id_tool = null;
-
-	public ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
-	public ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
-	public ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 
 	public IDManager(IDTools id_tool) {
 		this.id_tool = id_tool;
@@ -569,52 +564,53 @@ public class IDManager {
 //		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 
-		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
-		for (int i = 0; i < ati_out.size(); i++) {
-			String token = ati_out.get(i);
-			Assert.isTrue(token != null && token.length() > 0);
-			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
-			Assert.isTrue(subwords.size() > 0);
-			each_subword_sequence_start.add(subword_sequences.size());
-			for (int i1 = 0; i1 < subwords.size(); i1++) {
-				String subword = subwords.get(i1);
-				if (!subword_index.containsKey(subword)) {
-					subword_index.put(subword, subword_index.size());
-				}
-				Integer idx = subword_index.get(subword);
-				subword_sequences.add(idx);
-			}
-			each_subword_sequence_end.add(subword_sequences.size() - 1);
-		}
+//		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
+//		for (int i = 0; i < ati_out.size(); i++) {
+//			String token = ati_out.get(i);
+//			Assert.isTrue(token != null && token.length() > 0);
+//			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
+//			Assert.isTrue(subwords.size() > 0);
+//			each_subword_sequence_start.add(subword_sequences.size());
+//			for (int i1 = 0; i1 < subwords.size(); i1++) {
+//				String subword = subwords.get(i1);
+//				if (!subword_index.containsKey(subword)) {
+//					subword_index.put(subword, subword_index.size());
+//				}
+//				Integer idx = subword_index.get(subword);
+//				subword_sequences.add(idx);
+//			}
+//			each_subword_sequence_end.add(subword_sequences.size() - 1);
+//		}
 
-		Gson gson4 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
-		Gson gson5 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
-				gson5.toJson(each_subword_sequence_start));
-		Gson gson6 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
-				gson6.toJson(each_subword_sequence_end));
+//		Gson gson4 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
+//		Gson gson5 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
+//				gson5.toJson(each_subword_sequence_start));
+//		Gson gson6 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
+//				gson6.toJson(each_subword_sequence_end));
+		
 //		for (int i=0;i<ati_out.size();i++) {
 //			String token = ati_out.get(i);
 //			Assert.isTrue(token != null && token.length() > 0);
 //			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(token);
 //			for (int i1=0;i1<subwords.size();i1++) {
 
-		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
+//		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
 
-		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
+		Map<Integer, String> sw_out = ati_out;// MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> sw_keys = sw_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
 		while (sw_itr.hasNext()) {
 			Integer sw = sw_itr.next();
-			Assert.isTrue(subword_is_end_of_token.size() == sw);
+//			Assert.isTrue(subword_is_end_of_token.size() == sw);
 			String subword = sw_out.get(sw);
-			if (subword.endsWith(" ")) {
-				subword_is_end_of_token.add(1);
-			} else {
-				subword_is_end_of_token.add(0);
-			}
+//			if (subword.endsWith(" ")) {
+//				subword_is_end_of_token.add(1);
+//			} else {
+//				subword_is_end_of_token.add(0);
+//			}
 			each_char_sequence_start.add(char_sequences.size());
 			for (int i11 = 0; i11 < subword.length(); i11++) {
 				char c = subword.charAt(i11);
@@ -624,9 +620,9 @@ public class IDManager {
 			each_char_sequence_end.add(char_sequences.size() - 1);
 		}
 
-		Gson gson0 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
-				gson0.toJson(subword_is_end_of_token));
+//		Gson gson0 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_end_of_token.json"),
+//				gson0.toJson(subword_is_end_of_token));
 
 //				String subword = subwords.get(i1);
 //				Assert.isTrue(subword != null && subword.length() > 0);
@@ -666,9 +662,6 @@ public class IDManager {
 	}
 
 	private void GenerateAndSaveBPESubWordSequenceInCascadeForm(String dir) {
-//		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
-//		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
-//		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
 //		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
 
 		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
@@ -718,6 +711,10 @@ public class IDManager {
 		int not_in_hit_total_subword_num = 0;
 		int not_in_hit_max_subword_num_in_one_token = 0;
 		int not_in_hit_token_num = 0;
+		
+		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
@@ -771,34 +768,88 @@ public class IDManager {
 				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
 		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
 //		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
-
+		
 		Gson gson4 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"), gson4.toJson(subword_sequences));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
 		Gson gson5 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_start.json"),
 				gson5.toJson(each_subword_sequence_start));
 		Gson gson6 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
-
-		char_num = subword_index.size();
-		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
-
-		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
-
-		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
+		
+		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+		// char index
+		// handle char index
+		Set<Character> c_set = new TreeSet<Character>();
+		Collection<String> ao = ati_out.values();
+		Iterator<String> aitr = ao.iterator();
+		while (aitr.hasNext()) {
+			String tc = aitr.next();
+			int tc_len = tc.length();
+			for (int i = 0; i < tc_len; i++) {
+				char c = tc.charAt(i);
+				c_set.add(c);
+			}
+		}
+		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
+		Iterator<Character> c_itr = c_set.iterator();
+		while (c_itr.hasNext()) {
+			Character c = c_itr.next();
+			char_idx.put(c, char_idx.size());
+		}
+		char_num = char_idx.size();
+		
+		Map<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> sw_keys = sw_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
 		while (sw_itr.hasNext()) {
 			Integer sw = sw_itr.next();
-			Assert.isTrue(subword_is_end_of_token.size() == sw);
+//			Assert.isTrue(subword_is_end_of_token.size() == sw);
 			String subword = sw_out.get(sw);
-			if (subword.endsWith("_")) {
-				subword_is_end_of_token.add(1);
-			} else {
-				subword_is_end_of_token.add(0);
+//			if (subword.endsWith(" ")) {
+//				subword_is_end_of_token.add(1);
+//			} else {
+//				subword_is_end_of_token.add(0);
+//			}
+			each_char_sequence_start.add(char_sequences.size());
+			for (int i11 = 0; i11 < subword.length(); i11++) {
+				char c = subword.charAt(i11);
+				int idx = char_idx.get(c);
+				char_sequences.add(idx);
 			}
+			each_char_sequence_end.add(char_sequences.size() - 1);
 		}
+
+		Gson gson7 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"), gson7.toJson(char_sequences));
+		Gson gson8 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
+				gson8.toJson(each_char_sequence_start));
+		Gson gson9 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
+				gson9.toJson(each_char_sequence_end));
+
+//		char_num = subword_index.size();
+		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
+
+//		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
+//
+//		TreeMap<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
+//		Set<Integer> sw_keys = sw_out.keySet();
+//		Iterator<Integer> sw_itr = sw_keys.iterator();
+//		while (sw_itr.hasNext()) {
+//			Integer sw = sw_itr.next();
+//			Assert.isTrue(subword_is_end_of_token.size() == sw);
+//			String subword = sw_out.get(sw);
+//			if (subword.endsWith("_")) {
+//				subword_is_end_of_token.add(1);
+//			} else {
+//				subword_is_end_of_token.add(0);
+//			}
+//		}
 
 		// validate token subwords
 		Map<String, String> token_subwords = new TreeMap<String, String>();
