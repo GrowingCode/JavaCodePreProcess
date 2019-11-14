@@ -49,8 +49,8 @@ public class MetaOfApp {
 	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
 	public static boolean TakeUnseenAsUnk = false;
-	public static boolean StatementNoLimit = false;
 	public static boolean VariableNoLimit = true;
+	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
 	
 	public static void SaveToDirectory(String dir) {
