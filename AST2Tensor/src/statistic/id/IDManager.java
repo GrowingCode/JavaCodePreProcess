@@ -872,7 +872,7 @@ public class IDManager {
 			token_subwords.put(exp_tk, sbwds);
 		}
 		System.out.println("=== unsubword token num:" + token_subwords.size() + "#number_of_merges:"
-				+ MetaOfApp.number_of_merges + " ===");
+				+ MetaOfApp.NumberOfMerges + " ===");
 //		PrintUtil.PrintMap(token_subwords, "token_subwords");
 
 //		Gson gson0 = new Gson();

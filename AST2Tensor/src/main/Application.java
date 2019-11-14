@@ -115,7 +115,7 @@ public class Application implements IApplication {
 				BPEOneProjectHandle handle = new BPEOneProjectHandle();
 				HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
 	//			System.out.println("==== BPEMerge Begin ====");
-				bpe_mr.GenerateBPEMerges(MetaOfApp.number_of_merges);
+				bpe_mr.GenerateBPEMerges(MetaOfApp.NumberOfMerges);
 	//			System.out.println("==== BPEMerge End ====");
 				bpe_mr.SaveTo(bpe_mj, bpe_ttj);
 				System.out.println("==== BPECount End ====");
