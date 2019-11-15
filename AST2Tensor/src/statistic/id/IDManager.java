@@ -846,7 +846,7 @@ public class IDManager {
 		} else if (MetaOfApp.CharForm == MetaOfApp.SubWordChar) {
 			GenerateAndSaveCharSequence(dir, sw_out, char_idx);
 		} else {
-			Assert.isTrue(false);
+//			Assert.isTrue(false);
 		}
 
 //		char_num = subword_index.size();
@@ -985,6 +985,7 @@ public class IDManager {
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 //		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
+		meta_of_ast2tensor.put("NoChar", MetaOfApp.NoChar);
 		meta_of_ast2tensor.put("TokenChar", MetaOfApp.TokenChar);
 		meta_of_ast2tensor.put("SubWordChar", MetaOfApp.SubWordChar);
 		meta_of_ast2tensor.put("CharForm", MetaOfApp.CharForm);

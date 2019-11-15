@@ -46,9 +46,10 @@ public class MetaOfApp {
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 100;
 	
-	public final static int TokenChar = 0;
-	public final static int SubWordChar = 1;
-	public static int CharForm = TokenChar;
+	public final static int NoChar = 0;
+	public final static int TokenChar = 1;
+	public final static int SubWordChar = 2;
+	public static int CharForm = NoChar;
 
 //	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
