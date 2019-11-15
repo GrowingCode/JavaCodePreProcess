@@ -72,7 +72,7 @@ public class MetaOfApp {
 		if (!f.exists()) {
 			f.mkdirs();
 		}
-		FileUtil.WriteToFile(new File(dir + "/" + "Meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
+		FileUtil.WriteToFile(new File(dir + "/" + "meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
 	}
 
 }
