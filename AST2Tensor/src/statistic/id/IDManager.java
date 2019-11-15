@@ -532,32 +532,68 @@ public class IDManager {
 //		
 //		return subword_index;
 //	}
+	
+//	private void GenerateAndSaveCharSequenceInSubWordForm(String dir, Map<Integer, String> sw_out, Map<Character, Integer> char_idx) {
+//		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+//		
+////		Map<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
+//		Set<Integer> sw_keys = sw_out.keySet();
+//		Iterator<Integer> sw_itr = sw_keys.iterator();
+//		while (sw_itr.hasNext()) {
+//			Integer sw = sw_itr.next();
+////			Assert.isTrue(subword_is_end_of_token.size() == sw);
+//			String subword = sw_out.get(sw);
+////			if (subword.endsWith(" ")) {
+////				subword_is_end_of_token.add(1);
+////			} else {
+////				subword_is_end_of_token.add(0);
+////			}
+//			each_char_sequence_start.add(char_sequences.size());
+//			for (int i11 = 0; i11 < subword.length(); i11++) {
+//				char c = subword.charAt(i11);
+//				int idx = char_idx.get(c);
+//				char_sequences.add(idx);
+//			}
+//			each_char_sequence_end.add(char_sequences.size() - 1);
+//		}
+//
+//		Gson gson7 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"), gson7.toJson(char_sequences));
+//		Gson gson8 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
+//				gson8.toJson(each_char_sequence_start));
+//		Gson gson9 = new Gson();
+//		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
+//				gson9.toJson(each_char_sequence_end));
+//	}
 
-	private void GenerateAndSaveCharSequenceInCascadeForm(String dir) {
+	private void GenerateAndSaveCharSequence(String dir, Map<Integer, String> tk_out, Map<Character, Integer> char_idx) {
 		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
 
-		// handle char index
-		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
-		Set<Character> c_set = new TreeSet<Character>();
-		Collection<String> ao = ati_out.values();
-		Iterator<String> aitr = ao.iterator();
-		while (aitr.hasNext()) {
-			String tc = aitr.next();
-			int tc_len = tc.length();
-			for (int i = 0; i < tc_len; i++) {
-				char c = tc.charAt(i);
-				c_set.add(c);
-			}
-		}
-		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
-		Iterator<Character> c_itr = c_set.iterator();
-		while (c_itr.hasNext()) {
-			Character c = c_itr.next();
-			char_idx.put(c, char_idx.size());
-		}
-		char_num = char_idx.size();
+//		// handle char index
+//		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
+//		Set<Character> c_set = new TreeSet<Character>();
+//		Collection<String> ao = ati_out.values();
+//		Iterator<String> aitr = ao.iterator();
+//		while (aitr.hasNext()) {
+//			String tc = aitr.next();
+//			int tc_len = tc.length();
+//			for (int i = 0; i < tc_len; i++) {
+//				char c = tc.charAt(i);
+//				c_set.add(c);
+//			}
+//		}
+//		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
+//		Iterator<Character> c_itr = c_set.iterator();
+//		while (c_itr.hasNext()) {
+//			Character c = c_itr.next();
+//			char_idx.put(c, char_idx.size());
+//		}
+//		char_num = char_idx.size();
 
 		// handle sub words
 //		Map<String, Integer> sub_words = HandleSubWord(dir, ati_out);
@@ -600,13 +636,13 @@ public class IDManager {
 
 //		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
 
-		Map<Integer, String> sw_out = ati_out;// MapUtil.ReverseKeyValueInMap(subword_index);
-		Set<Integer> sw_keys = sw_out.keySet();
+//		Map<Integer, String> sw_out = ati_out;// MapUtil.ReverseKeyValueInMap(subword_index);
+		Set<Integer> sw_keys = tk_out.keySet();
 		Iterator<Integer> sw_itr = sw_keys.iterator();
 		while (sw_itr.hasNext()) {
 			Integer sw = sw_itr.next();
 //			Assert.isTrue(subword_is_end_of_token.size() == sw);
-			String subword = sw_out.get(sw);
+			String subword = tk_out.get(sw);
 //			if (subword.endsWith(" ")) {
 //				subword_is_end_of_token.add(1);
 //			} else {
@@ -757,6 +793,8 @@ public class IDManager {
 			}
 			each_subword_sequence_end.add(subword_sequences.size() - 1);
 		}
+		Map<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
+		subword_num = subword_index.size();
 
 		/**
 		 * print statistics
@@ -779,9 +817,9 @@ public class IDManager {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
 		
-		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
-		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
+//		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
+//		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
 		// char index
 		// handle char index
 		Set<Character> c_set = new TreeSet<Character>();
@@ -803,38 +841,15 @@ public class IDManager {
 		}
 		char_num = char_idx.size();
 		
-		Map<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
-		Set<Integer> sw_keys = sw_out.keySet();
-		Iterator<Integer> sw_itr = sw_keys.iterator();
-		while (sw_itr.hasNext()) {
-			Integer sw = sw_itr.next();
-//			Assert.isTrue(subword_is_end_of_token.size() == sw);
-			String subword = sw_out.get(sw);
-//			if (subword.endsWith(" ")) {
-//				subword_is_end_of_token.add(1);
-//			} else {
-//				subword_is_end_of_token.add(0);
-//			}
-			each_char_sequence_start.add(char_sequences.size());
-			for (int i11 = 0; i11 < subword.length(); i11++) {
-				char c = subword.charAt(i11);
-				int idx = char_idx.get(c);
-				char_sequences.add(idx);
-			}
-			each_char_sequence_end.add(char_sequences.size() - 1);
+		if (MetaOfApp.CharForm == MetaOfApp.TokenChar) {
+			GenerateAndSaveCharSequence(dir, ati_out, char_idx);
+		} else if (MetaOfApp.CharForm == MetaOfApp.SubWordChar) {
+			GenerateAndSaveCharSequence(dir, sw_out, char_idx);
+		} else {
+			Assert.isTrue(false);
 		}
 
-		Gson gson7 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_char_sequences.json"), gson7.toJson(char_sequences));
-		Gson gson8 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_start.json"),
-				gson8.toJson(each_char_sequence_start));
-		Gson gson9 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_char_sequence_end.json"),
-				gson9.toJson(each_char_sequence_end));
-
 //		char_num = subword_index.size();
-		subword_num = subword_index.size();
 //		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
 
 //		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
@@ -969,7 +984,10 @@ public class IDManager {
 		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
-		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
+//		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
+		meta_of_ast2tensor.put("TokenChar", MetaOfApp.TokenChar);
+		meta_of_ast2tensor.put("SubWordChar", MetaOfApp.SubWordChar);
+		meta_of_ast2tensor.put("CharForm", MetaOfApp.CharForm);
 //		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		meta_of_ast2tensor.put("TotalNumberOfSubWord", subword_num);
@@ -1031,12 +1049,11 @@ public class IDManager {
 //		GenerateIDJson(dir, not_hit_ast_type_content_id_map, "not_hit_type_content");
 //		GenerateAndSaveCharSequence(dir, ast_type_content_id_map, not_hit_ast_type_content_id_map, "type_content");
 //		GenerateIDJson(dir, ast_type_content_id_map, "type_content");
-		if (MetaOfApp.InBPEForm) {
+//		if (MetaOfApp.InBPEForm) {
 //			GenerateAndSaveCharSequence(dir);
-			GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
-		} else {
-			GenerateAndSaveCharSequenceInCascadeForm(dir);
-		}
+		GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
+//		} else {
+//		}
 		// only for debug
 		GenerateIDJson(dir, skeleton_id_map, "skeleton");
 		GenerateIDJson(dir, token_id_map, "token");

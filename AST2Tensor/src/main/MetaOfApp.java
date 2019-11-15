@@ -45,8 +45,12 @@ public class MetaOfApp {
 
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 100;
+	
+	public final static int TokenChar = 0;
+	public final static int SubWordChar = 1;
+	public static int CharForm = TokenChar;
 
-	public static boolean InBPEForm = true;
+//	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
 	public static boolean TakeUnseenAsUnk = false;
 	public static boolean VariableNoLimit = true;
@@ -61,7 +65,8 @@ public class MetaOfApp {
 //		meta_of_ast2tensor.put("MaximumStringLength", MaximumStringLength);
 		meta_of_ast2tensor.put("NumberOfMerges", NumberOfMerges);
 		meta_of_ast2tensor.put("MinimumNumberOfNodesInAST", MinimumNumberOfNodesInAST);
-		meta_of_ast2tensor.put("InBPEForm", InBPEForm ? 1 : 0);
+//		meta_of_ast2tensor.put("InBPEForm", InBPEForm ? 1 : 0);
+		
 		meta_of_ast2tensor.put("UseLexicalToken", UseLexicalToken ? 1 : 0);
 		meta_of_ast2tensor.put("TakeUnseenAsUnk", TakeUnseenAsUnk ? 1 : 0);
 		meta_of_ast2tensor.put("VariableNoLimit", VariableNoLimit ? 1 : 0);
