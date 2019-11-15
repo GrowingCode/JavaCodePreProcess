@@ -89,6 +89,7 @@ public class IDManager {
 //	private int api_comb_hit_num = -1;
 
 	private int char_num = -1;
+	private int subword_num = -1;
 
 //	private TreeMap<String, Integer> not_hit_api_comb_id_map = new TreeMap<String, Integer>();
 
@@ -833,7 +834,8 @@ public class IDManager {
 				gson9.toJson(each_char_sequence_end));
 
 //		char_num = subword_index.size();
-		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
+		subword_num = subword_index.size();
+//		Assert.isTrue(char_num > 0, "char_num must be greater than 0");
 
 //		ArrayList<Integer> subword_is_end_of_token = new ArrayList<Integer>();
 //
@@ -970,6 +972,7 @@ public class IDManager {
 		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
 //		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
 		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
+		meta_of_ast2tensor.put("TotalNumberOfSubWord", subword_num);
 		meta_of_ast2tensor.put("ReservedNumberOfWords", reserved_words.size());
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
 //		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
