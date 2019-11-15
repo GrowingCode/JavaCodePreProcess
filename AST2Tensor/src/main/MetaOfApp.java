@@ -53,7 +53,7 @@ public class MetaOfApp {
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
 
-	public static void SaveToDirectory(String dir) {
+	public static void SaveToDirectory() {
 		Gson gson = new Gson();
 		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
 //		meta_of_ast2tensor.put("AddZeroIfNoVariable", AddZeroIfNoVariable);
@@ -67,6 +67,11 @@ public class MetaOfApp {
 		meta_of_ast2tensor.put("VariableNoLimit", VariableNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("MethodNoLimit", MethodNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);
+		String dir = System.getProperty("user.home") + "/ASTMeta";
+		File f = new File(dir);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
 		FileUtil.WriteToFile(new File(dir + "/" + "Meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
 	}
 

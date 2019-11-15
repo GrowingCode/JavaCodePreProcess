@@ -141,7 +141,7 @@ public class Application implements IApplication {
 		}
 		IDManager im = new IDManager(id_tool);
 		{
-			MetaOfApp.SaveToDirectory(MetaOfApp.DataDirectory);
+			MetaOfApp.SaveToDirectory();
 			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
 //			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
