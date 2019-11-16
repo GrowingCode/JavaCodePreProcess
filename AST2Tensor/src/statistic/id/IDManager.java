@@ -841,9 +841,10 @@ public class IDManager {
 		}
 		char_num = char_idx.size();
 		
-		if (MetaOfApp.CharForm == MetaOfApp.TokenChar) {
-			GenerateAndSaveCharSequence(dir, ati_out, char_idx);
-		} else if (MetaOfApp.CharForm == MetaOfApp.SubWordChar) {
+//		if (MetaOfApp.CharForm == MetaOfApp.TokenChar) {
+//			GenerateAndSaveCharSequence(dir, ati_out, char_idx);
+//		} else 
+		if (MetaOfApp.CharForm == MetaOfApp.SubWordChar) {
 			GenerateAndSaveCharSequence(dir, sw_out, char_idx);
 		} else {
 //			Assert.isTrue(false);
@@ -986,7 +987,7 @@ public class IDManager {
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 //		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
 		meta_of_ast2tensor.put("NoChar", MetaOfApp.NoChar);
-		meta_of_ast2tensor.put("TokenChar", MetaOfApp.TokenChar);
+//		meta_of_ast2tensor.put("TokenChar", MetaOfApp.TokenChar);
 		meta_of_ast2tensor.put("SubWordChar", MetaOfApp.SubWordChar);
 		meta_of_ast2tensor.put("CharForm", MetaOfApp.CharForm);
 //		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
