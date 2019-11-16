@@ -55,12 +55,12 @@ public class StatementTensor extends Tensor {
 	// index
 	// stmt info of tokens start end: se|se|se
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_first_encounter_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
@@ -161,11 +161,11 @@ public class StatementTensor extends Tensor {
 	private String ToStmtInfo(String separator) {
 //		separator + StringUtils.join(stmt_token_inner_index_info.toArray(), " ") + 
 		return StringUtils.join(stmt_token_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_first_encounter_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ") + separator
