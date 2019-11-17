@@ -41,7 +41,7 @@ public class MetaOfApp {
 
 //	public final static boolean CharInCascadeForm = false;
 
-	public final static int NumberOfMerges = 1000;
+	public final static int NumberOfMerges = 2000;
 
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 100;
