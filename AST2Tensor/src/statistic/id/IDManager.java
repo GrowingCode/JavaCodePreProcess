@@ -742,11 +742,13 @@ public class IDManager {
 		/**
 		 * statistics for output
 		 */
-		int in_hit_total_subword_num = 0;
-		int in_hit_max_subword_num_in_one_token = 0;
+//		int in_hit_total_subword_num = 0;
+		Set<String> in_hit_sub_words = new TreeSet<String>();
+//		int in_hit_max_subword_num_in_one_token = 0;
 		int in_hit_token_num = 0;
-		int not_in_hit_total_subword_num = 0;
-		int not_in_hit_max_subword_num_in_one_token = 0;
+//		int not_in_hit_total_subword_num = 0;
+		Set<String> not_in_hit_sub_words = new TreeSet<String>();
+//		int not_in_hit_max_subword_num_in_one_token = 0;
 		int not_in_hit_token_num = 0;
 		
 		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
@@ -764,17 +766,28 @@ public class IDManager {
 			int subwords_size = subwords.size();
 
 			if (id_tool.tr.hit_train.containsKey(ori_token)) {
-				in_hit_total_subword_num += subwords_size;
-				if (in_hit_max_subword_num_in_one_token < subwords_size) {
-					in_hit_max_subword_num_in_one_token = subwords_size;
-				}
+//				in_hit_total_subword_num += subwords_size;
+				in_hit_sub_words.addAll(subwords);
+//				if (in_hit_max_subword_num_in_one_token < subwords_size) {
+//					in_hit_max_subword_num_in_one_token = subwords_size;
+//				}
 				in_hit_token_num++;
+				for (String subword : subwords) {
+					not_in_hit_sub_words.remove(subword);
+				}
 			} else {
 				Assert.isTrue(id_tool.tr.not_hit_train.containsKey(ori_token));
-				not_in_hit_total_subword_num += subwords_size;
-				if (not_in_hit_max_subword_num_in_one_token < subwords_size) {
-					not_in_hit_max_subword_num_in_one_token = subwords_size;
+//				int n_h_num = 0;
+				for (String subword : subwords) {
+					if (!in_hit_sub_words.contains(subword)) {
+//						not_in_hit_total_subword_num += subwords_size;
+						not_in_hit_sub_words.add(subword);
+//						n_h_num++;
+					}
 				}
+//				if (not_in_hit_max_subword_num_in_one_token < n_h_num) {
+//					not_in_hit_max_subword_num_in_one_token = n_h_num;
+//				}
 				not_in_hit_token_num++;
 			}
 
@@ -799,14 +812,18 @@ public class IDManager {
 		/**
 		 * print statistics
 		 */
-		System.out.println("in_hit_average_subword_num_in_one_token:"
-				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
-		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
-//		System.out.println("in_hit_token_num:" + in_hit_token_num);
-		System.out.println("not_in_hit_average_subword_num_in_one_token:"
-				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
-		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
-//		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
+		int in_hit_total_subword_num = in_hit_sub_words.size();
+		int not_in_hit_total_subword_num = not_in_hit_sub_words.size();
+		System.out.println("in_hit_total_subword_num:" + in_hit_total_subword_num);
+//		System.out.println("in_hit_average_subword_num_in_one_token:"
+//				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
+//		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
+		System.out.println("in_hit_token_num:" + in_hit_token_num);
+		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
+//		System.out.println("not_in_hit_average_subword_num_in_one_token:"
+//				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
+//		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
+		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
 		
 		Gson gson4 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
@@ -822,17 +839,27 @@ public class IDManager {
 //		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
 		// char index
 		// handle char index
+		Set<Character> in_hit_chars = new TreeSet<Character>();
+		Set<Character> not_in_hit_chars = new TreeSet<Character>();
 		Set<Character> c_set = new TreeSet<Character>();
-		Collection<String> ao = ati_out.values();
-		Iterator<String> aitr = ao.iterator();
-		while (aitr.hasNext()) {
-			String tc = aitr.next();
-			int tc_len = tc.length();
+		Collection<String> so = sw_out.values();
+		Iterator<String> sitr = so.iterator();
+		while (sitr.hasNext()) {
+			String sw = sitr.next();
+			int tc_len = sw.length();
 			for (int i = 0; i < tc_len; i++) {
-				char c = tc.charAt(i);
+				char c = sw.charAt(i);
 				c_set.add(c);
+				if (in_hit_sub_words.contains(sw)) {
+					in_hit_chars.add(c);
+					not_in_hit_chars.remove(c);
+				} else {
+					not_in_hit_chars.add(c);
+				}
 			}
 		}
+		System.out.println("in_hit_total_char_num:" + in_hit_chars.size());
+		System.out.println("not_in_hit_total_char_num:" + not_in_hit_chars.size());
 		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
 		Iterator<Character> c_itr = c_set.iterator();
 		while (c_itr.hasNext()) {
