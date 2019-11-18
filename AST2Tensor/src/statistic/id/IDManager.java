@@ -812,18 +812,20 @@ public class IDManager {
 		/**
 		 * print statistics
 		 */
+		System.out.println("in_hit_token_num:" + in_hit_token_num);
+		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
+		System.out.println("total_token_unseen_rate:" + (in_hit_token_num*1.0) / ((in_hit_token_num + not_in_hit_token_num)*1.0));
 		int in_hit_total_subword_num = in_hit_sub_words.size();
 		int not_in_hit_total_subword_num = not_in_hit_sub_words.size();
 		System.out.println("in_hit_total_subword_num:" + in_hit_total_subword_num);
 //		System.out.println("in_hit_average_subword_num_in_one_token:"
 //				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
 //		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
-		System.out.println("in_hit_token_num:" + in_hit_token_num);
 		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
+		System.out.println("total_subword_unseen_rate:" + (in_hit_total_subword_num*1.0) / ((in_hit_total_subword_num + not_in_hit_total_subword_num)*1.0));
 //		System.out.println("not_in_hit_average_subword_num_in_one_token:"
 //				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
 //		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
-		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
 		
 		Gson gson4 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
@@ -860,6 +862,7 @@ public class IDManager {
 		}
 		System.out.println("in_hit_total_char_num:" + in_hit_chars.size());
 		System.out.println("not_in_hit_total_char_num:" + not_in_hit_chars.size());
+		System.out.println("total_char_unseen_rate:" + (not_in_hit_chars.size()*1.0) / ((in_hit_chars.size() + not_in_hit_chars.size())*1.0));
 		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
 		Iterator<Character> c_itr = c_set.iterator();
 		while (c_itr.hasNext()) {
@@ -1145,12 +1148,13 @@ public class IDManager {
 //	}
 
 	public String WordVocabularyInfo() {
-		return "Summary -- Vocabulary_Word_Size:" + id_tool.tr.hit_train.size()
-				+ "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size()
-				+ "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0)
-				+ "Summary -- Vocabulary_Skeleton_Size:" + id_tool.sr.hit_train.size()
+		return "Summary -- "
+//				+ "#Vocabulary_Word_Size:" + id_tool.tr.hit_train.size()
+//				+ "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size()
+//				+ "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0)
+				+ "#Vocabulary_Skeleton_Size:" + id_tool.sr.hit_train.size()
 				+ "#OutOfVocabulary_Skeleton_Size:" + id_tool.sr.not_hit_train.size()
-				+ "#Unseen_Rate:" + (id_tool.sr.not_hit_train.size() * 1.0) / (id_tool.sr.hit_train.size() * 1.0)
+				+ "#Unseen_Rate:" + (id_tool.sr.not_hit_train.size() * 1.0) / ((id_tool.sr.hit_train.size()+id_tool.sr.not_hit_train.size()) * 1.0)
 				;
 																													// + "#OutOfVocabulary_API_Comb_Size:"
 																													// +
