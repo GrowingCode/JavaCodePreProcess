@@ -34,6 +34,8 @@ public class IDManager {
 	public static final String Unk = "#Unk#";
 	public static final String Rep = "#Rep#";
 	
+	public static final String SWordUK = "#YYXSWordUK#";
+	
 	public static final List<String> reserved_words = new LinkedList<String>();
 	
 	public static final int NumberOfUnk = 5;
@@ -756,9 +758,10 @@ public class IDManager {
 		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 		
 		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
-		for (String rv : reserved_words) {
-			subword_index.put(rv, subword_index.size());
-		}
+		subword_index.put(SWordUK, subword_index.size());
+//		for (String rv : reserved_words) {
+//			subword_index.put(rv, subword_index.size());
+//		}
 
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
 		for (int i = 0; i < ati_out.size(); i++) {
