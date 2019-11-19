@@ -792,6 +792,7 @@ public class IDManager {
 			}
 
 			Assert.isTrue(subwords_size > 0);
+			Assert.isTrue(i == each_subword_sequence_start.size());
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1 = 0; i1 < subwords_size; i1++) {
 				String subword = subwords.get(i1);
