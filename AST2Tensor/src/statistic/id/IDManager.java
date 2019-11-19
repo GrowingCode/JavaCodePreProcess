@@ -754,9 +754,13 @@ public class IDManager {
 		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
+		
+		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
+		for (String rv : reserved_words) {
+			subword_index.put(rv, subword_index.size());
+		}
 
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(token_id_map);
-		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
 		for (int i = 0; i < ati_out.size(); i++) {
 			String ori_token = ati_out.get(i);
 			Assert.isTrue(ori_token != null && ori_token.length() > 0);
@@ -793,6 +797,7 @@ public class IDManager {
 
 			Assert.isTrue(subwords_size > 0);
 			Assert.isTrue(i == each_subword_sequence_start.size());
+			
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1 = 0; i1 < subwords_size; i1++) {
 				String subword = subwords.get(i1);
@@ -864,7 +869,10 @@ public class IDManager {
 		System.out.println("in_hit_total_char_num:" + in_hit_chars.size());
 		System.out.println("not_in_hit_total_char_num:" + not_in_hit_chars.size());
 		System.out.println("total_char_unseen_rate:" + (not_in_hit_chars.size()*1.0) / ((in_hit_chars.size() + not_in_hit_chars.size())*1.0));
+		
 		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
+		char_idx.put(' ', char_idx.size());
+		
 		Iterator<Character> c_itr = c_set.iterator();
 		while (c_itr.hasNext()) {
 			Character c = c_itr.next();
