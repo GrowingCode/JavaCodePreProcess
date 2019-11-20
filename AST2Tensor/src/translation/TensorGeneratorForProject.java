@@ -88,6 +88,8 @@ public class TensorGeneratorForProject {
 					StatementLexicalTokenTensorGenerator tg_stmt_lex_visitor = new StatementLexicalTokenTensorGenerator(
 							tensor_tool.role_assigner, tensor_tool.im, icu, cu);
 					cu.accept(tg_stmt_lex_visitor);
+					total_method_count += tg_stmt_lex_visitor.total_method_count;
+					unsuitable_method_count += tg_stmt_lex_visitor.unsuitable_method_count;
 					List<Tensor> stmt_lex_tensors = tg_stmt_lex_visitor.GetGeneratedTensors();
 					Iterator<Tensor> s_itr = stmt_lex_tensors.iterator();
 					List<Tensor> stmt_result_tensors = new LinkedList<Tensor>();
