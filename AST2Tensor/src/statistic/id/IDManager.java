@@ -722,7 +722,7 @@ public class IDManager {
 		ts.removeAll(id_tool.tr.not_hit_train.keySet());
 		PrintUtil.PrintSet(ts, "left things");
 		
-		Assert.isTrue(origin_after.size() == token_id_map.size(),
+		Assert.isTrue(MetaOfApp.TakeUnseenAsUnk || origin_after.size() == token_id_map.size(),
 				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 
 		// in train
