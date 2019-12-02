@@ -38,8 +38,6 @@ public class IDManager {
 	
 	public static final List<String> reserved_words = new LinkedList<String>();
 	
-	public static final int NumberOfUnk = 5;
-	
 	static {
 		reserved_words.add(ZDft);
 		reserved_words.add(Unk);
@@ -129,7 +127,7 @@ public class IDManager {
 		// skeleton regist
 		Regist(skeleton_id_map, reserved_words);
 		if (MetaOfApp.TakeUnseenAsUnk) {
-			Regist(skeleton_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(NumberOfUnk)));
+			Regist(skeleton_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
 		} else {
 			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
 			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -147,7 +145,7 @@ public class IDManager {
 		// token regist
 		Regist(token_id_map, reserved_words);
 		if (MetaOfApp.TakeUnseenAsUnk) {
-			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(NumberOfUnk)));
+			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
 		} else {
 			Regist(token_id_map, new ArrayList<String>(id_tool.tr.hit_train.keySet()));
 			Regist(token_id_map, new ArrayList<String>(id_tool.tr.not_hit_train.keySet()));

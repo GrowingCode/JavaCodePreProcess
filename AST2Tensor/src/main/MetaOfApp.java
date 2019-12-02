@@ -53,10 +53,13 @@ public class MetaOfApp {
 
 //	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
-	public static boolean TakeUnseenAsUnk = false;
 	public static boolean VariableNoLimit = true;
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
+	
+	public static boolean TakeUnseenAsUnk = false;
+	public static final int NumberOfUnk = 5;
+	
 
 	public static void SaveToDirectory() {
 		Gson gson = new Gson();
