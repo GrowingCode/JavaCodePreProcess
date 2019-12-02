@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import main.MetaOfApp;
 import util.MapUtil;
 import util.PrintUtil;
 
@@ -17,8 +18,6 @@ public class TokenRecorder {
 	// public static IDManager Instance() {
 	// return unique;
 	// }
-	
-	public static final int MaxParentTypeRemoveTimes = 1;
 	
 //	private TreeMap<String, Boolean> type_is_leaf = new TreeMap<String, Boolean>();
 
@@ -122,7 +121,7 @@ public class TokenRecorder {
 		List<Entry<String, Integer>> ht = MapUtil.SortMapByValue(hit_train);
 //		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
 		Set<String> remove_keys = new TreeSet<String>();
-		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer> ();
+		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer>();
 		int a_rm = 0;
 		for (int i=0;i<ht.size();i++) {
 			String key = ht.get(i).getKey();
@@ -134,7 +133,7 @@ public class TokenRecorder {
 				}
 				rm++;
 				parent_type_remove_num.put(parent_type, rm);
-				if (rm <= MaxParentTypeRemoveTimes) {
+				if (rm <= MetaOfApp.MaxParentTypeRemoveTimes) {
 					remove_keys.add(key);
 					a_rm++;
 				}
