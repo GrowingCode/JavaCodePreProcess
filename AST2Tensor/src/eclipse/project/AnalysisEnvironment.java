@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -31,11 +32,11 @@ public class AnalysisEnvironment {
 	protected static IJavaProject default_project = null;
 
 	private static void InitializeClassPathWithDefaultJRE(List<IClasspathEntry> entries) {
-		LibraryLocation[] libs = new LibraryLocation[0];
+//		LibraryLocation[] libs = new LibraryLocation[0];
 		IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-		if (vmInstall != null) {
-			libs = JavaRuntime.getLibraryLocations(vmInstall);
-		}
+		Assert.isTrue(vmInstall != null);
+		LibraryLocation[] libs = JavaRuntime.getLibraryLocations(vmInstall);
+//		}
 		for (LibraryLocation element : libs) {
 			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 		}
@@ -60,6 +61,10 @@ public class AnalysisEnvironment {
 
 	public static IJavaProject CreateAnalysisEnvironment(ProjectInfo pi)
 			throws NoAnalysisSourceException, ProjectAlreadyExistsException, CoreException {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		File dir = null;
 		dir = new File(pi.getBasedir());
 		if (!dir.exists() || !dir.isDirectory()) {
@@ -85,7 +90,10 @@ public class AnalysisEnvironment {
 //			FileUtil.DeleteFile(maven_dir);
 //		}
 //		maven_dir.mkdirs();
-
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
 		InitializeClassPathWithDefaultJRE(entries);
 //		{
