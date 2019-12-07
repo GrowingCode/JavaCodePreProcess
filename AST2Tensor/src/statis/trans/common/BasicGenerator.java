@@ -74,7 +74,7 @@ public class BasicGenerator extends ASTVisitor {
 		if (begin_generation) {
 			if (begin_generation_node.equals(node)) {
 				total_method_count++;
-				if (MetaOfApp.MethodNoLimit || (method_node_count >= MetaOfApp.MinimumNumberOfNodesInAST)) {
+				if (MetaOfApp.MethodNoLimit || (method_node_count >= MetaOfApp.MinimumNumberOfNodesInAST && method_node_count <= MetaOfApp.MaximumNumberOfNodesInAST)) {
 					WholePostHandle(node);
 				} else {
 					unsuitable_method_count++;
