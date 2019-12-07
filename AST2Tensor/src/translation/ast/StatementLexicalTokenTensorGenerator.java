@@ -16,7 +16,10 @@ import translation.tensor.StatementTensor;
 import translation.tensor.StringTensor;
 
 public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
-
+	
+	public int min_num_node_in_one_ast = Integer.MAX_VALUE;
+	public int max_num_node_in_one_ast = Integer.MIN_VALUE;
+	
 	public StatementLexicalTokenTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
 			CompilationUnit cu) {
 		super(role_assigner, im, icu, cu);
@@ -41,6 +44,8 @@ public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 			TypeContentID t_c = new TypeContentID(tk, type_content_id);
 			stmt_info.StoreOneNode(t_c, tk, null, null, -1, -1);
 		}
+		min_num_node_in_one_ast = min_num_node_in_one_ast > stmt_info.Size() ? stmt_info.Size() : min_num_node_in_one_ast;
+		max_num_node_in_one_ast = max_num_node_in_one_ast < stmt_info.Size() ? stmt_info.Size() : max_num_node_in_one_ast;
 		curr_tensor.Devour(stmt_info);
 		curr_tensor.HandleAllDevoured(im);
 		StringTensor st = new StringTensor();

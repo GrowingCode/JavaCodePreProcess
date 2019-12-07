@@ -20,6 +20,9 @@ import tree.TreeVisitor;
 import util.visitor.SkeletonVisitor;
 
 public class YTreeGenerator extends BasicGenerator {
+	
+	public int min_num_node_in_one_ast = Integer.MAX_VALUE;
+	public int max_num_node_in_one_ast = Integer.MIN_VALUE;
 
 	protected TreeVisitor visitor = null;
 	
@@ -61,6 +64,9 @@ public class YTreeGenerator extends BasicGenerator {
 	
 	@Override
 	protected void WholePostHandle(ASTNode node) {
+		min_num_node_in_one_ast = min_num_node_in_one_ast > tree.size() ? tree.size() : min_num_node_in_one_ast;
+		max_num_node_in_one_ast = max_num_node_in_one_ast < tree.size() ? tree.size() : max_num_node_in_one_ast;
+		
 		TreeNode root = tree.get(node);
 		visitor.Clear();
 		TreeVisit.Visit(root, visitor);

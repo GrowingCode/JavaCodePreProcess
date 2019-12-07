@@ -49,6 +49,8 @@ public class TensorGeneratorForProject {
 		if (units != null) {
 			int total_method_count = 0;
 			int unsuitable_method_count = 0;
+			int min_num_node_in_one_ast = Integer.MAX_VALUE;
+			int max_num_node_in_one_ast = Integer.MIN_VALUE;
 //			PriorityQueue<SizePath> pq = new PriorityQueue<SizePath>();
 			for (ICompilationUnit icu : units) {
 //				if (Meta.DetailDebugMode) {
@@ -90,6 +92,8 @@ public class TensorGeneratorForProject {
 					cu.accept(tg_stmt_lex_visitor);
 					total_method_count += tg_stmt_lex_visitor.total_method_count;
 					unsuitable_method_count += tg_stmt_lex_visitor.unsuitable_method_count;
+					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt_lex_visitor.min_num_node_in_one_ast ? tg_stmt_lex_visitor.min_num_node_in_one_ast : min_num_node_in_one_ast;
+					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt_lex_visitor.max_num_node_in_one_ast ? tg_stmt_lex_visitor.max_num_node_in_one_ast : max_num_node_in_one_ast;
 					List<Tensor> stmt_lex_tensors = tg_stmt_lex_visitor.GetGeneratedTensors();
 					Iterator<Tensor> s_itr = stmt_lex_tensors.iterator();
 					List<Tensor> stmt_result_tensors = new LinkedList<Tensor>();
@@ -122,6 +126,8 @@ public class TensorGeneratorForProject {
 					cu.accept(tg_stmt_skt);
 					total_method_count += tg_stmt.total_method_count;
 					unsuitable_method_count += tg_stmt.unsuitable_method_count;
+					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt.min_num_node_in_one_ast ? tg_stmt.min_num_node_in_one_ast : min_num_node_in_one_ast;
+					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt.max_num_node_in_one_ast ? tg_stmt.max_num_node_in_one_ast : max_num_node_in_one_ast;
 					
 					List<Tensor> stmt_tensors = tg_stmt.GetGeneratedTensors();
 					List<Tensor> tree_tensors = tg_tree.GetGeneratedTensors();
@@ -161,6 +167,7 @@ public class TensorGeneratorForProject {
 					Assert.isTrue(tree_tensors.size() == stmt_tensors.size());
 				}
 			}
+			System.out.println("min_num_node_in_one_ast:" + min_num_node_in_one_ast + "#max_num_node_in_one_ast:" + max_num_node_in_one_ast);
 			System.out.println(
 					"total_method_count:" + total_method_count + "#unsuitable_method_count:" + unsuitable_method_count);
 		}
