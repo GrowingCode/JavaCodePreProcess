@@ -53,7 +53,7 @@ public class MetaOfApp {
 //	public static int CharForm = NoChar;
 
 //	public static boolean InBPEForm = true;
-	public static boolean UseLexicalToken = false;
+	public static boolean UseLexicalToken = true;
 	public static boolean VariableNoLimit = true;
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
@@ -62,7 +62,7 @@ public class MetaOfApp {
 	public static final int NumberOfUnk = 3;
 	public static final int MaxParentTypeRemoveTimes = 1;
 	
-	public static boolean GenerateSkeletonToken = true;
+	public static boolean GenerateSkeletonToken = false;
 
 	public static void SaveToDirectory() {
 		Gson gson = new Gson();
@@ -72,6 +72,7 @@ public class MetaOfApp {
 //		meta_of_ast2tensor.put("MaximumStringLength", MaximumStringLength);
 		meta_of_ast2tensor.put("NumberOfMerges", NumberOfMerges);
 		meta_of_ast2tensor.put("MinimumNumberOfNodesInAST", MinimumNumberOfNodesInAST);
+		meta_of_ast2tensor.put("MaximumNumberOfNodesInAST", MaximumNumberOfNodesInAST);
 //		meta_of_ast2tensor.put("InBPEForm", InBPEForm ? 1 : 0);
 		
 		meta_of_ast2tensor.put("UseLexicalToken", UseLexicalToken ? 1 : 0);
