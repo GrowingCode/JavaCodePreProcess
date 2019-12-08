@@ -53,7 +53,7 @@ public class MetaOfApp {
 //	public static int CharForm = NoChar;
 
 //	public static boolean InBPEForm = true;
-	public static boolean UseLexicalToken = true;
+	public static boolean UseLexicalToken = false;
 	public static boolean VariableNoLimit = true;
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;

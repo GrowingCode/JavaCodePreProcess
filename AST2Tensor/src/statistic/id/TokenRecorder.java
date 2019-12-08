@@ -123,9 +123,11 @@ public class TokenRecorder {
 		Set<String> remove_keys = new TreeSet<String>();
 		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer>();
 		int a_rm = 0;
+//		System.out.println("ht.size():" + ht.size());
 		for (int i=0;i<ht.size();i++) {
 			String key = ht.get(i).getKey();
 			String parent_type = hit_train_parent_type_content.get(key);
+//			System.out.println("parent_type:" + parent_type);
 			if (parent_type.endsWith("L")) {
 				Integer rm = parent_type_remove_num.get(parent_type);
 				if (rm == null) {
