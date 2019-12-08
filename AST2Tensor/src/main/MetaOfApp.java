@@ -45,6 +45,7 @@ public class MetaOfApp {
 
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 100;
+	public final static int MaximumNumberOfNodesInAST = 10000;
 	
 //	public final static int NoChar = 0;
 //	public final static int TokenChar = 1;
