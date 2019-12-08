@@ -62,7 +62,7 @@ public class MetaOfApp {
 	public static final int NumberOfUnk = 3;
 	public static final int MaxParentTypeRemoveTimes = 1;
 	
-	public static boolean GenerateSkeletonToken = false;
+	public static boolean GenerateSkeletonToken = true;
 
 	public static void SaveToDirectory() {
 		Gson gson = new Gson();
