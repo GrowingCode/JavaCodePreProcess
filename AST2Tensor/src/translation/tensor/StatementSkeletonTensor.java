@@ -21,7 +21,6 @@ public class StatementSkeletonTensor extends Tensor {
 	
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex ti = new TokenIndex();
-	RepetitionUtil ru = new RepetitionUtil();
 	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info) {
 		stmt_token_str.addAll(info_str);
@@ -43,7 +42,10 @@ public class StatementSkeletonTensor extends Tensor {
 //		System.out.println(" ==== stmt_token_variable_info end! ==== ");
 //		new Exception("haha").printStackTrace();
 //		System.exit(1);
-		stmt_token_leaf_relative_info.addAll(ru.GenerateRepetitionRelative(leaf_info));
+	}
+
+	public void HandleAllInfo() {
+		stmt_token_leaf_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_leaf_info));
 	}
 	
 	@Override

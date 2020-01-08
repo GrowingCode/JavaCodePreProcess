@@ -8,13 +8,12 @@ import org.eclipse.core.runtime.Assert;
 
 public class RepetitionUtil {
 	
-	Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
-	
 	public RepetitionUtil() {
 		
 	}
 	
-	public ArrayList<Integer> GenerateRepetitionRelative(ArrayList<Integer> stmt_token_variable_info) {
+	public static ArrayList<Integer> GenerateRepetitionRelative(ArrayList<Integer> stmt_token_variable_info) {
+		Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
 		int i_len = stmt_token_variable_info.size();
 		ArrayList<Integer> seq_var_info = new ArrayList<Integer>();
 		for (int i = 0; i < i_len; i++) {

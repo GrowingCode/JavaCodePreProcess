@@ -48,6 +48,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 			}
 			curr_tensor.StoreStatementSkeletonInfo(lls, ids);
 		}
+		curr_tensor.HandleAllInfo();
 		
 		StringTensor st = new StringTensor();
 		st.SetToString(curr_tensor.toString());
