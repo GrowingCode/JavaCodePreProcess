@@ -12,7 +12,7 @@ import translation.tensor.util.TokenIndex;
 public class StatementSkeletonTensor extends Tensor {
 	
 	ArrayList<String> stmt_token_str = new ArrayList<String>();
-
+	
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_leaf_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_leaf_relative_info = new ArrayList<Integer>();
@@ -21,6 +21,7 @@ public class StatementSkeletonTensor extends Tensor {
 	
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex ti = new TokenIndex();
+	RepetitionUtil ru = new RepetitionUtil();
 	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info) {
 		stmt_token_str.addAll(info_str);
@@ -35,7 +36,14 @@ public class StatementSkeletonTensor extends Tensor {
 			leaf_info.add(leaf_id);
 		}
 		stmt_token_leaf_info.addAll(leaf_info);
-		stmt_token_leaf_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(leaf_info));
+//		System.out.println(" ==== stmt_token_variable_info begin! ==== ");
+//		for (int vi : leaf_info) {
+//			System.out.println(vi);
+//		}
+//		System.out.println(" ==== stmt_token_variable_info end! ==== ");
+//		new Exception("haha").printStackTrace();
+//		System.exit(1);
+		stmt_token_leaf_relative_info.addAll(ru.GenerateRepetitionRelative(leaf_info));
 	}
 	
 	@Override

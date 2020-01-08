@@ -597,7 +597,8 @@ public class StatementTensor extends Tensor {
 //				Assert.isTrue(sword_info.size() == sword_variable_info.size());
 //			}
 		}
-		stmt_token_variable_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_variable_info));
+		RepetitionUtil ru = new RepetitionUtil();
+		stmt_token_variable_relative_info.addAll(ru.GenerateRepetitionRelative(stmt_token_variable_info));
 //		{
 //			int i_len = sword_variable_info.size();
 //			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
