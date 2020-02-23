@@ -12,7 +12,7 @@ public class ElementInfo implements Comparable<ElementInfo> {
 
 	@Override
 	public int compareTo(ElementInfo o) {
-		return new Integer(index).compareTo(new Integer(o.index));
+		return Integer.valueOf(index).compareTo(Integer.valueOf(o.index));
 	}
 
 	@Override
