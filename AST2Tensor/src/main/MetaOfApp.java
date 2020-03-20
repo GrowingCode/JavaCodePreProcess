@@ -58,7 +58,7 @@ public class MetaOfApp {
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
 	
-	public static boolean TakeUnseenAsUnk = false;
+	public static boolean TakeUnseenAsUnk = true;
 	public static final int NumberOfUnk = 3;
 	public static final int MaxParentTypeRemoveTimes = 1;
 	
