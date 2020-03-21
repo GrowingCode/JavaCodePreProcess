@@ -1,15 +1,12 @@
 package statistic.id;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import main.MetaOfApp;
 import util.MapUtil;
-import util.PrintUtil;
 
 public class TokenRecorder {
 
@@ -121,31 +118,34 @@ public class TokenRecorder {
 		List<Entry<String, Integer>> ht = MapUtil.SortMapByValue(hit_train);
 //		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
 		Set<String> remove_keys = new TreeSet<String>();
-		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer>();
+//		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer>();
 		int a_rm = 0;
 //		System.out.println("ht.size():" + ht.size());
 		for (int i=0;i<ht.size();i++) {
-			String key = ht.get(i).getKey();
-			String parent_type = hit_train_parent_type_content.get(key);
+			Entry<String, Integer> e = ht.get(i);
+			String key = e.getKey();
+			Integer value = e.getValue();
+			System.out.println("==== Removed key:" + key + "#count:" + value + " ====");
+//			String parent_type = hit_train_parent_type_content.get(key);
 //			System.out.println("parent_type:" + parent_type);
-			if (parent_type.endsWith("L")) {
-				Integer rm = parent_type_remove_num.get(parent_type);
-				if (rm == null) {
-					rm = 0;
-				}
-				rm++;
-				parent_type_remove_num.put(parent_type, rm);
-				if (rm <= MetaOfApp.MaxParentTypeRemoveTimes) {
+//			if (parent_type.endsWith("L")) {
+//				Integer rm = parent_type_remove_num.get(parent_type);
+//				if (rm == null) {
+//					rm = 0;
+//				}
+//				rm++;
+//				parent_type_remove_num.put(parent_type, rm);
+//				if (rm <= MetaOfApp.MaxParentTypeRemoveTimes) {
 					remove_keys.add(key);
 					a_rm++;
-				}
-			}
+//				}
+//			}
 			if (a_rm == removes) {
 				break;
 			}
 		}
 		Set<String> ks = hit_train.keySet();
-		PrintUtil.PrintSet(remove_keys, "Unk TypeContent");
+//		PrintUtil.PrintSet(remove_keys, "Unk TypeContent");
 		ks.removeAll(remove_keys);
 		return ks;
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateInternalTypeContentCascadedMap();

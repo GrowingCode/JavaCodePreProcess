@@ -127,7 +127,7 @@ public class IDManager {
 		// skeleton regist
 		Regist(skeleton_id_map, reserved_words);
 		if (MetaOfApp.TakeUnseenAsUnk) {
-			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
+			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain((int)Math.ceil(MetaOfApp.NumberOfUnk*1.0 / 10.0))));
 		} else {
 			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
 			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
