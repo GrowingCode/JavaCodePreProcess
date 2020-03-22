@@ -8,7 +8,6 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.search.SearchMatch;
 
 import eclipse.jdt.JDTParser;
-import logger.BootstrapLogMeta;
 
 public class DebugLogger {
 
