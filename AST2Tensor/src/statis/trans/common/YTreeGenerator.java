@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
+import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
@@ -39,11 +40,17 @@ public class YTreeGenerator extends BasicGenerator {
 		super.preVisit(node);
 		if (begin_generation) {
 			String type = JDTASTHelper.GetTypeRepresentationForASTNode(node);
+			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+			boolean is_leaf = children.size() == 0;
 			SkeletonVisitor sv = new SkeletonVisitor(icu);
 			node.accept(sv);
 			Assert.isTrue(sv.GetResult().size() == 1);
 			String stmt_content = sv.GetResult().get(0);
-			TreeNode tn = new TreeNode(node.getClass(), type, stmt_content);
+			String add_content = "";
+			if (is_leaf && !MetaOfApp.LeafTypeContentSeparate) {
+				add_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
+			}
+			TreeNode tn = new TreeNode(node.getClass(), type + add_content, stmt_content);
 			tree.put(node, tn);
 			ASTNode parent = node.getParent();
 			TreeNode parent_tn = tree.get(parent);
@@ -52,9 +59,7 @@ public class YTreeGenerator extends BasicGenerator {
 			} else {
 				parent_tn.AppendToChildren(tn);
 			}
-			List<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
-			boolean is_leaf = children.size() == 0;
-			if (is_leaf) {
+			if (is_leaf && MetaOfApp.LeafTypeContentSeparate) {
 				String content = JDTASTHelper.GetContentRepresentationForASTNode(node);
 				TreeNode chd_tn = new TreeNode(String.class, content, stmt_content);
 				tn.AppendToChildren(chd_tn);
