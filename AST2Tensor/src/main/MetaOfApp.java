@@ -60,7 +60,7 @@ public class MetaOfApp {
 
 	public static boolean LeafTypeContentSeparate = true;
 	
-	public static boolean TakeUnseenAsUnk = false;
+	public static boolean TakeUnseenAsUnk = true;
 	public static final int NumberOfUnk = 20;
 	public static final int MaxParentTypeRemoveTimes = 1;
 	
