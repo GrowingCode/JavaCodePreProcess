@@ -58,7 +58,7 @@ public class MetaOfApp {
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
 
-	public static boolean LeafTypeContentSeparate = true;
+	public static boolean LeafTypeContentSeparate = false;
 	
 	public static boolean TakeUnseenAsUnk = true;
 	public static final int NumberOfUnk = 20;
