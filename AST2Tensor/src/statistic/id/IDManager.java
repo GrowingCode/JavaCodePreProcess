@@ -297,12 +297,15 @@ public class IDManager {
 	// }
 //	}
 	
-//	public int GetSkeletonID(String skeleton) {
-//		Integer id = skeleton_id_map.get(skeleton);
+	public int GetSkeletonID(String skeleton) {
+		Integer id = skeleton_id_map.get(skeleton);
 //		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
-//		return id;
-//		return -1;
-//	}
+		if (id == null) {
+//			System.out.println("==== Unk type_content: " + type_content + " ====");
+			return skeleton_id_map.get(Unk);
+		}
+		return id;
+	}
 	
 //	public int GetSkeletonTypeContentID(String type_content) {
 //		Integer id = skeleton_token_id_map.get(type_content);

@@ -38,7 +38,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 		for (ASTNode stmt_root : stmt_roots) {
 			ArrayList<String> lls = StatementUtil.ProcessTokenHandleSkeleton(icu, stmt_root);
 			ArrayList<Integer> ids = new ArrayList<Integer>();
-			int sk_id = im.GetTypeContentID(lls.get(0));
+			int sk_id = im.GetSkeletonID(lls.get(0));
 			ids.add(sk_id);
 			for (int i=1;i<lls.size();i++) {
 				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(lls.get(i));
