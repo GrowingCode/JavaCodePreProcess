@@ -2,7 +2,6 @@ package translation.ast;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
@@ -31,7 +30,7 @@ public class StatementUtil {
 		TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
 		node.accept(sv);
 		ArrayList<String> result = sv.GetResult();
-		Assert.isTrue(result.size() >= 2);
+//		Assert.isTrue(result.size() >= 2);
 //		PrintUtil.PrintList(result, "skeleton of statement:" + node);
 		return result;
 	}
