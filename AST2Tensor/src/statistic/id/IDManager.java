@@ -1184,12 +1184,14 @@ public class IDManager {
 
 	public String WordVocabularyInfo() {
 		return "Summary -- "
-//				+ "#Vocabulary_Word_Size:" + id_tool.tr.hit_train.size()
-//				+ "#OutOfVocabulary_Word_Size:" + id_tool.tr.not_hit_train.size()
-//				+ "#Unseen_Rate:" + (id_tool.tr.not_hit_train.size() * 1.0) / (id_tool.tr.hit_train.size() * 1.0)
-				+ "#Vocabulary_Skeleton_Size:" + id_tool.sr.hit_train.size()
-				+ "#OutOfVocabulary_Skeleton_Size:" + id_tool.sr.not_hit_train.size()
-				+ "#Unseen_Rate:" + (id_tool.sr.not_hit_train.size() * 1.0) / ((id_tool.sr.hit_train.size()+id_tool.sr.not_hit_train.size()) * 1.0)
+				+ "#Vocabulary_Word_Size:" + token_hit_num
+				+ "#OutOfVocabulary_Word_Size:" + (token_id_map.size() - token_hit_num)
+				+ "#Unseen_Rate:" + ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0)
+				+ "#Word_Unk_Num:" + MetaOfApp.NumberOfUnk + "#Word_Hit_Num:" + id_tool.tr.hit_train.size() + "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size()
+				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
+				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
+				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0)
+				+ "#Skeleton_Unk_Num:" + MetaOfApp.NumberOfSkeletonUnk + "#Skeleton_Hit_Num:" + id_tool.sr.hit_train.size() + "#Skeleton_Not_Hit_Num:" + id_tool.sr.not_hit_train.size()
 				;
 																													// + "#OutOfVocabulary_API_Comb_Size:"
 																													// +
