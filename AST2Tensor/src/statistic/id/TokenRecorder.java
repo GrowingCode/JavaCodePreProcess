@@ -34,6 +34,9 @@ public class TokenRecorder {
 //	TreeMap<String, String> not_hit_train_parent_type = new TreeMap<String, String>();
 
 	public TokenRecorder() {
+		for (String r_w : IDManager.reserved_words) {
+			TokenHitInTrainSet("null", r_w, Integer.MAX_VALUE/2);
+		}
 	}
 
 //	private void RegistTypeIsLeaf(String type, boolean is_leaf) {

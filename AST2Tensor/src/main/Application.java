@@ -89,9 +89,6 @@ public class Application implements IApplication {
 		BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
 		RoleAssigner role_assigner = new RoleAssigner();
 		TokenRecorder tr = new TokenRecorder();
-		tr.TokenHitInTrainSet("null", IDManager.ZDft, 100);
-		tr.TokenHitInTrainSet("null", IDManager.Unk, 100);
-		tr.TokenHitInTrainSet("null", IDManager.Rep, 100);
 		TokenRecorder sr = new TokenRecorder();
 //		TokenRecorder str = new TokenRecorder();
 //		GrammarRecorder gr = new GrammarRecorder();
