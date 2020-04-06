@@ -60,7 +60,8 @@ public class MetaOfApp {
 
 	public static boolean LeafTypeContentSeparate = false;
 	
-	public static boolean TakeUnseenAsUnk = false;
+//	public static boolean TakeUnseenAsUnk = false;
+	public static final int NumberOfSkeletonUnk = 5;
 	public static final int NumberOfUnk = 5;
 	public static final int MaxParentTypeRemoveTimes = 1;
 	
@@ -78,7 +79,7 @@ public class MetaOfApp {
 //		meta_of_ast2tensor.put("InBPEForm", InBPEForm ? 1 : 0);
 		
 		meta_of_ast2tensor.put("UseLexicalToken", UseLexicalToken ? 1 : 0);
-		meta_of_ast2tensor.put("TakeUnseenAsUnk", TakeUnseenAsUnk ? 1 : 0);
+//		meta_of_ast2tensor.put("TakeUnseenAsUnk", TakeUnseenAsUnk ? 1 : 0);
 		meta_of_ast2tensor.put("VariableNoLimit", VariableNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("MethodNoLimit", MethodNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);

@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -70,6 +72,9 @@ public class IDManager {
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
 //	private int grammar_token_num = -1;
 //	private int token_hit_num = -1;
+	
+	private int skeleton_hit_num = -1;
+	private int token_hit_num = -1;
 
 //	private TreeMap<String, Integer> ast_type_content_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<String, Integer> not_hit_ast_type_content_id_map = new TreeMap<String, Integer>();
@@ -85,7 +90,6 @@ public class IDManager {
 //	private Set<String> not_hit_words = new TreeSet<String>();
 
 	private TreeMap<String, Integer> api_comb_id_map = new TreeMap<String, Integer>();
-
 //	private int api_comb_hit_num = -1;
 
 	private int char_num = -1;
@@ -126,12 +130,20 @@ public class IDManager {
 //		grammar_token_num = token_id_map.size();
 		// skeleton regist
 		Regist(skeleton_id_map, reserved_words);
-		if (MetaOfApp.TakeUnseenAsUnk) {
-			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain((int)Math.ceil(MetaOfApp.NumberOfUnk*1.0 / 10.0))));
-		} else {
-			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.keySet()));
-			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
+//		if (MetaOfApp.TakeUnseenAsUnk) {
+//			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain((int)Math.ceil(MetaOfApp.NumberOfUnk*1.0 / 10.0))));
+//		} else 
+		{
+			ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.sr.hit_train));
+			Collections.reverse(sk_ht);
+			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_ht));
+			skeleton_hit_num = skeleton_id_map.size() - MetaOfApp.NumberOfSkeletonUnk;
+			ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.sr.not_hit_train));
+			Collections.reverse(sk_nht);
+			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_nht));
 		}
+//		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
+//		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
 //		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
 //		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
 		
@@ -144,12 +156,19 @@ public class IDManager {
 //		}
 		// token regist
 		Regist(token_id_map, reserved_words);
-		if (MetaOfApp.TakeUnseenAsUnk) {
-			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
-		} else {
-			Regist(token_id_map, new ArrayList<String>(id_tool.tr.hit_train.keySet()));
-			Regist(token_id_map, new ArrayList<String>(id_tool.tr.not_hit_train.keySet()));
+//		if (MetaOfApp.TakeUnseenAsUnk) {
+//			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
+//		} else 
+		{
+			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.tr.hit_train));
+			Collections.reverse(tk_ht);
+			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_ht));
+			token_hit_num = token_id_map.size() - MetaOfApp.NumberOfUnk;
+			ArrayList<Entry<String, Integer>> tk_nht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.tr.not_hit_train));
+			Collections.reverse(tk_nht);
+			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_nht));
 		}
+//		Regist(token_id_map, new ArrayList<String>(id_tool.tr.hit_train.keySet()));
 //		Regist(token_id_map, new ArrayList<String>(g_set));
 //		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
 //		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
@@ -159,7 +178,7 @@ public class IDManager {
 //		Regist(token_id_map, id_tool.tr.not_hit_train);
 
 		// api comb regist
-		Regist(api_comb_id_map, new ArrayList<String>(id_tool.ar.api_combs));
+//		Regist(api_comb_id_map, new ArrayList<String>(id_tool.ar.api_combs));
 
 //		id_tool.gr.ProcessNodeRelativeIndexInGrammar();
 
@@ -334,11 +353,11 @@ public class IDManager {
 	}
 
 	// type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
-	public int GetAPICombID(String api_comb) {
-		Integer id = api_comb_id_map.get(api_comb);
-		Assert.isTrue(id != null);
-		return id;
-	}
+//	public int GetAPICombID(String api_comb) {
+//		Integer id = api_comb_id_map.get(api_comb);
+//		Assert.isTrue(id != null);
+//		return id;
+//	}
 
 //	private int RegistNotHitTypeContentID(String type_content) {
 //		Integer id = not_hit_ast_type_content_id_map.get(type_content);
@@ -725,7 +744,7 @@ public class IDManager {
 		ts.removeAll(id_tool.tr.not_hit_train.keySet());
 		PrintUtil.PrintSet(ts, "left things");
 		
-		Assert.isTrue(MetaOfApp.TakeUnseenAsUnk || origin_after.size() == token_id_map.size(),
+		Assert.isTrue(origin_after.size() == token_id_map.size(),
 				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 
 		// in train
@@ -1025,7 +1044,10 @@ public class IDManager {
 		Gson gson = new Gson();
 		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
 		meta_of_ast2tensor.put("MaximumStringLength", MetaOfApp.MaximumStringLength);
+		meta_of_ast2tensor.put("SkeletonNum", skeleton_id_map.size());
+		meta_of_ast2tensor.put("SkeletonHitNum", skeleton_hit_num);
 		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
+		meta_of_ast2tensor.put("TokenHitNum", token_hit_num);
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 //		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
@@ -1034,8 +1056,8 @@ public class IDManager {
 //		meta_of_ast2tensor.put("SubWordChar", MetaOfApp.SubWordChar);
 //		meta_of_ast2tensor.put("CharForm", MetaOfApp.CharForm);
 //		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
-		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		meta_of_ast2tensor.put("TotalNumberOfSubWord", subword_num);
+		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		meta_of_ast2tensor.put("ReservedNumberOfWords", reserved_words.size());
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
 //		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;

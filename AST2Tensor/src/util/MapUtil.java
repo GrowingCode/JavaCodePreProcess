@@ -52,6 +52,14 @@ public class MapUtil {
 		Collections.sort(entryList, new MapValueComparator<K, V>());
 		return entryList;
 	}
+	
+	public static <K, V> List<K> EntryListToKeyList(List<Entry<K, V>> entries) {
+		List<K> result = new ArrayList<K>();
+		for (Entry<K, V> e : entries) {
+			result.add(e.getKey());
+		}
+		return result;
+	}
 
 	public static void main(String[] args) {
 		Map<String, Integer> map = new TreeMap<String, Integer>();
