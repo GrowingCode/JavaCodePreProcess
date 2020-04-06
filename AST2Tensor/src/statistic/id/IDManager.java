@@ -1048,6 +1048,10 @@ public class IDManager {
 		meta_of_ast2tensor.put("SkeletonHitNum", skeleton_hit_num);
 		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
 		meta_of_ast2tensor.put("TokenHitNum", token_hit_num);
+		meta_of_ast2tensor.put("SwordNum", subword_num);
+		meta_of_ast2tensor.put("SwordHitNum", subword_num);
+		meta_of_ast2tensor.put("CharNum", char_num);
+		meta_of_ast2tensor.put("CharHitNum", char_num);
 //		meta_of_ast2tensor.put("GrammarTokenNum", grammar_token_num);
 //		meta_of_ast2tensor.put("TokenHitNumber", token_hit_num);
 //		meta_of_ast2tensor.put("InBPEForm", MetaOfApp.InBPEForm ? 1 : 0);
@@ -1056,8 +1060,8 @@ public class IDManager {
 //		meta_of_ast2tensor.put("SubWordChar", MetaOfApp.SubWordChar);
 //		meta_of_ast2tensor.put("CharForm", MetaOfApp.CharForm);
 //		meta_of_ast2tensor.put("TokenFixedNumber", id_tool.gr.fixed_tokens.size());
-		meta_of_ast2tensor.put("TotalNumberOfSubWord", subword_num);
-		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
+//		meta_of_ast2tensor.put("TotalNumberOfSubWord", subword_num);
+//		meta_of_ast2tensor.put("TotalNumberOfChar", char_num);
 		meta_of_ast2tensor.put("ReservedNumberOfWords", reserved_words.size());
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_summary.json"), gson.toJson(meta_of_ast2tensor));
 //		String char_seq_meta = "GrammarTokenNum:" + grammar_token_num + "\n" + "TokenHitNumber:" + token_hit_num + "\n" + "TotalNumberOfChar:" + char_num;
