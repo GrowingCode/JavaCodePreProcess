@@ -46,11 +46,11 @@ public class YTreeGenerator extends BasicGenerator {
 			node.accept(sv);
 			Assert.isTrue(sv.GetResult().size() == 1);
 			String stmt_content = sv.GetResult().get(0);
-			String add_content = "";
+			String r_content = type;
 			if (is_leaf && !MetaOfApp.LeafTypeContentSeparate) {
-				add_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
+				r_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			}
-			TreeNode tn = new TreeNode(node.getClass(), type + add_content, stmt_content);
+			TreeNode tn = new TreeNode(node.getClass(), r_content, stmt_content);// type + add_content
 			tree.put(node, tn);
 			ASTNode parent = node.getParent();
 			TreeNode parent_tn = tree.get(parent);
