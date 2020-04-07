@@ -133,7 +133,7 @@ public class IDManager {
 //		if (MetaOfApp.TakeUnseenAsUnk) {
 //			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain((int)Math.ceil(MetaOfApp.NumberOfUnk*1.0 / 10.0))));
 //		} else 
-		{
+		if (MetaOfApp.GenerateSkeletonToken) {
 			ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.sr.hit_train));
 			Collections.reverse(sk_ht);
 			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_ht));
