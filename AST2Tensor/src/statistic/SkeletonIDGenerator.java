@@ -48,10 +48,10 @@ public class SkeletonIDGenerator extends BasicGenerator {
 				String tk = stmt.get(i);
 				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(tk);
 				if (role <= RoleAssigner.train_seen_k) {
-					tool.tr.TokenHitInTrainSet(sk, pp_tk, 1);
+					tool.tr.TokenHitInTrainSet(sk, pp_tk, 0);
 //					tool.str.TokenHitInTrainSet(pp_tk, 1);
 				} else {
-					tool.tr.TokenNotHitInTrainSet(pp_tk, 1);
+					tool.tr.TokenNotHitInTrainSet(pp_tk, 0);
 //					tool.str.TokenNotHitInTrainSet(pp_tk, 1);
 				}
 			}

@@ -56,16 +56,19 @@ public class JDTASTHelper {
 			type_extra += op.toString();
 		}
 		String represent = type + type_extra + (children_size == 0 ? IDManager.Leaf : IDManager.NonLeaf);
-		PreProcessContentHelper.PreProcessTypeContent(represent);
-		return represent;
+		return PreProcessContentHelper.PreProcessTypeContent(represent);
 	}
 
 	public static String GetContentRepresentationForASTNode(ASTNode node) {
 		Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).isEmpty());
+		String raw_cnt = node.toString();
 		if (node instanceof Block || node instanceof AnonymousClassDeclaration) {
-			return "{}";
+			raw_cnt = "{}";
 		}
-		return PreProcessContentHelper.PreProcessTypeContent(node.toString());
+//		System.err.println("raw_cnt:" + raw_cnt);
+		String cnt = PreProcessContentHelper.PreProcessTypeContent(raw_cnt);
+//		System.err.println("cnt:" + cnt);
+		return cnt;
 	}
 
 //	public static String GetRepresentationForASTNode(ASTNode node) {

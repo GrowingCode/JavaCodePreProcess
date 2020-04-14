@@ -1,12 +1,6 @@
 package statistic.id;
 
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
-
-import util.MapUtil;
 
 public class TokenRecorder {
 
@@ -116,76 +110,76 @@ public class TokenRecorder {
 ////		}
 //	}
 
-	// warning: this version can only be invoked once
-	public Set<String> RefineHitTrain(int removes) {
-		List<Entry<String, Integer>> ht = MapUtil.SortMapByValue(hit_train);
-//		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
-		Set<String> remove_keys = new TreeSet<String>();
-//		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer>();
-		int a_rm = 0;
-//		System.out.println("ht.size():" + ht.size());
-		for (int i=0;i<ht.size();i++) {
-			Entry<String, Integer> e = ht.get(i);
-			String key = e.getKey();
-			Integer value = e.getValue();
-			System.out.println("==== Removed key:" + key + "#count:" + value + " ====");
-//			String parent_type = hit_train_parent_type_content.get(key);
-//			System.out.println("parent_type:" + parent_type);
-//			if (parent_type.endsWith("L")) {
-//				Integer rm = parent_type_remove_num.get(parent_type);
-//				if (rm == null) {
-//					rm = 0;
-//				}
-//				rm++;
-//				parent_type_remove_num.put(parent_type, rm);
-//				if (rm <= MetaOfApp.MaxParentTypeRemoveTimes) {
-					remove_keys.add(key);
-					a_rm++;
-//				}
-//			}
-			if (a_rm == removes) {
-				break;
-			}
-		}
-		Set<String> ks = hit_train.keySet();
-//		PrintUtil.PrintSet(remove_keys, "Unk TypeContent");
-		ks.removeAll(remove_keys);
-		return ks;
-//		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateInternalTypeContentCascadedMap();
-//		type_content_count.clear();
-//		// now, all data in type_content_count has already been put into
-//		// pre_classified_type_content_count
-//		// trim and put data in pre_classified_type_content_count back to
-//		// type_content_count
-//		Set<String> t_keys = all_pre_classified_type_content_count.keySet();
-//		Iterator<String> t_itr = t_keys.iterator();
-//		while (t_itr.hasNext()) {
-//			String t_key = t_itr.next();
-//			TreeMap<String, Integer> pre_classified_content_count = all_pre_classified_type_content_count.get(t_key);
-//			List<Entry<String, Integer>> sorted = MapUtil.SortMapByValue(pre_classified_content_count);
-//			Iterator<Entry<String, Integer>> si = sorted.iterator();
-//			int index = -1;
-//			while (si.hasNext()) {
-//				index++;
-//				Entry<String, Integer> si_e = si.next();
-//				String content = si_e.getKey();
-//				int content_count = si_e.getValue();
-//				String tc = t_key + "#" + content;
-//				if (index == 0 && content_count == 1) {
-//					Boolean tc_is_leaf = type_content_is_leaf.get(tc);
-//					Assert.isNotNull(tc_is_leaf);
-//					String new_tc = t_key + "#" + IDManager.DefaultPart;
-//					if (!new_tc.equals(tc)) {
-//						type_content_is_leaf.remove(tc);
-//						type_content_is_leaf.put(new_tc, tc_is_leaf);
-//						System.out.println("replaced with default UNK tc:" + tc + ";new_tc:" + new_tc);
-//						tc = new_tc;
-//					}
-//				}
-//				type_content_count.put(tc, content_count);
+//	// warning: this version can only be invoked once
+//	public Set<String> RefineHitTrain(int removes) {
+//		List<Entry<String, Integer>> ht = MapUtil.SortMapByValue(hit_train);
+////		System.out.println("ht.get(0).getValue():" + ht.get(0).getValue());
+//		Set<String> remove_keys = new TreeSet<String>();
+////		Map<String, Integer> parent_type_remove_num = new TreeMap<String, Integer>();
+//		int a_rm = 0;
+////		System.out.println("ht.size():" + ht.size());
+//		for (int i=0;i<ht.size();i++) {
+//			Entry<String, Integer> e = ht.get(i);
+//			String key = e.getKey();
+//			Integer value = e.getValue();
+//			System.out.println("==== Removed key:" + key + "#count:" + value + " ====");
+////			String parent_type = hit_train_parent_type_content.get(key);
+////			System.out.println("parent_type:" + parent_type);
+////			if (parent_type.endsWith("L")) {
+////				Integer rm = parent_type_remove_num.get(parent_type);
+////				if (rm == null) {
+////					rm = 0;
+////				}
+////				rm++;
+////				parent_type_remove_num.put(parent_type, rm);
+////				if (rm <= MetaOfApp.MaxParentTypeRemoveTimes) {
+//					remove_keys.add(key);
+//					a_rm++;
+////				}
+////			}
+//			if (a_rm == removes) {
+//				break;
 //			}
 //		}
-	}
+//		Set<String> ks = hit_train.keySet();
+////		PrintUtil.PrintSet(remove_keys, "Unk TypeContent");
+//		ks.removeAll(remove_keys);
+//		return ks;
+////		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateInternalTypeContentCascadedMap();
+////		type_content_count.clear();
+////		// now, all data in type_content_count has already been put into
+////		// pre_classified_type_content_count
+////		// trim and put data in pre_classified_type_content_count back to
+////		// type_content_count
+////		Set<String> t_keys = all_pre_classified_type_content_count.keySet();
+////		Iterator<String> t_itr = t_keys.iterator();
+////		while (t_itr.hasNext()) {
+////			String t_key = t_itr.next();
+////			TreeMap<String, Integer> pre_classified_content_count = all_pre_classified_type_content_count.get(t_key);
+////			List<Entry<String, Integer>> sorted = MapUtil.SortMapByValue(pre_classified_content_count);
+////			Iterator<Entry<String, Integer>> si = sorted.iterator();
+////			int index = -1;
+////			while (si.hasNext()) {
+////				index++;
+////				Entry<String, Integer> si_e = si.next();
+////				String content = si_e.getKey();
+////				int content_count = si_e.getValue();
+////				String tc = t_key + "#" + content;
+////				if (index == 0 && content_count == 1) {
+////					Boolean tc_is_leaf = type_content_is_leaf.get(tc);
+////					Assert.isNotNull(tc_is_leaf);
+////					String new_tc = t_key + "#" + IDManager.DefaultPart;
+////					if (!new_tc.equals(tc)) {
+////						type_content_is_leaf.remove(tc);
+////						type_content_is_leaf.put(new_tc, tc_is_leaf);
+////						System.out.println("replaced with default UNK tc:" + tc + ";new_tc:" + new_tc);
+////						tc = new_tc;
+////					}
+////				}
+////				type_content_count.put(tc, content_count);
+////			}
+////		}
+//	}
 
 //	public void RefineAllStatistics(int minsupport, int maxcapacity) {
 //		TreeMap<String, TreeMap<String, Integer>> all_pre_classified_type_content_count = GenerateTypeContentCount();

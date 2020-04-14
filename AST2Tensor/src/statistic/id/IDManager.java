@@ -32,11 +32,11 @@ public class IDManager {
 	public static final String Leaf = "L";
 	public static final String NonLeaf = "N";
 
-	public static final String ZDft = "#Dft#";
-	public static final String Unk = "#Unk#";
-	public static final String Rep = "#Rep#";
+	public static final String ZDft = "$Dft_";
+	public static final String Unk = "$Unk_";
+	public static final String Rep = "$Rep_";
 	
-	public static final String SWordUK = "#YYXSWordUK#";
+	public static final String SWordUNK = "$YYXSWordUNK_";
 	
 	public static final List<String> reserved_words = new LinkedList<String>();
 	
@@ -741,27 +741,27 @@ public class IDManager {
 		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after");
 		origin_after.putAll(not_hit_res.origin_after);
 //		PrintUtil.PrintMap(origin_after, "origin_after");
-		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
-		ts.removeAll(id_tool.tr.hit_train.keySet());
-		ts.removeAll(id_tool.tr.not_hit_train.keySet());
-		PrintUtil.PrintSet(ts, "left things");
+//		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
+//		ts.removeAll(id_tool.tr.hit_train.keySet());
+//		ts.removeAll(id_tool.tr.not_hit_train.keySet());
+//		PrintUtil.PrintSet(ts, "left things");
 		
 		Assert.isTrue(origin_after.size() == token_id_map.size(),
 				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 
-		// in train
-		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
-		// not in train
-		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
-		not_in_train_vobs.removeAll(in_train_vobs);
-		System.out.println("In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Not_In_Train_Sub_Vobs_Size:"
-				+ not_in_train_vobs.size() + "#Unseen_Rate:"
-				+ (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
-//		PrintUtil.PrintSet(in_train_vobs, "in_train_vobs");
-//		PrintUtil.PrintSet(not_in_train_vobs, "not_in_train_vobs");
-//		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
-//		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
-//		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
+//		// in train
+//		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
+//		// not in train
+//		Set<String> not_in_train_vobs = new TreeSet<String>(not_hit_res.vobs);
+//		not_in_train_vobs.removeAll(in_train_vobs);
+//		System.out.println("In_Train_Sub_Vobs_Size:" + in_train_vobs.size() + "#Not_In_Train_Sub_Vobs_Size:"
+//				+ not_in_train_vobs.size() + "#Unseen_Rate:"
+//				+ (not_in_train_vobs.size() * 1.0) / (in_train_vobs.size() * 1.0));
+////		PrintUtil.PrintSet(in_train_vobs, "in_train_vobs");
+////		PrintUtil.PrintSet(not_in_train_vobs, "not_in_train_vobs");
+////		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
+////		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
+////		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 
 		/**
 		 * statistics for output
@@ -769,18 +769,18 @@ public class IDManager {
 //		int in_hit_total_subword_num = 0;
 		Set<String> in_hit_sub_words = new TreeSet<String>();
 //		int in_hit_max_subword_num_in_one_token = 0;
-		int in_hit_token_num = 0;
+//		int in_hit_token_num = 0;
 //		int not_in_hit_total_subword_num = 0;
 		Set<String> not_in_hit_sub_words = new TreeSet<String>();
 //		int not_in_hit_max_subword_num_in_one_token = 0;
-		int not_in_hit_token_num = 0;
+//		int not_in_hit_token_num = 0;
 		
 		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
 		
-		Map<String, Integer> subword_index = new TreeMap<String, Integer>();
-		subword_index.put(SWordUK, subword_index.size());
+		TreeMap<String, Integer> subword_index = new TreeMap<String, Integer>();
+		subword_index.put(SWordUNK, subword_index.size());
 //		for (String rv : reserved_words) {
 //			subword_index.put(rv, subword_index.size());
 //		}
@@ -793,31 +793,31 @@ public class IDManager {
 			Assert.isTrue(origin_after.get(token) != null, "token:" + token);
 			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
 			int subwords_size = subwords.size();
-
 			if (id_tool.tr.hit_train.containsKey(ori_token)) {
-//				in_hit_total_subword_num += subwords_size;
+////				in_hit_total_subword_num += subwords_size;
 				in_hit_sub_words.addAll(subwords);
-//				if (in_hit_max_subword_num_in_one_token < subwords_size) {
-//					in_hit_max_subword_num_in_one_token = subwords_size;
+////				if (in_hit_max_subword_num_in_one_token < subwords_size) {
+////					in_hit_max_subword_num_in_one_token = subwords_size;
+////				}
+////				in_hit_token_num++;
+//				for (String subword : subwords) {
+//					not_in_hit_sub_words.remove(subword);
 //				}
-				in_hit_token_num++;
-				for (String subword : subwords) {
-					not_in_hit_sub_words.remove(subword);
-				}
 			} else {
-				Assert.isTrue(id_tool.tr.not_hit_train.containsKey(ori_token));
-//				int n_h_num = 0;
-				for (String subword : subwords) {
-					if (!in_hit_sub_words.contains(subword)) {
-//						not_in_hit_total_subword_num += subwords_size;
-						not_in_hit_sub_words.add(subword);
-//						n_h_num++;
-					}
-				}
-//				if (not_in_hit_max_subword_num_in_one_token < n_h_num) {
-//					not_in_hit_max_subword_num_in_one_token = n_h_num;
+				not_in_hit_sub_words.addAll(subwords);
+//				Assert.isTrue(id_tool.tr.not_hit_train.containsKey(ori_token));
+////				int n_h_num = 0;
+//				for (String subword : subwords) {
+//					if (!in_hit_sub_words.contains(subword)) {
+////						not_in_hit_total_subword_num += subwords_size;
+//						not_in_hit_sub_words.add(subword);
+////						n_h_num++;
+//					}
 //				}
-				not_in_hit_token_num++;
+////				if (not_in_hit_max_subword_num_in_one_token < n_h_num) {
+////					not_in_hit_max_subword_num_in_one_token = n_h_num;
+////				}
+////				not_in_hit_token_num++;
 			}
 
 			Assert.isTrue(subwords_size > 0);
@@ -837,15 +837,17 @@ public class IDManager {
 			}
 			each_subword_sequence_end.add(subword_sequences.size() - 1);
 		}
+		
 		Map<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		subword_num = subword_index.size();
 
 		/**
 		 * print statistics
 		 */
-		System.out.println("in_hit_token_num:" + in_hit_token_num);
-		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
-		System.out.println("total_token_unseen_rate:" + (not_in_hit_token_num * 1.0) / ((in_hit_token_num + not_in_hit_token_num)*1.0));
+//		System.out.println("in_hit_token_num:" + in_hit_token_num);
+//		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
+//		System.out.println("total_token_unseen_rate:" + (not_in_hit_token_num * 1.0) / ((in_hit_token_num + not_in_hit_token_num)*1.0));
+		not_in_hit_sub_words.removeAll(in_hit_sub_words);
 		int in_hit_total_subword_num = in_hit_sub_words.size();
 		int not_in_hit_total_subword_num = not_in_hit_sub_words.size();
 		System.out.println("in_hit_total_subword_num:" + in_hit_total_subword_num);
@@ -853,7 +855,7 @@ public class IDManager {
 //				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
 //		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
 		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
-		System.out.println("total_subword_unseen_rate:" + (not_in_hit_total_subword_num * 1.0) / ((in_hit_total_subword_num + not_in_hit_total_subword_num)*1.0));
+		System.out.println("total_subword_unseen_rate:" + (not_in_hit_total_subword_num * 1.0) / ((in_hit_total_subword_num)*1.0));
 //		System.out.println("not_in_hit_average_subword_num_in_one_token:"
 //				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
 //		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
@@ -866,6 +868,25 @@ public class IDManager {
 		Gson gson6 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
+		GenerateIDJson(dir, subword_index, "subword");
+		ArrayList<Integer> subword_is_start_end = new ArrayList<Integer>();
+		TreeMap<Integer, String> idx_subword = MapUtil.ReverseKeyValueInMap(subword_index);
+		Set<Integer> idxs = idx_subword.keySet();
+		for (int idx : idxs) {
+			String subword = idx_subword.get(idx);
+			int state = 0b00;
+			if (subword.endsWith("_")) {
+				state |= 0b01;
+			}
+			if (subword.startsWith("$")) {
+				state |= 0b10;
+			}
+			Assert.isTrue(idx == subword_is_start_end.size());
+			subword_is_start_end.add(state);
+		}
+		Gson gson7 = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_start_end.json"),
+				gson7.toJson(subword_is_start_end));
 		
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
