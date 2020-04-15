@@ -6,6 +6,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import eclipse.jdt.JDTASTHelper;
 import statis.trans.common.BasicGenerator;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
@@ -46,7 +47,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 //				int tk_id = im.GetTypeContentID(lls.get(i));
 				ids.add(tk_id);
 			}
-			curr_tensor.StoreStatementSkeletonInfo(lls, ids);
+			curr_tensor.StoreStatementSkeletonInfo(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(stmt_roots.get(0)), lls, ids);
 		}
 		curr_tensor.HandleAllInfo();
 		

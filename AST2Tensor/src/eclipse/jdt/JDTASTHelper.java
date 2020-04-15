@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 
@@ -84,5 +85,11 @@ public class JDTASTHelper {
 //		String represent = pre + "#" + post;
 //		return represent;
 //	}
+	
+	public static String GetSimplifiedSignatureForMethodDeclaration(ASTNode node) {
+		Assert.isTrue(node instanceof MethodDeclaration);
+		MethodDeclaration md = (MethodDeclaration) node;
+		return md.getName().toString();
+	}
 
 }

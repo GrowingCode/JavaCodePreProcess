@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.Assert;
 
 import translation.tensor.util.IDRedistribution;
 import translation.tensor.util.RepetitionUtil;
@@ -11,6 +12,7 @@ import translation.tensor.util.TokenIndex;
 
 public class StatementSkeletonTensor extends Tensor {
 	
+	String sig = null;
 	ArrayList<String> stmt_token_str = new ArrayList<String>();
 	
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
@@ -22,7 +24,8 @@ public class StatementSkeletonTensor extends Tensor {
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex ti = new TokenIndex();
 	
-	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info) {
+	public void StoreStatementSkeletonInfo(String sig, ArrayList<String> info_str, ArrayList<Integer> info) {
+		this.sig = sig;
 		stmt_token_str.addAll(info_str);
 		
 		stmt_token_info_start.add(stmt_token_info.size());
@@ -78,8 +81,21 @@ public class StatementSkeletonTensor extends Tensor {
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = ToStmtInfo(separator);
-		return result;
+		StringBuilder result = new StringBuilder();
+		int s_size = stmt_token_info_start.size();
+		int e_size = stmt_token_info_end.size();
+		Assert.isTrue(s_size == e_size);
+		for (int i=0;i<e_size;i++) {
+			result.append("$YStmtSig$:" + this.sig + separator);
+			String r = "";
+			Integer s = stmt_token_info_start.get(i);
+			Integer e = stmt_token_info_end.get(i);
+			for (int j=s;j<=e;j++) {
+				r += " " + stmt_token_str.get(j);
+			}
+			result.append(r.trim() + separator);
+		}
+		return result.toString();
 	}
 	
 }
