@@ -17,10 +17,10 @@ public class LexicalTokenGenerator extends BasicGenerator {
 	IDTools tool = null;
 	int role = -1;
 
-	public LexicalTokenGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
-		super(role_assigner, im, icu, cu);
+	public LexicalTokenGenerator(IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
+		super(im, icu, cu);
 		this.tool = tool;
-		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
+		this.role = RoleAssigner.GetInstance().GetRole(icu);
 	}
 	
 	@Override

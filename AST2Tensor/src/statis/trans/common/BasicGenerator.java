@@ -14,12 +14,11 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import main.MetaOfApp;
 import statistic.id.IDManager;
-import translation.roles.RoleAssigner;
 import translation.tensor.Tensor;
 
 public class BasicGenerator extends ASTVisitor {
 
-	protected RoleAssigner role_assigner = null;
+//	protected RoleAssigner role_assigner = null;
 	protected IDManager im = null;
 
 	protected ICompilationUnit icu = null;
@@ -31,8 +30,9 @@ public class BasicGenerator extends ASTVisitor {
 	public int unsuitable_method_count = 0;
 	protected int method_node_count = 0;
 
-	public BasicGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu) {
-		this.role_assigner = role_assigner;
+//	RoleAssigner role_assigner, 
+	public BasicGenerator(IDManager im, ICompilationUnit icu, CompilationUnit cu) {
+//		this.role_assigner = role_assigner;
 		this.im = im;
 		this.icu = icu;
 		this.cu = cu;

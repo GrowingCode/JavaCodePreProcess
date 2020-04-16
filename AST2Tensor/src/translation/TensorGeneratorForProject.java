@@ -92,7 +92,7 @@ public class TensorGeneratorForProject {
 				
 				if (MetaOfApp.UseLexicalToken) {
 					StatementLexicalTokenTensorGenerator tg_stmt_lex_visitor = new StatementLexicalTokenTensorGenerator(
-							tensor_tool.role_assigner, tensor_tool.im, icu, cu);
+							tensor_tool.im, icu, cu);
 					cu.accept(tg_stmt_lex_visitor);
 					total_method_count += tg_stmt_lex_visitor.total_method_count;
 					unsuitable_method_count += tg_stmt_lex_visitor.unsuitable_method_count;
@@ -120,13 +120,13 @@ public class TensorGeneratorForProject {
 					TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator(tensor_tool.im);
 					SequenceTensorGenerator tg_stmt_visitor = new SequenceTensorGenerator(tensor_tool.im);
 //					StatementTensorGenerator tg_stmt_tree_visitor = new StatementTensorGenerator(tensor_tool.im);
-					YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+					YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.im, icu, cu,
 							tg_tree_visitor);
-					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.im, icu, cu,
 							tg_stmt_visitor);
 //					YTreeGenerator tg_stmt_sequence = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu, tg_stmt_sequence_visitor);
 					StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(
-							tensor_tool.role_assigner, tensor_tool.im, icu, cu);
+							tensor_tool.im, icu, cu);
 					cu.accept(tg_tree);
 					cu.accept(tg_stmt);
 //					cu.accept(tg_stmt_sequence);

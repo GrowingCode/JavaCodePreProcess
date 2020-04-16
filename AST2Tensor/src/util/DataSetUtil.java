@@ -19,6 +19,7 @@ public class DataSetUtil {
 	
 	public static void main(String[] args) {
 		System.out.println(DataSetUtil.FilterNumberPrefix("261784785189560_JunitTestRunnerFilter.java"));
+		System.out.println(DataSetUtil.FilterNumberPrefix("JunitTestRunnerFilter.java"));
 	}
 
 }

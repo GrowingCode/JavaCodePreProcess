@@ -20,9 +20,11 @@ public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 	public int min_num_node_in_one_ast = Integer.MAX_VALUE;
 	public int max_num_node_in_one_ast = Integer.MIN_VALUE;
 	
-	public StatementLexicalTokenTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
+//	RoleAssigner role_assigner, 
+	public StatementLexicalTokenTensorGenerator(IDManager im, ICompilationUnit icu,
 			CompilationUnit cu) {
-		super(role_assigner, im, icu, cu);
+//		role_assigner, 
+		super(im, icu, cu);
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
 		st.SetSize(curr_tensor.getSize());
-		st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+		st.SetRole(RoleAssigner.GetInstance().GetRole(icu));
 		tensor_list.add(st);
 	}
 	

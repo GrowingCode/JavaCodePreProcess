@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 
 import eclipse.exception.ProjectAlreadyExistsException;
+import translation.roles.RoleAssigner;
 import util.FileUtil;
 
 public class JavaProjectManager {
@@ -121,6 +122,7 @@ public class JavaProjectManager {
 					File ff = new File(file);
 //					System.out.println("package_name:" + package_name + "#class_name:" + class_name + "#ff.getAbsolutePath():" + ff.getAbsolutePath());
 					ICompilationUnit cu = pack.createCompilationUnit(class_name + ".java", FileUtil.ReadFromFile(ff), false, null);
+					RoleAssigner.GetInstance().AssignRole(file, cu);
 					assert cu != null;
 				}
 			}

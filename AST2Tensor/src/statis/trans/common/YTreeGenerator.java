@@ -29,9 +29,9 @@ public class YTreeGenerator extends BasicGenerator {
 	
 	protected Map<ASTNode, TreeNode> tree = new HashMap<ASTNode, TreeNode>();
 
-	public YTreeGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu,
+	public YTreeGenerator(IDManager im, ICompilationUnit icu, CompilationUnit cu,
 			TreeVisitor visitor) {
-		super(role_assigner, im, icu, cu);
+		super(im, icu, cu);
 		this.visitor = visitor;
 	}
 	
@@ -77,7 +77,7 @@ public class YTreeGenerator extends BasicGenerator {
 		TreeVisit.Visit(root, visitor);
 		StringTensor st = visitor.GetStringTensor();
 		if (st != null) {
-			st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+			st.SetRole(RoleAssigner.GetInstance().GetRole(icu));
 			tensor_list.add(st);
 		}
 	}

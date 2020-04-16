@@ -19,9 +19,9 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 	StatementSkeletonTensor curr_tensor = new StatementSkeletonTensor();
 	ArrayList<ASTNode> stmt_roots = new ArrayList<ASTNode>();
 	
-	public StatementSkeletonTensorGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu,
+	public StatementSkeletonTensorGenerator(IDManager im, ICompilationUnit icu,
 			CompilationUnit cu) {
-		super(role_assigner, im, icu, cu);
+		super(im, icu, cu);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
 		st.SetSize(curr_tensor.getSize());
-		st.SetRole(role_assigner.GetRole(icu.getPath().toOSString()));
+		st.SetRole(RoleAssigner.GetInstance().GetRole(icu));
 		tensor_list.add(st);
 	}
 	

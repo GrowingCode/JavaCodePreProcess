@@ -20,7 +20,7 @@ public class IDGenerator extends TreeVisitor {
 //		this.icu = icu;
 //		this.cu = cu;
 		this.tool = tool;
-		this.role = tool.role_assigner.AssignRole(icu.getPath().toOSString());
+		this.role = RoleAssigner.GetInstance().GetRole(icu);
 //		System.out.println(icu.getPath().toOSString() + "#role:" + role);
 //		icu.getElementName()
 //		System.out.println("icu.getPath().toOSString():" + icu.getPath().toOSString());

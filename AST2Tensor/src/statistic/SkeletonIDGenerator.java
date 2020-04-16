@@ -18,10 +18,10 @@ public class SkeletonIDGenerator extends BasicGenerator {
 	int role = -1;
 	ArrayList<ArrayList<String>> stmts = new ArrayList<ArrayList<String>>();
 	
-	public SkeletonIDGenerator(RoleAssigner role_assigner, IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
-		super(role_assigner, im, icu, cu);
+	public SkeletonIDGenerator(IDManager im, ICompilationUnit icu, CompilationUnit cu, IDTools tool) {
+		super(im, icu, cu);
 		this.tool = tool;
-		this.role = tool.role_assigner.GetRole(icu.getPath().toOSString());
+		this.role = RoleAssigner.GetInstance().GetRole(icu);
 	}
 	
 	@Override

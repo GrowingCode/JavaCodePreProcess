@@ -27,7 +27,6 @@ import statistic.id.IDManager;
 import statistic.id.TokenRecorder;
 import translation.TensorGeneratorForProject;
 import translation.TensorTools;
-import translation.roles.RoleAssigner;
 import translation.tensor.StatementTensor;
 import translation.tensor.TensorForProject;
 import translation.tensor.serialize.SaveTensorToFile;
@@ -89,7 +88,7 @@ public class Application implements IApplication {
 //			max_handle_projs = Integer.parseInt(args[1]);
 //		}
 		BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
-		RoleAssigner role_assigner = new RoleAssigner();
+//		RoleAssigner role_assigner = new RoleAssigner();
 		TokenRecorder tr = new TokenRecorder();
 		TokenRecorder sr = new TokenRecorder();
 //		TokenRecorder str = new TokenRecorder();
@@ -97,7 +96,7 @@ public class Application implements IApplication {
 		APIRecorder ar = new APIRecorder();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
 //		str, gr, 
-		IDTools id_tool = new IDTools(bpe_mr, role_assigner, tr, sr, ar, cnc);
+		IDTools id_tool = new IDTools(bpe_mr, tr, sr, ar, cnc);
 		{
 			File bpe_mj = new File(bpe_merges_json);
 			File bpe_ttj = new File(bpe_token_times_json);
@@ -151,7 +150,7 @@ public class Application implements IApplication {
 //		}
 		{
 			System.out.println("==== GenerateTensor Begin ====");
-			TensorTools tensor_tool = new TensorTools(role_assigner, im);
+			TensorTools tensor_tool = new TensorTools(im);
 			if (root_dir.isDirectory()) {
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
 				HandleEachProjectFramework(root_dir, handle, null, tensor_tool);

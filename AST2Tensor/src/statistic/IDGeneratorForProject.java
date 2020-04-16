@@ -40,14 +40,14 @@ public class IDGeneratorForProject {
 				// CreateJDTParserWithJavaProject(java_project).
 				Assert.isTrue(icu != null);
 				if (MetaOfApp.UseLexicalToken) {
-					LexicalTokenGenerator ltg = new LexicalTokenGenerator(tool.role_assigner, null, icu, cu, tool);
+					LexicalTokenGenerator ltg = new LexicalTokenGenerator(null, icu, cu, tool);
 					cu.accept(ltg);
 				} else {
 					IDGenerator tg_id_visitor = new IDGenerator(tool, icu);
-					YTreeGenerator tg = new YTreeGenerator(tool.role_assigner, null, icu, cu, tg_id_visitor);
+					YTreeGenerator tg = new YTreeGenerator(null, icu, cu, tg_id_visitor);
 					cu.accept(tg);
 					if (MetaOfApp.GenerateSkeletonToken) {
-						SkeletonIDGenerator skg = new SkeletonIDGenerator(tool.role_assigner, null, icu, cu, tool);
+						SkeletonIDGenerator skg = new SkeletonIDGenerator(null, icu, cu, tool);
 						cu.accept(skg);
 					}
 				}
