@@ -176,8 +176,11 @@ public class AnalysisEnvironment {
 				String r_file_simple_name_without_suffix = DataSetUtil.FilterNumberPrefix(file_simple_name_without_suffix);
 				String class_full_qualified_name = packagename + "." + r_file_simple_name_without_suffix;
 				if (MetaOfApp.JavaFileNoLimit) {
+//					if (f_norm_path.equals("C:/Users/yangy/YYXData/000033#gocd_gocd#apache_incubator-joshua#mrmaffen_vlc-android-sdk#locationtech_geowave#dataset/YYX_S_T_R_A_N_G_E_Specified_Valid_File__P_R_E_F_I_X_Valid/516265009256278_CurrentGoCDVersion.java")) {
+//						System.err.println("meet strange!" + " class_full_qualified_name:" + class_full_qualified_name);
+//					}
 					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path);
-				} else if (f_norm_path.endsWith(packagepath_with_classfile)) {
+				} else {
 //					String f_dir = f_norm_path.substring(0, f_norm_path.lastIndexOf(packagepath_with_classfile))
 //							.replace('\\', '/');
 //					while (f_dir.endsWith("/")) {
@@ -189,7 +192,9 @@ public class AnalysisEnvironment {
 //						dir_files_map.put(f_dir, files_in_dir);
 //					}
 //					UpdateFileQualifiedNameWithFilePathMap(files_in_dir, class_full_qualified_name, f_norm_path, f);
-					UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path);
+					if (f_norm_path.endsWith(packagepath_with_classfile)) {
+						UpdateFileQualifiedNameWithFilePathMap(file_full_qualified_name_file_path_map, class_full_qualified_name, f_norm_path);
+					}
 				}
 			}
 			// Fill the source folder of the project.
