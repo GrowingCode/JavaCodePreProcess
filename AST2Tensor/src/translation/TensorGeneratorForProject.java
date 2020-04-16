@@ -35,10 +35,14 @@ public class TensorGeneratorForProject {
 
 	public List<TensorForProject> GenerateForOneProject() {
 		List<TensorForProject> result = new LinkedList<TensorForProject>();
-		TensorForProject result_tree = new TensorForProject("tree");
 		TensorForProject result_sequence = new TensorForProject("sequence");
-		result.add(result_tree);
+		TensorForProject result_tree = new TensorForProject("tree");
+		TensorForProject result_stmt = new TensorForProject("stmt");
+		TensorForProject result_stmt_skt = new TensorForProject("stmt_skt");
 		result.add(result_sequence);
+		result.add(result_tree);
+		result.add(result_stmt);
+		result.add(result_stmt_skt);
 		List<ICompilationUnit> units = null;
 		try {
 			units = EclipseSearchForICompilationUnits.SearchForAllICompilationUnits(java_project);
@@ -95,33 +99,36 @@ public class TensorGeneratorForProject {
 					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt_lex_visitor.min_num_node_in_one_ast ? tg_stmt_lex_visitor.min_num_node_in_one_ast : min_num_node_in_one_ast;
 					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt_lex_visitor.max_num_node_in_one_ast ? tg_stmt_lex_visitor.max_num_node_in_one_ast : max_num_node_in_one_ast;
 					List<Tensor> stmt_lex_tensors = tg_stmt_lex_visitor.GetGeneratedTensors();
-					Iterator<Tensor> s_itr = stmt_lex_tensors.iterator();
-					List<Tensor> stmt_result_tensors = new LinkedList<Tensor>();
-					while (s_itr.hasNext()) {
-						StringTensor s = (StringTensor) s_itr.next();
-						StringTensor r = new StringTensor();
-						r.SetRole(s.GetRole());
-						r.SetSize(s.getSize());
-						r.SetToString(s.toString());
-						r.SetToDebugString(s.toDebugString());
-						r.SetToOracleString(s.toOracleString());
-						stmt_result_tensors.add(r);
-					}
-					result_tree.AddTensors(stmt_result_tensors);
-					result_sequence.AddTensors(stmt_result_tensors);
+//					Iterator<Tensor> s_itr = stmt_lex_tensors.iterator();
+//					List<Tensor> stmt_result_tensors = new LinkedList<Tensor>();
+//					while (s_itr.hasNext()) {
+//						StringTensor s = (StringTensor) s_itr.next();
+//						StringTensor r = new StringTensor();
+//						r.SetRole(s.GetRole());
+//						r.SetSize(s.getSize());
+//						r.SetToString(s.toString());
+//						r.SetToDebugString(s.toDebugString());
+//						r.SetToOracleString(s.toOracleString());
+//						stmt_result_tensors.add(r);
+//						stmt_result_tensors.add(s);
+//					}
+//					result_tree.AddTensors(stmt_result_tensors);
+//					result_sequence.AddTensors(stmt_result_tensors);
+					result_tree.AddTensors(stmt_lex_tensors);
+					result_sequence.AddTensors(stmt_lex_tensors);
 				} else {
 					TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator(tensor_tool.im);
 					SequenceTensorGenerator tg_stmt_visitor = new SequenceTensorGenerator(tensor_tool.im);
 //					StatementTensorGenerator tg_stmt_tree_visitor = new StatementTensorGenerator(tensor_tool.im);
-					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
-							tg_stmt_visitor);
 					YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
 							tg_tree_visitor);
+					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu,
+							tg_stmt_visitor);
 //					YTreeGenerator tg_stmt_sequence = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu, tg_stmt_sequence_visitor);
 					StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(
 							tensor_tool.role_assigner, tensor_tool.im, icu, cu);
-					cu.accept(tg_stmt);
 					cu.accept(tg_tree);
+					cu.accept(tg_stmt);
 //					cu.accept(tg_stmt_sequence);
 					cu.accept(tg_stmt_skt);
 					total_method_count += tg_stmt.total_method_count;
@@ -129,42 +136,47 @@ public class TensorGeneratorForProject {
 					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt.min_num_node_in_one_ast ? tg_stmt.min_num_node_in_one_ast : min_num_node_in_one_ast;
 					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt.max_num_node_in_one_ast ? tg_stmt.max_num_node_in_one_ast : max_num_node_in_one_ast;
 					
-					List<Tensor> stmt_tensors = tg_stmt.GetGeneratedTensors();
 					List<Tensor> tree_tensors = tg_tree.GetGeneratedTensors();
+					List<Tensor> stmt_tensors = tg_stmt.GetGeneratedTensors();
 					List<Tensor> stmt_skt_tensors = tg_stmt_skt.GetGeneratedTensors();
-					Assert.isTrue(stmt_tensors.size() == tree_tensors.size());
 					Assert.isTrue(tree_tensors.size() == stmt_skt_tensors.size());
-					List<Tensor> tree_result_tensors = new LinkedList<Tensor>();
-					Iterator<Tensor> s_itr = stmt_tensors.iterator();
+					Assert.isTrue(stmt_tensors.size() == tree_tensors.size());
+//					List<Tensor> tree_result_tensors = new LinkedList<Tensor>();
 					Iterator<Tensor> t_itr = tree_tensors.iterator();
+					Iterator<Tensor> s_itr = stmt_tensors.iterator();
 					Iterator<Tensor> sst_itr = stmt_skt_tensors.iterator();
 					while (s_itr.hasNext()) {
-						StringTensor s = (StringTensor) s_itr.next();
 						StringTensor t = (StringTensor) t_itr.next();
+						StringTensor s = (StringTensor) s_itr.next();
 						StringTensor sst = (StringTensor) sst_itr.next();
 						Assert.isTrue(s.GetRole() == t.GetRole());
 						Assert.isTrue(t.GetRole() == sst.GetRole());
-						StringTensor r = new StringTensor();
-						r.SetRole(s.GetRole());
+//						StringTensor r = new StringTensor();
+//						r.SetRole(s.GetRole());
 						Assert.isTrue(s.getSize() + 1 == t.getSize(),
 								"s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
 //						Assert.isTrue(s.getSize() == sst.getSize(),
 //								"s.getSize():" + s.getSize() + ";sst.getSize():" + sst.getSize());
-						r.SetSize(s.getSize());
-						r.SetToString(s.toString() + "$" + t.toString() + "$" + sst.toString());
-						r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString() + "\n\n\n\n$\n\n\n\n"
-								+ sst.toDebugString());
-						r.SetToOracleString(s.toOracleString() + "\n\n\n\n$\n\n\n\n" + t.toOracleString()
-								+ "\n\n\n\n$\n\n\n\n" + sst.toOracleString());
-						tree_result_tensors.add(r);
+//						r.SetSize(s.getSize());
+//						r.SetToString(s.toString() + "$" + t.toString() + "$" + sst.toString());
+//						r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString() + "\n\n\n\n$\n\n\n\n"
+//								+ sst.toDebugString());
+//						r.SetToOracleString(s.toOracleString() + "\n\n\n\n$\n\n\n\n" + t.toOracleString()
+//								+ "\n\n\n\n$\n\n\n\n" + sst.toOracleString());
+//						tree_result_tensors.add(r);
 					}
-					result_tree.AddTensors(tree_result_tensors);
+//					result_tree.AddTensors(tree_result_tensors);
+					
 //					List<Tensor> sequence_tensors = tg_stmt_sequence.GetGeneratedTensors();
 //					for (Tensor s_t : sequence_tensors) {
 //						pq.add(new SizePath(s_t.getSize()));// , s_t.GetOriginFile()
 //					}
 					result_sequence.AddTensors(stmt_tensors);
+					result_tree.AddTensors(tree_tensors);
+					result_stmt.AddTensors(stmt_tensors);
+					result_stmt_skt.AddTensors(stmt_skt_tensors);
 					Assert.isTrue(tree_tensors.size() == stmt_tensors.size());
+					Assert.isTrue(stmt_skt_tensors.size() == stmt_tensors.size());
 				}
 			}
 			System.out.println("min_num_node_in_one_ast:" + min_num_node_in_one_ast + "#max_num_node_in_one_ast:" + max_num_node_in_one_ast);
