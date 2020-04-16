@@ -67,9 +67,9 @@ public class Application implements IApplication {
 			if (dd.exists()) {
 				FileUtil.DeleteFile(dd);
 			}
-			Thread.sleep(2500);
+			Thread.sleep(5000);
 			dd.mkdirs();
-			Thread.sleep(2500);
+			Thread.sleep(5000);
 			Assert.isTrue(dd.listFiles().length == 0);
 		}
 		// load and execute the project.
