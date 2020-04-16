@@ -21,18 +21,6 @@ import util.FileUtil;
 
 public class JDTLexicalParser {
 	
-	public static CompilationUnit PreProcessAndParseJavaFile(File f)
-	{
-		ASTParser parser = ASTParser.newParser(AST.JLS13);
-		Map<String, String> options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_10);
-		parser.setCompilerOptions(options);
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setSource(PreProcessCompilationUnitHelper.PreProcessDeleter(f).toCharArray());
-		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		return compilationUnit;
-	}
-	
 	public static CompilationUnit ParseJavaFile(File f)
 	{
 		ASTParser parser = ASTParser.newParser(AST.JLS13);
@@ -58,6 +46,19 @@ public class JDTLexicalParser {
 //			e.printStackTrace();
 //		}
 //		return changed_class;
+//	}
+	
+//	public static CompilationUnit PreProcessAndParseJavaFile(File f)
+//	{
+//		ASTParser parser = ASTParser.newParser(AST.JLS13);
+//		Map<String, String> options = JavaCore.getOptions();
+//		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_10);
+//		parser.setCompilerOptions(options);
+//		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+//		parser.setSource(PreProcess(f).toCharArray());
+////		parser.setSource(PreProcessCompilationUnitHelper.PreProcessDeleter(f).toCharArray());
+//		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+//		return compilationUnit;
 //	}
 	
 	public static CompilationUnit PreProcessAndParseJavaFileWithRecovery(File f) {

@@ -12,7 +12,7 @@ public class JavaFileScorer {
 //		if (f.length() / 1024 < 12) {
 //			return -1;
 //		}
-		CompilationUnit cu = JDTLexicalParser.PreProcessAndParseJavaFile(f);
+		CompilationUnit cu = JDTLexicalParser.ParseJavaFile(f);
 		ASTScoreGenerator score_generator = new ASTScoreGenerator();
 		cu.accept(score_generator);
 		return score_generator.GetScore();

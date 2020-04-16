@@ -82,13 +82,15 @@ public class SkeletonVisitor extends ASTVisitor {
 						"start:" + start + "#r.buf_start:" + r.buf_start + "#range_content:" + r.ei + "#range_cnt:"
 								+ cnt.substring(r.buf_start, r.buf_end + 1) + "#previous r_cnt:" + pre_r_cnt + "#strange node:" + node.toString()
 								+ "#parent strange node:" + node.getParent().toString());
-				String pre = cnt.substring(start, r.buf_start).trim();
+				String pre = cnt.substring(start, r.buf_start);
+				pre = pre.replaceAll("\\s+", " ");
 				if (!pre.equals("")) {
 					parts.add(pre);
 				}
 				switch (r.kind) {
 				case replace:
 					String nt = cnt.substring(r.buf_start, r.buf_end + 1);
+					nt = nt.replaceAll("\\s+", " ");
 //					System.out.println("nt:" + nt);
 					String r_nt = nt.replace(r.ei.content, "#" + r.ei.index);
 					parts.add(r_nt);
@@ -103,10 +105,12 @@ public class SkeletonVisitor extends ASTVisitor {
 			}
 			int end = node.getStartPosition() + node.getLength();
 			if (start < end) {
-				parts.add(cnt.substring(start, end).trim());
+				String post = cnt.substring(start, end).replaceAll("\\s+", " ");
+//				System.out.println("post:" + post);
+				parts.add(post);
 			}
-			String c = StringUtils.join(parts, "");
-
+			String c = StringUtils.join(parts, "").replaceAll("\\s+", " ");
+//			System.out.println("c:" + c);
 			result.add(c);
 			Set<ElementInfo> cs = content.keySet();
 			Iterator<ElementInfo> c_itr = cs.iterator();

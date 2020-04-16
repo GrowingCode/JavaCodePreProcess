@@ -85,8 +85,8 @@ public class StatementSkeletonTensor extends Tensor {
 		int s_size = stmt_token_info_start.size();
 		int e_size = stmt_token_info_end.size();
 		Assert.isTrue(s_size == e_size);
+		result.append("$YStmtSig$:" + this.sig + separator);
 		for (int i=0;i<e_size;i++) {
-			result.append("$YStmtSig$:" + this.sig + separator);
 			String r = "";
 			Integer s = stmt_token_info_start.get(i);
 			Integer e = stmt_token_info_end.get(i);
