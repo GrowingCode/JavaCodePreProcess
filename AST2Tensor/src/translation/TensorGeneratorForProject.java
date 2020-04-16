@@ -38,7 +38,7 @@ public class TensorGeneratorForProject {
 		TensorForProject result_sequence = new TensorForProject("sequence");
 		TensorForProject result_tree = new TensorForProject("tree");
 		TensorForProject result_stmt = new TensorForProject("stmt");
-		TensorForProject result_stmt_skt = new TensorForProject("stmt_skt");
+		TensorForProject result_stmt_skt = new TensorForProject("skt");
 		result.add(result_sequence);
 		result.add(result_tree);
 		result.add(result_stmt);
