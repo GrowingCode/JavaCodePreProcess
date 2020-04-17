@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import eclipse.project.ProjectInfo;
 import main.MetaOfApp;
 import translation.roles.RoleAssigner;
 
@@ -24,7 +25,7 @@ public class TensorForProject {
 		tensors.addAll(e);
 	}
 	
-	private void SaveToFile(List<Tensor> tensors_to, String type) {
+	private void SaveToFile(List<Tensor> tensors_to, String type, ProjectInfo info) {
 		File dest = new File(MetaOfApp.DataDirectory + "/" + type + "_data.txt");
 		File debug_dest = new File(MetaOfApp.DataDirectory + "/debug_" + type + "_data.txt");
 		File oracle_dest = new File(MetaOfApp.DataDirectory + "/oracle_" + type + "_data.txt");
@@ -38,6 +39,8 @@ public class TensorForProject {
 			bw = new BufferedWriter(fw);
 			debug_bw = new BufferedWriter(debug_fw);
 			oracle_bw = new BufferedWriter(oracle_fw);
+			oracle_bw.write(MetaOfApp.ProjectDeclarationSignaturePrefix + info.getName());
+			oracle_bw.newLine();
 			Iterator<Tensor> titr = tensors_to.iterator();
 			while (titr.hasNext()) {
 				Tensor t = titr.next();
@@ -75,7 +78,7 @@ public class TensorForProject {
 		}
 	}
 	
-	public void SaveToFile() {// int total_of_tensors
+	public void SaveToFile(ProjectInfo info) {// int total_of_tensors
 //		System.err.println("tensor_size:" + tensors.size());
 		LinkedList<Tensor> train_tensors = new LinkedList<Tensor>();
 		LinkedList<Tensor> test_tensors = new LinkedList<Tensor>();
@@ -92,13 +95,13 @@ public class TensorForProject {
 				test_tensors.add(t);
 			}
 		}
-		SaveToFile(tensors, kind + "_all");
+		SaveToFile(tensors, kind + "_all", info);
 //		System.err.println("train_tensor_size:" + train_tensors.size());
-		SaveToFile(train_tensors, kind + "_train");
+		SaveToFile(train_tensors, kind + "_train", info);
 //		System.err.println("test_tensor_size:" + test_tensors.size());
-		SaveToFile(test_tensors, kind + "_test");
+		SaveToFile(test_tensors, kind + "_test", info);
 //		System.err.println("valid_tensor_size:" + valid_tensors.size());
-		SaveToFile(valid_tensors, kind + "_valid");
+		SaveToFile(valid_tensors, kind + "_valid", info);
 	}
 
 //	public int GetNumOfTensors() {

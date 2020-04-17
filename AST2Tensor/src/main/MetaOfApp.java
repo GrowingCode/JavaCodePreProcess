@@ -13,6 +13,9 @@ public class MetaOfApp {
 	public final static boolean DetailDebugMode = false;
 	public final static boolean DetailFollowStatementDebugMode = false;
 	public final static boolean StatementsDetailDebugMode = true;
+	
+	public final static String MethodDeclarationSignaturePrefix = "$YStatementSig$:";
+	public final static String ProjectDeclarationSignaturePrefix = "$YProjectSig$:";
 
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
 //	public final static int ContentHuffTreeStandardChildrenNum = 1000;

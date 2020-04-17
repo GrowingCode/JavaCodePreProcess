@@ -1,23 +1,20 @@
 package main;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-// import org.eclipse.jdt.core.IJavaProject;
-// import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IJavaProject;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import bpe.BPEGeneratorForProject;
-import eclipse.project.ProjectLoader;
+import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
+import statis.trans.project.STProject;
 import statistic.IDGeneratorForProject;
 import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
@@ -29,10 +26,8 @@ import translation.TensorGeneratorForProject;
 import translation.TensorTools;
 import translation.tensor.StatementTensor;
 import translation.tensor.TensorForProject;
-import translation.tensor.serialize.SaveTensorToFile;
 import util.FileUtil;
 import util.SystemUtil;
-import util.ZIPUtil;
 
 public class Application implements IApplication {
 
@@ -59,7 +54,7 @@ public class Application implements IApplication {
 //			SystemUtil.Delay(1000);
 //		}
 		{
-			// Clear data.
+			// clear data.
 			DebugLogger.Log(
 					"===== Data Directory:" + System.getProperty("user.home") + "/AST_Tensors" + "; created!!! =====");
 			File dd = new File(MetaOfApp.DataDirectory);
@@ -70,6 +65,8 @@ public class Application implements IApplication {
 			dd.mkdirs();
 			Thread.sleep(5000);
 			Assert.isTrue(dd.listFiles().length == 0);
+			// clear projects. 
+			AnalysisEnvironment.DeleteAllProjects();
 		}
 		// load and execute the project.
 //		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
@@ -110,19 +107,22 @@ public class Application implements IApplication {
 				System.out.println("==== BPECount Loaded ====");
 			} else {
 				System.out.println("==== BPECount Begin ====");
+				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
 				BPEOneProjectHandle handle = new BPEOneProjectHandle();
-				HandleEachProjectFramework(bpe_dir, handle, id_tool, null);
+				HandleEachProjectFramework(all_projs, handle, id_tool, null);
 	//			System.out.println("==== BPEMerge Begin ====");
 				bpe_mr.GenerateBPEMerges(MetaOfApp.NumberOfMerges);
 	//			System.out.println("==== BPEMerge End ====");
 				bpe_mr.SaveTo(bpe_mj, bpe_ttj);
+				AnalysisEnvironment.DeleteAllProjects();
 				System.out.println("==== BPECount End ====");
 			}
 		}
+		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
 		{
 			System.out.println("==== IDCount Begin ====");
 			CountOneProjectHandle handle = new CountOneProjectHandle();
-			HandleEachProjectFramework(root_dir, handle, id_tool, null);
+			HandleEachProjectFramework(all_projs, handle, id_tool, null);
 			// max_handle_projs,
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
 //			Iterator<String> pitr = proj_paths.iterator();
@@ -151,9 +151,9 @@ public class Application implements IApplication {
 		{
 			System.out.println("==== GenerateTensor Begin ====");
 			TensorTools tensor_tool = new TensorTools(im);
-			if (root_dir.isDirectory()) {
-				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
-				HandleEachProjectFramework(root_dir, handle, null, tensor_tool);
+			Assert.isTrue((root_dir.isDirectory()), "The root path given in parameter should be a directory which contains zip files or with-project directories");
+			TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
+			HandleEachProjectFramework(all_projs, handle, null, tensor_tool);
 				// max_handle_projs,
 //				File[] files = root_dir.listFiles();
 //				int count_projs = 0;
@@ -179,103 +179,98 @@ public class Application implements IApplication {
 //						break;
 //					}
 //				}
-			} else {
-				DebugLogger.Error(
-						"The root path given in parameter should be a directory which contains zip files or with-project directories");
-			}
+//			} else {
+//				DebugLogger.Error(
+//						"The root path given in parameter should be a directory which contains zip files or with-project directories");
+//			}
 			System.out.println("==== GenerateTensor End ====");
 		}
 		System.out.println("==== TranslateProject Over ====");
 		System.out.println(im.WordVocabularyInfo());
 		System.out.println(StatementTensor.StatementSummaryInfo());
+		AnalysisEnvironment.DeleteAllProjects();
 		SystemUtil.Flush();
-		SystemUtil.Delay(1000);
+		SystemUtil.Delay(2500);
 		return IApplication.EXIT_OK;
 	}
 
 	// int max_handle_projs, RoleAssigner role_assigner
-	private static void HandleEachProjectFramework(File root_dir, HandleOneProject run, IDTools id_tool,
+	// File root_dir
+	private static void HandleEachProjectFramework(List<STProject> projs, HandleOneProject run, IDTools id_tool,
 			TensorTools tensor_tool) {
 //		System.err.println(root_dir.getAbsolutePath());
-		File[] files = root_dir.listFiles();
+//		File[] files = root_dir.listFiles();
 //		int count_projs = 0;
-		int all_size = 0;
-		for (File f : files) {
+//		int all_size = 0;
+//		for (File f : files) {
+		for (STProject proj : projs) {
 //			if (max_handle_projs >= 0 && count_projs >= max_handle_projs) {
 //				break;
 //			}
-			if (f.isDirectory()) {
-//				count_projs++;
-				all_size = run.Handle(f.getAbsolutePath(), all_size, id_tool, tensor_tool);
-			} else {
-				Assert.isTrue(false);
-				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
-				if (unzip_out_dir.exists()) {
-					FileUtil.DeleteFile(unzip_out_dir);
-				}
-				unzip_out_dir.mkdirs();
-				if (f.getName().endsWith(".zip")) {
-					try {
-						ZIPUtil.Unzip(f, unzip_out_dir);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					all_size = run.Handle(unzip_out_dir.getAbsolutePath(), all_size, id_tool, tensor_tool);
-				}
+//			all_size += 
+			run.Handle(proj, id_tool, tensor_tool);
+//			if (f.isDirectory()) {
+////				count_projs++;
+////				f.getAbsolutePath(), all_size
+//				all_size += run.Handle(proj, id_tool, tensor_tool);
+//			} else {
+//				Assert.isTrue(false);
+//				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
 //				if (unzip_out_dir.exists()) {
 //					FileUtil.DeleteFile(unzip_out_dir);
 //				}
-			}
-		}
-	}
-
-	static int BPEOneProject(IJavaProject java_project, IDTools id_tool) {
-		int project_size = 0;
-		try {
-			SystemUtil.Delay(1000);
-			BPEGeneratorForProject irgfop = new BPEGeneratorForProject(java_project, id_tool);
-			project_size = irgfop.GenerateForOneProject();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return project_size;
-	}
-
-	static int CountOneProject(IJavaProject java_project, IDTools id_tool) {
-		int project_size = 0;
-		try {
-			SystemUtil.Delay(1000);
-			IDGeneratorForProject irgfop = new IDGeneratorForProject(java_project, id_tool);
-			project_size = irgfop.GenerateForOneProject();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return project_size;
-	}
-
-	// , File dest, File debug_dest, File oracle_dest
-	// int total_num_tensors,
-	// String proj_path,
-	// , TensorGeneratorForProject irgfop, String kind
-	static void TranslateOneProject(IJavaProject java_project, TensorTools tensor_tool) {
-		try {
-			SystemUtil.Delay(1000);
-			TensorGeneratorForProject tgfp = new TensorGeneratorForProject(java_project, tensor_tool);
-			List<TensorForProject> project_tensors = tgfp.GenerateForOneProject();
-			// one_project_tensor.GetNumOfTensors();
-			for (TensorForProject one_project_tensor : project_tensors) {
-				SaveTensorToFile.SaveTensors(one_project_tensor);// , Best, debug_dest, oracle_dest
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-//		finally {
-//			try {
-//				AnalysisEnvironment.DeleteAllAnalysisEnvironment();
-//			} catch (CoreException e1) {
-//				e1.printStackTrace();
+//				unzip_out_dir.mkdirs();
+//				if (f.getName().endsWith(".zip")) {
+//					try {
+//						ZIPUtil.Unzip(f, unzip_out_dir);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+////					unzip_out_dir.getAbsolutePath(), all_size
+//					all_size += run.Handle(proj, id_tool, tensor_tool);
+//				}
+////				if (unzip_out_dir.exists()) {
+////					FileUtil.DeleteFile(unzip_out_dir);
+////				}
 //			}
-//		}
+		}
+	}
+
+	static int BPEOneProject(STProject proj, IDTools id_tool) {
+		int project_size = 0;
+		try {
+			SystemUtil.Delay(1000);
+			BPEGeneratorForProject irgfop = new BPEGeneratorForProject(proj.GetJavaProject(), id_tool);
+			project_size = irgfop.GenerateForOneProject();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return project_size;
+	}
+
+	static int CountOneProject(STProject proj, IDTools id_tool) {
+		int project_size = 0;
+		try {
+			SystemUtil.Delay(1000);
+			IDGeneratorForProject irgfop = new IDGeneratorForProject(proj.GetJavaProject(), id_tool);
+			project_size = irgfop.GenerateForOneProject();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return project_size;
+	}
+
+	static void TranslateOneProject(STProject proj, TensorTools tensor_tool) {
+		try {
+			SystemUtil.Delay(1000);
+			TensorGeneratorForProject tgfp = new TensorGeneratorForProject(proj.GetJavaProject(), tensor_tool);
+			List<TensorForProject> project_tensors = tgfp.GenerateForOneProject();
+			for (TensorForProject one_project_tensor : project_tensors) {
+				one_project_tensor.SaveToFile(proj.GetInfo());// , Best, debug_dest, oracle_dest
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -286,29 +281,31 @@ public class Application implements IApplication {
 }
 
 interface HandleOneProject {
-	public int Handle(String proj_path, int all_size, IDTools id_tool, TensorTools tensor_tool);
+//	String proj_path, int all_size
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool);
 }
 
 class TranslateOneProjectHandle implements HandleOneProject {
 
+//	String proj_path, int all_size, 
 	@Override
-	public int Handle(String proj_path, int all_size, IDTools id_tool, TensorTools tensor_tool) {
-		IJavaProject java_project = null;
-		try {
-			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+//		IJavaProject java_project = null;
+//		try {
+//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 //			TensorGeneratorForProject ttgfop = new TreeTensorGeneratorForProject(role_assigner, java_project, im);
-			Application.TranslateOneProject(java_project, tensor_tool);// proj_path, , ttgfop
+			Application.TranslateOneProject(proj, tensor_tool);// proj_path, , ttgfop
 //			TensorGeneratorForProject stgfop = new SequenceTensorGeneratorForProject(role_assigner, java_project, im);
 //			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				ProjectLoader.CloseAllProjects();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				ProjectLoader.CloseAllProjects();
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
 		return -1;
 	}
 
@@ -316,21 +313,22 @@ class TranslateOneProjectHandle implements HandleOneProject {
 
 class CountOneProjectHandle implements HandleOneProject {
 
+//	String proj_path, int all_size
 	@Override
-	public int Handle(String proj_path, int all_size, IDTools id_tool, TensorTools tensor_tool) {
-		IJavaProject java_project = null;
-		try {
-			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			all_size += Application.CountOneProject(java_project, id_tool);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				ProjectLoader.CloseAllProjects();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+//		IJavaProject java_project = null;
+//		try {
+//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			int all_size = Application.CountOneProject(proj, id_tool);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				ProjectLoader.CloseAllProjects();
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
 //		if (all_size >= Application.RefinePeriod) {
 //			id_tool.ic.RefineAllStatistics(min_support, max_capacity);
 //			all_size %= Application.RefinePeriod;
@@ -342,20 +340,21 @@ class CountOneProjectHandle implements HandleOneProject {
 
 class BPEOneProjectHandle implements HandleOneProject {
 
-	public int Handle(String proj_path, int all_size, IDTools id_tool, TensorTools tensor_tool) {
-		IJavaProject java_project = null;
-		try {
-			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			all_size += Application.BPEOneProject(java_project, id_tool);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				ProjectLoader.CloseAllProjects();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
+//	String proj_path, int all_size
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+//		IJavaProject java_project = null;
+//		try {
+//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			int all_size = Application.BPEOneProject(proj, id_tool);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				ProjectLoader.CloseAllProjects();
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
 		return all_size;
 	}
 

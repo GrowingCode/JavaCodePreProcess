@@ -24,12 +24,28 @@ import eclipse.exception.ProjectAlreadyExistsException;
 import eclipse.jdt.JDTLexicalParser;
 import eclipse.project.process.PreProcessHelper;
 import main.MetaOfApp;
+import statis.trans.project.STProject;
 import util.DataSetUtil;
 import util.FileIterator;
 
 public class AnalysisEnvironment {
 	
-	protected static IJavaProject default_project = null;
+//	protected static IJavaProject default_project = null;
+	
+	public static List<STProject> LoadAllProjects(File projs_dir) throws Exception {
+		List<STProject> results = new ArrayList<STProject>();
+		String projs_dir_str = projs_dir.getAbsolutePath().replace("\\", "/");
+		System.out.println("projs_dir:" + projs_dir_str);
+		File[] files = projs_dir.listFiles();
+		for (File f : files) {
+			Assert.isTrue(f.isDirectory());
+			String pi_name = projs_dir_str.substring(projs_dir_str.lastIndexOf('/')+1);
+			ProjectInfo epi = new ProjectInfo(pi_name, f.getAbsolutePath());
+			IJavaProject jproj = AnalysisEnvironment.CreateAnalysisEnvironment(epi);
+			results.add(new STProject(epi, jproj));
+		}
+		return results;
+	}
 
 	private static void InitializeClassPathWithDefaultJRE(List<IClasspathEntry> entries) {
 //		LibraryLocation[] libs = new LibraryLocation[0];
@@ -59,7 +75,7 @@ public class AnalysisEnvironment {
 //		return default_project;
 //	}
 
-	public static IJavaProject CreateAnalysisEnvironment(ProjectInfo pi)
+	private static IJavaProject CreateAnalysisEnvironment(ProjectInfo pi)
 			throws NoAnalysisSourceException, ProjectAlreadyExistsException, CoreException {
 		try {
 			Thread.sleep(1000);
@@ -243,11 +259,11 @@ public class AnalysisEnvironment {
 		}
 	}
 
-	public static void DeleteAnalysisEnvironment(ProjectInfo pi) throws CoreException {
-		JavaProjectManager.UniqueManager().DeleteJavaProject(pi.getName());
-	}
+//	public static void DeleteAnalysisEnvironment(ProjectInfo pi) throws CoreException {
+//		JavaProjectManager.UniqueManager().DeleteJavaProject(pi.getName());
+//	}
 
-	public static void DeleteAllAnalysisEnvironment() throws CoreException {
+	public static void DeleteAllProjects() throws CoreException {
 		JavaProjectManager.UniqueManager().DeleteAllJavaProjects();
 	}
 

@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
+import main.MetaOfApp;
 import translation.tensor.util.IDRedistribution;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndex;
@@ -85,7 +86,7 @@ public class StatementSkeletonTensor extends Tensor {
 		int s_size = stmt_token_info_start.size();
 		int e_size = stmt_token_info_end.size();
 		Assert.isTrue(s_size == e_size);
-		result.append("$YStmtSig$:" + this.sig + separator);
+		result.append(MetaOfApp.MethodDeclarationSignaturePrefix + this.sig + separator);
 		for (int i=0;i<e_size;i++) {
 			String r = "";
 			Integer s = stmt_token_info_start.get(i);
