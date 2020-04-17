@@ -13,7 +13,6 @@ import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
-import translation.roles.RoleAssigner;
 import translation.tensor.StringTensor;
 import tree.TreeNode;
 import tree.TreeVisit;

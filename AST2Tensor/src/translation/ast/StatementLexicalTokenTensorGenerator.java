@@ -7,10 +7,10 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import statis.trans.common.BasicGenerator;
+import statis.trans.common.RoleAssigner;
 import statis.trans.common.YTokenizer;
 import statistic.id.IDManager;
 import translation.helper.TypeContentID;
-import translation.roles.RoleAssigner;
 import translation.tensor.StatementInfo;
 import translation.tensor.StatementTensor;
 import translation.tensor.StringTensor;

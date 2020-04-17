@@ -10,7 +10,7 @@ import java.util.List;
 
 import eclipse.project.ProjectInfo;
 import main.MetaOfApp;
-import translation.roles.RoleAssigner;
+import statis.trans.common.RoleAssigner;
 
 public class TensorForProject {
 	

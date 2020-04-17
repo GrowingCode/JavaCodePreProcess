@@ -1,6 +1,6 @@
-package translation.roles;
+package statis.trans.common;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -14,8 +14,8 @@ public class RoleAssigner {
 	
 	ModifiableInteger role_num = new ModifiableInteger(0);
 	
-	HashMap<String, Integer> path_roles = new HashMap<String, Integer>();
-	HashMap<String, Integer> roles = new HashMap<String, Integer>();
+	TreeMap<String, Integer> path_roles = new TreeMap<String, Integer>();
+	TreeMap<String, Integer> roles = new TreeMap<String, Integer>();
 	
 	public final static int all = 5;
 	public final static int train_seen = 2;
@@ -60,7 +60,7 @@ public class RoleAssigner {
 	
 	public int AssignRole(String f_path, ICompilationUnit icu) {
 //		String f_path = f.getAbsolutePath();
-//		Assert.isTrue(!path_roles.containsKey(f_path), "already contained path:" + f_path);
+		Assert.isTrue(!path_roles.containsKey(f_path), "already contained path:" + f_path);
 		Integer raw_p_role = path_roles.get(f_path);
 		Integer p_role = raw_p_role;
 		if (p_role == null) {
@@ -70,6 +70,7 @@ public class RoleAssigner {
 		}
 		
 		String icu_path = icu.getPath().toOSString();
+		Assert.isTrue(!roles.containsKey(icu_path), "already contained path:" + icu_path);
 		Integer raw_role = roles.get(icu_path);
 		Integer role = raw_role;
 		if (role == null) {
@@ -79,7 +80,6 @@ public class RoleAssigner {
 		} else {
 			Assert.isTrue((int)raw_role == (int)raw_p_role);
 		}
-//		Assert.isTrue(!roles.containsKey(icu_path));
 		return role;
 	}
 	
@@ -110,6 +110,12 @@ public class RoleAssigner {
 		
 	}
 	
+	public void ClearRoles() {
+		role_num.Reset();
+		path_roles.clear();
+		roles.clear();
+	}
+	
 }
 
 class ModifiableInteger {
@@ -126,6 +132,10 @@ class ModifiableInteger {
 
 	public void setValue(int value) {
 		this.value = value;
+	}
+	
+	public void Reset() {
+		this.value = -1;
 	}
 	
 }

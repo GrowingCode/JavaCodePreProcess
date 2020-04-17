@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 
 import eclipse.exception.ProjectAlreadyExistsException;
-import translation.roles.RoleAssigner;
+import statis.trans.common.RoleAssigner;
 import util.FileUtil;
 
 public class JavaProjectManager {

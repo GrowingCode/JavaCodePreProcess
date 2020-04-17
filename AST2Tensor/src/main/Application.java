@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import bpe.BPEGeneratorForProject;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
+import statis.trans.common.RoleAssigner;
 import statis.trans.project.STProject;
 import statistic.IDGeneratorForProject;
 import statistic.IDTools;
@@ -115,6 +116,7 @@ public class Application implements IApplication {
 	//			System.out.println("==== BPEMerge End ====");
 				bpe_mr.SaveTo(bpe_mj, bpe_ttj);
 				AnalysisEnvironment.DeleteAllProjects();
+				RoleAssigner.GetInstance().ClearRoles();
 				System.out.println("==== BPECount End ====");
 			}
 		}

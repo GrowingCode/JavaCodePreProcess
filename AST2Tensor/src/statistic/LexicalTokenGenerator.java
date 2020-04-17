@@ -8,9 +8,9 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import statis.trans.common.BasicGenerator;
+import statis.trans.common.RoleAssigner;
 import statis.trans.common.YTokenizer;
 import statistic.id.IDManager;
-import translation.roles.RoleAssigner;
 
 public class LexicalTokenGenerator extends BasicGenerator {
 	

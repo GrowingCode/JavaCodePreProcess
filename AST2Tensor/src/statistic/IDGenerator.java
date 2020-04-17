@@ -2,7 +2,7 @@ package statistic;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 
-import translation.roles.RoleAssigner;
+import statis.trans.common.RoleAssigner;
 import translation.tensor.StringTensor;
 import tree.TreeNode;
 import tree.TreeVisitor;

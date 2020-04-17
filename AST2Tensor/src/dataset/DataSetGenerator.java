@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
-import translation.roles.RoleAssigner;
+import statis.trans.common.RoleAssigner;
 import util.FileIterator;
 import util.FileUtil;
 import util.RandomUtil;

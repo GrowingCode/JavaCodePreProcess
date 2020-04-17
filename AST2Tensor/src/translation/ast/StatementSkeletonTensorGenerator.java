@@ -8,9 +8,9 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import eclipse.jdt.JDTASTHelper;
 import statis.trans.common.BasicGenerator;
+import statis.trans.common.RoleAssigner;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
-import translation.roles.RoleAssigner;
 import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.StringTensor;
 

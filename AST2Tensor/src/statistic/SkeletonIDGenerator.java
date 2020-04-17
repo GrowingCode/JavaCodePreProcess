@@ -7,10 +7,10 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import statis.trans.common.BasicGenerator;
+import statis.trans.common.RoleAssigner;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
 import translation.ast.StatementUtil;
-import translation.roles.RoleAssigner;
 
 public class SkeletonIDGenerator extends BasicGenerator {
 	
