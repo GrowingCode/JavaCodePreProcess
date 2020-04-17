@@ -5,6 +5,8 @@ import java.util.TreeMap;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 
+import main.MetaOfApp;
+
 public class RoleAssigner {
 	
 //	ModifiableInteger ast_num = new ModifiableInteger(0);
@@ -85,14 +87,16 @@ public class RoleAssigner {
 	
 	private int AssignRole(String file_abs_path, ModifiableInteger m_num) {
 //		String file_abs_path = f.getAbsolutePath();
-		if (file_abs_path.contains(SpecifiedTrainFilePrefix)) {
-			return train_seen_k;
-		}
-		if (file_abs_path.contains(SpecifiedValidFilePrefix)) {
-			return valid_k;
-		}
-		if (file_abs_path.contains(SpecifiedTestFilePrefix)) {
-			return test_k;
+		if (MetaOfApp.TrainValidTestFoldSeparationSpecified) {
+			if (file_abs_path.contains(SpecifiedTrainFilePrefix)) {
+				return train_seen_k;
+			}
+			if (file_abs_path.contains(SpecifiedValidFilePrefix)) {
+				return valid_k;
+			}
+			if (file_abs_path.contains(SpecifiedTestFilePrefix)) {
+				return test_k;
+			}
 		}
 		int num = m_num.getValue();
 		num++;

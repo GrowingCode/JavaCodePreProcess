@@ -63,10 +63,12 @@ public class MetaOfApp {
 
 	public static boolean LeafTypeContentSeparate = false;
 	
+	public static boolean TrainValidTestFoldSeparationSpecified = true;
+	
 //	public static boolean TakeUnseenAsUnk = false;
-	public static final int NumberOfSkeletonUnk = 5;
-	public static final int NumberOfUnk = 5;
-	public static final int MaxParentTypeRemoveTimes = 1;
+	public final static int NumberOfSkeletonUnk = 5;
+	public final static int NumberOfUnk = 5;
+	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;
 
