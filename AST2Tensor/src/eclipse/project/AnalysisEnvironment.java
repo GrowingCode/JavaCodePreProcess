@@ -34,12 +34,12 @@ public class AnalysisEnvironment {
 	
 	public static List<STProject> LoadAllProjects(File projs_dir) throws Exception {
 		List<STProject> results = new ArrayList<STProject>();
-		String projs_dir_str = projs_dir.getAbsolutePath().replace("\\", "/");
-		System.out.println("projs_dir:" + projs_dir_str);
 		File[] files = projs_dir.listFiles();
 		for (File f : files) {
 			Assert.isTrue(f.isDirectory());
-			String pi_name = projs_dir_str.substring(projs_dir_str.lastIndexOf('/')+1);
+			String f_dir_str = f.getAbsolutePath().replace("\\", "/");
+			System.out.println("one_proj_dir_str:" + f_dir_str);
+			String pi_name = f_dir_str.substring(f_dir_str.lastIndexOf('/')+1);
 			ProjectInfo epi = new ProjectInfo(pi_name, f.getAbsolutePath());
 			IJavaProject jproj = AnalysisEnvironment.CreateAnalysisEnvironment(epi);
 			results.add(new STProject(epi, jproj));
