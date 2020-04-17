@@ -151,6 +151,9 @@ public class JavaProjectManager {
 			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 			project = root.getProject(projname);
 			project.delete(true, true, null);
+			Thread.sleep(5000);
+			ResourcesPlugin.getWorkspace().save(true, null);
+			Thread.sleep(5000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

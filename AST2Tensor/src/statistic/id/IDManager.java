@@ -736,9 +736,9 @@ public class IDManager {
 		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
 
 		Map<String, String> origin_after = new TreeMap<String, String>();
-		PrintUtil.PrintMap(hit_res.origin_after, "hit_res.origin_after");
+		PrintUtil.PrintMap(hit_res.origin_after, "hit_res.origin_after", 100);
 		origin_after.putAll(hit_res.origin_after);
-		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after");
+		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after", 100);
 		origin_after.putAll(not_hit_res.origin_after);
 //		PrintUtil.PrintMap(origin_after, "origin_after");
 //		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
