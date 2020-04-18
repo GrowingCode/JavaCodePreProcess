@@ -17,6 +17,7 @@ import main.MetaOfApp;
 import statis.trans.common.YTreeGenerator;
 import translation.ast.StatementLexicalTokenTensorGenerator;
 import translation.ast.StatementSkeletonTensorGenerator;
+import translation.ast.StatementTensorGenerator;
 import translation.ast.TreeTensorGenerator;
 import translation.sequence.SequenceTensorGenerator;
 import translation.tensor.StringTensor;
@@ -89,15 +90,19 @@ public class TensorGeneratorForProject {
 					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
 				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
-				
+
 				if (MetaOfApp.UseLexicalToken) {
 					StatementLexicalTokenTensorGenerator tg_stmt_lex_visitor = new StatementLexicalTokenTensorGenerator(
 							tensor_tool.im, icu, cu);
 					cu.accept(tg_stmt_lex_visitor);
 					total_method_count += tg_stmt_lex_visitor.total_method_count;
 					unsuitable_method_count += tg_stmt_lex_visitor.unsuitable_method_count;
-					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt_lex_visitor.min_num_node_in_one_ast ? tg_stmt_lex_visitor.min_num_node_in_one_ast : min_num_node_in_one_ast;
-					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt_lex_visitor.max_num_node_in_one_ast ? tg_stmt_lex_visitor.max_num_node_in_one_ast : max_num_node_in_one_ast;
+					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt_lex_visitor.min_num_node_in_one_ast
+							? tg_stmt_lex_visitor.min_num_node_in_one_ast
+							: min_num_node_in_one_ast;
+					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt_lex_visitor.max_num_node_in_one_ast
+							? tg_stmt_lex_visitor.max_num_node_in_one_ast
+							: max_num_node_in_one_ast;
 					List<Tensor> stmt_lex_tensors = tg_stmt_lex_visitor.GetGeneratedTensors();
 //					Iterator<Tensor> s_itr = stmt_lex_tensors.iterator();
 //					List<Tensor> stmt_result_tensors = new LinkedList<Tensor>();
@@ -114,49 +119,59 @@ public class TensorGeneratorForProject {
 //					}
 //					result_tree.AddTensors(stmt_result_tensors);
 //					result_sequence.AddTensors(stmt_result_tensors);
-					result_tree.AddTensors(stmt_lex_tensors);
 					result_sequence.AddTensors(stmt_lex_tensors);
+					result_tree.AddTensors(stmt_lex_tensors);
+					result_stmt.AddTensors(stmt_lex_tensors);
+					result_stmt_skt.AddTensors(stmt_lex_tensors);
 				} else {
+					SequenceTensorGenerator tg_sequence_visitor = new SequenceTensorGenerator(tensor_tool.im);
 					TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator(tensor_tool.im);
-					SequenceTensorGenerator tg_stmt_visitor = new SequenceTensorGenerator(tensor_tool.im);
-//					StatementTensorGenerator tg_stmt_tree_visitor = new StatementTensorGenerator(tensor_tool.im);
-					YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.im, icu, cu,
-							tg_tree_visitor);
-					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.im, icu, cu,
-							tg_stmt_visitor);
-//					YTreeGenerator tg_stmt_sequence = new YTreeGenerator(tensor_tool.role_assigner, tensor_tool.im, icu, cu, tg_stmt_sequence_visitor);
-					StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(
-							tensor_tool.im, icu, cu);
+					StatementTensorGenerator tg_stmt_visitor = new StatementTensorGenerator(tensor_tool.im);
+					YTreeGenerator tg_sequence = new YTreeGenerator(tensor_tool.im, icu, cu, tg_sequence_visitor);
+					YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.im, icu, cu, tg_tree_visitor);
+					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.im, icu, cu, tg_stmt_visitor);
+					StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(tensor_tool.im,
+							icu, cu);
+					cu.accept(tg_sequence);
 					cu.accept(tg_tree);
 					cu.accept(tg_stmt);
-//					cu.accept(tg_stmt_sequence);
 					cu.accept(tg_stmt_skt);
 					total_method_count += tg_stmt.total_method_count;
 					unsuitable_method_count += tg_stmt.unsuitable_method_count;
-					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt.min_num_node_in_one_ast ? tg_stmt.min_num_node_in_one_ast : min_num_node_in_one_ast;
-					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt.max_num_node_in_one_ast ? tg_stmt.max_num_node_in_one_ast : max_num_node_in_one_ast;
-					
+					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt.min_num_node_in_one_ast
+							? tg_stmt.min_num_node_in_one_ast
+							: min_num_node_in_one_ast;
+					max_num_node_in_one_ast = max_num_node_in_one_ast < tg_stmt.max_num_node_in_one_ast
+							? tg_stmt.max_num_node_in_one_ast
+							: max_num_node_in_one_ast;
+
+					List<Tensor> sequence_tensors = tg_sequence.GetGeneratedTensors();
 					List<Tensor> tree_tensors = tg_tree.GetGeneratedTensors();
 					List<Tensor> stmt_tensors = tg_stmt.GetGeneratedTensors();
 					List<Tensor> stmt_skt_tensors = tg_stmt_skt.GetGeneratedTensors();
+					
+					Assert.isTrue(stmt_skt_tensors.size() == sequence_tensors.size());
 					Assert.isTrue(tree_tensors.size() == stmt_skt_tensors.size());
 					Assert.isTrue(stmt_tensors.size() == tree_tensors.size());
-//					List<Tensor> tree_result_tensors = new LinkedList<Tensor>();
+					
+					Iterator<Tensor> s_itr = sequence_tensors.iterator();
 					Iterator<Tensor> t_itr = tree_tensors.iterator();
-					Iterator<Tensor> s_itr = stmt_tensors.iterator();
+					Iterator<Tensor> st_itr = stmt_tensors.iterator();
 					Iterator<Tensor> sst_itr = stmt_skt_tensors.iterator();
-					while (s_itr.hasNext()) {
-						StringTensor t = (StringTensor) t_itr.next();
+					while (st_itr.hasNext()) {
 						StringTensor s = (StringTensor) s_itr.next();
+						StringTensor t = (StringTensor) t_itr.next();
+						StringTensor st = (StringTensor) st_itr.next();
 						StringTensor sst = (StringTensor) sst_itr.next();
-						Assert.isTrue(s.GetRole() == t.GetRole());
+						Assert.isTrue(st.GetRole() == t.GetRole());
 						Assert.isTrue(t.GetRole() == sst.GetRole());
+						Assert.isTrue(sst.GetRole() == s.GetRole());
 //						StringTensor r = new StringTensor();
 //						r.SetRole(s.GetRole());
-						Assert.isTrue(s.getSize() + 1 == t.getSize(),
-								"s.getSize():" + s.getSize() + ";t.getSize():" + t.getSize());
-//						Assert.isTrue(s.getSize() == sst.getSize(),
-//								"s.getSize():" + s.getSize() + ";sst.getSize():" + sst.getSize());
+						Assert.isTrue(st.getSize() + 1 == t.getSize(),
+								"s.getSize():" + st.getSize() + ";t.getSize():" + t.getSize());
+						Assert.isTrue(s.getSize() == st.getSize(),
+								"s.getSize():" + s.getSize() + ";st.getSize():" + st.getSize());
 //						r.SetSize(s.getSize());
 //						r.SetToString(s.toString() + "$" + t.toString() + "$" + sst.toString());
 //						r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString() + "\n\n\n\n$\n\n\n\n"
@@ -166,20 +181,21 @@ public class TensorGeneratorForProject {
 //						tree_result_tensors.add(r);
 					}
 //					result_tree.AddTensors(tree_result_tensors);
-					
+
 //					List<Tensor> sequence_tensors = tg_stmt_sequence.GetGeneratedTensors();
 //					for (Tensor s_t : sequence_tensors) {
 //						pq.add(new SizePath(s_t.getSize()));// , s_t.GetOriginFile()
 //					}
-					result_sequence.AddTensors(stmt_tensors);
+					result_sequence.AddTensors(sequence_tensors);
 					result_tree.AddTensors(tree_tensors);
 					result_stmt.AddTensors(stmt_tensors);
 					result_stmt_skt.AddTensors(stmt_skt_tensors);
-					Assert.isTrue(tree_tensors.size() == stmt_tensors.size());
-					Assert.isTrue(stmt_skt_tensors.size() == stmt_tensors.size());
+//					Assert.isTrue(tree_tensors.size() == stmt_tensors.size());
+//					Assert.isTrue(stmt_skt_tensors.size() == stmt_tensors.size());
 				}
 			}
-			System.out.println("min_num_node_in_one_ast:" + min_num_node_in_one_ast + "#max_num_node_in_one_ast:" + max_num_node_in_one_ast);
+			System.out.println("min_num_node_in_one_ast:" + min_num_node_in_one_ast + "#max_num_node_in_one_ast:"
+					+ max_num_node_in_one_ast);
 			System.out.println(
 					"total_method_count:" + total_method_count + "#unsuitable_method_count:" + unsuitable_method_count);
 		}

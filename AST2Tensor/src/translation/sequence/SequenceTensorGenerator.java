@@ -1,12 +1,44 @@
 package translation.sequence;
 
 import statistic.id.IDManager;
-import translation.ast.StatementTensorGenerator;
+import translation.tensor.SequenceTensor;
+import translation.tensor.StringTensor;
+import tree.TreeNode;
+import tree.TreeVisitor;
 
-public class SequenceTensorGenerator extends StatementTensorGenerator {
-
+public class SequenceTensorGenerator extends TreeVisitor {
+	
 	public SequenceTensorGenerator(IDManager im) {
 		super(im);
+	}
+
+	SequenceTensor curr_tensor = new SequenceTensor();
+	
+	@Override
+	public boolean PreVisit(TreeNode node) {
+		int type_content_id = im.GetTypeContentID(node.GetContent());
+		curr_tensor.AppendOneToken(node.GetContent(), type_content_id);
+		return true;
+	}
+
+	@Override
+	public void PostVisit(TreeNode node) {
+		// do nothing
+	}
+
+	@Override
+	public StringTensor GetStringTensor() {
+		StringTensor st = new StringTensor();
+		st.SetToString(curr_tensor.toString());
+		st.SetToDebugString(curr_tensor.toDebugString());
+		st.SetToOracleString(curr_tensor.toOracleString());
+		st.SetSize(curr_tensor.getSize());
+		return st;
+	}
+
+	@Override
+	public void Clear() {
+		curr_tensor = new SequenceTensor();
 	}
 	
 //	SequenceTensor curr_tensor = null;
@@ -117,5 +149,5 @@ public class SequenceTensorGenerator extends StatementTensorGenerator {
 //			curr_tensor.AppendOneToken(im, content_id, type_id, content_relative_idx, api_comb_id, api_relative_idx, isExisted, lastIndex, 1);
 //		}
 //	}
-	
+
 }
