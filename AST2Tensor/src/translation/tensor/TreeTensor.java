@@ -16,6 +16,7 @@ public class TreeTensor extends Tensor {
 		post_order_node_type_content_en.add(0);
 		post_order_node_child_start.add(0);
 		post_order_node_child_end.add(-1);
+		post_order_node_children.add(0);
 	}
 
 	ArrayList<Integer> post_order_node_type_content_en = new ArrayList<Integer>();
