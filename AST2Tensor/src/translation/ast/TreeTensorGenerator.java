@@ -44,7 +44,9 @@ public class TreeTensorGenerator extends TreeVisitor {
 			Iterator<TreeNode> n_itr = children_nodes.iterator();
 			while (n_itr.hasNext()) {
 				TreeNode n = n_itr.next();
-				children_index.add(node_post_order_index.get(n));
+				Integer c_idx = node_post_order_index.get(n);
+				Assert.isTrue(c_idx != null);
+				children_index.add(c_idx);
 			}
 		}
 		int post_order_index = curr_tensor.StorePostOrderNodeInfo(type_content_id, children_index);
