@@ -3,6 +3,7 @@ package translation.tensor;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.Assert;
 
 public class TreeTensor extends Tensor {
 
@@ -42,18 +43,13 @@ public class TreeTensor extends Tensor {
 	}
 
 	public int StorePrePostOrderNodeInfo(int en, int state, int post_order_index) {
+		Assert.isTrue(state >= 0 && state <= 2);
 		int index = pre_post_order_node_type_content_en.size();
 		pre_post_order_node_type_content_en.add(en);
 		pre_post_order_node_state.add(state);
 		pre_post_order_node_post_order_index.add(post_order_index);
 		return index;
 	}
-
-//	public void StorePreOrderNodePostOrderIndexInfo(int pre_index, int post_order_index) {
-//		pre_order_node_post_order_index.set(pre_index, post_order_index);
-//		Assert.isTrue(post_order_node_type_content_en.get(post_order_index) == pre_order_node_type_content_en.get(pre_index));
-//		Assert.isTrue(post_order_node_pre_order_index.get(post_order_index) == pre_index);
-//	}
 
 	@Override
 	public int getSize() {
