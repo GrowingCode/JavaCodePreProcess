@@ -1271,11 +1271,11 @@ public class IDManager {
 		}
 
 		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_self_children_grammar.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_grammar_ids.json"),
 				gson.toJson(self_children_grammar));
-		FileUtil.WriteToFile(new File(dir + "/" + "All_self_children_grammar_start.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_grammar_start.json"),
 				gson.toJson(self_children_grammar_start));
-		FileUtil.WriteToFile(new File(dir + "/" + "All_self_children_grammar_end.json"),
+		FileUtil.WriteToFile(new File(dir + "/" + "All_token_grammar_end.json"),
 				gson.toJson(self_children_grammar_end));
 	}
 
