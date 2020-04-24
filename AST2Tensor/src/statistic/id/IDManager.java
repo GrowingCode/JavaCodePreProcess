@@ -1255,9 +1255,8 @@ public class IDManager {
 		ArrayList<Integer> self_children_grammar_start = new ArrayList<Integer>();
 		ArrayList<Integer> self_children_grammar_end = new ArrayList<Integer>();
 
-		int g_size = grammar_id_token_id_map.size();
+		int g_size = grammar_id_map.size();
 		for (int i = 0; i < g_size; i++) {
-			Assert.isTrue(grammar_id_token_id_map.containsKey(i));
 			TreeSet<Integer> ll = grammar_id_token_id_map.get(i);
 			self_children_grammar_start.add(self_children_grammar.size());
 			if (ll == null || ll.size() == 0) {
