@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 
+import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
 import translation.tensor.StringTensor;
 import translation.tensor.TreeTensor;
@@ -29,7 +30,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 		int type_content_id = im.GetTypeContentID(node.GetContent());
 		ArrayList<TreeNode> children_nodes = node.GetChildren();
 		if (children_nodes != null && children_nodes.size() > 0) {
-			curr_tensor.StorePrePostOrderNodeInfo(type_content_id, 0, -1);
+			curr_tensor.StorePrePostOrderNodeInfo(type_content_id, 0, -1, im.GetGrammarID(GrammarRecorder.GetGrammar(node)));
 		}
 		return true;
 	}
@@ -52,7 +53,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 		int post_order_index = curr_tensor.StorePostOrderNodeInfo(type_content_id, children_index);
 		Assert.isTrue(post_order_index == node_post_order_index.size()+1);
 		node_post_order_index.put(node, post_order_index);
-		curr_tensor.StorePrePostOrderNodeInfo(type_content_id, has_children ? 2 : 1, post_order_index);
+		curr_tensor.StorePrePostOrderNodeInfo(type_content_id, has_children ? 2 : 1, post_order_index, im.GetGrammarID(GrammarRecorder.GetGrammar(node)));
 	}
 
 	@Override

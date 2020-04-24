@@ -27,7 +27,8 @@ public class TreeTensor extends Tensor {
 	ArrayList<Integer> pre_post_order_node_type_content_en = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_state = new ArrayList<Integer>();
 	ArrayList<Integer> pre_post_order_node_post_order_index = new ArrayList<Integer>();
-
+	ArrayList<Integer> pre_post_order_node_parent_grammar_index = new ArrayList<Integer>();
+	
 	public int StorePostOrderNodeInfo(int en, ArrayList<Integer> children) {
 		int index = post_order_node_type_content_en.size();
 		post_order_node_type_content_en.add(en);
@@ -43,12 +44,13 @@ public class TreeTensor extends Tensor {
 		return index;
 	}
 
-	public int StorePrePostOrderNodeInfo(int en, int state, int post_order_index) {
+	public int StorePrePostOrderNodeInfo(int en, int state, int post_order_index, int parent_grammar_index) {
 		Assert.isTrue(state >= 0 && state <= 2);
 		int index = pre_post_order_node_type_content_en.size();
 		pre_post_order_node_type_content_en.add(en);
 		pre_post_order_node_state.add(state);
 		pre_post_order_node_post_order_index.add(post_order_index);
+		pre_post_order_node_parent_grammar_index.add(parent_grammar_index);
 		return index;
 	}
 
@@ -64,7 +66,8 @@ public class TreeTensor extends Tensor {
 				+ StringUtils.join(post_order_node_children.toArray(), " ") + separator
 				+ StringUtils.join(pre_post_order_node_type_content_en.toArray(), " ") + separator
 				+ StringUtils.join(pre_post_order_node_state.toArray(), " ") + separator
-				+ StringUtils.join(pre_post_order_node_post_order_index.toArray(), " ");
+				+ StringUtils.join(pre_post_order_node_post_order_index.toArray(), " ") + separator
+				+ StringUtils.join(pre_post_order_node_parent_grammar_index.toArray(), " ");
 	}
 
 	@Override

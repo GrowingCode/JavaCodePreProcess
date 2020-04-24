@@ -21,6 +21,7 @@ import statistic.IDTools;
 import statistic.ast.ChildrenNumCounter;
 import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
+import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
 import statistic.id.TokenRecorder;
 import translation.TensorGeneratorForProject;
@@ -90,11 +91,11 @@ public class Application implements IApplication {
 		TokenRecorder tr = new TokenRecorder();
 		TokenRecorder sr = new TokenRecorder();
 //		TokenRecorder str = new TokenRecorder();
-//		GrammarRecorder gr = new GrammarRecorder();
+		GrammarRecorder gr = new GrammarRecorder();
 		APIRecorder ar = new APIRecorder();
 		ChildrenNumCounter cnc = new ChildrenNumCounter();
-//		str, gr, 
-		IDTools id_tool = new IDTools(bpe_mr, tr, sr, ar, cnc);
+//		str, 
+		IDTools id_tool = new IDTools(bpe_mr, tr, sr, gr, ar, cnc);
 		{
 			File bpe_mj = new File(bpe_merges_json);
 			File bpe_ttj = new File(bpe_token_times_json);

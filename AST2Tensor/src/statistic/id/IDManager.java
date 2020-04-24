@@ -35,11 +35,11 @@ public class IDManager {
 	public static final String ZDft = "$Dft_";
 	public static final String Unk = "$Unk_";
 	public static final String Rep = "$Rep_";
-	
+
 	public static final String SWordUNK = "$YYXSWordUNK_";
-	
+
 	public static final List<String> reserved_words = new LinkedList<String>();
-	
+
 	static {
 		reserved_words.add(ZDft);
 		reserved_words.add(Unk);
@@ -66,13 +66,15 @@ public class IDManager {
 	// public static String StringLiteralLeafDefault = "\"@str!\"";
 	// public static String NullLiteralLeafDefault = "null";
 	// public static String TerminalLeafDefault = "TermDefault";
-	
+
 	private TreeMap<String, Integer> skeleton_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<String, Integer> skeleton_token_id_map = new TreeMap<String, Integer>();
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
 //	private int grammar_token_num = -1;
 //	private int token_hit_num = -1;
-	
+	private TreeMap<String, Integer> grammar_id_map = new TreeMap<String, Integer>();
+	private TreeMap<Integer, TreeSet<Integer>> grammar_id_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+
 	private int skeleton_hit_num = -1;
 	private int token_hit_num = -1;
 
@@ -134,12 +136,15 @@ public class IDManager {
 //			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain((int)Math.ceil(MetaOfApp.NumberOfUnk*1.0 / 10.0))));
 //		} else 
 		if (MetaOfApp.GenerateSkeletonToken) {
-			ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.sr.hit_train));
+			ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
+					MapUtil.SortMapByValue(id_tool.sr.hit_train));
 			Collections.reverse(sk_ht);
 			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_ht));
 			skeleton_hit_num = skeleton_id_map.size() - MetaOfApp.NumberOfSkeletonUnk;
-			PrintUtil.PrintPartOfEntryList(sk_ht, skeleton_hit_num, skeleton_id_map.size(), "SetUnkSkeletons", "skeleton", "count");
-			ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.sr.not_hit_train));
+			PrintUtil.PrintPartOfEntryList(sk_ht, skeleton_hit_num, skeleton_id_map.size(), "SetUnkSkeletons",
+					"skeleton", "count");
+			ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
+					MapUtil.SortMapByValue(id_tool.sr.not_hit_train));
 			Collections.reverse(sk_nht);
 			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_nht));
 		}
@@ -147,26 +152,28 @@ public class IDManager {
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
 //		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.hit_train.keySet()));
 //		Regist(skeleton_token_id_map, new ArrayList<String>(id_tool.str.not_hit_train.keySet()));
-		
+
 //		PrintUtil.PrintSet(id_tool.tr.hit_train.keySet(), "id_tool.tr.hit_train.keySet()" + ";size:" + id_tool.tr.hit_train.keySet().size());
 //		PrintUtil.PrintSet(id_tool.str.hit_train.keySet(), "id_tool.str.hit_train.keySet()" + ";size:" + id_tool.str.hit_train.keySet().size());
-		
+
 //		Set<String> g_set = id_tool.gr.self_children_map.keySet();
 //		for (String g : g_set) {
 //			Assert.isTrue(id_tool.gr.fixed_tokens.contains(g));
 //		}
 		// token regist
-		Regist(token_id_map, reserved_words);
 //		if (MetaOfApp.TakeUnseenAsUnk) {
 //			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
 //		} else 
 		{
-			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.tr.hit_train));
+			Regist(token_id_map, reserved_words);
+			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
+					MapUtil.SortMapByValue(id_tool.tr.hit_train));
 			Collections.reverse(tk_ht);
 			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_ht));
 			token_hit_num = token_id_map.size() - MetaOfApp.NumberOfUnk;
 			PrintUtil.PrintPartOfEntryList(tk_ht, token_hit_num, token_id_map.size(), "SetUnkTokens", "token", "count");
-			ArrayList<Entry<String, Integer>> tk_nht = new ArrayList<Entry<String, Integer>>(MapUtil.SortMapByValue(id_tool.tr.not_hit_train));
+			ArrayList<Entry<String, Integer>> tk_nht = new ArrayList<Entry<String, Integer>>(
+					MapUtil.SortMapByValue(id_tool.tr.not_hit_train));
 			Collections.reverse(tk_nht);
 			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_nht));
 		}
@@ -174,11 +181,37 @@ public class IDManager {
 //		Regist(token_id_map, new ArrayList<String>(g_set));
 //		Regist(token_id_map, new ArrayList<String>(id_tool.gr.fixed_tokens));
 //		Regist(token_id_map, new ArrayList<String>(id_tool.gr.unfixed_tokens));
-		
+
 //		token_hit_num = token_id_map.size();
 //		Assert.isTrue(token_hit_num > 0);
 //		Regist(token_id_map, id_tool.tr.not_hit_train);
-
+		{
+			Regist(grammar_id_map, reserved_words);
+			Regist(grammar_id_map, new ArrayList<String>(id_tool.gr.self_children_map.keySet()));
+			{
+				TreeSet<Integer> children_ids = new TreeSet<Integer>();
+				for (int i = 0; i < token_hit_num; i++) {
+					children_ids.add(i);
+				}
+				grammar_id_token_id_map.put(grammar_id_map.get(Unk), children_ids);
+			}
+			Map<String, TreeSet<String>> sc_map = id_tool.gr.self_children_map;
+			Set<String> grammars = sc_map.keySet();
+			for (String grammar : grammars) {
+				TreeSet<String> children = sc_map.get(grammar);
+				int g_id = grammar_id_map.get(grammar);
+				TreeSet<Integer> children_ids = new TreeSet<Integer>();
+				grammar_id_token_id_map.put(g_id, children_ids);
+				for (String child : children) {
+					int t_id = token_id_map.get(child);
+					int r_id = t_id;
+					if (t_id >= token_hit_num) {
+						r_id = token_id_map.get(Unk);
+					}
+					children_ids.add(r_id);
+				}
+			}
+		}
 		// api comb regist
 //		Regist(api_comb_id_map, new ArrayList<String>(id_tool.ar.api_combs));
 
@@ -317,7 +350,7 @@ public class IDManager {
 	// }
 	// }
 //	}
-	
+
 	public int GetSkeletonID(String skeleton) {
 		Integer id = skeleton_id_map.get(skeleton);
 		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
@@ -327,7 +360,7 @@ public class IDManager {
 //		}
 		return id;
 	}
-	
+
 //	public int GetSkeletonTypeContentID(String type_content) {
 //		Integer id = skeleton_token_id_map.get(type_content);
 //		Assert.isTrue(id != null, "unseen skeleton type_content:" + type_content);
@@ -352,6 +385,14 @@ public class IDManager {
 //		}
 //		System.out.println("Using LeafTypeDefault:" + type_content);
 //		return RegistNotHitTypeContentID(type_content);
+	}
+
+	public int GetGrammarID(String grammar) {
+		Integer id = grammar_id_map.get(grammar);
+		if (id == null) {
+			return grammar_id_map.get(Unk);
+		}
+		return id;
 	}
 
 	// type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
@@ -556,7 +597,7 @@ public class IDManager {
 //		
 //		return subword_index;
 //	}
-	
+
 //	private void GenerateAndSaveCharSequenceInSubWordForm(String dir, Map<Integer, String> sw_out, Map<Character, Integer> char_idx) {
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
@@ -593,7 +634,8 @@ public class IDManager {
 //				gson9.toJson(each_char_sequence_end));
 //	}
 
-	private void GenerateAndSaveCharSequence(String dir, Map<Integer, String> tk_out, Map<Character, Integer> char_idx) {
+	private void GenerateAndSaveCharSequence(String dir, Map<Integer, String> tk_out,
+			Map<Character, Integer> char_idx) {
 		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
@@ -651,7 +693,7 @@ public class IDManager {
 //		Gson gson6 = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 //				gson6.toJson(each_subword_sequence_end));
-		
+
 //		for (int i=0;i<ati_out.size();i++) {
 //			String token = ati_out.get(i);
 //			Assert.isTrue(token != null && token.length() > 0);
@@ -745,7 +787,7 @@ public class IDManager {
 //		ts.removeAll(id_tool.tr.hit_train.keySet());
 //		ts.removeAll(id_tool.tr.not_hit_train.keySet());
 //		PrintUtil.PrintSet(ts, "left things");
-		
+
 		Assert.isTrue(origin_after.size() == token_id_map.size(),
 				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 
@@ -774,11 +816,11 @@ public class IDManager {
 		Set<String> not_in_hit_sub_words = new TreeSet<String>();
 //		int not_in_hit_max_subword_num_in_one_token = 0;
 //		int not_in_hit_token_num = 0;
-		
+
 		ArrayList<Integer> subword_sequences = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_start = new ArrayList<Integer>();
 		ArrayList<Integer> each_subword_sequence_end = new ArrayList<Integer>();
-		
+
 		TreeMap<String, Integer> subword_index = new TreeMap<String, Integer>();
 		subword_index.put(SWordUNK, subword_index.size());
 //		for (String rv : reserved_words) {
@@ -822,7 +864,7 @@ public class IDManager {
 
 			Assert.isTrue(subwords_size > 0);
 			Assert.isTrue(i == each_subword_sequence_start.size());
-			
+
 			each_subword_sequence_start.add(subword_sequences.size());
 			for (int i1 = 0; i1 < subwords_size; i1++) {
 				String subword = subwords.get(i1);
@@ -837,7 +879,7 @@ public class IDManager {
 			}
 			each_subword_sequence_end.add(subword_sequences.size() - 1);
 		}
-		
+
 		Map<Integer, String> sw_out = MapUtil.ReverseKeyValueInMap(subword_index);
 		subword_num = subword_index.size();
 
@@ -855,11 +897,12 @@ public class IDManager {
 //				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
 //		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
 		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
-		System.out.println("total_subword_unseen_rate:" + (not_in_hit_total_subword_num * 1.0) / ((in_hit_total_subword_num)*1.0));
+		System.out.println("total_subword_unseen_rate:"
+				+ (not_in_hit_total_subword_num * 1.0) / ((in_hit_total_subword_num) * 1.0));
 //		System.out.println("not_in_hit_average_subword_num_in_one_token:"
 //				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
 //		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
-		
+
 		Gson gson4 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_subword_sequences.json"), gson4.toJson(subword_sequences));
 		Gson gson5 = new Gson();
@@ -885,9 +928,8 @@ public class IDManager {
 			subword_is_start_end.add(state);
 		}
 		Gson gson7 = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_start_end.json"),
-				gson7.toJson(subword_is_start_end));
-		
+		FileUtil.WriteToFile(new File(dir + "/" + "All_subword_is_start_end.json"), gson7.toJson(subword_is_start_end));
+
 //		ArrayList<Integer> char_sequences = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_start = new ArrayList<Integer>();
 //		ArrayList<Integer> each_char_sequence_end = new ArrayList<Integer>();
@@ -914,18 +956,19 @@ public class IDManager {
 		}
 		System.out.println("in_hit_total_char_num:" + in_hit_chars.size());
 		System.out.println("not_in_hit_total_char_num:" + not_in_hit_chars.size());
-		System.out.println("total_char_unseen_rate:" + (not_in_hit_chars.size()*1.0) / ((in_hit_chars.size() + not_in_hit_chars.size())*1.0));
-		
+		System.out.println("total_char_unseen_rate:"
+				+ (not_in_hit_chars.size() * 1.0) / ((in_hit_chars.size() + not_in_hit_chars.size()) * 1.0));
+
 		Map<Character, Integer> char_idx = new HashMap<Character, Integer>();
 		char_idx.put(' ', char_idx.size());
-		
+
 		Iterator<Character> c_itr = c_set.iterator();
 		while (c_itr.hasNext()) {
 			Character c = c_itr.next();
 			char_idx.put(c, char_idx.size());
 		}
 		char_num = char_idx.size();
-		
+
 //		if (MetaOfApp.CharForm == MetaOfApp.TokenChar) {
 //			GenerateAndSaveCharSequence(dir, ati_out, char_idx);
 //		} else 
@@ -1151,6 +1194,8 @@ public class IDManager {
 		// only for debug
 		GenerateIDJson(dir, skeleton_id_map, "skeleton");
 		GenerateIDJson(dir, token_id_map, "token");
+		GenerateIDJson(dir, grammar_id_map, "grammar");
+		SaveGrammarToDirectory(dir);
 		GenerateIDJson(dir, api_comb_id_map, "api_comb");
 		// for real tensor usage
 		GenerateIDHitJson(dir);
@@ -1205,27 +1250,55 @@ public class IDManager {
 //				type_content_huff_tree_list_json.toString());
 	}
 
+	private void SaveGrammarToDirectory(String dir) {
+		ArrayList<Integer> self_children_grammar = new ArrayList<Integer>();
+		ArrayList<Integer> self_children_grammar_start = new ArrayList<Integer>();
+		ArrayList<Integer> self_children_grammar_end = new ArrayList<Integer>();
+
+		int g_size = grammar_id_token_id_map.size();
+		for (int i = 0; i < g_size; i++) {
+			Assert.isTrue(grammar_id_token_id_map.containsKey(i));
+			TreeSet<Integer> ll = grammar_id_token_id_map.get(i);
+			self_children_grammar_start.add(self_children_grammar.size());
+			if (ll == null || ll.size() == 0) {
+				self_children_grammar.add(0);
+			} else {
+				for (Integer l : ll) {
+					self_children_grammar.add(l);
+				}
+			}
+			self_children_grammar_end.add(self_children_grammar.size() - 1);
+		}
+
+		Gson gson = new Gson();
+		FileUtil.WriteToFile(new File(dir + "/" + "All_self_children_grammar.json"),
+				gson.toJson(self_children_grammar));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_self_children_grammar_start.json"),
+				gson.toJson(self_children_grammar_start));
+		FileUtil.WriteToFile(new File(dir + "/" + "All_self_children_grammar_end.json"),
+				gson.toJson(self_children_grammar_end));
+	}
+
 //	public GrammarRecorder GetGrammarRecorder() {
 //		return id_tool.gr;
 //	}
 
 	public String WordVocabularyInfo() {
-		return "Summary -- "
-				+ "#Vocabulary_Word_Size:" + token_hit_num
-				+ "#OutOfVocabulary_Word_Size:" + (token_id_map.size() - token_hit_num)
-				+ "#Unseen_Rate:" + ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0)
-				+ "#Word_Unk_Num:" + MetaOfApp.NumberOfUnk + "#Word_Hit_Num:" + id_tool.tr.hit_train.size() + "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size()
-				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
-				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
-				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0)
-				+ "#Skeleton_Unk_Num:" + MetaOfApp.NumberOfSkeletonUnk + "#Skeleton_Hit_Num:" + id_tool.sr.hit_train.size() + "#Skeleton_Not_Hit_Num:" + id_tool.sr.not_hit_train.size()
-				;
-																													// + "#OutOfVocabulary_API_Comb_Size:"
-																													// +
-																													// (api_comb_id_map.size()
-																													// -
-																													// api_comb_hit_num);
-		//  + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size()
+		return "Summary -- " + "#Vocabulary_Word_Size:" + token_hit_num + "#OutOfVocabulary_Word_Size:"
+				+ (token_id_map.size() - token_hit_num) + "#Unseen_Rate:"
+				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0) + "#Word_Unk_Num:"
+				+ MetaOfApp.NumberOfUnk + "#Word_Hit_Num:" + id_tool.tr.hit_train.size() + "#Word_Not_Hit_Num:"
+				+ id_tool.tr.not_hit_train.size() + "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
+				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num) + "#Unseen_Rate:"
+				+ ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0) + "#Skeleton_Unk_Num:"
+				+ MetaOfApp.NumberOfSkeletonUnk + "#Skeleton_Hit_Num:" + id_tool.sr.hit_train.size()
+				+ "#Skeleton_Not_Hit_Num:" + id_tool.sr.not_hit_train.size();
+		// + "#OutOfVocabulary_API_Comb_Size:"
+		// +
+		// (api_comb_id_map.size()
+		// -
+		// api_comb_hit_num);
+		// + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size()
 	}
 
 }
