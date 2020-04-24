@@ -24,12 +24,13 @@ public class TokenRecorder {
 	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
 	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
 	
-	TreeMap<String, String> hit_train_parent_type_content = new TreeMap<String, String>();
+//	TreeMap<String, String> hit_train_parent_type_content = new TreeMap<String, String>();
 //	TreeMap<String, String> not_hit_train_parent_type = new TreeMap<String, String>();
 
 	public TokenRecorder() {
 		for (String r_w : IDManager.reserved_words) {
-			TokenHitInTrainSet("null", r_w, Integer.MAX_VALUE/2);
+//			"null", 
+			TokenHitInTrainSet(r_w, Integer.MAX_VALUE/2);
 		}
 	}
 
@@ -41,7 +42,8 @@ public class TokenRecorder {
 //		}
 //	}
 
-	public void TokenHitInTrainSet(String parent_type_content, String type_content, Integer count) {
+//	String parent_type_content, 
+	public void TokenHitInTrainSet(String type_content, Integer count) {
 //		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 //		hit_train.add(type_content);
 //		System.out.println("hit_train type_content:" + type_content);
@@ -55,7 +57,7 @@ public class TokenRecorder {
 //			h_count += val;
 		}
 		hit_train.put(type_content, h_count);
-		hit_train_parent_type_content.put(type_content, parent_type_content);
+//		hit_train_parent_type_content.put(type_content, parent_type_content);
 	}
 
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {

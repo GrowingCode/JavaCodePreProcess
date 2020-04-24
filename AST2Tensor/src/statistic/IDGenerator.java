@@ -102,10 +102,11 @@ public class IDGenerator extends TreeVisitor {
 
 	@Override
 	public boolean PreVisit(TreeNode node) {
-		tool.gr.RecordGrammar(node);
 		// handle TokenRecorder
 		if (role <= RoleAssigner.train_seen_k) {
-			tool.tr.TokenHitInTrainSet((node.GetParent() == null ? "null" : node.GetParent().GetContent()), node.GetContent(), 1);
+			tool.gr.RecordGrammar(node);
+//			(node.GetParent() == null ? "null" : node.GetParent().GetContent()), 
+			tool.tr.TokenHitInTrainSet(node.GetContent(), 1);
 		} else {
 			tool.tr.TokenNotHitInTrainSet(node.GetContent(), 1);
 		}

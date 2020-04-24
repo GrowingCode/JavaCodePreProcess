@@ -30,7 +30,7 @@ public class LexicalTokenGenerator extends BasicGenerator {
 			ArrayList<String> tks = YTokenizer.GetTokens(content);
 			for (String tk : tks) {
 				if (role <= RoleAssigner.train_seen_k) {
-					tool.tr.TokenHitInTrainSet("null", tk, 1);
+					tool.tr.TokenHitInTrainSet(tk, 1);// "null", 
 				} else {
 					tool.tr.TokenNotHitInTrainSet(tk, 1);
 				}
