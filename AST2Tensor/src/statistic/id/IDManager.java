@@ -354,6 +354,9 @@ public class IDManager {
 	public int GetSkeletonID(String skeleton) {
 		Integer id = skeleton_id_map.get(skeleton);
 		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
+		if (MetaOfApp.TakeUnseenAsUnk && id < skeleton_hit_num) {
+			return skeleton_id_map.get(Unk);
+		}
 //		if (id == null) {
 //			System.out.println("==== Unk type_content: " + type_content + " ====");
 //			return skeleton_id_map.get(Unk);
@@ -370,6 +373,9 @@ public class IDManager {
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
 		Assert.isTrue(id != null, "unseen type_content:" + type_content);
+		if (MetaOfApp.TakeUnseenAsUnk && id < token_hit_num) {
+			return token_id_map.get(Unk);
+		}
 //		if (id == null) {
 //			System.out.println("==== Unk type_content: " + type_content + " ====");
 //			return token_id_map.get(Unk);

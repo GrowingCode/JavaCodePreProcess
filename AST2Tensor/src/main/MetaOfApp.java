@@ -65,7 +65,7 @@ public class MetaOfApp {
 	
 	public static boolean TrainValidTestFoldSeparationSpecified = true;
 	
-//	public static boolean TakeUnseenAsUnk = false;
+	public static boolean TakeUnseenAsUnk = false;
 	public final static int NumberOfSkeletonUnk = 5;
 	public final static int NumberOfUnk = 5;
 	public final static int MaxParentTypeRemoveTimes = 1;
