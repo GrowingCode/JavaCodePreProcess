@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: AST2Tensor
-Bundle-SymbolicName: AST2Tensor;singleton:=true
+Bundle-SymbolicName: AST4Tensor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: yyx
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
