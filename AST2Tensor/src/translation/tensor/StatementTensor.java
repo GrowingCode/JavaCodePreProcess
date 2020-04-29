@@ -229,7 +229,7 @@ public class StatementTensor extends Tensor {
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
 //		String result = toOracleBaseString(separator);
-		String result = StringUtils.join(stmt_token_string.toArray(), " ")
+		String result = StringUtils.join(stmt_token_string.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				;
