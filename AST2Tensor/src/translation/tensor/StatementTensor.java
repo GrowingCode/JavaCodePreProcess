@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
-import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.tensor.util.IDRedistribution;
 import translation.tensor.util.RepetitionUtil;
@@ -58,10 +57,10 @@ public class StatementTensor extends Tensor {
 //	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_token_first_encounter_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_token_first_encounter_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
 
@@ -75,9 +74,9 @@ public class StatementTensor extends Tensor {
 
 	// following legal stmt index: ,,|,,|,,,
 	// following legal stmt index start end: se|se|se
-	ArrayList<Integer> stmt_following_legal_info = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_following_legal_info_start = new ArrayList<Integer>();
-	ArrayList<Integer> stmt_following_legal_info_end = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_following_legal_info = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_following_legal_info_start = new ArrayList<Integer>();
+//	ArrayList<Integer> stmt_following_legal_info_end = new ArrayList<Integer>();
 
 //	ArrayList<Integer> sword_info = new ArrayList<Integer>();
 //	ArrayList<Integer> sword_variable_info = new ArrayList<Integer>();
@@ -163,10 +162,10 @@ public class StatementTensor extends Tensor {
 		return StringUtils.join(stmt_token_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_first_encounter_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_token_first_encounter_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_variable_info.toArray(), " ") + separator
@@ -174,9 +173,9 @@ public class StatementTensor extends Tensor {
 //				+ StringUtils.join(stmt_variable_type_content_en_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_variable_info_start.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_variable_info_end.toArray(), " ") + separator
-				+ StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator
-				+ StringUtils.join(stmt_following_legal_info_end.toArray(), " ");// + separator
+//				+ StringUtils.join(stmt_following_legal_info.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_following_legal_info_start.toArray(), " ") + separator
+//				+ StringUtils.join(stmt_following_legal_info_end.toArray(), " ");// + separator
 //				+ StringUtils.join(sword_info.toArray(), " ") + separator
 //				+ StringUtils.join(sword_variable_info.toArray(), " ") + separator
 //				+ StringUtils.join(sword_variable_relative_info.toArray(), " ") + separator
@@ -185,7 +184,8 @@ public class StatementTensor extends Tensor {
 //				+ StringUtils.join(stmt_sword_variable_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_sword_variable_position_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_sword_variable_info_start.toArray(), " ") + separator
-//				+ StringUtils.join(stmt_sword_variable_info_end.toArray(), " ");
+//				+ StringUtils.join(stmt_sword_variable_info_end.toArray(), " ")
+				;
 	}
 
 	public String toBaseString(String separator) {
@@ -227,9 +227,12 @@ public class StatementTensor extends Tensor {
 
 	@Override
 	public String toOracleString() {
-//		String separator = System.getProperty("line.separator");
+		String separator = System.getProperty("line.separator");
 //		String result = toOracleBaseString(separator);
-		String result = StringUtils.join(stmt_token_string.toArray(), " ");
+		String result = StringUtils.join(stmt_token_string.toArray(), " ")
+				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
+				;
 		return result;
 	}
 
@@ -425,7 +428,7 @@ public class StatementTensor extends Tensor {
 				stmt_token_string.addAll(last_stmt.type_content_str);
 				stmt_token_info.addAll(last_stmt.type_content_id);
 
-				int j_len = last_stmt.self.size();
+				/*int j_len = last_stmt.self.size();
 				for (int j = 0; j < j_len; j++) {
 					TreeNode self_n = last_stmt.self.get(j);
 					TreeNode parent_n = last_stmt.parent.get(j);
@@ -444,11 +447,11 @@ public class StatementTensor extends Tensor {
 							stmt_token_parent_relative_info.add(parent_relative);
 						}
 					}
-				}
+				}*/
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
-				Set<Integer> l_ts = new TreeSet<Integer>();
+//				Set<Integer> l_ts = new TreeSet<Integer>();
 				for (String l_t_str : last_stmt.local_token_str) {
 					int l_tid = -1;
 					if (l_t_str != null) {
@@ -459,16 +462,16 @@ public class StatementTensor extends Tensor {
 //									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
 //									+ stmt_token_variable_info.size() + "#origin_file:" + "CommonName");// origin_file
 					stmt_token_variable_info.add(l_tid);
-					int first_encounter = 0;
+					/*int first_encounter = 0;
 					if (l_tid >= 0 && !l_ts.contains(l_tid)) {
 						l_ts.add(l_tid);
 						first_encounter = 1;
 					}
-					stmt_token_first_encounter_info.add(first_encounter);
+					stmt_token_first_encounter_info.add(first_encounter);*/
 				}
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
-				stmt_token_api_info.addAll(last_stmt.api_group);
-				stmt_token_api_relative_info.addAll(last_stmt.api_relative);
+//				stmt_token_api_info.addAll(last_stmt.api_group);
+//				stmt_token_api_relative_info.addAll(last_stmt.api_relative);
 				stmt_token_info_end.add(stmt_token_info.size() - 1);
 				
 //				stmt_variable_info_start.add(stmt_variable_info.size());
@@ -521,7 +524,7 @@ public class StatementTensor extends Tensor {
 ////			stmt_variable_position_info.addAll(part_stmt_variable_position_info);
 //				stmt_variable_info_end.add(stmt_variable_info.size() - 1);
 
-				stmt_following_legal_info_start.add(stmt_following_legal_info.size());
+				/*stmt_following_legal_info_start.add(stmt_following_legal_info.size());
 				int last_stmt_legal_follows = last_stmt.following_stmts_same_legal_as_this.size();
 				if (MetaOfApp.DetailFollowStatementDebugMode) {
 					System.out
@@ -534,7 +537,7 @@ public class StatementTensor extends Tensor {
 				}
 				stmt_following_legal_info.addAll(last_stmt.following_stmts_same_legal_as_this.subList(0,
 						Math.min(last_stmt_legal_follows, MetaOfApp.MaximumFollowingStatements)));
-				stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);
+				stmt_following_legal_info_end.add(stmt_following_legal_info.size() - 1);*/
 //			System.out.println("tokens after size:" + stmt_token_info.size());
 			}
 //			{
