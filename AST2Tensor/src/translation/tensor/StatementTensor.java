@@ -167,7 +167,7 @@ public class StatementTensor extends Tensor {
 //				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_first_encounter_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_info_end.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_info_end.toArray(), " ")
 //				+ StringUtils.join(stmt_variable_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_variable_position_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_variable_type_content_en_info.toArray(), " ") + separator
