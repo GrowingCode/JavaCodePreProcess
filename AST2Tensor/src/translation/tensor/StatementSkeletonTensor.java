@@ -7,9 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
-import translation.tensor.util.IDRedistribution;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndex;
+import translation.tensor.util.TokenIndexUtil;
 
 public class StatementSkeletonTensor extends Tensor {
 	
@@ -35,7 +35,7 @@ public class StatementSkeletonTensor extends Tensor {
 		ArrayList<Integer> leaf_info = new ArrayList<Integer>();
 		leaf_info.add(-1);
 		for (int i=1;i<info.size();i++) {
-			Integer leaf_id = IDRedistribution.AssignID(token_index_record, info.get(i)+"", ti);
+			Integer leaf_id = TokenIndexUtil.AssignID(token_index_record, info.get(i)+"", ti);
 			leaf_info.add(leaf_id);
 		}
 		stmt_token_leaf_info.addAll(leaf_info);

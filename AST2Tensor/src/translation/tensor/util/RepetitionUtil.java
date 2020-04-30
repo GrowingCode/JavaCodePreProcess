@@ -22,13 +22,13 @@ public class RepetitionUtil {
 			if (ti >= 0) {
 				Integer li = latest_index.get(ti);
 				if (li != null) {
-					int relative = i - li;
+					int relative = latest_index.size() - li;
 					seq_var_info.add(relative);// - i
 //					System.out.println("token_i:" + i + "token_en:" + ti + "#relative:" + relative);
 				} else {
 					seq_var_info.add(-1);// Integer.MAX_VALUE
 				}
-				latest_index.put(ti, i);
+				latest_index.put(ti, latest_index.size());
 			} else {
 				seq_var_info.add(-1);
 			}

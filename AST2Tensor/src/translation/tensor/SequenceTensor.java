@@ -4,34 +4,55 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
+import main.MetaOfApp;
+import statistic.id.IDManager;
+import translation.tensor.util.RepetitionUtil;
+import translation.tensor.util.TokenIndexUtil;
+
 public class SequenceTensor extends Tensor {
 
 	ArrayList<String> node_type_content_str = new ArrayList<String>();
-	ArrayList<Integer> node_type_content_en = new ArrayList<Integer>();
+	ArrayList<String> node_var_str = new ArrayList<String>();
 	
-	public void AppendOneToken(String token, int token_en) {
-		node_type_content_str.add(token);
-		node_type_content_en.add(token_en);
+	ArrayList<Integer> token_en = new ArrayList<Integer>();
+	ArrayList<Integer> token_var = new ArrayList<Integer>();
+	ArrayList<Integer> token_var_relative = new ArrayList<Integer>();
+	
+	public void AppendOneToken(String token_str, String var_str, int type_content_en) {
+		node_type_content_str.add(token_str);
+		if (MetaOfApp.VariableNoLimit) {
+			node_var_str.add(token_str);
+		} else {
+			node_var_str.add(var_str);
+		}
+		token_en.add(type_content_en);
 	}
-	
-	@Override
-	public int getSize() {
-		return node_type_content_en.size();
+
+	public void HandleAllDevoured(IDManager im) {
+		token_var.addAll(TokenIndexUtil.GenerateTokenIndex(node_var_str));
+		token_var_relative.addAll(RepetitionUtil.GenerateRepetitionRelative(token_var));
 	}
 
 	@Override
+	public int getSize() {
+		return token_en.size();
+	}
+	
+	@Override
 	public String toString() {
-		return StringUtils.join(node_type_content_en.toArray(), " ");
+		return StringUtils.join(token_en.toArray(), " ") + "#" + StringUtils.join(token_var.toArray(), " ") + "#" + StringUtils.join(token_var_relative.toArray(), " ");
 	}
 
 	@Override
 	public String toDebugString() {
-		return StringUtils.join(node_type_content_en.toArray(), " ");
+		String separator = System.getProperty("line.separator");
+		return StringUtils.join(token_en.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ") + separator + StringUtils.join(token_var_relative.toArray(), " ");
 	}
 
 	@Override
 	public String toOracleString() {
-		return StringUtils.join(node_type_content_str.toArray(), " ");
+		String separator = System.getProperty("line.separator");
+		return StringUtils.join(node_type_content_str.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ") + separator + StringUtils.join(token_var_relative.toArray(), " ");
 	}
 
 }

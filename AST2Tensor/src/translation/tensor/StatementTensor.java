@@ -6,16 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
 import statistic.id.IDManager;
-import translation.tensor.util.IDRedistribution;
 import translation.tensor.util.RepetitionUtil;
-import translation.tensor.util.TokenIndex;
+import translation.tensor.util.TokenIndexUtil;
 import tree.TreeNode;
 import util.BooleanArrayUtil;
 import util.SetUtil;
@@ -404,10 +402,8 @@ public class StatementTensor extends Tensor {
 //	}
 
 	public void HandleAllDevoured(IDManager im) {
+		ArrayList<String> local_token_str = new ArrayList<String>();
 		{
-			TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
-			TokenIndex ti = new TokenIndex();
-
 			int i_len = si_list.size();
 			for (int i = 0; i < i_len; i++) {
 //			System.out.println("tokens before size:" + stmt_token_info.size());
@@ -451,24 +447,7 @@ public class StatementTensor extends Tensor {
 //			for (Integer tid : last_stmt.type_content_id) {
 //				stmt_token_inner_index_info.add(GenerateInnerIndexForTypeContent(tid));
 //			}
-//				Set<Integer> l_ts = new TreeSet<Integer>();
-				for (String l_t_str : last_stmt.local_token_str) {
-					int l_tid = -1;
-					if (l_t_str != null) {
-						l_tid = IDRedistribution.AssignID(token_index_record, l_t_str, ti);
-					}
-//					Assert.isTrue(l_tid <= stmt_token_variable_info.size()+1,
-//							"last_stmt:" + last_stmt.stmt + "#last_stmt.local_token_str.size():"
-//									+ last_stmt.local_token_str.size() + "#stmt_token_variable_info.size():"
-//									+ stmt_token_variable_info.size() + "#origin_file:" + "CommonName");// origin_file
-					stmt_token_variable_info.add(l_tid);
-					/*int first_encounter = 0;
-					if (l_tid >= 0 && !l_ts.contains(l_tid)) {
-						l_ts.add(l_tid);
-						first_encounter = 1;
-					}
-					stmt_token_first_encounter_info.add(first_encounter);*/
-				}
+				local_token_str.addAll(last_stmt.local_token_str);
 //			stmt_token_variable_info.addAll(last_stmt.local_token_id);
 //				stmt_token_api_info.addAll(last_stmt.api_group);
 //				stmt_token_api_relative_info.addAll(last_stmt.api_relative);
@@ -600,6 +579,7 @@ public class StatementTensor extends Tensor {
 //				Assert.isTrue(sword_info.size() == sword_variable_info.size());
 //			}
 		}
+		stmt_token_variable_info.addAll(TokenIndexUtil.GenerateTokenIndex(local_token_str));
 		stmt_token_variable_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_variable_info));
 //		{
 //			int i_len = sword_variable_info.size();
