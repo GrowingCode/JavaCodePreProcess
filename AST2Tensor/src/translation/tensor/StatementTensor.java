@@ -231,10 +231,11 @@ public class StatementTensor extends Tensor {
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
 //		String result = toOracleBaseString(separator);
-		String result = StringUtils.join(stmt_token_string.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
-				+ StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
+		String result = "str:" + StringUtils.join(stmt_token_string.toArray(), " ") + separator
+				+ "en:" + StringUtils.join(stmt_token_info.toArray(), " ") + separator
+				+ "var:" + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
+				+ "var_relative:" + StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
+				+ "conserve_mem_len:" + StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
 				;
 		return result;
 	}
