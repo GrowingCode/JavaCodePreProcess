@@ -45,14 +45,14 @@ public class SequenceTensor extends Tensor {
 	@Override
 	public String toString() {
 		return StringUtils.join(token_en.toArray(), " ") + "#" + StringUtils.join(token_var.toArray(), " ") + "#"
-				+ StringUtils.join(token_var_relative.toArray(), " ") + StringUtils.join(conserved_memory_length.toArray(), " ");
+				+ StringUtils.join(token_var_relative.toArray(), " ") + "#" + StringUtils.join(conserved_memory_length.toArray(), " ");
 	}
 
 	@Override
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
 		return StringUtils.join(token_en.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ")
-				+ separator + StringUtils.join(token_var_relative.toArray(), " ") + StringUtils.join(conserved_memory_length.toArray(), " ");
+				+ separator + StringUtils.join(token_var_relative.toArray(), " ") + separator + StringUtils.join(conserved_memory_length.toArray(), " ");
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class SequenceTensor extends Tensor {
 		return "str:" + StringUtils.join(node_type_content_str.toArray(), " ") + separator
 				+ "en:" + StringUtils.join(token_en.toArray(), " ") + separator 
 				+ "var:" + StringUtils.join(token_var.toArray(), " ") + separator 
-				+ "var_relative:" + StringUtils.join(token_var_relative.toArray(), " ")
+				+ "var_relative:" + StringUtils.join(token_var_relative.toArray(), " ") + separator
 				+ "cnsv_mem_len:" + StringUtils.join(conserved_memory_length.toArray(), " ")
 				;
 	}
