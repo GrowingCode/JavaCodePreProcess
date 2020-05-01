@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import main.MetaOfApp;
 import statistic.id.IDManager;
+import translation.tensor.util.ConservedMemoryUtil;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndexUtil;
 
@@ -17,6 +18,7 @@ public class SequenceTensor extends Tensor {
 	ArrayList<Integer> token_en = new ArrayList<Integer>();
 	ArrayList<Integer> token_var = new ArrayList<Integer>();
 	ArrayList<Integer> token_var_relative = new ArrayList<Integer>();
+	ArrayList<Integer> conserved_memory_length = new ArrayList<Integer>();
 	
 	public void AppendOneToken(String token_str, String var_str, int type_content_en) {
 		node_type_content_str.add(token_str);
@@ -31,6 +33,7 @@ public class SequenceTensor extends Tensor {
 	public void HandleAllDevoured(IDManager im) {
 		token_var.addAll(TokenIndexUtil.GenerateTokenIndex(node_var_str));
 		token_var_relative.addAll(RepetitionUtil.GenerateRepetitionRelative(token_var));
+		conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(token_var, token_var_relative, MetaOfApp.ConservedContextLength));
 	}
 
 	@Override

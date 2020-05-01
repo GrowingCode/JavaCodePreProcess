@@ -11,7 +11,9 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 
+import main.MetaOfApp;
 import statistic.id.IDManager;
+import translation.tensor.util.ConservedMemoryUtil;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndexUtil;
 import tree.TreeNode;
@@ -55,6 +57,7 @@ public class StatementTensor extends Tensor {
 //	ArrayList<Integer> stmt_token_inner_index_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_conserved_memory_length = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
@@ -160,6 +163,7 @@ public class StatementTensor extends Tensor {
 		return StringUtils.join(stmt_token_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
@@ -230,6 +234,7 @@ public class StatementTensor extends Tensor {
 		String result = StringUtils.join(stmt_token_string.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
 				;
 		return result;
 	}
@@ -581,6 +586,7 @@ public class StatementTensor extends Tensor {
 		}
 		stmt_token_variable_info.addAll(TokenIndexUtil.GenerateTokenIndex(local_token_str));
 		stmt_token_variable_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_variable_info));
+		stmt_token_conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(stmt_token_variable_info, stmt_token_variable_relative_info, MetaOfApp.ConservedContextLength));
 //		{
 //			int i_len = sword_variable_info.size();
 //			Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();

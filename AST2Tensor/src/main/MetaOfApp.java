@@ -54,7 +54,11 @@ public class MetaOfApp {
 //	public final static int TokenChar = 1;
 //	public final static int SubWordChar = 1;
 //	public static int CharForm = NoChar;
-
+	
+	public final static int SkeletonIDBase = 500000;
+	
+	public final static int ConservedContextLength = 25;
+	
 //	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
 	public static boolean VariableNoLimit = true;

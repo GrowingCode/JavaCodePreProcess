@@ -355,13 +355,13 @@ public class IDManager {
 		Integer id = skeleton_id_map.get(skeleton);
 		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
 		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= skeleton_hit_num) {
-			return skeleton_id_map.get(Unk);
+			id = skeleton_id_map.get(Unk);
 		}
 //		if (id == null) {
 //			System.out.println("==== Unk type_content: " + type_content + " ====");
 //			return skeleton_id_map.get(Unk);
 //		}
-		return id;
+		return id + MetaOfApp.SkeletonIDBase;
 	}
 
 //	public int GetSkeletonTypeContentID(String type_content) {
@@ -375,7 +375,7 @@ public class IDManager {
 		Assert.isTrue(id != null, "unseen type_content:" + type_content);
 		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= token_hit_num) {
 //			System.err.println("id:"+id+"#token_hit_num:"+token_hit_num);
-			return token_id_map.get(Unk);
+			id = token_id_map.get(Unk);
 		}
 //		if (id == null) {
 //			System.out.println("==== Unk type_content: " + type_content + " ====");
@@ -397,7 +397,7 @@ public class IDManager {
 	public int GetGrammarID(String grammar) {
 		Integer id = grammar_id_map.get(grammar);
 		if (id == null) {
-			return grammar_id_map.get(Unk);
+			id = grammar_id_map.get(Unk);
 		}
 		return id;
 	}
