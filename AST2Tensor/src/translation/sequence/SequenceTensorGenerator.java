@@ -1,8 +1,5 @@
 package translation.sequence;
 
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SimpleType;
-
 import statistic.id.IDManager;
 import translation.tensor.SequenceTensor;
 import translation.tensor.StringTensor;
@@ -21,7 +18,8 @@ public class SequenceTensorGenerator extends TreeVisitor {
 	public boolean PreVisit(TreeNode node) {
 		int type_content_id = im.GetTypeContentID(node.GetContent());
 		String var = null;
-		if (SimpleName.class.isAssignableFrom(node.GetClazz()) || SimpleType.class.isAssignableFrom(node.GetClazz())) {
+		if (node.GetBinding() != null) {
+//			SimpleName.class.isAssignableFrom(node.GetClazz()) || SimpleType.class.isAssignableFrom(node.GetClazz())
 			var = node.GetContent();
 		}
 		curr_tensor.AppendOneToken(node.GetContent(), var, type_content_id);

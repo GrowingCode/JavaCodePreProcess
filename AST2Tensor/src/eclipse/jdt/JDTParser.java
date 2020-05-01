@@ -12,6 +12,7 @@ public class JDTParser {
 	public static CompilationUnit ParseICompilationUnit(ICompilationUnit icu)
 	{
 		ASTParser parser= ASTParser.newParser(AST.JLS13);
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setSource(icu);
 		parser.setStatementsRecovery(true);
@@ -20,7 +21,7 @@ public class JDTParser {
 //		if (getCurrentInputKind() == ASTInputKindAction.USE_FOCAL) {
 //			parser.setFocalPosition(offset);
 //		}
-		CompilationUnit compilationUnit= (CompilationUnit) parser.createAST(null);
+		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
 		return compilationUnit;
 	}
 	
@@ -32,6 +33,7 @@ public class JDTParser {
 	public static CompilationUnit ParseOneClass(IClassFile f)
 	{
 		ASTParser parser= ASTParser.newParser(AST.JLS13);
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setSource(f);
 		parser.setStatementsRecovery(true);
@@ -40,7 +42,7 @@ public class JDTParser {
 //		if (getCurrentInputKind() == ASTInputKindAction.USE_FOCAL) {
 //			parser.setFocalPosition(offset);
 //		}
-		CompilationUnit compilationUnit= (CompilationUnit) parser.createAST(null);
+		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
 		return compilationUnit;
 	}
 	

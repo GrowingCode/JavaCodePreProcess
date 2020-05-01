@@ -8,6 +8,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
@@ -49,7 +52,16 @@ public class YTreeGenerator extends BasicGenerator {
 			if (is_leaf && !MetaOfApp.LeafTypeContentSeparate) {
 				r_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			}
-			TreeNode tn = new TreeNode(node.getClass(), r_content, stmt_content);// type + add_content
+			IVariableBinding v_bind = null;
+			if (node instanceof SimpleName) {
+				SimpleName sn = (SimpleName) node;
+				IBinding bind = sn.resolveBinding();
+				if (bind instanceof IVariableBinding) {
+					v_bind = (IVariableBinding) bind;
+//					System.out.println("resolved binding simple name:" + sn.toString() + "#bind info:" + v_bind.getClass());
+				}
+			}
+			TreeNode tn = new TreeNode(node.getClass(), v_bind, r_content, stmt_content);// type + add_content
 			tree.put(node, tn);
 			ASTNode parent = node.getParent();
 			TreeNode parent_tn = tree.get(parent);
@@ -60,7 +72,7 @@ public class YTreeGenerator extends BasicGenerator {
 			}
 			if (is_leaf && MetaOfApp.LeafTypeContentSeparate) {
 				String content = JDTASTHelper.GetContentRepresentationForASTNode(node);
-				TreeNode chd_tn = new TreeNode(String.class, content, stmt_content);
+				TreeNode chd_tn = new TreeNode(String.class, null, content, stmt_content);
 				tn.AppendToChildren(chd_tn);
 			}
 		}
