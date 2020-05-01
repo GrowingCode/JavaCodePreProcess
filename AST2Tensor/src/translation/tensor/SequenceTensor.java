@@ -14,12 +14,12 @@ public class SequenceTensor extends Tensor {
 
 	ArrayList<String> node_type_content_str = new ArrayList<String>();
 	ArrayList<String> node_var_str = new ArrayList<String>();
-	
+
 	ArrayList<Integer> token_en = new ArrayList<Integer>();
 	ArrayList<Integer> token_var = new ArrayList<Integer>();
 	ArrayList<Integer> token_var_relative = new ArrayList<Integer>();
 	ArrayList<Integer> conserved_memory_length = new ArrayList<Integer>();
-	
+
 	public void AppendOneToken(String token_str, String var_str, int type_content_en) {
 		node_type_content_str.add(token_str);
 		if (MetaOfApp.VariableNoLimit) {
@@ -33,29 +33,37 @@ public class SequenceTensor extends Tensor {
 	public void HandleAllDevoured(IDManager im) {
 		token_var.addAll(TokenIndexUtil.GenerateTokenIndex(node_var_str));
 		token_var_relative.addAll(RepetitionUtil.GenerateRepetitionRelative(token_var));
-		conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(token_var, token_var_relative, MetaOfApp.ConservedContextLength));
+		conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(token_var, token_var_relative,
+				MetaOfApp.ConservedContextLength));
 	}
 
 	@Override
 	public int getSize() {
 		return token_en.size();
 	}
-	
+
 	@Override
 	public String toString() {
-		return StringUtils.join(token_en.toArray(), " ") + "#" + StringUtils.join(token_var.toArray(), " ") + "#" + StringUtils.join(token_var_relative.toArray(), " ");
+		return StringUtils.join(token_en.toArray(), " ") + "#" + StringUtils.join(token_var.toArray(), " ") + "#"
+				+ StringUtils.join(token_var_relative.toArray(), " ") + StringUtils.join(conserved_memory_length.toArray(), " ");
 	}
 
 	@Override
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		return StringUtils.join(token_en.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ") + separator + StringUtils.join(token_var_relative.toArray(), " ");
+		return StringUtils.join(token_en.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ")
+				+ separator + StringUtils.join(token_var_relative.toArray(), " ") + StringUtils.join(conserved_memory_length.toArray(), " ");
 	}
 
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		return StringUtils.join(node_type_content_str.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ") + separator + StringUtils.join(token_var_relative.toArray(), " ");
+		return "str:" + StringUtils.join(node_type_content_str.toArray(), " ") + separator
+				+ "en:" + StringUtils.join(token_en.toArray(), " ") + separator 
+				+ "var:" + StringUtils.join(token_var.toArray(), " ") + separator 
+				+ "var_relative:" + StringUtils.join(token_var_relative.toArray(), " ")
+				+ "cnsv_mem_len:" + StringUtils.join(conserved_memory_length.toArray(), " ")
+				;
 	}
 
 }
