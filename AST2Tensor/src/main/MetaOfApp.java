@@ -55,7 +55,7 @@ public class MetaOfApp {
 //	public final static int SubWordChar = 1;
 //	public static int CharForm = NoChar;
 	
-	public final static int SkeletonIDBase = 500000;
+	public final static int SkeletonIDBase = 5000000;
 	
 	public final static int ConservedContextLength = 25;
 	
