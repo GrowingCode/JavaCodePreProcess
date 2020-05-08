@@ -2,7 +2,11 @@ package translation.ast;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -49,8 +53,20 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 			}
 			curr_tensor.StoreStatementSkeletonInfo(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(stmt_roots.get(0)), lls, ids);
 		}
-		curr_tensor.HandleAllInfo();
-		
+		try {
+			curr_tensor.HandleAllInfo();
+		} catch (Exception e) {
+			try {
+				IResource resource = icu.getUnderlyingResource();
+				Assert.isTrue(resource.getType() == IResource.FILE);
+				IFile ifile = (IFile) resource;
+				String path = ifile.getRawLocation().toString();
+				System.err.println("Wrong file:" + path);
+			} catch (JavaModelException e1) {
+				e1.printStackTrace();
+			}
+			throw e;
+		}
 		StringTensor st = new StringTensor();
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());

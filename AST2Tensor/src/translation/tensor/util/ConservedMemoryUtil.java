@@ -32,8 +32,10 @@ public class ConservedMemoryUtil {
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		int len = token_var.size();
 		Assert.isTrue(len == token_var_relative.size());
+//		Assert.isTrue(len > conserved_context_length, "len:" + len);
 		int ccl = 0;
-		for (int idx = 0; idx < conserved_context_length; idx++) {
+		int one_turn_len = Math.min(len, conserved_context_length);
+		for (int idx = 0; idx < one_turn_len; idx++) {
 			if (token_var.get(idx) > 0) {
 				ccl++;
 			}
