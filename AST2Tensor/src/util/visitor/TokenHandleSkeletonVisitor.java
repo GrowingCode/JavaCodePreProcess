@@ -6,9 +6,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 
 import eclipse.bind.BindingResolveUtil;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
@@ -22,12 +20,13 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 	@Override
 	protected Range HandleNonStatement(ASTNode node) {
 		Range r = null;
-		if (node instanceof SimpleName || node instanceof SimpleType || node instanceof StringLiteral || node instanceof CharacterLiteral
-				|| node instanceof NumberLiteral || node instanceof TypeLiteral) {
+		if (node instanceof SimpleName || node instanceof StringLiteral || node instanceof CharacterLiteral
+				|| node instanceof NumberLiteral) {
+//			SimpleType or TypeLiteral are not leaf node
 //			if (node.toString().contains("Maven")) {
 //				System.out.println("cared node:" + node + "#node_type:" + node.getClass());
 //			}
-			Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).size() == 0);
+			Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).size() == 0, "#node_type:" + node.getClass() + "node_content:" + node.toString());
 			String cnt = node.toString();
 //			if (node instanceof TypeLiteral) {
 //				TypeLiteral tl = (TypeLiteral) node;
