@@ -17,6 +17,7 @@ import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
 import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.StringTensor;
+import util.visitor.TokenHandleSkeletonVisitor;
 
 public class StatementSkeletonTensorGenerator extends BasicGenerator {
 	
@@ -41,17 +42,19 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 	@Override
 	protected void WholePostHandle(ASTNode node) {
 		for (ASTNode stmt_root : stmt_roots) {
-			ArrayList<String> lls = StatementUtil.ProcessTokenHandleSkeleton(icu, stmt_root);
+			TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
+			stmt_root.accept(sv);
+			ArrayList<String> lls = sv.GetResult();
+			ArrayList<Integer> is_var_lls = sv.GetIsVarResult();
 			ArrayList<Integer> ids = new ArrayList<Integer>();
 			int sk_id = im.GetSkeletonID(lls.get(0));
 			ids.add(sk_id);
 			for (int i=1;i<lls.size();i++) {
 				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(lls.get(i));
 				int tk_id = im.GetTypeContentID(pp_tk);
-//				int tk_id = im.GetTypeContentID(lls.get(i));
 				ids.add(tk_id);
 			}
-			curr_tensor.StoreStatementSkeletonInfo(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(stmt_roots.get(0)), lls, ids);
+			curr_tensor.StoreStatementSkeletonInfo(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(stmt_roots.get(0)), lls, ids, is_var_lls);
 		}
 		try {
 			curr_tensor.HandleAllInfo();

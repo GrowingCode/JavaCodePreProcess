@@ -1,14 +1,8 @@
 package translation.ast;
 
-import java.util.ArrayList;
-
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
-
-import util.visitor.TokenHandleSkeletonVisitor;
 
 public class StatementUtil {
 
@@ -26,13 +20,13 @@ public class StatementUtil {
 		return false;
 	}
 
-	public static ArrayList<String> ProcessTokenHandleSkeleton(ICompilationUnit icu, ASTNode node) {
-		TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
-		node.accept(sv);
-		ArrayList<String> result = sv.GetResult();
-//		Assert.isTrue(result.size() >= 2);
-//		PrintUtil.PrintList(result, "skeleton of statement:" + node);
-		return result;
-	}
+//	public static ArrayList<String> ProcessTokenHandleSkeleton(ICompilationUnit icu, ASTNode node) {
+//		TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
+//		node.accept(sv);
+//		ArrayList<String> result = sv.GetResult();
+////		Assert.isTrue(result.size() >= 2);
+////		PrintUtil.PrintList(result, "skeleton of statement:" + node);
+//		return result;
+//	}
 
 }

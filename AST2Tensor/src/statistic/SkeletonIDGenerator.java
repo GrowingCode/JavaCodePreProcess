@@ -11,6 +11,7 @@ import statis.trans.common.RoleAssigner;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
 import translation.ast.StatementUtil;
+import util.visitor.TokenHandleSkeletonVisitor;
 
 public class SkeletonIDGenerator extends BasicGenerator {
 	
@@ -29,7 +30,9 @@ public class SkeletonIDGenerator extends BasicGenerator {
 		super.preVisit(node);
 		if (begin_generation) {
 			if (StatementUtil.IsStatement(node.getClass()) || StatementUtil.IsMethodDeclaration(node.getClass())) {
-				ArrayList<String> lls = StatementUtil.ProcessTokenHandleSkeleton(icu, node);
+				TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
+				node.accept(sv);
+				ArrayList<String> lls = sv.GetResult();
 				stmts.add(lls);
 			}
 		}

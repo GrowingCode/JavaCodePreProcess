@@ -1,11 +1,17 @@
 package util.visitor;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.TypeLiteral;
+
+import eclipse.bind.BindingResolveUtil;
+import eclipse.search.JDTSearchForChildrenOfASTNode;
 
 public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 
@@ -16,11 +22,12 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 	@Override
 	protected Range HandleNonStatement(ASTNode node) {
 		Range r = null;
-		if (node instanceof SimpleName || node instanceof StringLiteral || node instanceof CharacterLiteral
-				|| node instanceof NumberLiteral) {//  || node instanceof TypeLiteral
+		if (node instanceof SimpleName || node instanceof SimpleType || node instanceof StringLiteral || node instanceof CharacterLiteral
+				|| node instanceof NumberLiteral || node instanceof TypeLiteral) {
 //			if (node.toString().contains("Maven")) {
 //				System.out.println("cared node:" + node + "#node_type:" + node.getClass());
 //			}
+			Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).size() == 0);
 			String cnt = node.toString();
 //			if (node instanceof TypeLiteral) {
 //				TypeLiteral tl = (TypeLiteral) node;
@@ -29,7 +36,11 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 			ElementInfo ei = record.get(cnt);
 			if (ei == null) {
 				int index = record.size();
-				ei = new ElementInfo(index, cnt);
+				int is_var = 0;
+				if (BindingResolveUtil.ResolveVariableBinding(node) != null) {
+					is_var = 1;
+				}
+				ei = new ElementInfo(index, cnt, is_var);
 				content.put(ei, cnt);
 				record.put(cnt, ei);
 			}

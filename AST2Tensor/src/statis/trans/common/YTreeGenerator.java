@@ -8,10 +8,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.SimpleName;
 
+import eclipse.bind.BindingResolveUtil;
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
@@ -52,16 +50,7 @@ public class YTreeGenerator extends BasicGenerator {
 			if (is_leaf && !MetaOfApp.LeafTypeContentSeparate) {
 				r_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			}
-			IVariableBinding v_bind = null;
-			if (node instanceof SimpleName) {
-				SimpleName sn = (SimpleName) node;
-				IBinding bind = sn.resolveBinding();
-				if (bind instanceof IVariableBinding) {
-					v_bind = (IVariableBinding) bind;
-//					System.out.println("resolved binding simple name:" + sn.toString() + "#bind info:" + v_bind.getClass());
-				}
-			}
-			TreeNode tn = new TreeNode(node.getClass(), v_bind, r_content, stmt_content);// type + add_content
+			TreeNode tn = new TreeNode(node.getClass(), BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content);// type + add_content
 			tree.put(node, tn);
 			ASTNode parent = node.getParent();
 			TreeNode parent_tn = tree.get(parent);
