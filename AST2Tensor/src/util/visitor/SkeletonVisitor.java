@@ -93,7 +93,7 @@ public class SkeletonVisitor extends ASTVisitor {
 					String nt = cnt.substring(r.buf_start, r.buf_end + 1);
 					nt = nt.replaceAll("\\s+", " ");
 //					System.out.println("nt:" + nt);
-					String r_nt = nt.replace(r.ei.content, "#" + r.ei.index);
+					String r_nt = nt.replace(r.ei.content, "#v");//  + r.ei.index
 					parts.add(r_nt);
 					break;
 				case remove:
