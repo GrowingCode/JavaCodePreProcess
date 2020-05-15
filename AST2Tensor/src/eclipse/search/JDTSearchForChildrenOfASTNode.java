@@ -1,6 +1,6 @@
 package eclipse.search;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -9,8 +9,8 @@ import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 public class JDTSearchForChildrenOfASTNode {
 
 	@SuppressWarnings("unchecked")
-	public static LinkedList<ASTNode> GetChildren(ASTNode node) {
-		LinkedList<ASTNode> children = new LinkedList<ASTNode>();
+	public static ArrayList<ASTNode> GetChildren(ASTNode node) {
+		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
 		List<StructuralPropertyDescriptor> list = node.structuralPropertiesForType();
 		for (int i = 0; i < list.size(); i++) {
 			StructuralPropertyDescriptor curr = (StructuralPropertyDescriptor) list.get(i);
