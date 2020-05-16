@@ -1,6 +1,7 @@
 package tree;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Tree {
 	
@@ -13,6 +14,10 @@ public class Tree {
 	
 	public void AddTreeNode(TreeNode node) {
 		nodes.add(node);
+	}
+	
+	public void AddTreeNodes(Collection<TreeNode> nds) {
+		nodes.addAll(nds);
 	}
 	
 }
