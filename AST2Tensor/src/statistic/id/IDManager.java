@@ -141,6 +141,12 @@ public class IDManager {
 			Collections.reverse(sk_ht);
 			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_ht));
 			skeleton_hit_num = skeleton_id_map.size() - MetaOfApp.NumberOfSkeletonUnk;
+			if (skeleton_hit_num < MetaOfApp.MinimumNumberOfSkeletonVocabulary) {
+				skeleton_hit_num = MetaOfApp.MinimumNumberOfSkeletonVocabulary;
+			}
+			if (skeleton_hit_num > skeleton_id_map.size()) {
+				skeleton_hit_num = skeleton_id_map.size();
+			}
 			PrintUtil.PrintPartOfEntryList(sk_ht, skeleton_hit_num, skeleton_id_map.size(), "SetUnkSkeletons",
 					"skeleton", "count");
 			ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
@@ -171,6 +177,12 @@ public class IDManager {
 			Collections.reverse(tk_ht);
 			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_ht));
 			token_hit_num = token_id_map.size() - MetaOfApp.NumberOfUnk;
+			if (token_hit_num < MetaOfApp.MinimumNumberOfVocabulary) {
+				token_hit_num = MetaOfApp.MinimumNumberOfVocabulary;
+			}
+			if (token_hit_num > token_id_map.size()) {
+				token_hit_num = token_id_map.size();
+			}
 			PrintUtil.PrintPartOfEntryList(tk_ht, token_hit_num, token_id_map.size(), "SetUnkTokens", "token", "count");
 			ArrayList<Entry<String, Integer>> tk_nht = new ArrayList<Entry<String, Integer>>(
 					MapUtil.SortMapByValue(id_tool.tr.not_hit_train));
