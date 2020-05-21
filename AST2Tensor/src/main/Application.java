@@ -1,8 +1,8 @@
 package main;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.app.IApplication;
@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import bpe.BPEGeneratorForProject;
+import bpe.skt.SktPEGeneratorForProject;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
 import statis.trans.common.RoleAssigner;
@@ -23,6 +24,7 @@ import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
+import statistic.id.SktPEMergeRecorder;
 import statistic.id.TokenRecorder;
 import translation.TensorGeneratorForProject;
 import translation.TensorTools;
@@ -36,7 +38,10 @@ public class Application implements IApplication {
 	public static final String user_home = System.getProperty("user.home");
 	
 	public static final String bpe_merges_json = user_home + "/YYXWitnessBPEMerges.json";
-	public static final String bpe_token_times_json = user_home + "/YYXWitnessBPETokenTimes.json";
+//	public static final String bpe_token_times_json = user_home + "/YYXWitnessBPETokenTimes.json";
+
+	public static final String sktpe_merges_json = user_home + "/YYXWitnessSktPEMerges.json";
+//	public static final String sktpe_token_times_json = user_home + "/YYXWitnessSktPETokenTimes.json";
 	
 	public static final String witness = user_home + "/YYXWitness";
 	public static final String data = user_home + "/YYXData";
@@ -87,6 +92,7 @@ public class Application implements IApplication {
 //			max_handle_projs = Integer.parseInt(args[1]);
 //		}
 		BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
+		SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
 //		RoleAssigner role_assigner = new RoleAssigner();
 		TokenRecorder tr = new TokenRecorder();
 		TokenRecorder sr = new TokenRecorder();
@@ -98,14 +104,15 @@ public class Application implements IApplication {
 		IDTools id_tool = new IDTools(bpe_mr, tr, sr, gr, ar, cnc);
 		{
 			File bpe_mj = new File(bpe_merges_json);
-			File bpe_ttj = new File(bpe_token_times_json);
+//			File bpe_ttj = new File(bpe_token_times_json);
 			if (bpe_mj.exists()) {
-				Assert.isTrue(bpe_ttj.exists());
+//				Assert.isTrue(bpe_ttj.exists());
 				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<List<String>>(){}.getType());
 //				String bpe_mj_content = FileUtil.ReadFromFile(bpe_mj);
 //				System.out.println("bpe_mj_content:" + bpe_mj_content);
-				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
-				bpe_mr.Initialize(merges, token_times);
+//				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
+//				, token_times
+				bpe_mr.Initialize(merges);
 				System.out.println("==== BPECount Loaded ====");
 			} else {
 				System.out.println("==== BPECount Begin ====");
@@ -115,10 +122,31 @@ public class Application implements IApplication {
 	//			System.out.println("==== BPEMerge Begin ====");
 				bpe_mr.GenerateBPEMerges(MetaOfApp.NumberOfMerges);
 	//			System.out.println("==== BPEMerge End ====");
-				bpe_mr.SaveTo(bpe_mj, bpe_ttj);
+				bpe_mr.SaveTo(bpe_mj);// , bpe_ttj
 				AnalysisEnvironment.DeleteAllProjects();
 				RoleAssigner.GetInstance().ClearRoles();
 				System.out.println("==== BPECount End ====");
+			}
+		}
+		{
+			File sktpe_mj = new File(sktpe_merges_json);
+//			File sktpe_ttj = new File(sktpe_token_times_json);
+			if (sktpe_mj.exists()) {
+//				Assert.isTrue(sktpe_ttj.exists());
+				List<LinkedList<String>> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<List<LinkedList<String>>>(){}.getType());
+//				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
+				sktpe_mr.Initialize(merges);// , token_times
+				System.out.println("==== SktPECount Loaded ====");
+			} else {
+				System.out.println("==== SktPECount Begin ====");
+				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
+				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
+				HandleEachProjectFramework(all_projs, handle, id_tool, null);
+				sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
+				sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
+				AnalysisEnvironment.DeleteAllProjects();
+				RoleAssigner.GetInstance().ClearRoles();
+				System.out.println("==== SktPECount End ====");
 			}
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
@@ -238,6 +266,18 @@ public class Application implements IApplication {
 //			}
 		}
 	}
+	
+	static int SktPEOneProject(STProject proj, IDTools id_tool) {
+		int project_size = 0;
+		try {
+			SystemUtil.Delay(1000);
+			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool);
+			project_size = irgfop.GenerateForOneProject();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return project_size;
+	}
 
 	static int BPEOneProject(STProject proj, IDTools id_tool) {
 		int project_size = 0;
@@ -349,6 +389,28 @@ class BPEOneProjectHandle implements HandleOneProject {
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			int all_size = Application.BPEOneProject(proj, id_tool);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				ProjectLoader.CloseAllProjects();
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+		return all_size;
+	}
+
+}
+
+class SktPEOneProjectHandle implements HandleOneProject {
+
+//	String proj_path, int all_size
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+//		IJavaProject java_project = null;
+//		try {
+//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			int all_size = Application.SktPEOneProject(proj, id_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {

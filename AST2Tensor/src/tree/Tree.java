@@ -1,23 +1,30 @@
 package tree;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.TreeMap;
 
-public class Tree {
+public class Tree implements Comparable<Tree> {
 	
 	TreeNode root = null;
-	ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
+	TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
 	
 	public Tree(TreeNode root) {
 		this.root = root;
 	}
 	
-	public void AddTreeNode(TreeNode node) {
-		nodes.add(node);
-	}
+//	public void AddTreeNode(TreeNode node) {
+//		nodes.add(node);
+//	}
 	
 	public void AddTreeNodes(Collection<TreeNode> nds) {
-		nodes.addAll(nds);
+		for (TreeNode nd : nds) {
+			nodes.put(nd.GetContent(), nd);
+		}
+	}
+
+	@Override
+	public int compareTo(Tree o) {
+		return root.GetTreeWholeContent().compareTo(o.root.GetTreeWholeContent());
 	}
 	
 }

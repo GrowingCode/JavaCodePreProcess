@@ -15,14 +15,15 @@ public class BPEMergeRecorder {
 	
 	List<String> merges = new LinkedList<String>();
 	
-	Map<String, Integer> token_times = new TreeMap<String, Integer>();
+	private Map<String, Integer> token_times = new TreeMap<String, Integer>();
 	
 	public BPEMergeRecorder() {
 	}
 	
-	public void Initialize(List<String> merges, Map<String, Integer> token_times) {
+//	, Map<String, Integer> token_times
+	public void Initialize(List<String> merges) {
 		this.merges.addAll(merges);
-		this.token_times.putAll(token_times);
+//		this.token_times.putAll(token_times);
 	}
 	
 	public void EncounterToken(String token, int encounter_time) {
@@ -51,12 +52,13 @@ public class BPEMergeRecorder {
 //		}
 //		System.out.println("==== end printing vocabulary ====");
 		merges.clear();
+		token_times.clear();
 		merges.addAll(mgs);
 	}
 	
-	public void SaveTo(File merges_json, File token_times_json) {
+	public void SaveTo(File merges_json) {// , File token_times_json
 		FileUtil.WriteToFile(merges_json, new Gson().toJson(merges));
-		FileUtil.WriteToFile(token_times_json, new Gson().toJson(token_times));
+//		FileUtil.WriteToFile(token_times_json, new Gson().toJson(token_times));
 	}
 	
 }

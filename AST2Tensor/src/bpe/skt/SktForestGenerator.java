@@ -1,4 +1,4 @@
-package statis.trans.common;
+package bpe.skt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +13,13 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
+import statis.trans.common.BasicGenerator;
+import statistic.IDTools;
 import statistic.id.IDManager;
 import translation.ast.StatementUtil;
 import tree.Forest;
 import tree.Tree;
 import tree.TreeNode;
-import tree.TreeVisitor;
 
 public class SktForestGenerator extends BasicGenerator {
 	
@@ -26,9 +27,12 @@ public class SktForestGenerator extends BasicGenerator {
 	
 	ArrayList<ASTNode> stmt_roots = new ArrayList<ASTNode>();
 	
+	IDTools tool = null;
+	
 	public SktForestGenerator(IDManager im, ICompilationUnit icu, CompilationUnit cu,
-			TreeVisitor visitor) {
+			IDTools tool) {
 		super(im, icu, cu);
+		this.tool = tool;
 	}
 	
 	@Override
@@ -109,7 +113,7 @@ class SktTreeGenerator extends ASTVisitor {
 					Assert.isTrue(prev_c_start > c_start + c_length);
 					
 					int r_start = c_start - n_start;
-					node_cnt_builder.delete(r_start, r_start + c_length);
+					node_cnt_builder.replace(r_start, r_start + c_length, "#h");
 					
 					prev_c_start = c_start;
 				}
