@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import bpe.BPEGeneratorForProject;
 import bpe.skt.SktPEGeneratorForProject;
+import bpe.skt.TreeNodeTwoMerge;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
 import statis.trans.common.RoleAssigner;
@@ -133,7 +134,7 @@ public class Application implements IApplication {
 //			File sktpe_ttj = new File(sktpe_token_times_json);
 			if (sktpe_mj.exists()) {
 //				Assert.isTrue(sktpe_ttj.exists());
-				List<LinkedList<String>> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<List<LinkedList<String>>>(){}.getType());
+				List<TreeNodeTwoMerge> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<List<LinkedList<String>>>(){}.getType());
 //				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
 				sktpe_mr.Initialize(merges);// , token_times
 				System.out.println("==== SktPECount Loaded ====");

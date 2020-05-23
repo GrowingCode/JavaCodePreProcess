@@ -16,7 +16,7 @@ import util.MapUtil;
 
 public class BPEWordsUtil {
 
-	private static Map<String, Integer> get_stats(Map<String, Integer> vocab) {
+	private static Map<String, Integer> GetStats(Map<String, Integer> vocab) {
 		Map<String, Integer> pairs = new TreeMap<String, Integer>();
 		Set<String> vks = vocab.keySet();
 		Iterator<String> vk_itr = vks.iterator();
@@ -37,7 +37,7 @@ public class BPEWordsUtil {
 		return pairs;
 	}
 
-	private static Map<String, Integer> merge_vocab(String pair, Map<String, Integer> old_vocab) {
+	private static Map<String, Integer> MergeVocab(String pair, Map<String, Integer> old_vocab) {
 		Map<String, Integer> new_vocab = new TreeMap<String, Integer>();
 //	    bigram = re.escape(' '.join(pair))
 		Set<String> ov_set = old_vocab.keySet();
@@ -60,7 +60,7 @@ public class BPEWordsUtil {
 //		System.out.println("num_merges:" + num_merges);
 		Assert.isTrue(num_merges > 0);
 		for (int i=0;i<num_merges;i++) {
-			Map<String, Integer> pairs = get_stats(vocab_r);
+			Map<String, Integer> pairs = GetStats(vocab_r);
 //			System.out.println("pairs.size():" + pairs.size());
 			if (pairs.size() == 0) {
 				break;
@@ -77,7 +77,7 @@ public class BPEWordsUtil {
 //			}
 //			MapUtil.FindKeyWithMaxValue(pairs);
 			String best = MapUtil.FindKeyWithMaxValue(pairs);
-			vocab_r = merge_vocab(best, vocab_r);
+			vocab_r = MergeVocab(best, vocab_r);
 			merges.add(best);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");

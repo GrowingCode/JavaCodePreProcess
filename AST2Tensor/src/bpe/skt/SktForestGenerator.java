@@ -53,7 +53,7 @@ public class SktForestGenerator extends BasicGenerator {
 			stmt_root.accept(stg);
 			TreeNode root_tree_node = stg.node_record.get(stg.t_root);
 			Tree t = new Tree(root_tree_node);
-			t.AddTreeNodes(stg.node_record.values());
+//			t.AddTreeNodes(stg.node_record.values());
 			stmts.add(t);
 		}
 		Forest f = new Forest();

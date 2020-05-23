@@ -1,6 +1,7 @@
 package bpe.skt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,16 +12,14 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
-import bpe.BPEHandledResult;
 import tree.Tree;
 import tree.TreeNode;
-import util.ContentUtil;
 import util.MapUtil;
 import util.YStringUtil;
 
 public class SktPETreesUtil {
 
-	private static Map<TreeNodeTwoMerge, Integer> get_stats(Map<Tree, Integer> vocab) {
+	private static Map<TreeNodeTwoMerge, Integer> GetStats(Map<Tree, Integer> vocab) {
 		Map<TreeNodeTwoMerge, Integer> pairs = new TreeMap<TreeNodeTwoMerge, Integer>();
 		Set<Tree> vks = vocab.keySet();
 		Iterator<Tree> vk_itr = vks.iterator();
@@ -55,7 +54,7 @@ public class SktPETreesUtil {
 		return pairs;
 	}
 
-	private static void merge_vocab(TreeNodeTwoMerge pair, Map<Tree, Integer> old_vocab) {
+	private static void MergeVocab(TreeNodeTwoMerge pair, Map<Tree, Integer> old_vocab) {
 		Set<Tree> ov_set = old_vocab.keySet();
 		Iterator<Tree> os_itr = ov_set.iterator();
 		while (os_itr.hasNext()) {
@@ -64,22 +63,26 @@ public class SktPETreesUtil {
 			Set<String> ans_keys = ans.keySet();
 			for (String an_key : ans_keys) {
 				TreeNode tn = ans.get(an_key);
-				if (pair.GetParent().equals(tn.GetContent())) {
-					ArrayList<TreeNode> childs = tn.GetChildren();
-					int index = -1;
-					int rm_index = -1;
-					for (TreeNode child : childs) {
-						index++;
-						if (pair.GetNode().equals(child.GetContent())) {
-							rm_index = index;
-							break;
-						}
-					}
-					if (rm_index > -1) {
-						childs.remove(rm_index);
-						tn.SetContent(pair.GetMerged());
-					}
+				MergeTwoTreeNodes(pair, tn);
+			}
+		}
+	}
+	
+	private static void MergeTwoTreeNodes(TreeNodeTwoMerge pair, TreeNode tn) {
+		if (pair.GetParent().equals(tn.GetContent())) {
+			ArrayList<TreeNode> childs = tn.GetChildren();
+			int index = -1;
+			int rm_index = -1;
+			for (TreeNode child : childs) {
+				index++;
+				if (pair.GetNode().equals(child.GetContent())) {
+					rm_index = index;
+					break;
 				}
+			}
+			if (rm_index > -1) {
+				childs.remove(rm_index);
+				tn.SetContent(pair.GetMerged());
 			}
 		}
 	}
@@ -99,7 +102,7 @@ public class SktPETreesUtil {
 //		System.out.println("num_merges:" + num_merges);
 		Assert.isTrue(num_merges > 0);
 		for (int i=0;i<num_merges;i++) {
-			Map<TreeNodeTwoMerge, Integer> pairs = get_stats(vocab);
+			Map<TreeNodeTwoMerge, Integer> pairs = GetStats(vocab);
 //			System.out.println("pairs.size():" + pairs.size());
 			if (pairs.size() == 0) {
 				break;
@@ -116,7 +119,7 @@ public class SktPETreesUtil {
 //			}
 //			MapUtil.FindKeyWithMaxValue(pairs);
 			TreeNodeTwoMerge best = MapUtil.FindKeyWithMaxValue(pairs);
-			merge_vocab(best, vocab);
+			MergeVocab(best, vocab);
 			merges.add(best);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
@@ -124,35 +127,30 @@ public class SktPETreesUtil {
 		return merges;
 	}
 	
-	public static BPEHandledResult ApplyBPEMergesToTokens(List<String> merges, Set<String> tokens) {
-		BPEHandledResult result = new BPEHandledResult();
-		Map<String, String> origin_after = new TreeMap<String, String>();
-		Map<String, String> after_origin = new TreeMap<String, String>();
-		for (String token : tokens) {
-			origin_after.put(token, token);
-			after_origin.put(token, token);
+	public static Set<String> ExtractAllSktPEUnits(Set<Tree> sktpe_raws) {
+		Set<String> bpes = new TreeSet<String>();
+		Iterator<Tree> vk_itr = sktpe_raws.iterator();
+		while (vk_itr.hasNext()) {
+			Tree vk = vk_itr.next();
+			TreeMap<String, TreeNode> nodes = vk.GetAllNodes();
+//			int freq = vocab.get(vk);
+			bpes.addAll(nodes.keySet());
 		}
-//		Set<String> inserted = InsertSpaceToTokens(tokens);
-		Set<String> inserted = new TreeSet<String>(tokens);
-		Set<String> new_inserted = new TreeSet<String>();
-		for (String merge : merges) {
-			for (String ins : inserted) {
-				String s_merge = merge.replace(" ", "");
-//				System.out.println("merge:" + merge + "#s_merge:" + s_merge);
-				String new_ins = ins.replace(merge, s_merge);
-//				System.out.println("ins:" + ins + "#new_ins:" + new_ins);
-				new_inserted.add(new_ins);
-				String ori = after_origin.remove(ins);
-				Assert.isTrue(ori != null);
-				after_origin.put(new_ins, ori);
-				origin_after.put(ori, new_ins);
+		return bpes;
+	}
+	
+	public static SktPEHandledResult ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Set<Tree> skts) {
+		SktPEHandledResult result = new SktPEHandledResult();
+		for (TreeNodeTwoMerge merge : merges) {
+			for (Tree skt : skts) {
+				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
+				Collection<TreeNode> tns = nodes.values();
+				for (TreeNode tn : tns) {
+					MergeTwoTreeNodes(merge, tn);
+				}
 			}
-			inserted.clear();
-			inserted.addAll(new_inserted);
-			new_inserted.clear();
 		}
-		result.vobs.addAll(ExtractAllBPEUnits(inserted));
-		result.origin_after.putAll(origin_after);
+		result.vobs.addAll(ExtractAllSktPEUnits(skts));
 		return result;
 	}
 

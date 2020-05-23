@@ -1,6 +1,6 @@
 package bpe.skt;
 
-class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
+public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	String node = null;
 	String parent = null;

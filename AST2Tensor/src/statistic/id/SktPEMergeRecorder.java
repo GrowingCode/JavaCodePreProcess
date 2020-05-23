@@ -9,12 +9,13 @@ import java.util.TreeMap;
 import com.google.gson.Gson;
 
 import bpe.skt.SktPETreesUtil;
+import bpe.skt.TreeNodeTwoMerge;
 import tree.Tree;
 import util.FileUtil;
 
 public class SktPEMergeRecorder {
 	
-	List<LinkedList<String>> merges = new LinkedList<LinkedList<String>>();
+	List<TreeNodeTwoMerge> merges = new LinkedList<TreeNodeTwoMerge>();
 	
 	private Map<Tree, Integer> skt_times = new TreeMap<Tree, Integer>();
 	
@@ -22,7 +23,7 @@ public class SktPEMergeRecorder {
 	}
 	
 //	, Map<String, Integer> token_times
-	public void Initialize(List<LinkedList<String>> merges) {
+	public void Initialize(List<TreeNodeTwoMerge> merges) {
 		this.merges.addAll(merges);
 //		this.token_times.putAll(token_times);
 	}
@@ -41,7 +42,7 @@ public class SktPEMergeRecorder {
 //		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 //		PrintUtil.PrintMap(sub_words, "sub_words");
 //		PrintUtil.PrintMap(n_vob, "n_vob");
-		List<LinkedList<String>> mgs = SktPETreesUtil.GenerateSktPEMerges(skt_times, merge_num);
+		List<TreeNodeTwoMerge> mgs = SktPETreesUtil.GenerateSktPEMerges(skt_times, merge_num);
 //		PrintUtil.PrintList(mgs, "mgs");
 //		BPEHandledResult result = ApplyBPEMergesToTokens(merges, n_vob.keySet());
 //		Set<String> vbs = result.vobs;
