@@ -13,56 +13,93 @@ import org.eclipse.core.runtime.Assert;
 
 import bpe.BPEHandledResult;
 import tree.Tree;
+import tree.TreeNode;
 import util.ContentUtil;
 import util.MapUtil;
+import util.YStringUtil;
 
 public class SktPETreesUtil {
 
-	private static Map<String, Integer> get_stats(Map<String, Integer> vocab) {
-		Map<String, Integer> pairs = new TreeMap<String, Integer>();
-		Set<String> vks = vocab.keySet();
-		Iterator<String> vk_itr = vks.iterator();
+	private static Map<TreeNodeTwoMerge, Integer> get_stats(Map<Tree, Integer> vocab) {
+		Map<TreeNodeTwoMerge, Integer> pairs = new TreeMap<TreeNodeTwoMerge, Integer>();
+		Set<Tree> vks = vocab.keySet();
+		Iterator<Tree> vk_itr = vks.iterator();
 		while (vk_itr.hasNext()) {
-			String vk = vk_itr.next();
-			String[] vk_sbs = vk.split(" ");
+			Tree vk = vk_itr.next();
+			TreeMap<String, TreeNode> all_nodes = vk.GetAllNodes();
+			TreeNode rt = vk.GetRootNode();
 			int freq = vocab.get(vk);
-			for (int i = 0; i < vk_sbs.length - 1; i++) {
-				String nk = vk_sbs[i] + " " + vk_sbs[i + 1];
-				Integer n_freq = pairs.get(nk);
-				if (n_freq == null) {
-					n_freq = 0;
+			Set<String> all_keys = all_nodes.keySet();
+			Iterator<String> ai = all_keys.iterator();
+			while (ai.hasNext()) {
+				String key = ai.next();
+				TreeNode val = all_nodes.get(key);
+				TreeNode par_val = val.GetParent();
+				if (par_val != null) {
+					ArrayList<TreeNode> childs = par_val.GetChildren();
+					int idx = childs.indexOf(val);
+					Assert.isTrue(idx > -1);
+					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#h", val.GetContent(), idx);
+					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), par_val.GetContent(), mgd);
+					Integer n_freq = pairs.get(mm);
+					if (n_freq == null) {
+						n_freq = 0;
+					}
+					n_freq += freq;
+					pairs.put(mm, n_freq);
+				} else {
+					Assert.isTrue(rt == val);
 				}
-				n_freq += freq;
-				pairs.put(nk, n_freq);
 			}
 		}
 		return pairs;
 	}
 
-	private static Map<String, Integer> merge_vocab(String pair, Map<String, Integer> old_vocab) {
-		Map<String, Integer> new_vocab = new TreeMap<String, Integer>();
-//	    bigram = re.escape(' '.join(pair))
-		Set<String> ov_set = old_vocab.keySet();
-		Iterator<String> os_itr = ov_set.iterator();
+	private static void merge_vocab(TreeNodeTwoMerge pair, Map<Tree, Integer> old_vocab) {
+		Set<Tree> ov_set = old_vocab.keySet();
+		Iterator<Tree> os_itr = ov_set.iterator();
 		while (os_itr.hasNext()) {
-			String os = os_itr.next();
-			String new_os = os.replace(pair, pair.replace(" ", ""));
-			new_vocab.put(new_os, old_vocab.get(os));
+			Tree os = os_itr.next();
+			TreeMap<String, TreeNode> ans = os.GetAllNodes();
+			Set<String> ans_keys = ans.keySet();
+			for (String an_key : ans_keys) {
+				TreeNode tn = ans.get(an_key);
+				if (pair.GetParent().equals(tn.GetContent())) {
+					ArrayList<TreeNode> childs = tn.GetChildren();
+					int index = -1;
+					int rm_index = -1;
+					for (TreeNode child : childs) {
+						index++;
+						if (pair.GetNode().equals(child.GetContent())) {
+							rm_index = index;
+							break;
+						}
+					}
+					if (rm_index > -1) {
+						childs.remove(rm_index);
+						tn.SetContent(pair.GetMerged());
+					}
+				}
+			}
 		}
-		return new_vocab;
 	}
 	
-	public static List<LinkedList<String>> GenerateSktPEMerges(Map<Tree, Integer> vocab, int num_merges) {
+	/**
+	 * This function has side effect to paremeters
+	 * @param vocab
+	 * @param num_merges
+	 * @return
+	 */
+	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(Map<Tree, Integer> vocab, int num_merges) {
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
-		List<String> merges = new LinkedList<String>();
-		Map<String, Integer> vocab_r = new TreeMap<String, Integer>(vocab);
+		List<TreeNodeTwoMerge> merges = new LinkedList<TreeNodeTwoMerge>();
 //		if (num_merges == -1) {
 //			num_merges = Integer.MAX_VALUE;
 //		}
 //		System.out.println("num_merges:" + num_merges);
 		Assert.isTrue(num_merges > 0);
 		for (int i=0;i<num_merges;i++) {
-			Map<String, Integer> pairs = get_stats(vocab_r);
+			Map<TreeNodeTwoMerge, Integer> pairs = get_stats(vocab);
 //			System.out.println("pairs.size():" + pairs.size());
 			if (pairs.size() == 0) {
 				break;
@@ -78,8 +115,8 @@ public class SktPETreesUtil {
 //				break;
 //			}
 //			MapUtil.FindKeyWithMaxValue(pairs);
-			String best = MapUtil.FindKeyWithMaxValue(pairs);
-			vocab_r = merge_vocab(best, vocab_r);
+			TreeNodeTwoMerge best = MapUtil.FindKeyWithMaxValue(pairs);
+			merge_vocab(best, vocab);
 			merges.add(best);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
@@ -118,83 +155,6 @@ public class SktPETreesUtil {
 		result.origin_after.putAll(origin_after);
 		return result;
 	}
-	
-	public static TreeMap<String,Integer> InsertSpaceToTokens(Map<String, Integer> vocab) {
-		TreeMap<String, Integer> new_vocab = new TreeMap<String, Integer>();
-		Set<String> vks = vocab.keySet();
-		for (String vk : vks) {
-			Integer r = vocab.get(vk);
-			new_vocab.put(vk.replace("", " ").trim(), r);
-		}
-		return new_vocab;
-	}
-
-	public static String InsertSpaceToToken(String vocab) {
-		return vocab.replace("", " ").trim();
-	}
-	
-	public static Set<String> InsertSpaceToTokens(Set<String> tokens) {
-		Set<String> new_tokens = new TreeSet<String>();
-		for (String token : tokens) {
-			new_tokens.add(token.replace("", " ").trim());
-		}
-		return new_tokens;
-	}
-
-	public static Set<String> ExtractAllBPEUnits(Set<String> bpe_raws) {
-		// Map<String, Integer> vocab
-		Set<String> bpes = new TreeSet<String>();
-//		Set<String> vks = vocab.keySet();
-		Set<String> vks = bpe_raws;
-		Iterator<String> vk_itr = vks.iterator();
-		while (vk_itr.hasNext()) {
-			String vk = vk_itr.next();
-			String[] vk_sbs = vk.split(" ");
-//			int freq = vocab.get(vk);
-			for (int i = 0; i < vk_sbs.length; i++) {
-				bpes.add(vk_sbs[i]);
-			}
-		}
-		return bpes;
-	}
-	
-	public static Map<String, Integer> ExtractAllSubWords(Map<String, Integer> record) {
-		Map<String, Integer> sws = new TreeMap<String, Integer>();
-		Set<String> hr_set = record.keySet();
-		for (String hr : hr_set) {
-			Integer r = record.get(hr);
-			ArrayList<String> subwords = ContentUtil.SplitByUnderScoreWithCamelCase(hr);
-//			sws.addAll(subwords);
-			for (String sw : subwords) {
-				Integer sw_i = sws.get(sw);
-				if (sw_i == null) {
-					sw_i = 0;
-				}
-				sw_i += r;
-				sws.put(sw, sw_i);
-			}
-		}
-		return sws;
-	}
-	
-	public static void main(String[] args) {
-	    Map<String, Integer> vocab = new TreeMap<String, Integer>();
-	    vocab.put("low", 5);
-	    vocab.put("lower", 2);
-	    vocab.put("newest", 6);
-	    vocab.put("widest", 3);
-		int num_merges = 10;
-		
-		TreeMap<String, Integer> n_vob = InsertSpaceToTokens(vocab);
-		List<String> merges = GenerateBPEMerges(n_vob, num_merges);
-		BPEHandledResult result = ApplyBPEMergesToTokens(merges, n_vob.keySet());
-		Set<String> vbs = result.vobs;
-//		Set<String> vbs = GenerateBEPVocabulary(n_vob, num_merges);
-		System.out.println("==== start printing vocabulary ====");
-		for (String vb : vbs) {
-			System.out.println(vb);
-		}
-		System.out.println("==== end printing vocabulary ====");
-	}
 
 }
+

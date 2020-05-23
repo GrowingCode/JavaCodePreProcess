@@ -38,6 +38,10 @@ public class TreeNode {
 		return bind;
 	}
 	
+	public void SetContent(String content) {
+		this.content = content;
+	}
+	
 	public String GetContent() {
 		return content;
 	}

@@ -27,4 +27,12 @@ public class Tree implements Comparable<Tree> {
 		return root.GetTreeWholeContent().compareTo(o.root.GetTreeWholeContent());
 	}
 	
+	public TreeNode GetRootNode() {
+		return root;
+	}
+	
+	public TreeMap<String, TreeNode> GetAllNodes() {
+		return nodes;
+	}
+	
 }
