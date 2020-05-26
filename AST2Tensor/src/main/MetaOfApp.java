@@ -78,6 +78,7 @@ public class MetaOfApp {
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;
+	public static boolean GeneratePairEncodedSkeletonToken = true;
 
 	public static void SaveToDirectory() {
 		Gson gson = new Gson();

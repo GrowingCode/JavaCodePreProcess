@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import bpe.BPEGeneratorForProject;
+import bpe.skt.SktLogicUtil;
 import bpe.skt.SktPEGeneratorForProject;
 import bpe.skt.SktPETreesUtil;
 import bpe.skt.TreeNodeTwoMerge;
@@ -103,10 +104,11 @@ public class Application implements IApplication {
 			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
 			TokenRecorder tr = new TokenRecorder();
 			TokenRecorder sr = new TokenRecorder();
+			TokenRecorder str = new TokenRecorder();
 			GrammarRecorder gr = new GrammarRecorder();
 			APIRecorder ar = new APIRecorder();
 			ChildrenNumCounter cnc = new ChildrenNumCounter();
-			id_tool = new IDTools(bpe_mr, stf_r, tr, sr, gr, ar, cnc);
+			id_tool = new IDTools(bpe_mr, stf_r, tr, sr, str, gr, ar, cnc);
 		}
 		{
 			File bpe_mj = new File(bpe_merges_json);
@@ -176,6 +178,10 @@ public class Application implements IApplication {
 			}
 		}
 		{
+			// TODO count pair-encoded skeletons. 
+			SktLogicUtil.CountPairEncodedSkeletons(id_tool, id_tool.stf_r.GetAllForests());
+		}
+		{
 			System.out.println("==== IDCount Begin ====");
 			CountOneProjectHandle handle = new CountOneProjectHandle();
 			HandleEachProjectFramework(all_projs, handle, id_tool, null);
@@ -239,6 +245,7 @@ public class Application implements IApplication {
 //				DebugLogger.Error(
 //						"The root path given in parameter should be a directory which contains zip files or with-project directories");
 //			}
+			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(im, tensor_tool, id_tool.stf_r.GetAllForests());
 			System.out.println("==== GenerateTensor End ====");
 		}
 		System.out.println("==== TranslateProject Over ====");

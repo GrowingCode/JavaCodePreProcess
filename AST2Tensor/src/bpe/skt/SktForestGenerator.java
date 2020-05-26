@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statis.trans.common.BasicGenerator;
+import statis.trans.common.RoleAssigner;
 import statistic.IDTools;
 import statistic.id.IDManager;
 import translation.ast.StatementUtil;
@@ -56,7 +57,7 @@ public class SktForestGenerator extends BasicGenerator {
 //			t.AddTreeNodes(stg.node_record.values());
 			stmts.add(t);
 		}
-		Forest f = new Forest();
+		Forest f = new Forest(RoleAssigner.GetInstance().GetRole(icu));
 		f.AddTrees(stmts);
 		funcs.add(f);
 	}

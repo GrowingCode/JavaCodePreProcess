@@ -67,6 +67,7 @@ public class IDManager {
 	// public static String NullLiteralLeafDefault = "null";
 	// public static String TerminalLeafDefault = "TermDefault";
 
+	private TreeMap<String, Integer> pair_encoded_skeleton_id_map = new TreeMap<String, Integer>();
 	private TreeMap<String, Integer> skeleton_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<String, Integer> skeleton_token_id_map = new TreeMap<String, Integer>();
 	private TreeMap<String, Integer> token_id_map = new TreeMap<String, Integer>();
@@ -131,28 +132,16 @@ public class IDManager {
 //		token_id_map.putAll(id_tool.gr.node_type_id);
 //		grammar_token_num = token_id_map.size();
 		// skeleton regist
-		Regist(skeleton_id_map, reserved_words);
 //		if (MetaOfApp.TakeUnseenAsUnk) {
 //			Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.RefineHitTrain((int)Math.ceil(MetaOfApp.NumberOfUnk*1.0 / 10.0))));
 //		} else 
+		if (MetaOfApp.GeneratePairEncodedSkeletonToken) {
+			Regist(pair_encoded_skeleton_id_map, reserved_words);
+			RegistUtil(pair_encoded_skeleton_id_map, id_tool.str.hit_train, id_tool.str.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "PairEncodedSkeleton");
+		}
 		if (MetaOfApp.GenerateSkeletonToken) {
-			ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
-					MapUtil.SortMapByValue(id_tool.sr.hit_train));
-			Collections.reverse(sk_ht);
-			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_ht));
-			skeleton_hit_num = skeleton_id_map.size() - MetaOfApp.NumberOfSkeletonUnk;
-			if (skeleton_hit_num < MetaOfApp.MinimumNumberOfSkeletonVocabulary) {
-				skeleton_hit_num = MetaOfApp.MinimumNumberOfSkeletonVocabulary;
-			}
-			if (skeleton_hit_num > skeleton_id_map.size()) {
-				skeleton_hit_num = skeleton_id_map.size();
-			}
-			PrintUtil.PrintPartOfEntryList(sk_ht, skeleton_hit_num, skeleton_id_map.size(), "SetUnkSkeletons",
-					"skeleton", "count");
-			ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
-					MapUtil.SortMapByValue(id_tool.sr.not_hit_train));
-			Collections.reverse(sk_nht);
-			Regist(skeleton_id_map, MapUtil.EntryListToKeyList(sk_nht));
+			Regist(skeleton_id_map, reserved_words);
+			RegistUtil(skeleton_id_map, id_tool.sr.hit_train, id_tool.sr.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -172,22 +161,23 @@ public class IDManager {
 //		} else 
 		{
 			Regist(token_id_map, reserved_words);
-			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
-					MapUtil.SortMapByValue(id_tool.tr.hit_train));
-			Collections.reverse(tk_ht);
-			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_ht));
-			token_hit_num = token_id_map.size() - MetaOfApp.NumberOfUnk;
-			if (token_hit_num < MetaOfApp.MinimumNumberOfVocabulary) {
-				token_hit_num = MetaOfApp.MinimumNumberOfVocabulary;
-			}
-			if (token_hit_num > token_id_map.size()) {
-				token_hit_num = token_id_map.size();
-			}
-			PrintUtil.PrintPartOfEntryList(tk_ht, token_hit_num, token_id_map.size(), "SetUnkTokens", "token", "count");
-			ArrayList<Entry<String, Integer>> tk_nht = new ArrayList<Entry<String, Integer>>(
-					MapUtil.SortMapByValue(id_tool.tr.not_hit_train));
-			Collections.reverse(tk_nht);
-			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_nht));
+			RegistUtil(token_id_map, id_tool.tr.hit_train, id_tool.tr.not_hit_train, MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
+//			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
+//					MapUtil.SortMapByValue(id_tool.tr.hit_train));
+//			Collections.reverse(tk_ht);
+//			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_ht));
+//			token_hit_num = token_id_map.size() - MetaOfApp.NumberOfUnk;
+//			if (token_hit_num < MetaOfApp.MinimumNumberOfVocabulary) {
+//				token_hit_num = MetaOfApp.MinimumNumberOfVocabulary;
+//			}
+//			if (token_hit_num > token_id_map.size()) {
+//				token_hit_num = token_id_map.size();
+//			}
+//			PrintUtil.PrintPartOfEntryList(tk_ht, token_hit_num, token_id_map.size(), "SetUnkTokens", "token", "count");
+//			ArrayList<Entry<String, Integer>> tk_nht = new ArrayList<Entry<String, Integer>>(
+//					MapUtil.SortMapByValue(id_tool.tr.not_hit_train));
+//			Collections.reverse(tk_nht);
+//			Regist(token_id_map, MapUtil.EntryListToKeyList(tk_nht));
 		}
 //		Regist(token_id_map, new ArrayList<String>(id_tool.tr.hit_train.keySet()));
 //		Regist(token_id_map, new ArrayList<String>(g_set));
@@ -249,6 +239,26 @@ public class IDManager {
 //		ast_type_content_type_id_map.put(InitialLeaf, id++);
 //		ast_type_content_type_id_map.put(TerminalLeaf, id++);
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
+	}
+	
+	private static void RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, Map<String, Integer> not_hit, int unk_num, int minimum_num, String desc) {
+		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
+				MapUtil.SortMapByValue(hit));
+		Collections.reverse(sk_ht);
+		Regist(id_map, MapUtil.EntryListToKeyList(sk_ht));
+		int hit_num = id_map.size() - unk_num;
+		if (hit_num < minimum_num) {
+			hit_num = minimum_num;
+		}
+		if (hit_num > id_map.size()) {
+			hit_num = id_map.size();
+		}
+		PrintUtil.PrintPartOfEntryList(sk_ht, hit_num, id_map.size(), "SetUnk" + desc,
+				desc, "count");
+		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
+				MapUtil.SortMapByValue(not_hit));
+		Collections.reverse(sk_nht);
+		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
 	}
 
 	private static void Regist(Map<String, Integer> reg_map, List<String> ele_set) {
