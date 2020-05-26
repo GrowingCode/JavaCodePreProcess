@@ -1,5 +1,6 @@
 package bpe.skt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -12,15 +13,19 @@ import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
 import statistic.IDTools;
+import translation.TensorTools;
+import tree.Forest;
 
 public class SktPEGeneratorForProject {
 	
 	IJavaProject java_project = null;
 	IDTools tool = null;
+	TensorTools tensor_tool = null;
 	
-	public SktPEGeneratorForProject(IJavaProject java_project, IDTools tool) {
+	public SktPEGeneratorForProject(IJavaProject java_project, IDTools tool, TensorTools tensor_tool) {
 		this.java_project = java_project;
 		this.tool = tool;
+		this.tensor_tool = tensor_tool;
 	}
 	
 	public int GenerateForOneProject() {
@@ -40,6 +45,8 @@ public class SktPEGeneratorForProject {
 				Assert.isTrue(icu != null);
 				SktForestGenerator tg = new SktForestGenerator(null, icu, cu, tool);
 				cu.accept(tg);
+				ArrayList<Forest> funcs = tg.GetFunctions();
+				tool.stf_r.AddForests(funcs);
 			}
 		}
 		return length;

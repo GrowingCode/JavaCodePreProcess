@@ -17,4 +17,8 @@ public class Forest {
 		stmts.addAll(trees);
 	}
 	
+	public ArrayList<Tree> GetAllTrees() {
+		return stmts;
+	}
+	
 }

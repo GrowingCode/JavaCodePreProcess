@@ -127,7 +127,7 @@ public class SktPETreesUtil {
 		return merges;
 	}
 	
-	public static Set<String> ExtractAllSktPEUnits(Set<Tree> sktpe_raws) {
+	public static Set<String> ExtractAllSktPEUnits(Collection<Tree> sktpe_raws) {
 		Set<String> bpes = new TreeSet<String>();
 		Iterator<Tree> vk_itr = sktpe_raws.iterator();
 		while (vk_itr.hasNext()) {
@@ -139,7 +139,7 @@ public class SktPETreesUtil {
 		return bpes;
 	}
 	
-	public static SktPEHandledResult ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Set<Tree> skts) {
+	public static SktPEHandledResult ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts) {
 		SktPEHandledResult result = new SktPEHandledResult();
 		for (TreeNodeTwoMerge merge : merges) {
 			for (Tree skt : skts) {

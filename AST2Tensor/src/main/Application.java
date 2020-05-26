@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,10 +14,12 @@ import com.google.gson.reflect.TypeToken;
 
 import bpe.BPEGeneratorForProject;
 import bpe.skt.SktPEGeneratorForProject;
+import bpe.skt.SktPETreesUtil;
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
 import statis.trans.common.RoleAssigner;
+import statis.trans.common.SkeletonForestRecorder;
 import statis.trans.project.STProject;
 import statistic.IDGeneratorForProject;
 import statistic.IDTools;
@@ -31,6 +34,8 @@ import translation.TensorGeneratorForProject;
 import translation.TensorTools;
 import translation.tensor.StatementTensor;
 import translation.tensor.TensorForProject;
+import tree.Forest;
+import tree.Tree;
 import util.FileUtil;
 import util.SystemUtil;
 
@@ -92,17 +97,17 @@ public class Application implements IApplication {
 //		if (args.length >= 2) {
 //			max_handle_projs = Integer.parseInt(args[1]);
 //		}
-		BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
-		SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
-//		RoleAssigner role_assigner = new RoleAssigner();
-		TokenRecorder tr = new TokenRecorder();
-		TokenRecorder sr = new TokenRecorder();
-//		TokenRecorder str = new TokenRecorder();
-		GrammarRecorder gr = new GrammarRecorder();
-		APIRecorder ar = new APIRecorder();
-		ChildrenNumCounter cnc = new ChildrenNumCounter();
-//		str, 
-		IDTools id_tool = new IDTools(bpe_mr, tr, sr, gr, ar, cnc);
+		IDTools id_tool = null;
+		{
+			BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
+			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
+			TokenRecorder tr = new TokenRecorder();
+			TokenRecorder sr = new TokenRecorder();
+			GrammarRecorder gr = new GrammarRecorder();
+			APIRecorder ar = new APIRecorder();
+			ChildrenNumCounter cnc = new ChildrenNumCounter();
+			id_tool = new IDTools(bpe_mr, stf_r, tr, sr, gr, ar, cnc);
+		}
 		{
 			File bpe_mj = new File(bpe_merges_json);
 //			File bpe_ttj = new File(bpe_token_times_json);
@@ -113,7 +118,7 @@ public class Application implements IApplication {
 //				System.out.println("bpe_mj_content:" + bpe_mj_content);
 //				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
 //				, token_times
-				bpe_mr.Initialize(merges);
+				id_tool.bpe_mr.Initialize(merges);
 				System.out.println("==== BPECount Loaded ====");
 			} else {
 				System.out.println("==== BPECount Begin ====");
@@ -121,14 +126,15 @@ public class Application implements IApplication {
 				BPEOneProjectHandle handle = new BPEOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
 	//			System.out.println("==== BPEMerge Begin ====");
-				bpe_mr.GenerateBPEMerges(MetaOfApp.NumberOfMerges);
+				id_tool.bpe_mr.GenerateBPEMerges(MetaOfApp.NumberOfMerges);
 	//			System.out.println("==== BPEMerge End ====");
-				bpe_mr.SaveTo(bpe_mj);// , bpe_ttj
+				id_tool.bpe_mr.SaveTo(bpe_mj);// , bpe_ttj
 				AnalysisEnvironment.DeleteAllProjects();
 				RoleAssigner.GetInstance().ClearRoles();
 				System.out.println("==== BPECount End ====");
 			}
 		}
+		SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
 		{
 			File sktpe_mj = new File(sktpe_merges_json);
 //			File sktpe_ttj = new File(sktpe_token_times_json);
@@ -143,14 +149,32 @@ public class Application implements IApplication {
 				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
 				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
+				ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
+				for (Forest f : fs) {
+					ArrayList<Tree> f_trees = f.GetAllTrees();
+					for (Tree t : f_trees) {
+						sktpe_mr.EncounterSkeleton(t, 1);
+					}
+				}
 				sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
 				sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
+				id_tool.stf_r.Clear();
 				AnalysisEnvironment.DeleteAllProjects();
 				RoleAssigner.GetInstance().ClearRoles();
 				System.out.println("==== SktPECount End ====");
 			}
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
+		{
+			// Handle SktPE logic
+			SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
+			HandleEachProjectFramework(all_projs, handle, id_tool, null);
+			ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
+			for (Forest f : fs) {
+				ArrayList<Tree> f_trees = f.GetAllTrees();
+				SktPETreesUtil.ApplySktPEMergesToTrees(sktpe_mr.GetMerges(), f_trees);
+			}
+		}
 		{
 			System.out.println("==== IDCount Begin ====");
 			CountOneProjectHandle handle = new CountOneProjectHandle();
@@ -172,7 +196,7 @@ public class Application implements IApplication {
 		IDManager im = new IDManager(id_tool);
 		{
 			MetaOfApp.SaveToDirectory();
-			cnc.SaveToDirectory(MetaOfApp.DataDirectory);
+			id_tool.cnc.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
 //			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
 		}
@@ -268,11 +292,11 @@ public class Application implements IApplication {
 		}
 	}
 	
-	static int SktPEOneProject(STProject proj, IDTools id_tool) {
+	static int SktPEOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
 		int project_size = 0;
 		try {
 			SystemUtil.Delay(1000);
-			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool);
+			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
 			project_size = irgfop.GenerateForOneProject();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -411,7 +435,7 @@ class SktPEOneProjectHandle implements HandleOneProject {
 //		IJavaProject java_project = null;
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.SktPEOneProject(proj, id_tool);
+			int all_size = Application.SktPEOneProject(proj, id_tool, tensor_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {

@@ -28,6 +28,10 @@ public class SktPEMergeRecorder {
 //		this.token_times.putAll(token_times);
 	}
 	
+	public List<TreeNodeTwoMerge> GetMerges() {
+		return merges;
+	}
+	
 	public void EncounterSkeleton(Tree skt, int encounter_time) {
 		Integer tt = skt_times.get(skt);
 		if (tt == null) {
