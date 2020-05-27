@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import eclipse.jdt.JDTASTHelper;
 import statis.trans.common.BasicGenerator;
@@ -17,11 +18,11 @@ import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
 import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 import util.visitor.TokenHandleSkeletonVisitor;
 
 public class StatementSkeletonTensorGenerator extends BasicGenerator {
 	
-	StatementSkeletonTensor curr_tensor = new StatementSkeletonTensor();
 	ArrayList<ASTNode> stmt_roots = new ArrayList<ASTNode>();
 	
 	public StatementSkeletonTensorGenerator(IDManager im, ICompilationUnit icu,
@@ -41,6 +42,9 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 
 	@Override
 	protected void WholePostHandle(ASTNode node) {
+		Assert.isTrue(node instanceof MethodDeclaration);
+		TensorInfo tinfo = new TensorInfo(icu.getPath().toOSString(), ((MethodDeclaration)node).getName().toString());
+		StatementSkeletonTensor curr_tensor = new StatementSkeletonTensor(tinfo);
 		for (ASTNode stmt_root : stmt_roots) {
 			TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
 			stmt_root.accept(sv);
@@ -70,7 +74,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 			}
 			throw e;
 		}
-		StringTensor st = new StringTensor();
+		StringTensor st = new StringTensor(tinfo);
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
@@ -81,7 +85,6 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 	
 	@Override
 	protected void WholePostClear(ASTNode node) {
-		curr_tensor = new StatementSkeletonTensor();
 		stmt_roots.clear();
 	}
 	

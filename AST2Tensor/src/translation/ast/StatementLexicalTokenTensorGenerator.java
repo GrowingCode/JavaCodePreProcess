@@ -2,9 +2,11 @@ package translation.ast;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import statis.trans.common.BasicGenerator;
 import statis.trans.common.RoleAssigner;
@@ -14,6 +16,7 @@ import translation.helper.TypeContentID;
 import translation.tensor.StatementInfo;
 import translation.tensor.StatementTensor;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 
 public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 	
@@ -37,7 +40,9 @@ public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 	
 	@Override
 	protected void WholePostHandle(ASTNode node) {
-		StatementTensor curr_tensor = new StatementTensor();
+		Assert.isTrue(node instanceof MethodDeclaration);
+		TensorInfo tinfo = new TensorInfo(icu.getPath().toOSString(), ((MethodDeclaration)node).getName().toString());
+		StatementTensor curr_tensor = new StatementTensor(tinfo);
 		String content = node.toString();
 		StatementInfo stmt_info = new StatementInfo(content);
 		ArrayList<String> tks = YTokenizer.GetTokens(content);
@@ -50,7 +55,7 @@ public class StatementLexicalTokenTensorGenerator extends BasicGenerator {
 		max_num_node_in_one_ast = max_num_node_in_one_ast < stmt_info.Size() ? stmt_info.Size() : max_num_node_in_one_ast;
 		curr_tensor.Devour(stmt_info);
 		curr_tensor.HandleAllDevoured(im);
-		StringTensor st = new StringTensor();
+		StringTensor st = new StringTensor(tinfo);
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());

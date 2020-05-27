@@ -4,6 +4,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 
 import statis.trans.common.RoleAssigner;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 import tree.TreeNode;
 import tree.TreeVisitor;
 
@@ -123,7 +124,7 @@ public class IDGenerator extends TreeVisitor {
 	}
 
 	@Override
-	public void Clear() {
+	public void ClearAndInitialize(TensorInfo ti) {
 	}
 
 }

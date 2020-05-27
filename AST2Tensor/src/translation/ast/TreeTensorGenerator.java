@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Assert;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 import translation.tensor.TreeTensor;
 import tree.TreeNode;
 import tree.TreeVisitor;
@@ -21,7 +22,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 		curr_tensor.StorePostOrderNodeInfo(0, new ArrayList<Integer>());
 	}
 
-	TreeTensor curr_tensor = new TreeTensor();
+	TreeTensor curr_tensor = null;
 	
 	Map<TreeNode, Integer> node_post_order_index = new HashMap<TreeNode, Integer>();
 	
@@ -58,7 +59,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 
 	@Override
 	public StringTensor GetStringTensor() {
-		StringTensor st = new StringTensor();
+		StringTensor st = new StringTensor(curr_tensor.GetTensorInfo());
 		curr_tensor.Validate();
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());
@@ -68,8 +69,8 @@ public class TreeTensorGenerator extends TreeVisitor {
 	}
 
 	@Override
-	public void Clear() {
-		curr_tensor = new TreeTensor();
+	public void ClearAndInitialize(TensorInfo ti) {
+		curr_tensor = new TreeTensor(ti);
 		node_post_order_index.clear();
 	}
 

@@ -3,16 +3,17 @@ package translation.sequence;
 import statistic.id.IDManager;
 import translation.tensor.SequenceTensor;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 import tree.TreeNode;
 import tree.TreeVisitor;
 
 public class SequenceTensorGenerator extends TreeVisitor {
 	
+	SequenceTensor curr_tensor = null;
+	
 	public SequenceTensorGenerator(IDManager im) {
 		super(im);
 	}
-
-	SequenceTensor curr_tensor = new SequenceTensor();
 	
 	@Override
 	public boolean PreVisit(TreeNode node) {
@@ -33,7 +34,7 @@ public class SequenceTensorGenerator extends TreeVisitor {
 
 	@Override
 	public StringTensor GetStringTensor() {
-		StringTensor st = new StringTensor();
+		StringTensor st = new StringTensor(curr_tensor.GetTensorInfo());
 		curr_tensor.HandleAllDevoured(im);
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());
@@ -43,8 +44,8 @@ public class SequenceTensorGenerator extends TreeVisitor {
 	}
 
 	@Override
-	public void Clear() {
-		curr_tensor = new SequenceTensor();
+	public void ClearAndInitialize(TensorInfo ti) {
+		curr_tensor = new SequenceTensor(ti);
 	}
 	
 //	SequenceTensor curr_tensor = null;

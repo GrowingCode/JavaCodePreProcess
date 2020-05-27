@@ -26,6 +26,10 @@ public class StatementSkeletonTensor extends Tensor {
 
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex ti = new TokenIndex();
+	
+	public StatementSkeletonTensor(TensorInfo tinfo) {
+		super(tinfo);
+	}	
 
 	public void StoreStatementSkeletonInfo(String sig, ArrayList<String> info_str, ArrayList<Integer> info,
 			ArrayList<Integer> is_var) {

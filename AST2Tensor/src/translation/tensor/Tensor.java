@@ -3,21 +3,27 @@ package translation.tensor;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.core.runtime.Assert;
+
 public abstract class Tensor {
 
 //	IDManager im = null;
 //	String origin_file = null;
 	int role = -1;
+	
+	TensorInfo ti = null;
 
 	// processed
 	int inner_index = -1;
 	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
 
 //	String origin_file, 
-	public Tensor() {// IDManager im, int role
+	public Tensor(TensorInfo ti) {// IDManager im, int role
 //		this.im = im;
 //		this.origin_file = origin_file;
 //		this.role = role;
+		Assert.isTrue(ti != null);
+		this.ti = ti;
 	}
 
 //	public String GetOriginFile() {
@@ -30,6 +36,10 @@ public abstract class Tensor {
 
 	public int GetRole() {
 		return role;
+	}
+	
+	public TensorInfo GetTensorInfo() {
+		return ti;
 	}
 
 	public abstract int getSize();

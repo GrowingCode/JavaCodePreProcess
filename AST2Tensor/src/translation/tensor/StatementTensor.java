@@ -24,8 +24,8 @@ public class StatementTensor extends Tensor {
 
 //	String origin_file = null;
 
-	public StatementTensor() {// String origin_file, int role
-		super();
+	public StatementTensor(TensorInfo ti) {// String origin_file, int role
+		super(ti);
 //		this.origin_file = origin_file;
 	}
 

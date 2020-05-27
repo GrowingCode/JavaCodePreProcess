@@ -14,6 +14,7 @@ import translation.helper.TypeContentID;
 import translation.tensor.StatementInfo;
 import translation.tensor.StatementTensor;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 import tree.TreeNode;
 import tree.TreeVisitor;
 
@@ -28,6 +29,8 @@ public class StatementTensorGenerator extends TreeVisitor {
 
 	LinkedList<TreeNode> pre_order_node = new LinkedList<TreeNode>();
 	Map<TreeNode, StatementInfo> node_stmt = new HashMap<TreeNode, StatementInfo>();
+	
+	TensorInfo ti = null;
 	
 	@Override
 	public boolean PreVisit(TreeNode node) {
@@ -106,7 +109,7 @@ public class StatementTensorGenerator extends TreeVisitor {
 
 	@Override
 	public StringTensor GetStringTensor() {
-		StatementTensor curr_tensor = new StatementTensor();
+		StatementTensor curr_tensor = new StatementTensor(ti);
 		Iterator<TreeNode> pot_itr = pre_order_node.iterator();
 		while (pot_itr.hasNext()) {
 			TreeNode an = pot_itr.next();
@@ -115,7 +118,7 @@ public class StatementTensorGenerator extends TreeVisitor {
 			curr_tensor.Devour(si);
 		}
 		curr_tensor.HandleAllDevoured(im);
-		StringTensor st = new StringTensor();
+		StringTensor st = new StringTensor(ti);
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
@@ -124,7 +127,8 @@ public class StatementTensorGenerator extends TreeVisitor {
 	}
 
 	@Override
-	public void Clear() {
+	public void ClearAndInitialize(TensorInfo ti) {
+		this.ti = ti;
 		in_handling_node.clear();
 		in_handling_tensor.clear();
 		pre_order_node.clear();

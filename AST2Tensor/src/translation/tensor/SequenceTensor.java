@@ -19,6 +19,10 @@ public class SequenceTensor extends Tensor {
 	ArrayList<Integer> token_var = new ArrayList<Integer>();
 	ArrayList<Integer> token_var_relative = new ArrayList<Integer>();
 	ArrayList<Integer> conserved_memory_length = new ArrayList<Integer>();
+	
+	public SequenceTensor(TensorInfo ti) {
+		super(ti);
+	}
 
 	public void AppendOneToken(String token_str, String var_str, int type_content_en) {
 		node_type_content_str.add(token_str);

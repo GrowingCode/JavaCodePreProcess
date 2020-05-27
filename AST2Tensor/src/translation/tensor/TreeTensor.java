@@ -11,8 +11,8 @@ public class TreeTensor extends Tensor {
 //		super(im);// , role
 //	}
 	
-	public TreeTensor() {
-		super();
+	public TreeTensor(TensorInfo ti) {
+		super(ti);
 		post_order_node_type_content_en.add(0);
 		post_order_node_child_start.add(0);
 		post_order_node_child_end.add(-1);

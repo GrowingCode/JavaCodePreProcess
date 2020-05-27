@@ -7,6 +7,10 @@ public class StringTensor extends Tensor {
 	String oracle_str = null;
 	int size = -1;
 	
+	public StringTensor(TensorInfo ti) {
+		super(ti);
+	}
+	
 	public void SetToString(String str) {
 		this.str = str;
 	}

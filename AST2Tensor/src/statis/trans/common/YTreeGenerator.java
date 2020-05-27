@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import eclipse.bind.BindingResolveUtil;
 import eclipse.jdt.JDTASTHelper;
@@ -15,6 +16,7 @@ import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.tensor.StringTensor;
+import translation.tensor.TensorInfo;
 import tree.TreeNode;
 import tree.TreeVisit;
 import tree.TreeVisitor;
@@ -73,7 +75,8 @@ public class YTreeGenerator extends BasicGenerator {
 		max_num_node_in_one_ast = max_num_node_in_one_ast < tree.size() ? tree.size() : max_num_node_in_one_ast;
 		
 		TreeNode root = tree.get(node);
-		visitor.Clear();
+		Assert.isTrue(node instanceof MethodDeclaration);
+		visitor.ClearAndInitialize(new TensorInfo(icu.getPath().toOSString(), ((MethodDeclaration)node).getName().toString()));
 		TreeVisit.Visit(root, visitor);
 		StringTensor st = visitor.GetStringTensor();
 		if (st != null) {
