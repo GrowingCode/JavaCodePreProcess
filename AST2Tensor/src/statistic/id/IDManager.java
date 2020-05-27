@@ -76,6 +76,7 @@ public class IDManager {
 	private TreeMap<String, Integer> grammar_id_map = new TreeMap<String, Integer>();
 	private TreeMap<Integer, TreeSet<Integer>> grammar_id_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
 
+	private int pair_encoded_skeleton_hit_num = -1;
 	private int skeleton_hit_num = -1;
 	private int token_hit_num = -1;
 
@@ -137,11 +138,11 @@ public class IDManager {
 //		} else 
 		if (MetaOfApp.GeneratePairEncodedSkeletonToken) {
 			Regist(pair_encoded_skeleton_id_map, reserved_words);
-			RegistUtil(pair_encoded_skeleton_id_map, id_tool.str.hit_train, id_tool.str.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "PairEncodedSkeleton");
+			pair_encoded_skeleton_hit_num = RegistUtil(pair_encoded_skeleton_id_map, id_tool.str.hit_train, id_tool.str.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "PairEncodedSkeleton");
 		}
 		if (MetaOfApp.GenerateSkeletonToken) {
 			Regist(skeleton_id_map, reserved_words);
-			RegistUtil(skeleton_id_map, id_tool.sr.hit_train, id_tool.sr.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
+			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.sr.hit_train, id_tool.sr.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -161,7 +162,7 @@ public class IDManager {
 //		} else 
 		{
 			Regist(token_id_map, reserved_words);
-			RegistUtil(token_id_map, id_tool.tr.hit_train, id_tool.tr.not_hit_train, MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
+			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train, id_tool.tr.not_hit_train, MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
 //			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
 //					MapUtil.SortMapByValue(id_tool.tr.hit_train));
 //			Collections.reverse(tk_ht);
@@ -241,7 +242,7 @@ public class IDManager {
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
 	}
 	
-	private static void RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, Map<String, Integer> not_hit, int unk_num, int minimum_num, String desc) {
+	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, Map<String, Integer> not_hit, int unk_num, int minimum_num, String desc) {
 		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(hit));
 		Collections.reverse(sk_ht);
@@ -259,6 +260,7 @@ public class IDManager {
 				MapUtil.SortMapByValue(not_hit));
 		Collections.reverse(sk_nht);
 		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
+		return hit_num;
 	}
 
 	private static void Regist(Map<String, Integer> reg_map, List<String> ele_set) {
@@ -1314,12 +1316,14 @@ public class IDManager {
 	public String WordVocabularyInfo() {
 		return "Summary -- " + "#Vocabulary_Word_Size:" + token_hit_num + "#OutOfVocabulary_Word_Size:"
 				+ (token_id_map.size() - token_hit_num) + "#Unseen_Rate:"
-				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0) + "#Word_Unk_Num:"
-				+ MetaOfApp.NumberOfUnk + "#Word_Hit_Num:" + id_tool.tr.hit_train.size() + "#Word_Not_Hit_Num:"
-				+ id_tool.tr.not_hit_train.size() + "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
-				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num) + "#Unseen_Rate:"
-				+ ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0) + "#Skeleton_Unk_Num:"
-				+ MetaOfApp.NumberOfSkeletonUnk + "#Skeleton_Hit_Num:" + id_tool.sr.hit_train.size()
+				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0) 
+				+ "#Word_Unk_Num:" + MetaOfApp.NumberOfUnk + "#Word_Hit_Num:" + id_tool.tr.hit_train.size() 
+				+ "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size() 
+				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
+				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num) 
+				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0) 
+				+ "#pair_encoded_skeleton_hit_num:" + pair_encoded_skeleton_hit_num
+				+ "#Skeleton_Unk_Num:" + MetaOfApp.NumberOfSkeletonUnk + "#Skeleton_Hit_Num:" + id_tool.sr.hit_train.size()
 				+ "#Skeleton_Not_Hit_Num:" + id_tool.sr.not_hit_train.size();
 		// + "#OutOfVocabulary_API_Comb_Size:"
 		// +
