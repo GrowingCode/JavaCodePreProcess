@@ -168,6 +168,7 @@ public class Application implements IApplication {
 			}
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
+		if (MetaOfApp.GeneratePairEncodedSkeletonExamples)
 		{
 			// Handle SktPE logic
 			SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
