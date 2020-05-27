@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,6 +103,15 @@ public class TensorForProject {
 		SaveToFile(test_tensors, kind + "_test", info);
 //		System.err.println("valid_tensor_size:" + valid_tensors.size());
 		SaveToFile(valid_tensors, kind + "_valid", info);
+		
+		if (MetaOfApp.PrintTensorInfoForEachExampleInTestSet && Arrays.asList(MetaOfApp.PrintTensorInfoKind).contains(kind)) {
+			System.err.println("print each tensor info in test set in project:" + info.getName());
+			int index = 0;
+			for (Tensor t : test_tensors) {
+				index++;
+				System.err.println("index:" + index + "#" + t.GetTensorInfo());
+			}
+		}
 	}
 
 //	public int GetNumOfTensors() {

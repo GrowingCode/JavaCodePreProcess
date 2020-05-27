@@ -86,9 +86,9 @@ public class TensorGeneratorForProject {
 //				}
 //				result_sequence.AddTensors(sequence_tensors);
 
-				if (MetaOfApp.DetailDebugMode) {
-					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
-				}
+//				if (MetaOfApp.DetailDebugMode) {
+//					System.out.println("Geneate tensor for ICompilationUnit:" + icu.getPath().toString());
+//				}
 				CompilationUnit cu = JDTParser.ParseICompilationUnit(icu);
 
 				if (MetaOfApp.UseLexicalToken) {

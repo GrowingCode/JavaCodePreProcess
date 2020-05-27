@@ -36,7 +36,7 @@ public class SktLogicUtil {
 	}
 	
 	public static void TranslatePairEncodedSkeletonsAndTokens(IDManager im, TensorTools tensor_tool, ArrayList<Forest> fs) {
-		
+		// TODO
 	}
 	
 }

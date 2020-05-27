@@ -10,18 +10,23 @@ import util.FileUtil;
 public class MetaOfApp {
 
 	public final static String DataDirectory = System.getProperty("user.home") + "/AST_Tensors";
-	public final static boolean DetailDebugMode = false;
-	public final static boolean DetailFollowStatementDebugMode = false;
-	public final static boolean StatementsDetailDebugMode = true;
+//	public final static boolean DetailDebugMode = false;
+//	public final static boolean DetailFollowStatementDebugMode = false;
+//	public final static boolean StatementsDetailDebugMode = true;
 	
 	public final static String MethodDeclarationSignaturePrefix = "$YStatementSig$:";
 	public final static String ProjectDeclarationSignaturePrefix = "$YProjectSig$:";
 
+	public static boolean GeneratePairEncodedSkeletonExamples = false;
+	
+	public static boolean PrintTensorInfoForEachExampleInTestSet = false;
+	public final static String[] PrintTensorInfoKind = new String[] {"stmt"};
+	
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
 //	public final static int ContentHuffTreeStandardChildrenNum = 1000;
 //	public final static int TypeContentHuffTreeStandardChildrenNum = 10000;
 
-	public final static boolean ClassLevelTensorGeneration = false;
+	public static boolean ClassLevelTensorGeneration = false;
 
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10
 //	public final static double TreeShouldSplitNodeNumRate = 1.2;
