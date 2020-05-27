@@ -19,7 +19,6 @@ public class TreeTensorGenerator extends TreeVisitor {
 	
 	public TreeTensorGenerator(IDManager im) {
 		super(im);
-		curr_tensor.StorePostOrderNodeInfo(0, new ArrayList<Integer>());
 	}
 
 	TreeTensor curr_tensor = null;
@@ -71,6 +70,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 	@Override
 	public void ClearAndInitialize(TensorInfo ti) {
 		curr_tensor = new TreeTensor(ti);
+//		curr_tensor.StorePostOrderNodeInfo(0, new ArrayList<Integer>());
 		node_post_order_index.clear();
 	}
 
