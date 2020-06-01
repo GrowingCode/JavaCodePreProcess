@@ -49,6 +49,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 			TokenHandleSkeletonVisitor sv = new TokenHandleSkeletonVisitor(icu);
 			stmt_root.accept(sv);
 			ArrayList<String> lls = sv.GetResult();
+			ArrayList<Integer> kinds = sv.GetTokenKind();
 			ArrayList<Integer> is_var_lls = sv.GetIsVarResult();
 			ArrayList<Integer> ids = new ArrayList<Integer>();
 			int sk_id = im.GetSkeletonID(lls.get(0));
@@ -58,7 +59,7 @@ public class StatementSkeletonTensorGenerator extends BasicGenerator {
 				int tk_id = im.GetTypeContentID(pp_tk);
 				ids.add(tk_id);
 			}
-			curr_tensor.StoreStatementSkeletonInfo(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(stmt_roots.get(0)), lls, ids, is_var_lls);
+			curr_tensor.StoreStatementSkeletonInfo(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(stmt_roots.get(0)), lls, ids, kinds, is_var_lls);
 		}
 		try {
 			curr_tensor.HandleAllInfo();

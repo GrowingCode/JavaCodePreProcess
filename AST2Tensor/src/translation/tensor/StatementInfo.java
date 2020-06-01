@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import main.MetaOfApp;
 import translation.helper.TypeContentID;
+import translation.tensor.util.TokenKindUtil;
 import tree.TreeNode;
 
 public class StatementInfo {
@@ -21,6 +22,7 @@ public class StatementInfo {
 	}
 
 	ArrayList<Integer> type_content_id = new ArrayList<Integer>();
+	ArrayList<Integer> type_content_kind = new ArrayList<Integer>();
 	ArrayList<String> local_token_str = new ArrayList<String>();
 	ArrayList<TreeNode> self = new ArrayList<TreeNode>();
 	ArrayList<TreeNode> parent = new ArrayList<TreeNode>();
@@ -38,6 +40,7 @@ public class StatementInfo {
 	public void StoreOneNode(TypeContentID t_c, String token_var, TreeNode self_n, TreeNode parent_n, int api_comb_id, int api_relative_id) {
 		// base data
 		type_content_id.add(t_c.GetTypeContentID());
+		type_content_kind.add(TokenKindUtil.GetTokenKind(self_n));
 		if (MetaOfApp.VariableNoLimit) {
 			token_var = t_c.GetTypeContent();
 		}

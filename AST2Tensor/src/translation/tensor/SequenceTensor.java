@@ -19,12 +19,13 @@ public class SequenceTensor extends Tensor {
 	ArrayList<Integer> token_var = new ArrayList<Integer>();
 	ArrayList<Integer> token_var_relative = new ArrayList<Integer>();
 	ArrayList<Integer> conserved_memory_length = new ArrayList<Integer>();
+	ArrayList<Integer> token_kind = new ArrayList<Integer>();
 	
 	public SequenceTensor(TensorInfo ti) {
 		super(ti);
 	}
 
-	public void AppendOneToken(String token_str, String var_str, int type_content_en) {
+	public void AppendOneToken(String token_str, String var_str, int type_content_en, int en_kind) {
 		node_type_content_str.add(token_str);
 		if (MetaOfApp.VariableNoLimit) {
 			node_var_str.add(token_str);
@@ -32,6 +33,7 @@ public class SequenceTensor extends Tensor {
 			node_var_str.add(var_str);
 		}
 		token_en.add(type_content_en);
+		token_kind.add(en_kind);
 	}
 
 	public void HandleAllDevoured(IDManager im) {
@@ -49,14 +51,16 @@ public class SequenceTensor extends Tensor {
 	@Override
 	public String toString() {
 		return StringUtils.join(token_en.toArray(), " ") + "#" + StringUtils.join(token_var.toArray(), " ") + "#"
-				+ StringUtils.join(token_var_relative.toArray(), " ") + "#" + StringUtils.join(conserved_memory_length.toArray(), " ");
+				+ StringUtils.join(token_var_relative.toArray(), " ") + "#" + StringUtils.join(conserved_memory_length.toArray(), " ") + "#" 
+				+ StringUtils.join(token_kind.toArray(), " ");
 	}
 
 	@Override
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
 		return StringUtils.join(token_en.toArray(), " ") + separator + StringUtils.join(token_var.toArray(), " ")
-				+ separator + StringUtils.join(token_var_relative.toArray(), " ") + separator + StringUtils.join(conserved_memory_length.toArray(), " ");
+				+ separator + StringUtils.join(token_var_relative.toArray(), " ") + separator + StringUtils.join(conserved_memory_length.toArray(), " ")
+				+ separator + StringUtils.join(token_kind.toArray(), " ");
 	}
 
 	@Override
@@ -66,7 +70,8 @@ public class SequenceTensor extends Tensor {
 				+ "en:" + StringUtils.join(token_en.toArray(), " ") + separator 
 				+ "var:" + StringUtils.join(token_var.toArray(), " ") + separator 
 				+ "var_relative:" + StringUtils.join(token_var_relative.toArray(), " ") + separator
-				+ "cnsv_mem_len:" + StringUtils.join(conserved_memory_length.toArray(), " ")
+				+ "cnsv_mem_len:" + StringUtils.join(conserved_memory_length.toArray(), " ") + separator
+				+ "token_kind:" + StringUtils.join(token_kind.toArray(), " ") + separator
 				;
 	}
 

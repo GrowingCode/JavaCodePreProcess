@@ -21,6 +21,7 @@ public class StatementSkeletonTensor extends Tensor {
 	ArrayList<Integer> stmt_token_leaf_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_leaf_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_conserved_memory_length = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_kind = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
 
@@ -31,13 +32,14 @@ public class StatementSkeletonTensor extends Tensor {
 		super(tinfo);
 	}	
 
-	public void StoreStatementSkeletonInfo(String sig, ArrayList<String> info_str, ArrayList<Integer> info,
+	public void StoreStatementSkeletonInfo(String sig, ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
 			ArrayList<Integer> is_var) {
 		this.sig = sig;
 		stmt_token_str.addAll(info_str);
 
 		stmt_token_info_start.add(stmt_token_info.size());
 		stmt_token_info.addAll(info);
+		stmt_token_kind.addAll(kind);
 		stmt_token_info_end.add(stmt_token_info.size() - 1);
 		ArrayList<Integer> leaf_info = new ArrayList<Integer>();
 		for (int i = 0; i < info.size(); i++) {
@@ -73,6 +75,7 @@ public class StatementSkeletonTensor extends Tensor {
 				+ StringUtils.join(stmt_token_leaf_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_leaf_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_kind.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ");
 	}

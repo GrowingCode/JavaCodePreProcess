@@ -27,6 +27,7 @@ public class SkeletonVisitor extends ASTVisitor {
 
 	ArrayList<String> result = new ArrayList<String>();
 	ArrayList<Integer> is_var_result = new ArrayList<Integer>();
+	ArrayList<Integer> kind_result = new ArrayList<Integer>();
 
 	public SkeletonVisitor(ICompilationUnit icu) {
 		this.icu = icu;
@@ -114,12 +115,14 @@ public class SkeletonVisitor extends ASTVisitor {
 //			System.out.println("c:" + c);
 			result.add(c);
 			is_var_result.add(0);
+			kind_result.add(0);
 			Set<ElementInfo> cs = content.keySet();
 			Iterator<ElementInfo> c_itr = cs.iterator();
 			while (c_itr.hasNext()) {
 				ElementInfo ei = c_itr.next();
 				result.add(ei.content);
 				is_var_result.add(ei.is_var);
+				kind_result.add(ei.kind);
 			}
 		}
 		super.postVisit(node);
@@ -131,6 +134,10 @@ public class SkeletonVisitor extends ASTVisitor {
 	
 	public ArrayList<Integer> GetIsVarResult() {
 		return is_var_result;
+	}
+	
+	public ArrayList<Integer> GetTokenKind() {
+		return kind_result;
 	}
 
 }

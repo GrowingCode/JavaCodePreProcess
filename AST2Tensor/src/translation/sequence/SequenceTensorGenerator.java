@@ -4,6 +4,7 @@ import statistic.id.IDManager;
 import translation.tensor.SequenceTensor;
 import translation.tensor.StringTensor;
 import translation.tensor.TensorInfo;
+import translation.tensor.util.TokenKindUtil;
 import tree.TreeNode;
 import tree.TreeVisitor;
 
@@ -23,7 +24,7 @@ public class SequenceTensorGenerator extends TreeVisitor {
 //			SimpleName.class.isAssignableFrom(node.GetClazz()) || SimpleType.class.isAssignableFrom(node.GetClazz())
 			var = node.GetContent();
 		}
-		curr_tensor.AppendOneToken(node.GetContent(), var, type_content_id);
+		curr_tensor.AppendOneToken(node.GetContent(), var, type_content_id, TokenKindUtil.GetTokenKind(node));
 		return true;
 	}
 

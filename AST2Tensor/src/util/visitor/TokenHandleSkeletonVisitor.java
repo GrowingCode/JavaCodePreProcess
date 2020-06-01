@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.StringLiteral;
 
 import eclipse.bind.BindingResolveUtil;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
+import translation.tensor.util.TokenKindUtil;
 
 public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 
@@ -39,7 +40,8 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 				if (BindingResolveUtil.ResolveVariableBinding(node) != null) {
 					is_var = 1;
 				}
-				ei = new ElementInfo(index, cnt, is_var);
+				int kind = TokenKindUtil.GetTokenKind(node);
+				ei = new ElementInfo(index, cnt, is_var, kind);
 				content.put(ei, cnt);
 				record.put(cnt, ei);
 			}
@@ -48,5 +50,5 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 		}
 		return r;
 	}
-
+	
 }

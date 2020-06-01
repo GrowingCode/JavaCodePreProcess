@@ -58,6 +58,7 @@ public class StatementTensor extends Tensor {
 	ArrayList<Integer> stmt_token_variable_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_variable_relative_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_conserved_memory_length = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_kind = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_api_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_api_relative_info = new ArrayList<Integer>();
 //	ArrayList<Integer> stmt_token_parent_relative_info = new ArrayList<Integer>();
@@ -164,6 +165,7 @@ public class StatementTensor extends Tensor {
 				+ StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_kind.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_api_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_api_relative_info.toArray(), " ") + separator
 //				+ StringUtils.join(stmt_token_parent_relative_info.toArray(), " ") + separator
@@ -236,6 +238,7 @@ public class StatementTensor extends Tensor {
 				+ "var:" + StringUtils.join(stmt_token_variable_info.toArray(), " ") + separator
 				+ "var_relative:" + StringUtils.join(stmt_token_variable_relative_info.toArray(), " ") + separator
 				+ "conserve_mem_len:" + StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
+				+ "kind:" + StringUtils.join(stmt_token_kind.toArray(), " ") + separator
 				;
 		return result;
 	}
@@ -429,7 +432,7 @@ public class StatementTensor extends Tensor {
 				stmt_token_info_start.add(ori_size);
 				stmt_token_string.addAll(last_stmt.type_content_str);
 				stmt_token_info.addAll(last_stmt.type_content_id);
-
+				stmt_token_kind.addAll(last_stmt.type_content_kind);
 				/*int j_len = last_stmt.self.size();
 				for (int j = 0; j < j_len; j++) {
 					TreeNode self_n = last_stmt.self.get(j);
