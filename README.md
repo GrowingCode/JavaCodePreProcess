@@ -18,3 +18,9 @@ Click this project in Eclipse package explorer and right click, choose `Run As` 
 ## Step4 
 Wait until the procedure stops. 
 
+## Step5 
+Please refer to [deep learning model](https://github.com/GrowingCode/FrameTokenMemAtten) to start training/validating/testing. 
+
+
+
+
