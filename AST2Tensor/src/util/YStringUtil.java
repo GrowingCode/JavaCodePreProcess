@@ -16,4 +16,12 @@ public class YStringUtil {
 		return sb.replace(pos, pos+to_be_replace.length(), replace_content).toString();
 	}
 	
+	public static String TrimString(String s, int size) {
+		if (s.length() < size) {
+			return s;
+		} else {
+			return s.substring(0, size);
+		}
+	}
+	
 }

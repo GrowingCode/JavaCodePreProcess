@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import eclipse.bind.BindingResolveUtil;
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
+import main.MetaOfApp;
 import tree.ExprSpecTreeNode;
 import tree.TreeNode;
 import util.MapUtil;
@@ -21,115 +22,130 @@ import util.PrintUtil;
 public class TokenKindUtil {
 
 	/**
-	 * kind: 
-	 *   0, default value
-	 *   1, approximate variable
+	 * kind: -1, default value 1, approximate variable
 	 */
+	private final static int DefaultValue = -1;
+	private final static int SimpleNameNotVariable = 0;
+	private final static int ApproximateVariable = 1;
+
 	public final static Map<String, ConditionKindComputer> token_kind_map = new TreeMap<String, ConditionKindComputer>() {
 		private static final long serialVersionUID = -6787015540770019187L;
 		{
-			put("org.eclipse.jdt.core.dom.SimpleType org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
+			put("org.eclipse.jdt.core.dom.SimpleType org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(int cond2) {
-					return 0;
+					return SimpleNameNotVariable;
 				}
 			});
-			put("org.eclipse.jdt.core.dom.ContinueStatement org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
+			put("org.eclipse.jdt.core.dom.ContinueStatement org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.TypeParameter org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.MarkerAnnotation org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.NormalAnnotation org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.MemberValuePair org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.QualifiedName org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.MethodDeclaration org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.LabeledStatement org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.BreakStatement org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							return SimpleNameNotVariable;
+						}
+					});
+			put("org.eclipse.jdt.core.dom.SwitchCase org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(int cond2) {
-					return 0;
+					return SimpleNameNotVariable;
 				}
 			});
-			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
+			put("org.eclipse.jdt.core.dom.MethodInvocation org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							if (cond2 == 1) {
+								return SimpleNameNotVariable;
+							} else {
+								return ApproximateVariable;
+							}
+						}
+					});
+			put("org.eclipse.jdt.core.dom.SuperMethodInvocation org.eclipse.jdt.core.dom.SimpleName",
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(int cond2) {
+							if (cond2 == 0) {
+								return SimpleNameNotVariable;
+							} else {
+								return ApproximateVariable;
+							}
+						}
+					});
+			put("org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.TypeParameter org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.MarkerAnnotation org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.NormalAnnotation org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.MemberValuePair org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.QualifiedName org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.MethodDeclaration org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.LabeledStatement org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.BreakStatement org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.SwitchCase org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 0;
-				}
-			});
-			put("org.eclipse.jdt.core.dom.MethodInvocation org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					if (cond2 == 1) {
-						return 0;
-					} else {
-						return 1;
-					}
-				}
-			});
-			put("org.eclipse.jdt.core.dom.SuperMethodInvocation org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					if (cond2 == 0) {
-						return 0;
-					} else {
-						return 1;
-					}
-				}
-			});
-			put("org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {				
-				@Override
-				public int ConditionToKind(int cond2) {
-					return 1;
+					return ApproximateVariable;
 				}
 			});
 		}
@@ -201,40 +217,39 @@ public class TokenKindUtil {
 //		if (cls.equals(SimpleName.class)) {
 //			System.err.println("is_var:" + (tn.GetBinding() != null) + "#cls_pet:" + cls_pet);
 //		}
-		ConditionKindComputer kind_computer = token_kind_map.get(cls_pet.cond1);
-		if (kind_computer == null) {
-			return 0;
-		}
-		int kind = kind_computer.ConditionToKind(cls_pet.cond2);
-		return kind;
+		return ContitionToKind(cls_pet);
 	}
 
 	private static Map<Condition, Integer> is_var_cls_pet_count = new TreeMap<Condition, Integer>();
 	private static Map<Condition, Integer> is_not_var_cls_pet_count = new TreeMap<Condition, Integer>();
 	static {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				{
-					TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
-					TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
-					iv_set.removeAll(inv_set);
-					PrintUtil.PrintMap(is_var_cls_pet_count, iv_set, "absolute is_var_cls_pet_count", 100000000);
+		if (MetaOfApp.PrintTokenKindDebugInfo) {
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				public void run() {
+					{
+						TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
+						TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
+						iv_set.removeAll(inv_set);
+						PrintUtil.PrintMap(is_var_cls_pet_count, iv_set, "absolute is_var_cls_pet_count", 100000000);
+					}
+					{
+						TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
+						TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
+						inv_set.removeAll(iv_set);
+						PrintUtil.PrintMap(is_not_var_cls_pet_count, inv_set, "absolute is_not_var_cls_pet_count",
+								100000000);
+					}
+					{
+						TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
+						TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
+						iv_set.retainAll(inv_set);
+						PrintUtil.PrintMap(is_var_cls_pet_count, iv_set, "join is_var_cls_pet_count", 100000000);
+						PrintUtil.PrintMap(is_not_var_cls_pet_count, iv_set, "join is_not_var_cls_pet_count",
+								100000000);
+					}
 				}
-				{
-					TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
-					TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
-					inv_set.removeAll(iv_set);
-					PrintUtil.PrintMap(is_not_var_cls_pet_count, inv_set, "absolute is_not_var_cls_pet_count", 100000000);
-				}
-				{
-					TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
-					TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
-					iv_set.retainAll(inv_set);
-					PrintUtil.PrintMap(is_var_cls_pet_count, iv_set, "join is_var_cls_pet_count", 100000000);
-					PrintUtil.PrintMap(is_not_var_cls_pet_count, iv_set, "join is_not_var_cls_pet_count", 100000000);
-				}
-			}
-		});
+			});
+		}
 	}
 
 	public static int GetTokenKind(ASTNode tn) {
@@ -256,27 +271,50 @@ public class TokenKindUtil {
 				MapUtil.CountOneKey(is_not_var_cls_pet_count, cls_pet, 1);
 			}
 		}
-		ConditionKindComputer kind_computer = token_kind_map.get(cls_pet.cond1);
-		if (kind_computer == null) {
-			return 0;
+		return ContitionToKind(cls_pet);
+	}
+
+	public static ArrayList<String> GenApproximateVarFromTokenKind(ArrayList<String> node_type_content_str,
+			ArrayList<Integer> token_kind) {
+		ArrayList<String> te_var_str = new ArrayList<String>();
+		int index = -1;
+		for (Integer tk : token_kind) {
+			index++;
+			if (tk == ApproximateVariable) {
+				te_var_str.add(node_type_content_str.get(index));
+			} else {
+				te_var_str.add(null);
+			}
 		}
-		int kind = kind_computer.ConditionToKind(cls_pet.cond2);
-		return kind;
+		return te_var_str;
+	}
+
+	public static int ContitionToKind(Condition cond) {
+		ConditionKindComputer kind_computer = token_kind_map.get(cond.cond1);
+		if (kind_computer == null) {
+			String[] ss = cond.cond1.split(" ");
+			kind_computer = token_kind_map.get(ss[ss.length - 1]);
+		}
+		if (kind_computer == null) {
+			return DefaultValue;
+		} else {
+			return kind_computer.ConditionToKind(cond.cond2);
+		}
 	}
 
 }
 
 abstract class ConditionKindComputer {
-	
+
 	public abstract int ConditionToKind(int cond2);
-	
+
 }
 
 class Condition implements Comparable<Condition> {
-	
+
 	String cond1 = null;
 	int cond2 = -1;
-	
+
 	public Condition(String cond1, int cond2) {
 		this.cond1 = cond1;
 		this.cond2 = cond2;
@@ -286,19 +324,10 @@ class Condition implements Comparable<Condition> {
 	public int compareTo(Condition o) {
 		return toString().compareTo(o.toString());
 	}
-	
+
 	@Override
 	public String toString() {
 		return cond1 + "#" + cond2;
 	}
-	
+
 }
-
-
-
-
-
-
-
-
-

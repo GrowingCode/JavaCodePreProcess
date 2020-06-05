@@ -3,12 +3,15 @@ package translation.tensor;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.tensor.util.ConservedMemoryUtil;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndexUtil;
+import translation.tensor.util.TokenKindUtil;
+import util.PrintUtil;
 
 public class SequenceTensor extends Tensor {
 
@@ -38,6 +41,17 @@ public class SequenceTensor extends Tensor {
 
 	public void HandleAllDevoured(IDManager im) {
 		token_var.addAll(TokenIndexUtil.GenerateTokenIndex(node_var_str));
+		if (MetaOfApp.UseApproximateVariable) {
+			Assert.isTrue(token_var.size() == token_kind.size());
+			ArrayList<String> te_var_str = TokenKindUtil.GenApproximateVarFromTokenKind(node_type_content_str, token_kind);
+			ArrayList<Integer> pre_token_var = new ArrayList<Integer>();
+			pre_token_var.addAll(token_var);
+			token_var.clear();
+			token_var.addAll(TokenIndexUtil.GenerateTokenIndex(te_var_str));
+			if (MetaOfApp.PrintTokenKindDebugInfo) {
+				PrintUtil.PrintThreeLists(node_type_content_str, pre_token_var, token_var, "token_var cmp approx_token_var", 25);
+			}
+		}
 		token_var_relative.addAll(RepetitionUtil.GenerateRepetitionRelative(token_var));
 		conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(token_var, token_var_relative,
 				MetaOfApp.ConservedContextLength));

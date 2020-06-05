@@ -58,6 +58,23 @@ public class PrintUtil {
 		System.out.println("===== list " + extra_info + " print end =====");
 	}
 	
+	public static <S, K> void PrintThreeLists(List<S> list0, List<K> list1, List<K> list2, String extra_info, int one_ele_length) {
+		System.out.println("===== two lists " + extra_info + " print begin =====");
+		for (S k : list0) {
+			System.out.printf("%"+one_ele_length+"s", YStringUtil.TrimString(k+"", one_ele_length));
+		}
+		System.out.println();
+		for (K k : list1) {
+			System.out.printf("%"+one_ele_length+"s", YStringUtil.TrimString(k+"", one_ele_length));
+		}
+		System.out.println();
+		for (K k : list2) {
+			System.out.printf("%"+one_ele_length+"s", YStringUtil.TrimString(k+"", one_ele_length));
+		}
+		System.out.println();
+		System.out.println("===== two lists " + extra_info + " print end =====");
+	}
+	
 	public static <K> void PrintSet(Set<K> set, String extra_info) {
 		System.out.println("===== set " + extra_info + " print begin =====");
 		for (K k : set) {

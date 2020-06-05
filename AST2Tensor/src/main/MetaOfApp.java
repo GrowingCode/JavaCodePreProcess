@@ -68,6 +68,7 @@ public class MetaOfApp {
 //	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
 	public static boolean VariableNoLimit = false;
+	public static boolean UseApproximateVariable = false;
 	public static boolean MethodNoLimit = false;
 	public static boolean JavaFileNoLimit = true;
 
@@ -84,6 +85,8 @@ public class MetaOfApp {
 	
 	public static boolean GenerateSkeletonToken = true;
 	public static boolean GeneratePairEncodedSkeletonToken = true;
+	
+	public static boolean PrintTokenKindDebugInfo = false;
 
 	public static void SaveToDirectory() {
 		Gson gson = new Gson();
