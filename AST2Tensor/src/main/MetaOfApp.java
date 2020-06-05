@@ -16,8 +16,6 @@ public class MetaOfApp {
 	
 	public final static String MethodDeclarationSignaturePrefix = "$YStatementSig$:";
 	public final static String ProjectDeclarationSignaturePrefix = "$YProjectSig$:";
-
-	public static boolean GeneratePairEncodedSkeletonExamples = false;
 	
 	public static boolean PrintTensorInfoForEachExampleInTestSet = false;
 	public final static String[] PrintTensorInfoKind = new String[] {"stmt"};
@@ -84,7 +82,7 @@ public class MetaOfApp {
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;
-	public static boolean GeneratePairEncodedSkeletonToken = true;
+	public static boolean GeneratePairEncodedSkeletonToken = false;
 	
 	public static boolean PrintTokenKindDebugInfo = false;
 

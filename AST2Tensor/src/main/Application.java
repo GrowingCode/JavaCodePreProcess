@@ -137,7 +137,7 @@ public class Application implements IApplication {
 			}
 		}
 		SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
-		if (MetaOfApp.GeneratePairEncodedSkeletonExamples)
+		if (MetaOfApp.GeneratePairEncodedSkeletonToken)
 		{
 			File sktpe_mj = new File(sktpe_merges_json);
 //			File sktpe_ttj = new File(sktpe_token_times_json);
@@ -168,7 +168,7 @@ public class Application implements IApplication {
 			}
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
-		if (MetaOfApp.GeneratePairEncodedSkeletonExamples)
+		if (MetaOfApp.GeneratePairEncodedSkeletonToken)
 		{
 			// Handle SktPE logic
 			SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
@@ -179,7 +179,7 @@ public class Application implements IApplication {
 				SktPETreesUtil.ApplySktPEMergesToTrees(sktpe_mr.GetMerges(), f_trees);
 			}
 		}
-		if (MetaOfApp.GeneratePairEncodedSkeletonExamples)
+		if (MetaOfApp.GeneratePairEncodedSkeletonToken)
 		{
 			SktLogicUtil.CountPairEncodedSkeletons(id_tool, id_tool.stf_r.GetAllForests());
 		}
@@ -247,7 +247,7 @@ public class Application implements IApplication {
 //				DebugLogger.Error(
 //						"The root path given in parameter should be a directory which contains zip files or with-project directories");
 //			}
-			if (MetaOfApp.GeneratePairEncodedSkeletonExamples)
+			if (MetaOfApp.GeneratePairEncodedSkeletonToken)
 				SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(im, tensor_tool, id_tool.stf_r.GetAllForests());
 			System.out.println("==== GenerateTensor End ====");
 		}
