@@ -17,6 +17,7 @@ import main.MetaOfApp;
 import statistic.id.IDManager;
 import translation.tensor.StringTensor;
 import translation.tensor.TensorInfo;
+import tree.ExprSpecTreeNode;
 import tree.TreeNode;
 import tree.TreeVisit;
 import tree.TreeVisitor;
@@ -52,7 +53,12 @@ public class YTreeGenerator extends BasicGenerator {
 			if (is_leaf && !MetaOfApp.LeafTypeContentSeparate) {
 				r_content = JDTASTHelper.GetContentRepresentationForASTNode(node);
 			}
-			TreeNode tn = new TreeNode(node.getClass(), BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content);// type + add_content
+			TreeNode tn = null;
+			if (JDTASTHelper.IsExprSpecPattern(node)) {
+				tn = new ExprSpecTreeNode(node.getClass(), BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content, JDTASTHelper.GetExprSpec(node) != null);
+				} else {
+				tn = new TreeNode(node.getClass(), BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content);
+			}
 			tree.put(node, tn);
 			ASTNode parent = node.getParent();
 			TreeNode parent_tn = tree.get(parent);

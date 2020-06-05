@@ -12,15 +12,42 @@ public class PrintUtil {
 		System.out.println("===== map " + extra_info + " print begin; max_print_num:" + max_print_num + " =====");
 		Set<K> key = map.keySet();
 		int count = 0;
+		double v_acc = 0;
 		for (Iterator<K> it = key.iterator(); it.hasNext();) {
 			K s = it.next();
-			System.out.println(s+":"+map.get(s));
+			V v = map.get(s);
+			System.out.println(s+":"+v);
 			count++;
 			if (count >= max_print_num) {
 				break;
 			}
+			try {
+				v_acc += Double.parseDouble(v+"");
+			} catch (Exception e) {
+			}
 		}
-		System.out.println("===== map " + extra_info + " print end; max_print_num:" + max_print_num + " =====");
+		System.out.println("===== map " + extra_info + " print end; print_num:" + count + " v_acc:" + v_acc + " =====");
+	}
+
+	public static <K, V> void PrintMap(Map<K, V> map, Set<K> ks, String extra_info, int max_print_num) {
+		System.out.println("===== map " + extra_info + " print begin; max_print_num:" + max_print_num + " =====");
+		int count = 0;
+		double v_acc = 0;
+		Iterator<K> it = ks.iterator();
+		for (; it.hasNext();) {
+			K s = it.next();
+			V v = map.get(s);
+			System.out.println(s+":"+v);
+			count++;
+			if (count >= max_print_num) {
+				break;
+			}
+			try {
+				v_acc += Double.parseDouble(v+"");
+			} catch (Exception e) {
+			}
+		}
+		System.out.println("===== map " + extra_info + " print end; print_num:" + count + " v_acc:" + v_acc + " =====");
 	}
 	
 	public static <K> void PrintList(List<K> list, String extra_info) {

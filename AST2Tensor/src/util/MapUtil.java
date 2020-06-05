@@ -98,6 +98,15 @@ public class MapUtil {
 		}
 		return max_k;
 	}
+	
+	public static <K> void CountOneKey(Map<K, Integer> m, K key, int count) {
+		Integer r_count = m.get(key);
+		if (r_count == null) {
+			r_count = 0;
+		}
+		r_count++;
+		m.put(key, r_count);
+	}
 
 }
 

@@ -6,10 +6,13 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
@@ -90,6 +93,24 @@ public class JDTASTHelper {
 		Assert.isTrue(node instanceof MethodDeclaration);
 		MethodDeclaration md = (MethodDeclaration) node;
 		return md.getName().toString();
+	}
+	
+	public static boolean IsExprSpecPattern(ASTNode node) {
+		if (node instanceof MethodInvocation || node instanceof SuperConstructorInvocation) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static Expression GetExprSpec(ASTNode node) {
+		Assert.isTrue(IsExprSpecPattern(node));
+		if (node instanceof MethodInvocation) {
+			return ((MethodInvocation) node).getExpression();
+		}
+		if (node instanceof SuperConstructorInvocation) {
+			return ((SuperConstructorInvocation) node).getExpression();
+		}
+		return null;
 	}
 
 }

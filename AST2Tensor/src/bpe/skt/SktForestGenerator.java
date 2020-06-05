@@ -12,12 +12,14 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Statement;
 
+import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statis.trans.common.BasicGenerator;
 import statis.trans.common.RoleAssigner;
 import statistic.IDTools;
 import statistic.id.IDManager;
 import translation.ast.StatementUtil;
+import tree.ExprSpecTreeNode;
 import tree.Forest;
 import tree.Tree;
 import tree.TreeNode;
@@ -130,7 +132,12 @@ class SktTreeGenerator extends ASTVisitor {
 		}
 		if (to_create_tree_node) {
 			// create tree node
-			TreeNode tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);
+			TreeNode tn = null;
+			if (JDTASTHelper.IsExprSpecPattern(node)) {
+				tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);
+			} else {
+				tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);
+			}
 			node_record.put(node, tn);
 			
 			ASTNode r_parent = parent_record.get(node);
