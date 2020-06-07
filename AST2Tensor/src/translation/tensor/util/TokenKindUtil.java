@@ -24,9 +24,9 @@ public class TokenKindUtil {
 	/**
 	 * kind: -1, default value 1, approximate variable
 	 */
-	private final static int DefaultValue = -1;
-	private final static int SimpleNameNotVariable = 0;
-	private final static int ApproximateVariable = 1;
+	private final static int DefaultTokenKind = -1;
+	private final static int SimpleNameApproximateNotVariable = 0;
+	private final static int SimpleNameApproximateVariable = 1;
 
 	public final static Map<String, ConditionKindComputer> token_kind_map = new TreeMap<String, ConditionKindComputer>() {
 		private static final long serialVersionUID = -6787015540770019187L;
@@ -34,90 +34,90 @@ public class TokenKindUtil {
 			put("org.eclipse.jdt.core.dom.SimpleType org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(int cond2) {
-					return SimpleNameNotVariable;
+					return SimpleNameApproximateNotVariable;
 				}
 			});
 			put("org.eclipse.jdt.core.dom.ContinueStatement org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.TypeParameter org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.MarkerAnnotation org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.NormalAnnotation org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.MemberValuePair org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.QualifiedName org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.MethodDeclaration org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.LabeledStatement org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.BreakStatement org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName",
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(int cond2) {
-							return SimpleNameNotVariable;
+							return SimpleNameApproximateNotVariable;
 						}
 					});
 			put("org.eclipse.jdt.core.dom.SwitchCase org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(int cond2) {
-					return SimpleNameNotVariable;
+					return SimpleNameApproximateNotVariable;
 				}
 			});
 			put("org.eclipse.jdt.core.dom.MethodInvocation org.eclipse.jdt.core.dom.SimpleName",
@@ -125,9 +125,9 @@ public class TokenKindUtil {
 						@Override
 						public int ConditionToKind(int cond2) {
 							if (cond2 == 1) {
-								return SimpleNameNotVariable;
+								return SimpleNameApproximateNotVariable;
 							} else {
-								return ApproximateVariable;
+								return SimpleNameApproximateVariable;
 							}
 						}
 					});
@@ -136,16 +136,16 @@ public class TokenKindUtil {
 						@Override
 						public int ConditionToKind(int cond2) {
 							if (cond2 == 0) {
-								return SimpleNameNotVariable;
+								return SimpleNameApproximateNotVariable;
 							} else {
-								return ApproximateVariable;
+								return SimpleNameApproximateVariable;
 							}
 						}
 					});
 			put("org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(int cond2) {
-					return ApproximateVariable;
+					return SimpleNameApproximateVariable;
 				}
 			});
 		}
@@ -280,7 +280,7 @@ public class TokenKindUtil {
 		int index = -1;
 		for (Integer tk : token_kind) {
 			index++;
-			if (tk == ApproximateVariable) {
+			if (tk == SimpleNameApproximateVariable) {
 				te_var_str.add(node_type_content_str.get(index));
 			} else {
 				te_var_str.add(null);
@@ -296,7 +296,7 @@ public class TokenKindUtil {
 			kind_computer = token_kind_map.get(ss[ss.length - 1]);
 		}
 		if (kind_computer == null) {
-			return DefaultValue;
+			return DefaultTokenKind;
 		} else {
 			return kind_computer.ConditionToKind(cond.cond2);
 		}
