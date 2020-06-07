@@ -48,6 +48,16 @@ public class SequenceTensor extends Tensor {
 			pre_token_var.addAll(token_var);
 			token_var.clear();
 			token_var.addAll(TokenIndexUtil.GenerateTokenIndex(te_var_str));
+			if (MetaOfApp.FurtherUseStrictVariable) {
+				int t_size = token_var.size();
+				Assert.isTrue(t_size == pre_token_var.size());
+				for (int i=0; i<t_size; i++) {
+					if (pre_token_var.get(i) > 0) {
+					} else {
+						token_var.set(i, -1);
+					}
+				}
+			}
 			if (MetaOfApp.PrintTokenKindDebugInfo) {
 				PrintUtil.PrintThreeLists(node_type_content_str, pre_token_var, token_var, "token_var cmp approx_token_var", 25);
 			}
