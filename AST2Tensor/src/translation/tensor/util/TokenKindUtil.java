@@ -6,8 +6,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.bind.BindingResolveUtil;
@@ -27,188 +29,256 @@ public class TokenKindUtil {
 	private final static int DefaultTokenKind = -1;
 	private final static int SimpleNameApproximateNotVariable = 0;
 	private final static int SimpleNameApproximateVariable = 1;
-
-	public final static Map<String, ConditionKindComputer> token_kind_map = new TreeMap<String, ConditionKindComputer>() {
+	private final static int NonLeafAtLeastTwoChildrenWithoutQualifiedNode = 2;
+	
+	private final static String class_string_default = "#CLS_DFT#";
+	private final static int class_string_trace_count = 2;
+	private final static String non_exist = "#CLS_NON_EXIST#";
+	private final static String non_leaf_at_least_two_children_without_qualified_node = "#NON_LEAF_AT_LEAST_TWO_CHILDREN_WITHOUT_QUALIFIED_NODE#";
+	
+	public final static Map<ConditionIndex, ConditionKindComputer> token_kind_map = new TreeMap<ConditionIndex, ConditionKindComputer>() {
 		private static final long serialVersionUID = -6787015540770019187L;
 		{
-			put("org.eclipse.jdt.core.dom.SimpleType org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.SimpleType org.eclipse.jdt.core.dom.SimpleName"), new ConditionKindComputer() {
 				@Override
-				public int ConditionToKind(int cond2) {
+				public int ConditionToKind(ConditionDetail cond2) {
 					return SimpleNameApproximateNotVariable;
 				}
 			});
-			put("org.eclipse.jdt.core.dom.ContinueStatement org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.ContinueStatement org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.TypeParameter org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.TypeParameter org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.MarkerAnnotation org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.MarkerAnnotation org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.NormalAnnotation org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.NormalAnnotation org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.MemberValuePair org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.MemberValuePair org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.QualifiedName org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.QualifiedName org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.MethodDeclaration org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.MethodDeclaration org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.LabeledStatement org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.LabeledStatement org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.BreakStatement org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.BreakStatement org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.ExpressionMethodReference org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
+						public int ConditionToKind(ConditionDetail cond2) {
 							return SimpleNameApproximateNotVariable;
 						}
 					});
-			put("org.eclipse.jdt.core.dom.SwitchCase org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.SwitchCase org.eclipse.jdt.core.dom.SimpleName"), new ConditionKindComputer() {
 				@Override
-				public int ConditionToKind(int cond2) {
+				public int ConditionToKind(ConditionDetail cond2) {
 					return SimpleNameApproximateNotVariable;
 				}
 			});
-			put("org.eclipse.jdt.core.dom.MethodInvocation org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.MethodInvocation org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
-							if (cond2 == 1) {
+						public int ConditionToKind(ConditionDetail cond2) {
+							Assert.isTrue(cond2 instanceof PositionRelatedConditionDetail);
+							PositionRelatedConditionDetail prcd = (PositionRelatedConditionDetail) cond2;
+							if (prcd.cond2 == 1) {
 								return SimpleNameApproximateNotVariable;
 							} else {
 								return SimpleNameApproximateVariable;
 							}
 						}
 					});
-			put("org.eclipse.jdt.core.dom.SuperMethodInvocation org.eclipse.jdt.core.dom.SimpleName",
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.SuperMethodInvocation org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
-						public int ConditionToKind(int cond2) {
-							if (cond2 == 0) {
+						public int ConditionToKind(ConditionDetail cond2) {
+							Assert.isTrue(cond2 instanceof PositionRelatedConditionDetail);
+							PositionRelatedConditionDetail prcd = (PositionRelatedConditionDetail) cond2;
+							if (prcd.cond2 == 0) {
 								return SimpleNameApproximateNotVariable;
 							} else {
 								return SimpleNameApproximateVariable;
 							}
 						}
 					});
-			put("org.eclipse.jdt.core.dom.SimpleName", new ConditionKindComputer() {
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.SimpleName"), new ConditionKindComputer() {
 				@Override
-				public int ConditionToKind(int cond2) {
+				public int ConditionToKind(ConditionDetail cond2) {
 					return SimpleNameApproximateVariable;
+				}
+			});
+			put(new ConditionIndex(non_leaf_at_least_two_children_without_qualified_node), new ConditionKindComputer() {
+				@Override
+				public int ConditionToKind(ConditionDetail cond2) {
+					return NonLeafAtLeastTwoChildrenWithoutQualifiedNode;
 				}
 			});
 		}
 	};
-	private final static String class_string_default = "#CLS_DFT#";
-	private final static int class_string_trace_count = 2;
-
-	private static Condition GetNodeClassRepresentation(TreeNode tn) {
-		StringBuilder sb = new StringBuilder();
-		int cond2 = -1;
-		TreeNode cu_tn = tn;
-		for (int i = 0; i < class_string_trace_count; i++) {
-			String cls_cnt = class_string_default;
-			if (cu_tn != null) {
-				cls_cnt = cu_tn.GetClazz().getName();
-				TreeNode par_tn = cu_tn.GetParent();
-				if (par_tn != null) {
-					ArrayList<TreeNode> sibs = par_tn.GetChildren();
-					int index = sibs.indexOf(cu_tn);
-					Assert.isTrue(index > -1);
-					if (par_tn instanceof ExprSpecTreeNode) {
-						if (!((ExprSpecTreeNode) par_tn).HasExpression()) {
-							index++;
+	
+	private static Condition GetNodeClassRepresentation(Object tn) {
+		Assert.isTrue(tn instanceof ASTNode || tn instanceof TreeNode);
+		Class<?> clz = GetClazz(tn);
+		if (clz.equals(SimpleName.class)) {
+			StringBuilder sb = new StringBuilder();
+			int cond2 = -1;
+			Object cu_tn = tn;
+			for (int i = 0; i < class_string_trace_count; i++) {
+				String cls_cnt = class_string_default;
+				if (cu_tn != null) {
+					cls_cnt = cu_tn.getClass().getName();
+					Object par_tn = GetParent(cu_tn);
+					if (par_tn != null) {
+						ArrayList<Object> sibs = GetChildren(par_tn);
+						int index = sibs.indexOf(cu_tn);
+						Assert.isTrue(index > -1);
+						if (IsExprSpecPattern(par_tn)) {
+							if (!NodeHasExpression(par_tn)) {
+								index++;
+							}
 						}
+						if (i == 0) {
+							cond2 = index;
+						}
+						cu_tn = par_tn;
 					}
-					if (i == 0) {
-						cond2 = index;
-					}
-					cu_tn = par_tn;
+				}
+				sb.insert(0, cls_cnt).insert(0, " ");
+			}
+			return new Condition(new ConditionIndex(sb.toString().trim()), new PositionRelatedConditionDetail(cond2));
+		} else {
+			if (!clz.equals(QualifiedName.class) && !clz.equals(QualifiedType.class)) {
+				if (GetChildren(tn).size() >= 2) {
+					return new Condition(new ConditionIndex(non_leaf_at_least_two_children_without_qualified_node), null);
 				}
 			}
-			sb.insert(0, cls_cnt).insert(0, " ");
+			return new Condition(new ConditionIndex(non_exist), null);
 		}
-		return new Condition(sb.toString().trim(), cond2);
 	}
-
-	private static Condition GetNodeClassRepresentation(ASTNode tn) {
-		StringBuilder sb = new StringBuilder();
-		int cond2 = -1;
-		ASTNode cu_tn = tn;
-		for (int i = 0; i < class_string_trace_count; i++) {
-			String cls_cnt = class_string_default;
-			if (cu_tn != null) {
-				cls_cnt = cu_tn.getClass().getName();
-				ASTNode par_tn = cu_tn.getParent();
-				if (par_tn != null) {
-					ArrayList<ASTNode> sibs = JDTSearchForChildrenOfASTNode.GetChildren(par_tn);
-					int index = sibs.indexOf(cu_tn);
-					Assert.isTrue(index > -1);
-					if (JDTASTHelper.IsExprSpecPattern(par_tn)) {
-						if (JDTASTHelper.GetExprSpec(par_tn) == null) {
-							index++;
-						}
-					}
-					if (i == 0) {
-						cond2 = index;
-					}
-					cu_tn = par_tn;
-				}
-			}
-			sb.insert(0, cls_cnt).insert(0, " ");
+	
+	private static Class<?> GetClazz(Object tn) {
+		Assert.isTrue(tn instanceof ASTNode || tn instanceof TreeNode);
+		if (tn instanceof ASTNode) {
+			return ((ASTNode) tn).getClass();
 		}
-		return new Condition(sb.toString().trim(), cond2);
+		if (tn instanceof TreeNode) {
+			return ((TreeNode) tn).GetClazz();
+		}
+		Assert.isTrue(false);
+		return null;
+	}
+	
+	private static Object GetParent(Object tn) {
+		Assert.isTrue(tn instanceof ASTNode || tn instanceof TreeNode);
+		if (tn instanceof ASTNode) {
+			ASTNode par_tn = ((ASTNode) tn).getParent();
+			return par_tn;
+		}
+		if (tn instanceof TreeNode) {
+			TreeNode par_tn = ((TreeNode) tn).GetParent();
+			return par_tn;
+		}
+		Assert.isTrue(false);
+		return null;
+	}
+	
+	private static ArrayList<Object> GetChildren(Object par_tn) {
+		Assert.isTrue(par_tn instanceof ASTNode || par_tn instanceof TreeNode);
+		ArrayList<Object> result = new ArrayList<Object>();
+		if (par_tn instanceof ASTNode) {
+			ArrayList<ASTNode> sibs = JDTSearchForChildrenOfASTNode.GetChildren((ASTNode) par_tn);
+			result.addAll(sibs);
+		}
+		if (par_tn instanceof TreeNode) {
+			ArrayList<TreeNode> sibs = ((TreeNode) par_tn).GetChildren();
+			result.addAll(sibs);
+		}
+		return result;
+	}
+	
+	private static boolean IsExprSpecPattern(Object par_tn) {
+		Assert.isTrue(par_tn instanceof ASTNode || par_tn instanceof TreeNode);
+		if (par_tn instanceof TreeNode) {
+			if (par_tn instanceof ExprSpecTreeNode) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		if (par_tn instanceof ASTNode) {
+			if (JDTASTHelper.IsExprSpecPattern((ASTNode) par_tn)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		Assert.isTrue(false);
+		return false;
+	}
+	
+	private static boolean NodeHasExpression(Object par_tn) {
+		Assert.isTrue(par_tn instanceof ASTNode || par_tn instanceof TreeNode);
+		if (par_tn instanceof TreeNode) {
+			return (((ExprSpecTreeNode) par_tn).HasExpression());
+		}
+		if (par_tn instanceof ASTNode) {
+			return JDTASTHelper.GetExprSpec((ASTNode) par_tn) != null;
+		}
+		Assert.isTrue(false);
+		return false;
 	}
 
 	public static int GetTokenKind(TreeNode tn) {
@@ -220,28 +290,28 @@ public class TokenKindUtil {
 		return ContitionToKind(cls_pet);
 	}
 
-	private static Map<Condition, Integer> is_var_cls_pet_count = new TreeMap<Condition, Integer>();
-	private static Map<Condition, Integer> is_not_var_cls_pet_count = new TreeMap<Condition, Integer>();
+	private static Map<String, Integer> is_var_cls_pet_count = new TreeMap<String, Integer>();
+	private static Map<String, Integer> is_not_var_cls_pet_count = new TreeMap<String, Integer>();
 	static {
 		if (MetaOfApp.PrintTokenKindDebugInfo) {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				public void run() {
 					{
-						TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
-						TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
+						TreeSet<String> iv_set = new TreeSet<String>(is_var_cls_pet_count.keySet());
+						TreeSet<String> inv_set = new TreeSet<String>(is_not_var_cls_pet_count.keySet());
 						iv_set.removeAll(inv_set);
 						PrintUtil.PrintMap(is_var_cls_pet_count, iv_set, "absolute is_var_cls_pet_count", 100000000);
 					}
 					{
-						TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
-						TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
+						TreeSet<String> iv_set = new TreeSet<String>(is_var_cls_pet_count.keySet());
+						TreeSet<String> inv_set = new TreeSet<String>(is_not_var_cls_pet_count.keySet());
 						inv_set.removeAll(iv_set);
 						PrintUtil.PrintMap(is_not_var_cls_pet_count, inv_set, "absolute is_not_var_cls_pet_count",
 								100000000);
 					}
 					{
-						TreeSet<Condition> iv_set = new TreeSet<Condition>(is_var_cls_pet_count.keySet());
-						TreeSet<Condition> inv_set = new TreeSet<Condition>(is_not_var_cls_pet_count.keySet());
+						TreeSet<String> iv_set = new TreeSet<String>(is_var_cls_pet_count.keySet());
+						TreeSet<String> inv_set = new TreeSet<String>(is_not_var_cls_pet_count.keySet());
 						iv_set.retainAll(inv_set);
 						PrintUtil.PrintMap(is_var_cls_pet_count, iv_set, "join is_var_cls_pet_count", 100000000);
 						PrintUtil.PrintMap(is_not_var_cls_pet_count, iv_set, "join is_not_var_cls_pet_count",
@@ -259,7 +329,7 @@ public class TokenKindUtil {
 			IBinding bind = BindingResolveUtil.ResolveVariableBinding(tn);
 //			System.err.println("is_var:" + (bind != null) + "#cls_pet:" + cls_pet);
 			if (bind != null) {
-				MapUtil.CountOneKey(is_var_cls_pet_count, cls_pet, 1);
+				MapUtil.CountOneKey(is_var_cls_pet_count, cls_pet.toString(), 1);
 //				ASTNode tn_par = tn.getParent();
 //				if (tn_par instanceof MethodInvocation) {
 //					MethodInvocation mi = (MethodInvocation) tn_par;
@@ -268,7 +338,7 @@ public class TokenKindUtil {
 //					}
 //				}
 			} else {
-				MapUtil.CountOneKey(is_not_var_cls_pet_count, cls_pet, 1);
+				MapUtil.CountOneKey(is_not_var_cls_pet_count, cls_pet.toString(), 1);
 			}
 		}
 		return ContitionToKind(cls_pet);
@@ -289,11 +359,10 @@ public class TokenKindUtil {
 		return te_var_str;
 	}
 
-	public static int ContitionToKind(Condition cond) {
+	private static int ContitionToKind(Condition cond) {
 		ConditionKindComputer kind_computer = token_kind_map.get(cond.cond1);
 		if (kind_computer == null) {
-			String[] ss = cond.cond1.split(" ");
-			kind_computer = token_kind_map.get(ss[ss.length - 1]);
+			kind_computer = token_kind_map.get(cond.cond1.GetSecondaryIndex());
 		}
 		if (kind_computer == null) {
 			return DefaultTokenKind;
@@ -306,16 +375,16 @@ public class TokenKindUtil {
 
 abstract class ConditionKindComputer {
 
-	public abstract int ConditionToKind(int cond2);
+	public abstract int ConditionToKind(ConditionDetail cond2);
 
 }
 
 class Condition implements Comparable<Condition> {
 
-	String cond1 = null;
-	int cond2 = -1;
+	ConditionIndex cond1 = null;
+	ConditionDetail cond2 = null;
 
-	public Condition(String cond1, int cond2) {
+	public Condition(ConditionIndex cond1, ConditionDetail cond2) {
 		this.cond1 = cond1;
 		this.cond2 = cond2;
 	}
@@ -327,7 +396,67 @@ class Condition implements Comparable<Condition> {
 
 	@Override
 	public String toString() {
-		return cond1 + "#" + cond2;
+		return cond1.toString() + "#" + cond2.toString();
 	}
 
 }
+
+class ConditionIndex implements Comparable<ConditionIndex> {
+	
+	String cond1 = null;
+	
+	public ConditionIndex(String cond1) {
+		this.cond1 = cond1;
+	}
+	
+	@Override
+	public int compareTo(ConditionIndex o) {
+		return toString().compareTo(o.toString());
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+	
+	public ConditionIndex GetSecondaryIndex() {
+		return new ConditionIndex(cond1);
+	}
+	
+}
+
+class SimpleNameConditionIndex extends ConditionIndex {
+	
+	public SimpleNameConditionIndex(String cond1) {
+		super(cond1);
+	}
+	
+	@Override
+	public ConditionIndex GetSecondaryIndex() {
+		String[] ss = cond1.split(" ");
+		return new ConditionIndex(ss[ss.length - 1]);
+	}
+	
+}
+
+abstract class ConditionDetail {
+}
+
+class PositionRelatedConditionDetail extends ConditionDetail {
+
+	int cond2 = -1;
+	
+	public PositionRelatedConditionDetail(int cond2) {
+		this.cond2 = cond2;
+	}
+	
+}
+
+
+
+
+
+
+
+
+
