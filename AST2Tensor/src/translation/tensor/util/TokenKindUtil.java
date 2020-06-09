@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -179,7 +180,7 @@ public class TokenKindUtil {
 			for (int i = 0; i < class_string_trace_count; i++) {
 				String cls_cnt = class_string_default;
 				if (cu_tn != null) {
-					cls_cnt = cu_tn.getClass().getName();
+					cls_cnt = GetClazz(cu_tn).getName();
 					Object par_tn = GetParent(cu_tn);
 					if (par_tn != null) {
 						ArrayList<Object> sibs = GetChildren(par_tn);
@@ -198,9 +199,9 @@ public class TokenKindUtil {
 				}
 				sb.insert(0, cls_cnt).insert(0, " ");
 			}
-			return new Condition(new ConditionIndex(sb.toString().trim()), new PositionRelatedConditionDetail(cond2));
+			return new Condition(new SimpleNameConditionIndex(sb.toString().trim()), new PositionRelatedConditionDetail(cond2));
 		} else {
-			if (!clz.equals(QualifiedName.class) && !clz.equals(QualifiedType.class)) {
+			if (!clz.equals(QualifiedName.class) && !clz.equals(QualifiedType.class) && !clz.equals(Block.class)) {
 				if (GetChildren(tn).size() >= 2) {
 					return new Condition(new ConditionIndex(non_leaf_at_least_two_children_without_qualified_node), null);
 				}
@@ -416,7 +417,7 @@ class ConditionIndex implements Comparable<ConditionIndex> {
 	
 	@Override
 	public String toString() {
-		return super.toString();
+		return cond1;
 	}
 	
 	public ConditionIndex GetSecondaryIndex() {
