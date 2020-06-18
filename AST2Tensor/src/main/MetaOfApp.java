@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import com.google.gson.Gson;
 
+import translation.tensor.util.TokenKindUtil;
 import util.FileUtil;
 
 public class MetaOfApp {
@@ -86,6 +87,8 @@ public class MetaOfApp {
 	public static boolean GeneratePairEncodedSkeletonToken = false;
 	
 	public static boolean PrintTokenKindDebugInfo = false;
+	
+	public final static int ApproximateVarMode = TokenKindUtil.SimpleNameApproximateVariable;
 
 	public static void SaveToDirectory() {
 		Gson gson = new Gson();
