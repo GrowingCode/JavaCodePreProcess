@@ -92,6 +92,13 @@ public class TokenKindUtil {
 							return SimpleName | SimpleNameApproximateNotVariable;
 						}
 					});
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.QualifiedType org.eclipse.jdt.core.dom.SimpleName"),
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(ConditionDetail cond2) {
+							return SimpleName | QualifiedSimpleName | SimpleNameApproximateNotVariable;
+						}
+					});
 			put(new ConditionIndex("org.eclipse.jdt.core.dom.QualifiedName org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
@@ -147,6 +154,23 @@ public class TokenKindUtil {
 						}
 					});
 			put(new ConditionIndex("org.eclipse.jdt.core.dom.SuperMethodInvocation org.eclipse.jdt.core.dom.SimpleName"),
+					new ConditionKindComputer() {
+						@Override
+						public int ConditionToKind(ConditionDetail cond2) {
+							Assert.isTrue(cond2 instanceof PositionRelatedConditionDetail);
+							PositionRelatedConditionDetail prcd = (PositionRelatedConditionDetail) cond2;
+							if (prcd.cond2 == 0) {
+								return SimpleName | SimpleTypeSimpleName | SimpleNameApproximateNotVariable;
+							} else {
+								if (prcd.cond2 == 1) {
+									return SimpleName | MethodNameSimpleName | SimpleNameApproximateNotVariable;
+								} else {
+									return SimpleName | SimpleNameApproximateVariable;
+								}
+							}
+						}
+					});
+			put(new ConditionIndex("org.eclipse.jdt.core.dom.SuperConstructorInvocation org.eclipse.jdt.core.dom.SimpleName"),
 					new ConditionKindComputer() {
 						@Override
 						public int ConditionToKind(ConditionDetail cond2) {

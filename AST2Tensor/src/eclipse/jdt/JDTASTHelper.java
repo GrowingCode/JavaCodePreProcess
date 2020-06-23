@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import statistic.id.IDManager;
@@ -96,7 +97,7 @@ public class JDTASTHelper {
 	}
 	
 	public static boolean IsExprSpecPattern(ASTNode node) {
-		if (node instanceof MethodInvocation || node instanceof SuperConstructorInvocation) {
+		if (node instanceof MethodInvocation || node instanceof SuperConstructorInvocation || node instanceof SuperMethodInvocation) {
 			return true;
 		}
 		return false;
@@ -109,6 +110,9 @@ public class JDTASTHelper {
 		}
 		if (node instanceof SuperConstructorInvocation) {
 			return ((SuperConstructorInvocation) node).getExpression();
+		}
+		if (node instanceof SuperMethodInvocation) {
+			return ((SuperMethodInvocation) node).getQualifier();
 		}
 		return null;
 	}
