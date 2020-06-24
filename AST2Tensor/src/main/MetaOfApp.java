@@ -52,7 +52,7 @@ public class MetaOfApp {
 	public final static int NumberOfSkeletonMerges = 1000;
 
 //	public final static int MinimumNumberOfStatementsInAST = 10;
-	public final static int MinimumNumberOfNodesInAST = 100;
+	public final static int MinimumNumberOfNodesInAST = 50;
 	public final static int MaximumNumberOfNodesInAST = 5000;
 	
 //	public final static int NoChar = 0;
