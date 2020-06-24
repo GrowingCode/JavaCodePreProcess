@@ -90,7 +90,8 @@ public class SequenceTensor extends Tensor {
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		return "str:" + StringUtils.join(node_type_content_str.toArray(), " ") + separator
+		return "total_number:" + node_type_content_str.size() + separator
+				+ "str:" + StringUtils.join(node_type_content_str.toArray(), " ") + separator
 				+ "en:" + StringUtils.join(token_en.toArray(), " ") + separator 
 				+ "var:" + StringUtils.join(token_var.toArray(), " ") + separator 
 				+ "var_relative:" + StringUtils.join(token_var_relative.toArray(), " ") + separator
