@@ -6,11 +6,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.bind.BindingResolveUtil;
@@ -34,12 +31,14 @@ public class TokenKindUtil {
 	public final static int SimpleNameApproximateNotVariable = 0b01000;
 	public final static int SimpleNameApproximateVariable = 0b010000;
 	public final static int SimpleName = 0b0100000;
-	public final static int NonLeafAtLeastTwoChildrenWithoutQualifiedNode = 0b01000000;
+	public final static int NonLeafAtLeastTwoChildren = 0b01000000;
+	public final static int NonLeafOnlyOneChild = 0b010000000;
 	
 	private final static String class_string_default = "#CLS_DFT#";
 	private final static int class_string_trace_count = 2;
 	private final static String non_exist = "#CLS_NON_EXIST#";
-	private final static String non_leaf_at_least_two_children_without_qualified_node = "#NON_LEAF_AT_LEAST_TWO_CHILDREN_WITHOUT_QUALIFIED_NODE#";
+	private final static String non_leaf_at_least_two_children = "#NON_LEAF_AT_LEAST_TWO_CHILDREN#";
+	private final static String non_leaf_only_one_child = "#NON_LEAF_ONLY_ONE_CHILD#";
 	
 	public final static Map<ConditionIndex, ConditionKindComputer> token_kind_map = new TreeMap<ConditionIndex, ConditionKindComputer>() {
 		private static final long serialVersionUID = -6787015540770019187L;
@@ -189,10 +188,16 @@ public class TokenKindUtil {
 					return SimpleName | SimpleNameApproximateVariable;
 				}
 			});
-			put(new ConditionIndex(non_leaf_at_least_two_children_without_qualified_node), new ConditionKindComputer() {
+			put(new ConditionIndex(non_leaf_at_least_two_children), new ConditionKindComputer() {
 				@Override
 				public int ConditionToKind(ConditionDetail cond2) {
-					return NonLeafAtLeastTwoChildrenWithoutQualifiedNode;
+					return NonLeafAtLeastTwoChildren;
+				}
+			});
+			put(new ConditionIndex(non_leaf_only_one_child), new ConditionKindComputer() {
+				@Override
+				public int ConditionToKind(ConditionDetail cond2) {
+					return NonLeafOnlyOneChild;
 				}
 			});
 		}
@@ -229,11 +234,16 @@ public class TokenKindUtil {
 			}
 			return new Condition(new SimpleNameConditionIndex(sb.toString().trim()), new PositionRelatedConditionDetail(cond2));
 		} else {
-			if (!clz.equals(QualifiedName.class) && !clz.equals(QualifiedType.class) && !clz.equals(Block.class)) {
-				if (GetChildren(tn).size() >= 2) {
-					return new Condition(new ConditionIndex(non_leaf_at_least_two_children_without_qualified_node), null);
+//			if (!clz.equals(QualifiedName.class) && !clz.equals(QualifiedType.class) && !clz.equals(Block.class)) {
+				int children_size = GetChildren(tn).size();
+				if (children_size >= 2) {
+					return new Condition(new ConditionIndex(non_leaf_at_least_two_children), null);
+				} else {
+					if (children_size > 0) {
+						return new Condition(new ConditionIndex(non_leaf_only_one_child), null);
+					}
 				}
-			}
+//			}
 			return new Condition(new ConditionIndex(non_exist), null);
 		}
 	}
