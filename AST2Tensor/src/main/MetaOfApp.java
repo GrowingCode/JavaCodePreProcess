@@ -52,7 +52,7 @@ public class MetaOfApp {
 	public final static int NumberOfSkeletonMerges = 1000;
 
 //	public final static int MinimumNumberOfStatementsInAST = 10;
-	public final static int MinimumNumberOfNodesInAST = 50;
+	public final static int MinimumNumberOfNodesInAST = 100;
 	public final static int MaximumNumberOfNodesInAST = 5000;
 	
 //	public final static int NoChar = 0;
@@ -80,7 +80,7 @@ public class MetaOfApp {
 	public final static int NumberOfSkeletonUnk = 2;
 	public final static int MinimumNumberOfSkeletonVocabulary = 20;
 	public final static int NumberOfUnk = 1000;
-	public final static int MinimumNumberOfVocabulary = 100;
+	public final static int MinimumNumberOfVocabulary = 50;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;
