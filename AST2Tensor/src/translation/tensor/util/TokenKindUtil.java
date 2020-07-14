@@ -33,12 +33,14 @@ public class TokenKindUtil {
 	public final static int SimpleName = 0b0100000;
 	public final static int NonLeafAtLeastTwoChildren = 0b01000000;
 	public final static int NonLeafOnlyOneChild = 0b010000000;
+	public final static int UselessNonLeafOnlyOneChild = 0b0100000000;
 	
 	private final static String class_string_default = "#CLS_DFT#";
 	private final static int class_string_trace_count = 2;
 	private final static String non_exist = "#CLS_NON_EXIST#";
 	private final static String non_leaf_at_least_two_children = "#NON_LEAF_AT_LEAST_TWO_CHILDREN#";
 	private final static String non_leaf_only_one_child = "#NON_LEAF_ONLY_ONE_CHILD#";
+	private final static String useless_non_leaf_only_one_child = "#USELESS_NON_LEAF_ONLY_ONE_CHILD#";
 	
 	public final static Map<ConditionIndex, ConditionKindComputer> token_kind_map = new TreeMap<ConditionIndex, ConditionKindComputer>() {
 		private static final long serialVersionUID = -6787015540770019187L;
@@ -200,6 +202,12 @@ public class TokenKindUtil {
 					return NonLeafOnlyOneChild;
 				}
 			});
+			put(new ConditionIndex(useless_non_leaf_only_one_child), new ConditionKindComputer() {
+				@Override
+				public int ConditionToKind(ConditionDetail cond2) {
+					return UselessNonLeafOnlyOneChild | NonLeafOnlyOneChild;
+				}
+			});
 		}
 	};
 	
@@ -239,7 +247,15 @@ public class TokenKindUtil {
 				if (children_size >= 2) {
 					return new Condition(new ConditionIndex(non_leaf_at_least_two_children), null);
 				} else {
+//					t_set.add(clz.getName());
 					if (children_size > 0) {
+//						if (tn instanceof TreeNode) {
+//							TreeNode ttn = (TreeNode) tn;
+//							System.out.println("self:" + ttn.GetContent() + "#child:" + ttn.GetChildren().get(0).GetContent());
+//						}
+						if (clz.getName().equals("org.eclipse.jdt.core.dom.SimpleType") || clz.getName().equals("org.eclipse.jdt.core.dom.PrimitiveType") || clz.getName().equals("org.eclipse.jdt.core.dom.NumberLiteral") || clz.getName().equals("org.eclipse.jdt.core.dom.NullLiteral") || clz.getName().equals("org.eclipse.jdt.core.dom.Modifier") || clz.getName().equals("org.eclipse.jdt.core.dom.CharacterLiteral") || clz.getName().equals("org.eclipse.jdt.core.dom.BooleanLiteral")) {
+							return new Condition(new ConditionIndex(useless_non_leaf_only_one_child), null);
+						}
 						return new Condition(new ConditionIndex(non_leaf_only_one_child), null);
 					}
 				}
@@ -247,6 +263,15 @@ public class TokenKindUtil {
 			return new Condition(new ConditionIndex(non_exist), null);
 		}
 	}
+	
+//	private static TreeSet<String> t_set = new TreeSet<String>();
+//	static {
+//		Runtime.getRuntime().addShutdownHook(new Thread() {
+//			public void run() {
+//				PrintUtil.PrintSet(t_set, "Non Leaf Only One Child");
+//			}
+//		});
+//	}
 	
 	private static Class<?> GetClazz(Object tn) {
 		Assert.isTrue(tn instanceof ASTNode || tn instanceof TreeNode);
