@@ -6,16 +6,19 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import statis.trans.common.RoleAssigner;
+import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
-import statistic.id.IDManager;
 import translation.TensorTools;
+import translation.tensor.TensorForProject;
 import tree.Forest;
+import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeNode;
 
 public class SktLogicUtil {
 	
-	public static void CountPairEncodedSkeletons(IDTools id_tool, ArrayList<Forest> fs) {
+	public static void CountPairEncodedSkeletons(IDTools id_tool, SkeletonForestRecorder sfr) {
+		ArrayList<Forest> fs = sfr.GetAllForests();
 		for (Forest f : fs) {
 			int role = f.GetRole();
 			ArrayList<Tree> ts = f.GetAllTrees();
@@ -35,8 +38,12 @@ public class SktLogicUtil {
 		}
 	}
 	
-	public static void TranslatePairEncodedSkeletonsAndTokens(IDManager im, TensorTools tensor_tool, ArrayList<Forest> fs) {
-		// TODO
+	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr) {
+		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
+		for (ProjectForests pf : aps) {
+			TensorForProject tfp = new TensorForProject(kind);
+			;
+		}
 	}
 	
 }
