@@ -3,12 +3,9 @@ package util.visitor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CharacterLiteral;
-import org.eclipse.jdt.core.dom.NumberLiteral;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.StringLiteral;
 
 import eclipse.bind.BindingResolveUtil;
+import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import translation.tensor.util.TokenKindUtil;
 
@@ -21,8 +18,9 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 	@Override
 	protected Range HandleNonStatement(ASTNode node) {
 		Range r = null;
-		if (node instanceof SimpleName || node instanceof StringLiteral || node instanceof CharacterLiteral
-				|| node instanceof NumberLiteral) {
+//		if (node instanceof SimpleName || node instanceof StringLiteral || node instanceof CharacterLiteral
+//				|| node instanceof NumberLiteral) {
+		if (JDTASTHelper.IsIDLeafNode(node.getClass())) {
 //			SimpleType or TypeLiteral are not leaf node
 //			if (node.toString().contains("Maven")) {
 //				System.out.println("cared node:" + node + "#node_type:" + node.getClass());

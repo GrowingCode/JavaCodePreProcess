@@ -16,7 +16,6 @@ import logger.DebugLogger;
 import main.MetaOfApp;
 import statis.trans.common.YTreeGenerator;
 import translation.ast.StatementLexicalTokenTensorGenerator;
-import translation.ast.StatementSkeletonTensorGenerator;
 import translation.ast.StatementTensorGenerator;
 import translation.ast.TreeTensorGenerator;
 import translation.sequence.SequenceTensorGenerator;
@@ -39,11 +38,11 @@ public class TensorGeneratorForProject {
 		TensorForProject result_sequence = new TensorForProject("sequence");
 		TensorForProject result_tree = new TensorForProject("tree");
 		TensorForProject result_stmt = new TensorForProject("stmt");
-		TensorForProject result_stmt_skt = new TensorForProject("skt");
+//		TensorForProject result_stmt_skt = new TensorForProject("skt");
 		result.add(result_sequence);
 		result.add(result_tree);
 		result.add(result_stmt);
-		result.add(result_stmt_skt);
+//		result.add(result_stmt_skt);
 		List<ICompilationUnit> units = null;
 		try {
 			units = EclipseSearchForICompilationUnits.SearchForAllICompilationUnits(java_project);
@@ -122,7 +121,7 @@ public class TensorGeneratorForProject {
 					result_sequence.AddTensors(stmt_lex_tensors);
 					result_tree.AddTensors(stmt_lex_tensors);
 					result_stmt.AddTensors(stmt_lex_tensors);
-					result_stmt_skt.AddTensors(stmt_lex_tensors);
+//					result_stmt_skt.AddTensors(stmt_lex_tensors);
 				} else {
 					SequenceTensorGenerator tg_sequence_visitor = new SequenceTensorGenerator(tensor_tool.im);
 					TreeTensorGenerator tg_tree_visitor = new TreeTensorGenerator(tensor_tool.im);
@@ -130,12 +129,11 @@ public class TensorGeneratorForProject {
 					YTreeGenerator tg_sequence = new YTreeGenerator(tensor_tool.im, icu, cu, tg_sequence_visitor);
 					YTreeGenerator tg_tree = new YTreeGenerator(tensor_tool.im, icu, cu, tg_tree_visitor);
 					YTreeGenerator tg_stmt = new YTreeGenerator(tensor_tool.im, icu, cu, tg_stmt_visitor);
-					StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(tensor_tool.im,
-							icu, cu);
+//					StatementSkeletonTensorGenerator tg_stmt_skt = new StatementSkeletonTensorGenerator(tensor_tool.im, icu, cu);
 					cu.accept(tg_sequence);
 					cu.accept(tg_tree);
 					cu.accept(tg_stmt);
-					cu.accept(tg_stmt_skt);
+//					cu.accept(tg_stmt_skt);
 					total_method_count += tg_stmt.total_method_count;
 					unsuitable_method_count += tg_stmt.unsuitable_method_count;
 					min_num_node_in_one_ast = min_num_node_in_one_ast > tg_stmt.min_num_node_in_one_ast
@@ -148,24 +146,24 @@ public class TensorGeneratorForProject {
 					List<Tensor> sequence_tensors = tg_sequence.GetGeneratedTensors();
 					List<Tensor> tree_tensors = tg_tree.GetGeneratedTensors();
 					List<Tensor> stmt_tensors = tg_stmt.GetGeneratedTensors();
-					List<Tensor> stmt_skt_tensors = tg_stmt_skt.GetGeneratedTensors();
+//					List<Tensor> stmt_skt_tensors = tg_stmt_skt.GetGeneratedTensors();
 					
-					Assert.isTrue(stmt_skt_tensors.size() == sequence_tensors.size());
-					Assert.isTrue(tree_tensors.size() == stmt_skt_tensors.size());
+//					Assert.isTrue(stmt_skt_tensors.size() == sequence_tensors.size());
+//					Assert.isTrue(tree_tensors.size() == stmt_skt_tensors.size());
 					Assert.isTrue(stmt_tensors.size() == tree_tensors.size());
 					
 					Iterator<Tensor> s_itr = sequence_tensors.iterator();
 					Iterator<Tensor> t_itr = tree_tensors.iterator();
 					Iterator<Tensor> st_itr = stmt_tensors.iterator();
-					Iterator<Tensor> sst_itr = stmt_skt_tensors.iterator();
+//					Iterator<Tensor> sst_itr = stmt_skt_tensors.iterator();
 					while (st_itr.hasNext()) {
 						StringTensor s = (StringTensor) s_itr.next();
 						StringTensor t = (StringTensor) t_itr.next();
 						StringTensor st = (StringTensor) st_itr.next();
-						StringTensor sst = (StringTensor) sst_itr.next();
+//						StringTensor sst = (StringTensor) sst_itr.next();
 						Assert.isTrue(st.GetRole() == t.GetRole());
-						Assert.isTrue(t.GetRole() == sst.GetRole());
-						Assert.isTrue(sst.GetRole() == s.GetRole());
+//						Assert.isTrue(t.GetRole() == sst.GetRole());
+//						Assert.isTrue(sst.GetRole() == s.GetRole());
 //						StringTensor r = new StringTensor();
 //						r.SetRole(s.GetRole());
 						Assert.isTrue(st.getSize() + 1 == t.getSize(),
@@ -189,7 +187,7 @@ public class TensorGeneratorForProject {
 					result_sequence.AddTensors(sequence_tensors);
 					result_tree.AddTensors(tree_tensors);
 					result_stmt.AddTensors(stmt_tensors);
-					result_stmt_skt.AddTensors(stmt_skt_tensors);
+//					result_stmt_skt.AddTensors(stmt_skt_tensors);
 //					Assert.isTrue(tree_tensors.size() == stmt_tensors.size());
 //					Assert.isTrue(stmt_skt_tensors.size() == stmt_tensors.size());
 				}

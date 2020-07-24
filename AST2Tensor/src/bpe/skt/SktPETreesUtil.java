@@ -68,7 +68,8 @@ public class SktPETreesUtil {
 		}
 	}
 	
-	private static void MergeTwoTreeNodes(TreeNodeTwoMerge pair, TreeNode tn) {
+	private static boolean MergeTwoTreeNodes(TreeNodeTwoMerge pair, TreeNode tn) {
+		boolean really_merged = false;
 		if (pair.GetParent().equals(tn.GetContent())) {
 			ArrayList<TreeNode> childs = tn.GetChildren();
 			int index = -1;
@@ -83,8 +84,10 @@ public class SktPETreesUtil {
 			if (rm_index > -1) {
 				childs.remove(rm_index);
 				tn.SetContent(pair.GetMerged());
+				really_merged = true;
 			}
 		}
+		return really_merged;
 	}
 	
 	/**
@@ -139,14 +142,34 @@ public class SktPETreesUtil {
 		return bpes;
 	}
 	
-	public static SktPEHandledResult ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts) {
+	public static SktPEHandledResult ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts, TreeMap<String, ArrayList<String>> token_composes) {
 		SktPEHandledResult result = new SktPEHandledResult();
 		for (TreeNodeTwoMerge merge : merges) {
+			boolean merge_useful = false;
 			for (Tree skt : skts) {
 				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
 				Collection<TreeNode> tns = nodes.values();
 				for (TreeNode tn : tns) {
-					MergeTwoTreeNodes(merge, tn);
+					boolean curr_useful = MergeTwoTreeNodes(merge, tn);
+					merge_useful = merge_useful | curr_useful;
+				}
+			}
+			if (merge_useful) {
+				Assert.isTrue(!token_composes.containsKey(merge.GetMerged()));
+				ArrayList<String> ll = new ArrayList<String>();
+				String t0 = merge.GetMerged();
+				token_composes.put(t0, ll);
+				String t1 = merge.GetParent();
+				String t2 = merge.GetNode();
+				if (token_composes.containsKey(t1)) {
+					ll.addAll(token_composes.get(t1));
+				} else {
+					ll.add(t1);
+				}
+				if (token_composes.containsKey(t2)) {
+					ll.addAll(token_composes.get(t2));
+				} else {
+					ll.add(t2);
 				}
 			}
 		}

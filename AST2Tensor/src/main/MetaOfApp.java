@@ -60,7 +60,7 @@ public class MetaOfApp {
 //	public final static int SubWordChar = 1;
 //	public static int CharForm = NoChar;
 	
-	public final static int SkeletonIDBase = 5000000;
+	public final static int SkeletonIDBase = 0;
 	
 	public final static int ConservedContextLength = 25;
 	
@@ -84,7 +84,7 @@ public class MetaOfApp {
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;
-	public static boolean GeneratePairEncodedSkeletonToken = false;
+//	public static boolean GeneratePairEncodedSkeletonToken = false;
 	
 	public static boolean PrintTokenKindDebugInfo = false;
 	

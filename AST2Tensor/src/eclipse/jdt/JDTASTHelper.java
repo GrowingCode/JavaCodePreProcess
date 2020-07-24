@@ -6,12 +6,16 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 
@@ -115,6 +119,14 @@ public class JDTASTHelper {
 			return ((SuperMethodInvocation) node).getQualifier();
 		}
 		return null;
+	}
+	
+	public static boolean IsIDLeafNode(Class<?> node_class) {
+		if (node_class.equals(SimpleName.class) || node_class.equals(StringLiteral.class) || node_class.equals(CharacterLiteral.class)
+				|| node_class.equals(NumberLiteral.class)) {
+			return true;
+		}
+		return false;
 	}
 
 }

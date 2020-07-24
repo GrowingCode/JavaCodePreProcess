@@ -15,7 +15,6 @@ import com.google.gson.reflect.TypeToken;
 import bpe.BPEGeneratorForProject;
 import bpe.skt.SktLogicUtil;
 import bpe.skt.SktPEGeneratorForProject;
-import bpe.skt.SktPETreesUtil;
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
@@ -103,12 +102,16 @@ public class Application implements IApplication {
 			BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
 			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
 			TokenRecorder tr = new TokenRecorder();
-			TokenRecorder sr = new TokenRecorder();
-			TokenRecorder str = new TokenRecorder();
+//			TokenRecorder sr = new TokenRecorder();
+			TokenRecorder one_struct_r = new TokenRecorder();
+			TokenRecorder pe_struct_r = new TokenRecorder();
+			TokenRecorder e_struct_r = new TokenRecorder();
+			TokenRecorder s_t_r = new TokenRecorder();
 			GrammarRecorder gr = new GrammarRecorder();
 			APIRecorder ar = new APIRecorder();
 			ChildrenNumCounter cnc = new ChildrenNumCounter();
-			id_tool = new IDTools(bpe_mr, stf_r, tr, sr, str, gr, ar, cnc);
+//			sr, 
+			id_tool = new IDTools(bpe_mr, stf_r, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc);
 		}
 		{
 			File bpe_mj = new File(bpe_merges_json);
@@ -137,7 +140,7 @@ public class Application implements IApplication {
 			}
 		}
 		SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
-		if (MetaOfApp.GeneratePairEncodedSkeletonToken)
+		if (MetaOfApp.GenerateSkeletonToken)
 		{
 			File sktpe_mj = new File(sktpe_merges_json);
 //			File sktpe_ttj = new File(sktpe_token_times_json);
@@ -173,15 +176,11 @@ public class Application implements IApplication {
 			/**
 			 * handle pair encoded skeleton
 			 */
-			if (MetaOfApp.GeneratePairEncodedSkeletonToken) {
+			if (MetaOfApp.GenerateSkeletonToken) {
 				// Handle SktPE logic
 				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
-				ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
-				for (Forest f : fs) {
-					ArrayList<Tree> f_trees = f.GetAllTrees();
-					SktPETreesUtil.ApplySktPEMergesToTrees(sktpe_mr.GetMerges(), f_trees);
-				}
+				id_tool.stf_r.ApplySktPEMerges(sktpe_mr.GetMerges());
 				SktLogicUtil.CountPairEncodedSkeletons(id_tool, id_tool.stf_r);
 			}
 			/**
@@ -223,7 +222,7 @@ public class Application implements IApplication {
 			/**
 			 * store the map of skeleton one token to scatter tokens. 
 			 */
-			if (MetaOfApp.GeneratePairEncodedSkeletonToken) {
+			if (MetaOfApp.GenerateSkeletonToken) {
 				SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(tensor_tool, id_tool.stf_r);
 			}
 			/**

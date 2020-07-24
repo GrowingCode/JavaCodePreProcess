@@ -3,8 +3,13 @@ package tree;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import org.eclipse.core.runtime.Assert;
+
+import eclipse.jdt.JDTASTHelper;
+
 public class Tree implements Comparable<Tree> {
 	
+	TreeFlatten tf = null;
 	TreeNode root = null;
 //	TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
 	
@@ -42,6 +47,45 @@ public class Tree implements Comparable<Tree> {
 		ArrayList<TreeNode> childs = r_node.GetChildren();
 		for (TreeNode child : childs) {
 			GetAllNodes(child, nodes);
+		}
+	}
+	
+	public TreeFlatten FlattenTree(TreeMap<String, ArrayList<String>> token_composes) {
+		if (tf == null) {
+			tf = new TreeFlatten();
+			FlattenTreeNode(tf, root, token_composes);
+		}
+		return tf;
+	}
+	
+	public TreeFlatten ReFlattenTree(TreeMap<String, ArrayList<String>> token_composes) {
+		tf = new TreeFlatten();
+		FlattenTreeNode(tf, root, token_composes);
+		return tf;
+	}
+	
+	private static void FlattenTreeNode(TreeFlatten tf, TreeNode rt, TreeMap<String, ArrayList<String>> token_composes) {
+		ArrayList<TreeNode> childs = rt.GetChildren();
+		Class<?> clz = rt.GetClazz();
+		if (JDTASTHelper.IsIDLeafNode(clz)) {
+			Assert.isTrue(childs.size() == 0);
+			tf.skt_token.add(rt.GetContent());
+		} else {
+			if (tf.skt_one_struct.size() == 0) {
+				tf.skt_one_struct.add(rt.GetContent());
+			} else {
+				tf.skt_one_struct.set(0, tf.skt_one_struct.get(0) + "#" + rt.GetContent());
+			}
+			tf.skt_pe_struct.add(rt.GetContent());
+			ArrayList<String> composes = token_composes.get(rt.GetContent());
+			if (composes == null) {
+				tf.skt_e_struct.add(rt.GetContent());
+			} else {
+				tf.skt_e_struct.addAll(composes);
+			}
+			for (TreeNode child : childs) {
+				FlattenTreeNode(tf, child, token_composes);
+			}
 		}
 	}
 	

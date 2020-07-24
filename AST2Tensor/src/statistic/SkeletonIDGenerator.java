@@ -2,6 +2,7 @@ package statistic;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -23,6 +24,7 @@ public class SkeletonIDGenerator extends BasicGenerator {
 		super(im, icu, cu);
 		this.tool = tool;
 		this.role = RoleAssigner.GetInstance().GetRole(icu);
+		Assert.isTrue(false);
 	}
 	
 	@Override
@@ -41,12 +43,12 @@ public class SkeletonIDGenerator extends BasicGenerator {
 	@Override
 	protected void WholePostHandle(ASTNode node) {
 		for (ArrayList<String> stmt : stmts) {
-			String sk = stmt.get(0);
-			if (role <= RoleAssigner.train_seen_k) {
-				tool.sr.TokenHitInTrainSet(sk, 1);// "skt", 
-			} else {
-				tool.sr.TokenNotHitInTrainSet(sk, 1);
-			}
+//			String sk = stmt.get(0);
+//			if (role <= RoleAssigner.train_seen_k) {
+//				tool.sr.TokenHitInTrainSet(sk, 1);// "skt", 
+//			} else {
+//				tool.sr.TokenNotHitInTrainSet(sk, 1);
+//			}
 			for (int i=1;i<stmt.size();i++) {
 				String tk = stmt.get(i);
 				String pp_tk = PreProcessContentHelper.PreProcessTypeContent(tk);
