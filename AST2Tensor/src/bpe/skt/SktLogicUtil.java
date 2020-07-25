@@ -1,21 +1,24 @@
 package bpe.skt;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.TreeMap;
 
+import com.google.gson.Gson;
+
 import eclipse.project.ProjectInfo;
+import main.MetaOfApp;
 import statis.trans.common.RoleAssigner;
 import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
+import statistic.id.IDManager;
 import translation.TensorTools;
 import translation.tensor.TensorForProject;
 import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
-import tree.TreeNode;
 
 public class SktLogicUtil {
 	
@@ -76,7 +79,8 @@ public class SktLogicUtil {
 		}
 	}
 	
-	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr) {
+	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr) throws Exception {
+		IDManager im = tensor_tool.im;
 		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
 		
 		TreeMap<String, Integer> kind_index = new TreeMap<String, Integer>();
@@ -102,11 +106,16 @@ public class SktLogicUtil {
 				funcs.add(func_sig);
 			}
 		}
+		Gson gson = new Gson();
+		String pi_str = gson.toJson(proj_info);
+		File pi_file = new File(MetaOfApp.DataDirectory + "/project_example_info.json");
+		FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
+		pi_fw.write(pi_str);
 		
 		for (ProjectForests pf : aps) {
-			TensorForProject tfp = new TensorForProject("Skt");
-			TensorForProject tfp_pe = new TensorForProject("SktPE");
-			TensorForProject tfp_each = new TensorForProject("SktEach");
+			TensorForProject tfp = new TensorForProject("skt");
+			TensorForProject tfp_pe = new TensorForProject("sktpe");
+			TensorForProject tfp_each = new TensorForProject("skteach");
 			
 			ArrayList<Forest> func_os = pf.GetAllForests();
 			for (Forest f : func_os) {

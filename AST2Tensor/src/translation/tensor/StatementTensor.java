@@ -16,6 +16,7 @@ import statistic.id.IDManager;
 import translation.tensor.util.ConservedMemoryUtil;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndexUtil;
+import translation.tensor.util.TokenKindUtil;
 import tree.TreeNode;
 import util.BooleanArrayUtil;
 import util.SetUtil;
@@ -589,6 +590,7 @@ public class StatementTensor extends Tensor {
 //			}
 		}
 		stmt_token_variable_info.addAll(TokenIndexUtil.GenerateTokenIndex(local_token_str));
+		TokenKindUtil.ApproximateVarIfRequired(stmt_token_variable_info, stmt_token_kind, stmt_token_string);
 		stmt_token_variable_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_variable_info));
 		stmt_token_conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(stmt_token_variable_info, stmt_token_variable_relative_info, MetaOfApp.ConservedContextLength));
 //		{

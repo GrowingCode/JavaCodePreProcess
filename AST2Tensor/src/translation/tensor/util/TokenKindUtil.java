@@ -414,13 +414,17 @@ public class TokenKindUtil {
 		int index = -1;
 		for (Integer tk : token_kind) {
 			index++;
-			if ((tk & MetaOfApp.ApproximateVarMode) > 0) {
+			if (IsApproximateVar(tk)) {
 				te_var_str.add(node_type_content_str.get(index));
 			} else {
 				te_var_str.add(null);
 			}
 		}
 		return te_var_str;
+	}
+	
+	public static boolean IsApproximateVar(int token_kind) {
+		return (token_kind & MetaOfApp.ApproximateVarMode) > 0;
 	}
 
 	private static int ContitionToKind(Condition cond) {
@@ -432,6 +436,30 @@ public class TokenKindUtil {
 			return DefaultTokenKind;
 		} else {
 			return kind_computer.ConditionToKind(cond.cond2);
+		}
+	}
+	
+	public static void ApproximateVarIfRequired(ArrayList<Integer> token_var, ArrayList<Integer> token_kind, ArrayList<String> node_type_content_str) {
+		if (MetaOfApp.UseApproximateVariable) {
+			Assert.isTrue(token_var.size() == token_kind.size());
+			ArrayList<String> te_var_str = TokenKindUtil.GenApproximateVarFromTokenKind(node_type_content_str, token_kind);
+			ArrayList<Integer> pre_token_var = new ArrayList<Integer>();
+			pre_token_var.addAll(token_var);
+			token_var.clear();
+			token_var.addAll(TokenIndexUtil.GenerateTokenIndex(te_var_str));
+			if (MetaOfApp.FurtherUseStrictVariable) {
+				int t_size = token_var.size();
+				Assert.isTrue(t_size == pre_token_var.size());
+				for (int i=0; i<t_size; i++) {
+					if (pre_token_var.get(i) > 0) {
+					} else {
+						token_var.set(i, -1);
+					}
+				}
+			}
+			if (MetaOfApp.PrintTokenKindDebugInfo) {
+				PrintUtil.PrintThreeLists(node_type_content_str, pre_token_var, token_var, "token_var cmp approx_token_var", 25);
+			}
 		}
 	}
 

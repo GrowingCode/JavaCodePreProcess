@@ -23,6 +23,7 @@ public class StatementSkeletonTensor extends Tensor {
 	ArrayList<Integer> stmt_token_conserved_memory_length = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_kind = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_start = new ArrayList<Integer>();
+	ArrayList<Integer> stmt_token_struct_info_end = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_info_end = new ArrayList<Integer>();
 
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
@@ -36,7 +37,7 @@ public class StatementSkeletonTensor extends Tensor {
 			ArrayList<Integer> is_var) {
 		this.sig = sig;
 		stmt_token_str.addAll(info_str);
-
+		
 		stmt_token_info_start.add(stmt_token_info.size());
 		stmt_token_info.addAll(info);
 		stmt_token_kind.addAll(kind);
@@ -77,6 +78,7 @@ public class StatementSkeletonTensor extends Tensor {
 				+ StringUtils.join(stmt_token_conserved_memory_length.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_kind.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_start.toArray(), " ") + separator
+				+ StringUtils.join(stmt_token_struct_info_end.toArray(), " ") + separator
 				+ StringUtils.join(stmt_token_info_end.toArray(), " ");
 	}
 

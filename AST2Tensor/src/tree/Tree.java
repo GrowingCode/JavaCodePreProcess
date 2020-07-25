@@ -6,6 +6,8 @@ import java.util.TreeMap;
 import org.eclipse.core.runtime.Assert;
 
 import eclipse.jdt.JDTASTHelper;
+import main.MetaOfApp;
+import translation.tensor.util.TokenKindUtil;
 
 public class Tree implements Comparable<Tree> {
 	
@@ -70,6 +72,18 @@ public class Tree implements Comparable<Tree> {
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
 			Assert.isTrue(childs.size() == 0);
 			tf.skt_token.add(rt.GetContent());
+			int tk = TokenKindUtil.GetTokenKind(rt);
+			tf.skt_token_kind.add(tk);
+			
+			int token_is_var = rt.GetBinding()!= null ? 1 : 0;
+			if (MetaOfApp.UseApproximateVariable) {
+				int base = 1;
+				if (MetaOfApp.FurtherUseStrictVariable) {
+					base = token_is_var;
+				}
+				token_is_var = base * (TokenKindUtil.IsApproximateVar(tk) ? 1 : 0);
+			}
+			tf.skt_token_is_var.add(token_is_var);
 		} else {
 			if (tf.skt_one_struct.size() == 0) {
 				tf.skt_one_struct.add(rt.GetContent());
