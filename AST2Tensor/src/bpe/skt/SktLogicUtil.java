@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 
+import eclipse.project.ProjectInfo;
 import statis.trans.common.RoleAssigner;
 import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
@@ -77,11 +78,46 @@ public class SktLogicUtil {
 	
 	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr) {
 		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
+		
+		TreeMap<String, Integer> kind_index = new TreeMap<String, Integer>();
+		ArrayList<TreeMap<String, ArrayList<String>>> proj_info = new ArrayList<TreeMap<String, ArrayList<String>>>();
 		for (ProjectForests pf : aps) {
-			
-			TensorForProject tfp = new TensorForProject(kind);
-			;
+			ProjectInfo pi = pf.GetProjectInfo();
+			TreeMap<String, ArrayList<String>> pi_name_funcs = new TreeMap<String, ArrayList<String>>();
+			proj_info.add(pi_name_funcs);
+			ArrayList<String> funcs = new ArrayList<String>();
+			pi_name_funcs.put(pi.getName(), funcs);
+			ArrayList<Forest> func_os = pf.GetAllForests();
+			for (Forest f : func_os) {
+				String s = f.GetSignature();
+				int r = f.GetRole();
+				Integer index = kind_index.get(r+"");
+				if (index == null) {
+					index = 0;
+				} else {
+					index++;
+				}
+				kind_index.put(r+"", index);
+				String func_sig = s + r + index;
+				funcs.add(func_sig);
+			}
 		}
+		
+		for (ProjectForests pf : aps) {
+			TensorForProject tfp = new TensorForProject("Skt");
+			TensorForProject tfp_pe = new TensorForProject("SktPE");
+			TensorForProject tfp_each = new TensorForProject("SktEach");
+			
+			ArrayList<Forest> func_os = pf.GetAllForests();
+			for (Forest f : func_os) {
+				ArrayList<Tree> trees = f.GetAllTrees();
+				for (Tree tree : trees) {
+					TreeFlatten tf = tree.FlattenTree(sfr.GetAllTokenComposes());
+					
+				}
+			}
+		}
+		
 	}
 	
 }

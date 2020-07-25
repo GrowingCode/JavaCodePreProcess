@@ -26,4 +26,8 @@ public class ProjectForests {
 		funcs.clear();
 	}
 	
+	public ProjectInfo GetProjectInfo() {
+		return pi;
+	}
+	
 }

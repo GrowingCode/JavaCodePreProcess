@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 public class Forest {
 	
+	String sig = null;
 	int role = -1;
 	ArrayList<Tree> stmts = new ArrayList<Tree>();
 	
-	public Forest(int role) {
+	public Forest(String sig, int role) {
+		this.sig = sig;
 		this.role = role;
 	}
 	
@@ -19,12 +21,16 @@ public class Forest {
 		stmts.addAll(trees);
 	}
 	
-	public int GetRole() {
-		return role;
-	}
-	
 	public ArrayList<Tree> GetAllTrees() {
 		return stmts;
+	}
+
+	public String GetSignature() {
+		return sig;
+	}
+
+	public int GetRole() {
+		return role;
 	}
 	
 }
