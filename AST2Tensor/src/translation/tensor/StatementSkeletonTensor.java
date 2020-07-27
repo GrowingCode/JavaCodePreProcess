@@ -29,13 +29,13 @@ public class StatementSkeletonTensor extends Tensor {
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex ti = new TokenIndex();
 	
-	public StatementSkeletonTensor(TensorInfo tinfo) {
+	public StatementSkeletonTensor(TensorInfo tinfo, String sig) {
 		super(tinfo);
+		this.sig = sig;
 	}	
 
-	public void StoreStatementSkeletonInfo(String sig, ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
+	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
 			ArrayList<Integer> is_var) {
-		this.sig = sig;
 		stmt_token_str.addAll(info_str);
 		
 		stmt_token_info_start.add(stmt_token_info.size());

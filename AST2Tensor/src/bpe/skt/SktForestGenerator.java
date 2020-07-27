@@ -60,7 +60,7 @@ public class SktForestGenerator extends BasicGenerator {
 			stmts.add(t);
 		}
 		Assert.isTrue(stmt_roots.get(0).equals(node));
-		Forest f = new Forest(JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(node), RoleAssigner.GetInstance().GetRole(icu));
+		Forest f = new Forest(icu.getPath().toOSString(), JDTASTHelper.GetSimplifiedSignatureForMethodDeclaration(node), RoleAssigner.GetInstance().GetRole(icu));
 		f.AddTrees(stmts);
 		funcs.add(f);
 	}

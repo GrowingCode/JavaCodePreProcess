@@ -50,15 +50,15 @@ public abstract class Tensor {
 
 	public abstract String toOracleString();
 
-	public Integer GenerateInnerIndexForTypeContent(int type_content_index) {
-		Integer inner = inner_index_map.get(type_content_index);
-		if (inner == null) {
-			inner_index++;
-			inner = inner_index;
-			inner_index_map.put(type_content_index, inner);
-		}
-		return inner;
-	}
+//	public Integer GenerateInnerIndexForTypeContent(int type_content_index) {
+//		Integer inner = inner_index_map.get(type_content_index);
+//		if (inner == null) {
+//			inner_index++;
+//			inner = inner_index;
+//			inner_index_map.put(type_content_index, inner);
+//		}
+//		return inner;
+//	}
 
 //	public ArrayList<Integer> GenerateInnerIndexesForTypeContents() {
 //		ArrayList<Integer> inner_id_type_content_id = new ArrayList<Integer>();

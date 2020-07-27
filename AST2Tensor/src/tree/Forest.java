@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Forest {
 	
+	String file_path = null;
 	String sig = null;
 	int role = -1;
 	ArrayList<Tree> stmts = new ArrayList<Tree>();
 	
-	public Forest(String sig, int role) {
+	public Forest(String file_path, String sig, int role) {
+		this.file_path = file_path;
 		this.sig = sig;
 		this.role = role;
 	}
@@ -27,6 +29,10 @@ public class Forest {
 
 	public String GetSignature() {
 		return sig;
+	}
+	
+	public String GetFilePath() {
+		return file_path;
 	}
 
 	public int GetRole() {
