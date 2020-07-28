@@ -145,8 +145,11 @@ class SktTreeGenerator extends ASTVisitor {
 			if (r_parent == null) {
 				r_parent = node.getParent();
 			}
-			TreeNode rp_tn = node_record.get(r_parent);
-			rp_tn.AppendToChildren(tn);
+			if (r_parent != null) {
+				TreeNode rp_tn = node_record.get(r_parent);
+				Assert.isTrue(rp_tn != null);
+				rp_tn.AppendToChildren(tn);
+			}
 		}
 		return ctn;
 	}
