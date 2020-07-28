@@ -97,27 +97,42 @@ class SktTreeGenerator extends ASTVisitor {
 		int n_start = node.getStartPosition();
 //		int n_length = node.getLength();
 
+		boolean ctn_handle = true;
 		boolean to_create_tree_node = true;
 		String node_cnt = node.toString();
 		String node_whole_cnt = node.toString();
-		if (node instanceof Block) {
-			ctn = ctn && false;
-			node_cnt = "{}";
-			node_whole_cnt = "{}";
-		} else {
-			Assert.isTrue(!(node instanceof Statement));
+		if (node instanceof Statement) {
+			if (t_root != node) {
+				ctn = ctn && false;
+				ctn_handle = ctn_handle && false;
+			}
+			if (node instanceof Block) {
+				ctn_handle = true;
+				node_cnt = "{}";
+				node_whole_cnt = "{}";
+			}
+		}
+		if (ctn_handle) {
+//		} else {
+//			Assert.isTrue(!(node instanceof Statement));
 			if (!is_leaf) {
 				int c_size = children.size();
 				int prev_c_start = Integer.MAX_VALUE;
 				for (int i = c_size - 1; i >= 0; i--) {
 					ASTNode c = children.get(i);
+					
+					String holder = "#h";
+					if (JDTASTHelper.IsIDLeafNode(node.getClass())) {
+						holder = "#v";
+					}
+					
 					int c_start = c.getStartPosition();
 					int c_length = c.getLength();
 					
 					Assert.isTrue(prev_c_start > c_start + c_length);
 					
 					int r_start = c_start - n_start;
-					node_cnt_builder.replace(r_start, r_start + c_length, "#h");
+					node_cnt_builder.replace(r_start, r_start + c_length, holder);
 					
 					prev_c_start = c_start;
 				}
@@ -130,25 +145,27 @@ class SktTreeGenerator extends ASTVisitor {
 					to_create_tree_node = false;
 				}
 			}
-		}
-		if (to_create_tree_node) {
-			// create tree node
-			TreeNode tn = null;
-			if (JDTASTHelper.IsExprSpecPattern(node)) {
-				tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);
-			} else {
-				tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);
-			}
-			node_record.put(node, tn);
-			
-			ASTNode r_parent = parent_record.get(node);
-			if (r_parent == null) {
-				r_parent = node.getParent();
-			}
-			if (r_parent != null) {
+			if (to_create_tree_node) {
+				// create tree node
+				TreeNode tn = null;
+				if (JDTASTHelper.IsExprSpecPattern(node)) {
+					tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);
+				} else {
+					tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);
+				}
+				node_record.put(node, tn);
+				
+				ASTNode r_parent = parent_record.get(node);
+				if (r_parent == null) {
+					r_parent = node.getParent();
+				}
+				Assert.isTrue(r_parent != null);
 				TreeNode rp_tn = node_record.get(r_parent);
-				Assert.isTrue(rp_tn != null);
-				rp_tn.AppendToChildren(tn);
+				if (rp_tn != null) {
+					rp_tn.AppendToChildren(tn);
+				} else {
+					Assert.isTrue(node == t_root);
+				}
 			}
 		}
 		return ctn;
