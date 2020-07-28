@@ -169,6 +169,7 @@ public class SktLogicUtil {
 				e.add(sst);
 			}
 			tfp.AddTensors(e);
+			tfp.SaveToFile(pf.GetProjectInfo());
 		}
 		
 		/*
@@ -195,7 +196,6 @@ public class SktLogicUtil {
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 		}
-		store project info
 	}
 
 	public static ArrayList<Integer> TranslateTokenToID(ArrayList<String> ss, IDManager im, String m_key) throws Exception {
