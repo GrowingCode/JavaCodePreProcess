@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
@@ -52,7 +53,13 @@ public class SktForestGenerator extends BasicGenerator {
 	protected void WholePostHandle(ASTNode node) {
 		ArrayList<Tree> stmts = new ArrayList<Tree>();
 		for (ASTNode stmt_root : stmt_roots) {
-			SktTreeGenerator stg = new SktTreeGenerator();
+			SktTreeGenerator stg = null;
+			try {
+				stg = new SktTreeGenerator(icu.getBuffer().getContents());
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			}
+			Assert.isTrue(stg != null);
 			stmt_root.accept(stg);
 			TreeNode root_tree_node = stg.node_record.get(stg.t_root);
 			Tree t = new Tree(root_tree_node);
@@ -78,11 +85,14 @@ public class SktForestGenerator extends BasicGenerator {
 
 class SktTreeGenerator extends ASTVisitor {
 	
+	String icu_buffer = null;
+	
 	ASTNode t_root = null;
 	Map<ASTNode, ASTNode> parent_record = new HashMap<ASTNode, ASTNode>();
 	Map<ASTNode, TreeNode> node_record = new HashMap<ASTNode, TreeNode>();
 	
-	public SktTreeGenerator() {
+	public SktTreeGenerator(String icu_buffer) {
+		this.icu_buffer = icu_buffer;
 	}
 	
 	@Override
@@ -93,13 +103,14 @@ class SktTreeGenerator extends ASTVisitor {
 		}
 		ArrayList<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		boolean is_leaf = children.size() == 0;
-		StringBuilder node_cnt_builder = new StringBuilder(node.toString());
 		int n_start = node.getStartPosition();
-//		int n_length = node.getLength();
+		int n_length = node.getLength();
+		
+		String node_cnt = icu_buffer.substring(n_start, n_start + n_length);
+		StringBuilder node_cnt_builder = new StringBuilder(node_cnt);
 
 		boolean ctn_handle = true;
 		boolean to_create_tree_node = true;
-		String node_cnt = node.toString();
 		String node_whole_cnt = node.toString();
 		if (node instanceof Statement) {
 			if (t_root != node) {
@@ -129,9 +140,10 @@ class SktTreeGenerator extends ASTVisitor {
 					int c_start = c.getStartPosition();
 					int c_length = c.getLength();
 					
-					Assert.isTrue(prev_c_start > c_start + c_length);
+					Assert.isTrue(prev_c_start >= c_start + c_length, "prev_c_start:" + prev_c_start + "#c_start:" + c_start + "#c_length:" + c_length);
 					
 					int r_start = c_start - n_start;
+//					System.err.println("start:" + r_start + "#end:" + (r_start + c_length) + "#total:" + node_cnt_builder.length());
 					node_cnt_builder.replace(r_start, r_start + c_length, holder);
 					
 					prev_c_start = c_start;

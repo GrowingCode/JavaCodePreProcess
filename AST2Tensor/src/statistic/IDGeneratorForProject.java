@@ -46,10 +46,10 @@ public class IDGeneratorForProject {
 					IDGenerator tg_id_visitor = new IDGenerator(tool, icu);
 					YTreeGenerator tg = new YTreeGenerator(null, icu, cu, tg_id_visitor);
 					cu.accept(tg);
-					if (MetaOfApp.GenerateSkeletonToken) {
-						SkeletonIDGenerator skg = new SkeletonIDGenerator(null, icu, cu, tool);
-						cu.accept(skg);
-					}
+//					if (MetaOfApp.GenerateSkeletonToken) {
+//						SkeletonIDGenerator skg = new SkeletonIDGenerator(null, icu, cu, tool);
+//						cu.accept(skg);
+//					}
 				}
 			}
 		}
