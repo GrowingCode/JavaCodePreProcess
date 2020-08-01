@@ -118,7 +118,7 @@ class SktTreeGenerator extends ASTVisitor {
 		boolean to_create_tree_node = true;
 		String node_whole_cnt = node.toString();
 		if (node instanceof Statement) {
-			if (t_root != node) {
+			if ((node instanceof Block) || (t_root != node)) {
 				ctn = ctn && false;
 				ctn_handle = ctn_handle && false;
 			}

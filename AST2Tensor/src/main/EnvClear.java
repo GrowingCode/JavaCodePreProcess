@@ -8,14 +8,17 @@ public class EnvClear {
 	
 	public static void main(String[] args) {
 		File bpe_mj = new File(Application.bpe_merges_json);
-//		File bpe_ttj = new File(Application.bpe_token_times_json);
-		
 		if (bpe_mj.exists()) {
 			bpe_mj.delete();
 		}
+//		File bpe_ttj = new File(Application.bpe_token_times_json);
 //		if (bpe_ttj.exists()) {
 //			bpe_ttj.delete();
 //		}
+		File skt_mj = new File(Application.sktpe_merges_json);
+		if (skt_mj.exists()) {
+			skt_mj.delete();
+		}
 		
 		File f = new File(MetaOfApp.DataDirectory);
 		if (f.exists()) {
