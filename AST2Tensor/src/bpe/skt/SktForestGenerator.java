@@ -103,6 +103,11 @@ class SktTreeGenerator extends ASTVisitor {
 		}
 		ArrayList<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
 		boolean is_leaf = children.size() == 0;
+		if (node instanceof Block) {
+			Assert.isTrue(t_root != node);
+			is_leaf = true;
+		}
+		
 		int n_start = node.getStartPosition();
 		int n_length = node.getLength();
 		

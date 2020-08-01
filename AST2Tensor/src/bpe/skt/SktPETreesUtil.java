@@ -32,13 +32,15 @@ public class SktPETreesUtil {
 			Iterator<String> ai = all_keys.iterator();
 			while (ai.hasNext()) {
 				String key = ai.next();
+				Assert.isTrue(!key.equals("#h") && !key.equals("#v"));
 				TreeNode val = all_nodes.get(key);
 				TreeNode par_val = val.GetParent();
 				if (par_val != null) {
 					ArrayList<TreeNode> childs = par_val.GetChildren();
 					int idx = childs.indexOf(val);
 					Assert.isTrue(idx > -1);
-					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#h", val.GetContent(), idx);
+//					"#h", 
+					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), val.GetContent(), idx);
 					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), par_val.GetContent(), mgd);
 					Integer n_freq = pairs.get(mm);
 					if (n_freq == null) {
