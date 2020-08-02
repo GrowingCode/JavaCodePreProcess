@@ -27,7 +27,7 @@ import tree.Tree;
 import tree.TreeFlatten;
 
 public class SktLogicUtil {
-	
+
 	public static void CountPairEncodedSkeletons(IDTools id_tool, SkeletonForestRecorder sfr) {
 		ArrayList<Forest> fs = sfr.GetAllForests();
 		for (Forest f : fs) {
@@ -36,7 +36,7 @@ public class SktLogicUtil {
 			for (Tree t : ts) {
 				TreeFlatten tf = t.FlattenTree(sfr.GetAllTokenComposes());
 				{
-					String an= tf.skt_one_struct.get(0);
+					String an = tf.skt_one_struct.get(0);
 					if (role <= RoleAssigner.train_seen_k) {
 						id_tool.one_struct_r.TokenHitInTrainSet(an, 1);
 					} else {
@@ -84,11 +84,12 @@ public class SktLogicUtil {
 			}
 		}
 	}
-	
-	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr) throws Exception {
+
+	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr)
+			throws Exception {
 		IDManager im = tensor_tool.im;
 		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
-		
+
 		TreeMap<String, Integer> kind_index = new TreeMap<String, Integer>();
 		ArrayList<TreeMap<String, ArrayList<String>>> proj_info = new ArrayList<TreeMap<String, ArrayList<String>>>();
 		for (ProjectForests pf : aps) {
@@ -101,18 +102,18 @@ public class SktLogicUtil {
 			for (Forest f : func_os) {
 				String s = f.GetSignature();
 				int r = f.GetRole();
-				Integer index = kind_index.get(r+"");
+				Integer index = kind_index.get(r + "");
 				if (index == null) {
 					index = 0;
 				} else {
 					index++;
 				}
-				kind_index.put(r+"", index);
+				kind_index.put(r + "", index);
 				String func_sig = s + r + index;
 				funcs.add(func_sig);
 			}
 		}
-		
+
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(proj_info);
@@ -122,21 +123,21 @@ public class SktLogicUtil {
 			pi_fw.flush();
 			pi_fw.close();
 		}
-		
+
 		Map<Integer, ArrayList<Integer>> one_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 		Map<Integer, ArrayList<Integer>> one_to_pe = new TreeMap<Integer, ArrayList<Integer>>();
 		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
-		
+
 		TreeMap<String, ArrayList<String>> atcs = sfr.GetAllTokenComposes();
 		Set<String> keys = atcs.keySet();
 		for (String k : keys) {
 			ArrayList<String> tcs = atcs.get(k);
 			pe_to_each.put(im.GetPESkeletonID(k), TranslateTokenToID(tcs, im, "GetEachSkeletonID"));
 		}
-		
+
 		for (ProjectForests pf : aps) {
 			TensorForProject tfp = new TensorForProject("skt");
-			
+
 			ArrayList<Tensor> e = new ArrayList<Tensor>();
 			ArrayList<Forest> func_os = pf.GetAllForests();
 			for (Forest f : func_os) {
@@ -146,26 +147,28 @@ public class SktLogicUtil {
 				ArrayList<Tree> trees = f.GetAllTrees();
 				for (Tree tree : trees) {
 					TreeFlatten tf = tree.FlattenTree(atcs);
-					
+
 					ArrayList<String> info_str = new ArrayList<String>();
 					ArrayList<Integer> info = new ArrayList<Integer>();
 					ArrayList<Integer> kind = new ArrayList<Integer>();
 					ArrayList<Integer> is_var = new ArrayList<Integer>();
-					
+
 					String o_str = tf.skt_one_struct.get(0);
 					info_str.add(o_str);
 					info.add(im.GetSkeletonID(o_str));
 					kind.add(0);
 					is_var.add(-1);
-					
+
 					info_str.addAll(tf.skt_token);
 					info.addAll(TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID"));
 					kind.addAll(tf.skt_token_kind);
 					is_var.addAll(tf.skt_token_is_var);
-					
+
 					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
-					one_to_each.put(im.GetSkeletonID(tf.skt_one_struct.get(0)), TranslateTokenToID(tf.skt_e_struct, im, "GetEachSkeletonID"));
-					one_to_pe.put(im.GetSkeletonID(tf.skt_one_struct.get(0)), TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID"));
+					one_to_each.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
+							TranslateTokenToID(tf.skt_e_struct, im, "GetEachSkeletonID"));
+					one_to_pe.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
+							TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID"));
 				}
 				sst.HandleAllInfo();
 				e.add(sst);
@@ -173,7 +176,7 @@ public class SktLogicUtil {
 			tfp.AddTensors(e);
 			tfp.SaveToFile(pf.GetProjectInfo());
 		}
-		
+
 		/*
 		 * store one_to_each;one_to_pe;pe_to_each
 		 */
@@ -206,16 +209,17 @@ public class SktLogicUtil {
 		}
 	}
 
-	public static ArrayList<Integer> TranslateTokenToID(ArrayList<String> ss, IDManager im, String m_key) throws Exception {
+	public static ArrayList<Integer> TranslateTokenToID(ArrayList<String> ss, IDManager im, String m_key)
+			throws Exception {
 		ArrayList<Integer> ll = new ArrayList<Integer>();
-		
+
 		Method method = IDManager.class.getMethod(m_key, String.class);
 		for (String s : ss) {
 			int r = (int) method.invoke(im, s);
 			ll.add(r);
 		}
-		
+
 		return ll;
 	}
-	
+
 }
