@@ -138,7 +138,7 @@ class SktTreeGenerator extends ASTVisitor {
 					ASTNode c = children.get(i);
 					
 					String holder = "#h";
-					if (JDTASTHelper.IsIDLeafNode(node.getClass())) {
+					if (JDTASTHelper.IsIDLeafNode(c.getClass())) {
 						holder = "#v";
 					}
 					
@@ -153,11 +153,12 @@ class SktTreeGenerator extends ASTVisitor {
 					
 					prev_c_start = c_start;
 				}
-				node_cnt = node_cnt_builder.toString();
-				if (node_cnt.trim().equals("")) Assert.isTrue(node_cnt.equals(""));
-				if (node_cnt.equals("")) {
+				node_cnt = node_cnt_builder.toString().trim();
+//				if (node_cnt.trim().equals("")) Assert.isTrue(node_cnt.equals(""));
+				if (node_cnt.equals("#h") || node_cnt.equals("#v")) {
 					Assert.isTrue(c_size == 1);
 					ASTNode c0 = children.get(0);
+					System.err.println("pass through:" + c0.getClass());
 					parent_record.put(c0, node.getParent());
 					to_create_tree_node = false;
 				}

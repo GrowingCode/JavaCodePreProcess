@@ -32,7 +32,7 @@ public class SktPETreesUtil {
 			Iterator<String> ai = all_keys.iterator();
 			while (ai.hasNext()) {
 				String key = ai.next();
-				Assert.isTrue(!key.equals("#h") && !key.equals("#v"));
+				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
 				TreeNode val = all_nodes.get(key);
 				TreeNode par_val = val.GetParent();
 				if (par_val != null) {
