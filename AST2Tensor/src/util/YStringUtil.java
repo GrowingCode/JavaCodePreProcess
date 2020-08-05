@@ -8,16 +8,22 @@ public class YStringUtil {
 	public static String ReplaceSpecifiedContentInSpecifiedPosition(String m, String replace_content, int index) {
 		Assert.isTrue(index > -1);
 		int i = 0;
-		int pos = -1;
+		int pos = -2;
 		while (i <= index) {
-			int pos_h = m.indexOf("#h", pos);
-			int pos_v = m.indexOf("#v", pos);
+			int pos_h = m.indexOf("#h", pos+2);
+			if (pos_h == -1) {
+				pos_h = Integer.MAX_VALUE;
+			}
+			int pos_v = m.indexOf("#v", pos+2);
+			if (pos_v == -1) {
+				pos_v = Integer.MAX_VALUE;
+			}
 			pos = Math.min(pos_h, pos_v);
-			Assert.isTrue(pos > -1);
+			Assert.isTrue(pos > -1 && pos < Integer.MAX_VALUE, "m:" + m + "======" + replace_content);
 			i++;
 		}
 		Assert.isTrue(pos != -1);
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder(m);
 		return sb.replace(pos, pos+2, replace_content).toString();
 	}
 	
@@ -27,6 +33,21 @@ public class YStringUtil {
 		} else {
 			return s.substring(0, size);
 		}
+	}
+	
+	public static int CountSubStringInString(String s, String sub_s) {
+		int count = 0;
+		int s_pos = 0;
+		while (true) {
+			s_pos = s.indexOf(sub_s, s_pos);
+			if (s_pos >= 0) {
+				count++;
+			} else {
+				break;
+			}
+			s_pos++;
+		}
+		return count;
 	}
 	
 }

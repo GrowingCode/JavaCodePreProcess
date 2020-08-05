@@ -54,14 +54,14 @@ public class Tree implements Comparable<Tree> {
 	}
 
 	public TreeFlatten FlattenTree(TreeMap<String, ArrayList<String>> token_composes) {
-//		if (tf == null) {
-		Assert.isTrue(tf == null);
-		tf = new TreeFlatten();
-		FlattenTreeNode(tf, root, token_composes);
-		FlattenTreeNodeIntoOne(tf, root);
-		Assert.isTrue(tf.skt_one_struct.size() == 0);
-		tf.skt_one_struct.add(root.GetContent());
-//		}
+		if (tf == null) {
+//			Assert.isTrue(tf == null);
+			tf = new TreeFlatten();
+			FlattenTreeNode(tf, root, token_composes);
+			FlattenTreeNodeIntoOne(tf, root);
+			Assert.isTrue(tf.skt_one_struct.size() == 0);
+			tf.skt_one_struct.add(root.GetContent());
+		}
 		return tf;
 	}
 
@@ -74,16 +74,24 @@ public class Tree implements Comparable<Tree> {
 
 	private static void FlattenTreeNodeIntoOne(TreeFlatten tf, TreeNode rt) {
 		ArrayList<TreeNode> childs = new ArrayList<TreeNode>(rt.GetChildren());
+		if (rt.GetContent().equals("{}")) {
+//			System.err.println("rt {} children size:" + childs.size());
+			Assert.isTrue(childs.size() == 0);
+		}
 		Class<?> clz = rt.GetClazz();
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
 			// do nothing.
 		} else {
 			int i_len = childs.size();
-			for (int i = 0; i < i_len; i++) {
+			for (int i = i_len-1; i >= 0; i--) {
 				TreeNode child = childs.get(i);
 				FlattenTreeNodeIntoOne(tf, child);
 				if (!JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+//					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
+					Assert.isTrue(!rt.GetContent().equals("{}"));
+//					System.err.println("==== before merge:" + rt.GetContent() + " ====");
 					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rt.GetContent(), child.GetContent(), i);
+//					System.err.println("==== after merge:" + mgd + " ====");
 					rt.SetContent(mgd);
 				}
 			}

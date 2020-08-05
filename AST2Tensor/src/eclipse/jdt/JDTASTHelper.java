@@ -1,5 +1,6 @@
 package eclipse.jdt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -128,5 +129,21 @@ public class JDTASTHelper {
 		}
 		return false;
 	}
-
+	
+	public static boolean IsPassThroughNode(ASTNode node) {
+		ArrayList<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+		if (children.size() == 1 && children.get(0).toString().equals(node.toString())) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static ASTNode SkipPassThroughNodes(ASTNode node) {
+		ArrayList<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(node);
+		if (children.size() == 1 && children.get(0).toString().equals(node.toString())) {
+			return SkipPassThroughNodes(children.get(0));
+		}
+		return node;
+	}
+	
 }

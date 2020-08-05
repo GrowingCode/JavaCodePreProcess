@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.eclipse.core.runtime.Assert;
+
 import com.google.gson.Gson;
 
 import eclipse.project.ProjectInfo;
@@ -25,6 +27,7 @@ import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
+import util.YStringUtil;
 
 public class SktLogicUtil {
 
@@ -158,6 +161,9 @@ public class SktLogicUtil {
 					info.add(im.GetSkeletonID(o_str));
 					kind.add(0);
 					is_var.add(-1);
+					
+					int count = YStringUtil.CountSubStringInString(o_str, "#h") + YStringUtil.CountSubStringInString(o_str, "#v");
+					Assert.isTrue(count == tf.skt_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_token.size() + "#o_str:" + o_str);
 
 					info_str.addAll(tf.skt_token);
 					info.addAll(TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID"));

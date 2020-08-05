@@ -84,7 +84,8 @@ public class SktPETreesUtil {
 				}
 			}
 			if (rm_index > -1) {
-				childs.remove(rm_index);
+				TreeNode rm_tn = childs.remove(rm_index);
+				Assert.isTrue(rm_tn.GetChildren().size() == 0);
 				tn.SetContent(pair.GetMerged());
 				really_merged = true;
 			}

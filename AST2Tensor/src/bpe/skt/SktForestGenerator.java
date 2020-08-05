@@ -138,7 +138,8 @@ class SktTreeGenerator extends ASTVisitor {
 					ASTNode c = children.get(i);
 					
 					String holder = "#h";
-					if (JDTASTHelper.IsIDLeafNode(c.getClass())) {
+					ASTNode r_c = JDTASTHelper.SkipPassThroughNodes(c);
+					if (JDTASTHelper.IsIDLeafNode(r_c.getClass())) {
 						holder = "#v";
 					}
 					
@@ -155,11 +156,17 @@ class SktTreeGenerator extends ASTVisitor {
 				}
 				node_cnt = node_cnt_builder.toString().trim();
 //				if (node_cnt.trim().equals("")) Assert.isTrue(node_cnt.equals(""));
-				if (node_cnt.equals("#h") || node_cnt.equals("#v")) {
+//				node_cnt.equals("#h") || node_cnt.equals("#v")
+				if (JDTASTHelper.IsPassThroughNode(node)) {
+					Assert.isTrue(node_cnt.equals("#h") || node_cnt.equals("#v"), "strange node_cnt:" + node_cnt);
 					Assert.isTrue(c_size == 1);
 					ASTNode c0 = children.get(0);
-					System.err.println("pass through:" + c0.getClass());
-					parent_record.put(c0, node.getParent());
+//					System.err.println("pass through:" + c0.getClass());
+					ASTNode r_parent = parent_record.get(node);
+					if (r_parent == null) {
+						r_parent = node.getParent();
+					}
+					parent_record.put(c0, r_parent);
 					to_create_tree_node = false;
 				}
 			}
