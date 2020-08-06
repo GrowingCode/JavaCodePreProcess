@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.jdt.JDTASTHelper;
@@ -117,10 +118,16 @@ class SktTreeGenerator extends ASTVisitor {
 		boolean ctn_handle = true;
 		boolean to_create_tree_node = true;
 		String node_whole_cnt = node.toString();
+		boolean sentry = false;
+		if (node.getParent() instanceof IfStatement && node instanceof Statement && (node instanceof Block)) {
+//			System.err.println("is_block:" + (node instanceof Block));
+//			System.err.println("node_parent:" + node.getParent());
+			sentry = true;
+		}
 		if (node instanceof Statement) {
 			if ((node instanceof Block) || (t_root != node)) {
-				ctn = ctn && false;
-				ctn_handle = ctn_handle && false;
+				ctn = false;
+				ctn_handle = false;
 			}
 			if (node instanceof Block) {
 				ctn_handle = true;
@@ -132,6 +139,7 @@ class SktTreeGenerator extends ASTVisitor {
 //		} else {
 //			Assert.isTrue(!(node instanceof Statement));
 			if (!is_leaf) {
+				Assert.isTrue(!sentry);
 				int c_size = children.size();
 				int prev_c_start = Integer.MAX_VALUE;
 				for (int i = c_size - 1; i >= 0; i--) {
@@ -171,6 +179,7 @@ class SktTreeGenerator extends ASTVisitor {
 				}
 			}
 			if (to_create_tree_node) {
+				Assert.isTrue(!sentry);
 				// create tree node
 				TreeNode tn = null;
 				if (JDTASTHelper.IsExprSpecPattern(node)) {

@@ -27,6 +27,7 @@ import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
+import util.PrintUtil;
 import util.YStringUtil;
 
 public class SktLogicUtil {
@@ -163,8 +164,7 @@ public class SktLogicUtil {
 					is_var.add(-1);
 					
 					int count = YStringUtil.CountSubStringInString(o_str, "#h") + YStringUtil.CountSubStringInString(o_str, "#v");
-					Assert.isTrue(count == tf.skt_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_token.size() + "#o_str:" + o_str);
-
+					Assert.isTrue(count == tf.skt_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_token.size() + "#o_str:" + o_str + "#token list:" + PrintUtil.PrintListToString(tf.skt_token, "skt_tokens"));
 					info_str.addAll(tf.skt_token);
 					info.addAll(TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID"));
 					kind.addAll(tf.skt_token_kind);

@@ -58,6 +58,14 @@ public class PrintUtil {
 		System.out.println("===== list " + extra_info + " print end =====");
 	}
 	
+	public static <K> String PrintListToString(List<K> list, String extra_info) {
+		StringBuilder sb = new StringBuilder(extra_info + ":");
+		for (K k : list) {
+			sb.append(k + "$");
+		}
+		return sb.toString();
+	}
+	
 	public static <S, K> void PrintThreeLists(List<S> list0, List<K> list1, List<K> list2, String extra_info, int one_ele_length) {
 		System.out.println("===== two lists " + extra_info + " print begin =====");
 		for (S k : list0) {
@@ -82,7 +90,6 @@ public class PrintUtil {
 		}
 		System.out.println("===== set " + extra_info + " print end =====");
 	}
-	
 	
 	public static <K, V> void PrintPartOfEntryList(List<Entry<K, V>> entries, int start, int end, String extra_info, String key_desc, String value_desc) {
 		System.out.println("===== entry list " + extra_info + " print begin =====");
