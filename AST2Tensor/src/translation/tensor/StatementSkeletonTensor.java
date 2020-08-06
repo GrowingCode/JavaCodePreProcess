@@ -109,7 +109,7 @@ public class StatementSkeletonTensor extends Tensor {
 			Integer s = stmt_token_info_start.get(i);
 			Integer e = stmt_token_info_end.get(i);
 			for (int j = s; j <= e; j++) {
-				r += stmt_token_str.get(j) + "\t";
+				r += stmt_token_str.get(j) + "    ";
 			}
 			result.append(r.trim() + separator);
 		}
