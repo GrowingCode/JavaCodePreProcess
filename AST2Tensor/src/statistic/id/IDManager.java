@@ -146,10 +146,10 @@ public class IDManager {
 //		}
 		if (MetaOfApp.GenerateSkeletonToken) {
 			Regist(each_skeleton_id_map, reserved_words);
-			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train, id_tool.e_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
+			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train, id_tool.e_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
 			
 			Regist(pe_skeleton_id_map, reserved_words);
-			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train, id_tool.pe_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
+			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train, id_tool.pe_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
 			
 			Regist(skeleton_id_map, reserved_words);
 			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train, id_tool.one_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
