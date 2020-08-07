@@ -113,7 +113,7 @@ public class SktLogicUtil {
 					index++;
 				}
 				kind_index.put(r + "", index);
-				String func_sig = s + r + index;
+				String func_sig = "name:" + s + "#role:" + r + "#index:" + index;
 				funcs.add(func_sig);
 			}
 		}
