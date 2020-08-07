@@ -3,6 +3,7 @@ package bpe.skt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -92,6 +93,15 @@ class SktTreeGenerator extends ASTVisitor {
 	Map<ASTNode, ASTNode> parent_record = new HashMap<ASTNode, ASTNode>();
 	Map<ASTNode, TreeNode> node_record = new HashMap<ASTNode, TreeNode>();
 	
+//	public static Set<String> with_block_types = new TreeSet<String>();
+//	static {
+//		Runtime.getRuntime().addShutdownHook(new Thread() {
+//			public void run() {
+//				PrintUtil.PrintSet(with_block_types, "with_block_types");
+//			}
+//		});
+//	}
+	
 	public SktTreeGenerator(String icu_buffer) {
 		this.icu_buffer = icu_buffer;
 	}
@@ -123,6 +133,10 @@ class SktTreeGenerator extends ASTVisitor {
 //			System.err.println("is_block:" + (node instanceof Block));
 //			System.err.println("node_parent:" + node.getParent());
 //			sentry = true;
+//		}
+//		if (node instanceof AnonymousClassDeclaration) {
+//			AnonymousClassDeclaration acd = (AnonymousClassDeclaration) node;
+//			System.err.println("AnonymousClassDeclaration:" + acd);
 //		}
 		if (node instanceof Statement || node instanceof MethodDeclaration) {
 			if ((node instanceof Block) || (t_root != node)) {
@@ -169,6 +183,13 @@ class SktTreeGenerator extends ASTVisitor {
 					prev_c_start = c_start;
 				}
 				node_cnt = node_cnt_builder.toString().trim();
+				node_cnt = node_cnt.replaceAll("\\s+", " ");
+				if (node_cnt.startsWith("{")) {
+					Assert.isTrue(node_cnt.endsWith("}"));
+//					with_block_types.add(node.getClass().getName());
+					Assert.isTrue(Pattern.matches("\\{\\s*\\}", node_cnt));
+					node_cnt = "{}";
+				}
 //				if (node_cnt.trim().equals("")) Assert.isTrue(node_cnt.equals(""));
 //				node_cnt.equals("#h") || node_cnt.equals("#v")
 				if (JDTASTHelper.IsPassThroughNode(node)) {
