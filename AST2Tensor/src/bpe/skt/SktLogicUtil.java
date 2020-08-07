@@ -121,7 +121,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(proj_info);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/project_example_info.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_project_example_info.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
@@ -195,7 +195,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(one_to_each_str);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_each_str.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_each_str.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
@@ -204,7 +204,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(one_to_each);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_each.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_each.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
@@ -213,7 +213,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(one_to_pe_str);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_pe_str.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe_str.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
@@ -222,7 +222,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(one_to_pe);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_pe.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
@@ -231,7 +231,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(pe_to_each_str);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_pe_to_each_str.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
@@ -240,7 +240,7 @@ public class SktLogicUtil {
 		{
 			Gson gson = new Gson();
 			String pi_str = gson.toJson(pe_to_each);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_pe_to_each.json");
+			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
