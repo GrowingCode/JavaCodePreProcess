@@ -127,15 +127,19 @@ public class SktLogicUtil {
 			pi_fw.flush();
 			pi_fw.close();
 		}
-
+		
+		Map<String, ArrayList<String>> one_to_each_str = new TreeMap<String, ArrayList<String>>();
 		Map<Integer, ArrayList<Integer>> one_to_each = new TreeMap<Integer, ArrayList<Integer>>();
+		Map<String, ArrayList<String>> one_to_pe_str = new TreeMap<String, ArrayList<String>>();
 		Map<Integer, ArrayList<Integer>> one_to_pe = new TreeMap<Integer, ArrayList<Integer>>();
+		Map<String, ArrayList<String>> pe_to_each_str = new TreeMap<String, ArrayList<String>>();
 		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 
 		TreeMap<String, ArrayList<String>> atcs = sfr.GetAllTokenComposes();
 		Set<String> keys = atcs.keySet();
 		for (String k : keys) {
 			ArrayList<String> tcs = atcs.get(k);
+			pe_to_each_str.put(k, new ArrayList<String>(tcs));
 			pe_to_each.put(im.GetPESkeletonID(k), TranslateTokenToID(tcs, im, "GetEachSkeletonID"));
 		}
 
@@ -171,8 +175,10 @@ public class SktLogicUtil {
 					is_var.addAll(tf.skt_token_is_var);
 
 					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
+					one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_e_struct));
 					one_to_each.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
 							TranslateTokenToID(tf.skt_e_struct, im, "GetEachSkeletonID"));
+					one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 					one_to_pe.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
 							TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID"));
 				}
@@ -188,6 +194,15 @@ public class SktLogicUtil {
 		 */
 		{
 			Gson gson = new Gson();
+			String pi_str = gson.toJson(one_to_each_str);
+			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_each_str.json");
+			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
+			pi_fw.write(pi_str);
+			pi_fw.flush();
+			pi_fw.close();
+		}
+		{
+			Gson gson = new Gson();
 			String pi_str = gson.toJson(one_to_each);
 			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_each.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
@@ -197,8 +212,26 @@ public class SktLogicUtil {
 		}
 		{
 			Gson gson = new Gson();
+			String pi_str = gson.toJson(one_to_pe_str);
+			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_pe_str.json");
+			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
+			pi_fw.write(pi_str);
+			pi_fw.flush();
+			pi_fw.close();
+		}
+		{
+			Gson gson = new Gson();
 			String pi_str = gson.toJson(one_to_pe);
 			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_one_to_pe.json");
+			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
+			pi_fw.write(pi_str);
+			pi_fw.flush();
+			pi_fw.close();
+		}
+		{
+			Gson gson = new Gson();
+			String pi_str = gson.toJson(pe_to_each_str);
+			File pi_file = new File(MetaOfApp.DataDirectory + "/token_map_skt_pe_to_each_str.json");
 			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
 			pi_fw.write(pi_str);
 			pi_fw.flush();
