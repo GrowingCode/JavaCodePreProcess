@@ -1191,6 +1191,10 @@ public class IDManager {
 		meta_of_ast2tensor.put("MaximumStringLength", MetaOfApp.MaximumStringLength);
 		meta_of_ast2tensor.put("SkeletonNum", skeleton_id_map.size());
 		meta_of_ast2tensor.put("SkeletonHitNum", skeleton_hit_num);
+		meta_of_ast2tensor.put("SkeletonPENum", pe_skeleton_id_map.size());
+		meta_of_ast2tensor.put("SkeletonPEHitNum", pe_skeleton_hit_num);
+		meta_of_ast2tensor.put("SkeletonEachNum", each_skeleton_id_map.size());
+		meta_of_ast2tensor.put("SkeletonEachHitNum", each_skeleton_hit_num);
 		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
 		meta_of_ast2tensor.put("TokenHitNum", token_hit_num);
 		meta_of_ast2tensor.put("SwordNum", subword_num);
