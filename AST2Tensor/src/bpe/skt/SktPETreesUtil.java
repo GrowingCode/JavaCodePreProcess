@@ -90,7 +90,7 @@ public class SktPETreesUtil {
 			}
 			if (rm_index > -1) {
 				TreeNode rm_tn = childs.remove(rm_index);
-				Assert.isTrue(rm_tn.GetChildren().size() == 0);
+				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
 				tn.SetContent(pair.GetMerged());
 				really_merged = true;
 			}
