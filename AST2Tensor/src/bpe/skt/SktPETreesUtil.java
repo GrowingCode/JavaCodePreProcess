@@ -12,6 +12,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
+import eclipse.jdt.JDTASTHelper;
 import tree.Tree;
 import tree.TreeNode;
 import util.MapUtil;
@@ -32,7 +33,7 @@ public class SktPETreesUtil {
 			Iterator<String> ai = all_keys.iterator();
 			while (ai.hasNext()) {
 				String key = ai.next();
-				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
+				Assert.isTrue(!key.equals("#h") && !key.equals("#v") && !key.equals("#m"), "wrong key:" + key);
 				TreeNode val = all_nodes.get(key);
 				TreeNode par_val = val.GetParent();
 				if (par_val != null) {
@@ -41,7 +42,11 @@ public class SktPETreesUtil {
 					Assert.isTrue(idx > -1);
 //					"#h", 
 					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), val.GetContent(), idx);
-					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), par_val.GetContent(), mgd);
+					String r_par_val = par_val.GetContent();
+					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
+						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
+					}
+					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), r_par_val, mgd);
 					Integer n_freq = pairs.get(mm);
 					if (n_freq == null) {
 						n_freq = 0;

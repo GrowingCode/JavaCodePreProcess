@@ -26,7 +26,7 @@ public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	@Override
 	public String toString() {
-		return merged;
+		return merged + "#" + node + "#" + parent;
 	}
 
 	@Override
