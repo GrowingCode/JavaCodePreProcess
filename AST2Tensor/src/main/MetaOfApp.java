@@ -62,7 +62,7 @@ public class MetaOfApp {
 	
 	public final static int SkeletonIDBase = 0;
 	
-	public final static int ConservedContextLength = 25;
+	public final static int ConservedContextLength = 50;
 	
 //	public static boolean InBPEForm = true;
 	public static boolean UseLexicalToken = false;
