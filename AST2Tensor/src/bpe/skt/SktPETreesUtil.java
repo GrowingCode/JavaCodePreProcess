@@ -12,7 +12,6 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
-import eclipse.jdt.JDTASTHelper;
 import tree.Tree;
 import tree.TreeNode;
 import util.MapUtil;
@@ -43,9 +42,9 @@ public class SktPETreesUtil {
 //					"#h", 
 					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), val.GetContent(), idx);
 					String r_par_val = par_val.GetContent();
-					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
-						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
-					}
+//					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
+//						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
+//					}
 					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), r_par_val, mgd);
 					Integer n_freq = pairs.get(mm);
 					if (n_freq == null) {
