@@ -183,6 +183,29 @@ public class SktPETreesUtil {
 		result.vobs.addAll(ExtractAllSktPEUnits(skts));
 		return result;
 	}
+	
+	private static boolean MergeTwoTreeNodesWhileMarkMergePoint(TreeNodeTwoMerge pair, TreeNode tn) {
+		boolean really_merged = false;
+		if (pair.GetParent().equals(tn.GetContent())) {
+			ArrayList<TreeNode> childs = tn.GetChildren();
+			int index = -1;
+			int rm_index = -1;
+			for (TreeNode child : childs) {
+				index++;
+				if (pair.GetNode().equals(child.GetContent())) {
+					rm_index = index;
+					break;
+				}
+			}
+			if (rm_index > -1) {
+				TreeNode rm_tn = childs.remove(rm_index);
+				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
+				tn.SetContent(pair.GetMerged());
+				really_merged = true;
+			}
+		}
+		return really_merged;
+	}
 
 }
 
