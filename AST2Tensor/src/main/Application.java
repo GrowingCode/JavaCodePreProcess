@@ -2,7 +2,6 @@ package main;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -146,7 +145,7 @@ public class Application implements IApplication {
 //			File sktpe_ttj = new File(sktpe_token_times_json);
 			if (sktpe_mj.exists()) {
 //				Assert.isTrue(sktpe_ttj.exists());
-				List<TreeNodeTwoMerge> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<List<TreeNodeTwoMerge>>(){}.getType());
+				List<TreeNodeTwoMerge> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<ArrayList<TreeNodeTwoMerge>>(){}.getType());
 //				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
 				sktpe_mr.Initialize(merges);// , token_times
 				System.out.println("==== SktPECount Loaded ====");

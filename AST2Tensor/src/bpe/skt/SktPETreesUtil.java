@@ -3,7 +3,6 @@ package bpe.skt;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +15,7 @@ import eclipse.jdt.JDTASTHelper;
 import tree.Tree;
 import tree.TreeNode;
 import util.MapUtil;
+import util.PrintUtil;
 import util.YStringUtil;
 
 public class SktPETreesUtil {
@@ -107,7 +107,7 @@ public class SktPETreesUtil {
 	 */
 	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(Map<Tree, Integer> vocab, int num_merges) {
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
-		List<TreeNodeTwoMerge> merges = new LinkedList<TreeNodeTwoMerge>();
+		Set<TreeNodeTwoMerge> merges = new TreeSet<TreeNodeTwoMerge>();
 //		if (num_merges == -1) {
 //			num_merges = Integer.MAX_VALUE;
 //		}
@@ -132,11 +132,12 @@ public class SktPETreesUtil {
 //			MapUtil.FindKeyWithMaxValue(pairs);
 			TreeNodeTwoMerge best = MapUtil.FindKeyWithMaxValue(pairs);
 			MergeVocab(best, vocab);
+			Assert.isTrue(!merges.contains(best));
 			merges.add(best);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");
-		return merges;
+		return new ArrayList<TreeNodeTwoMerge>(merges);
 	}
 	
 	public static Set<String> ExtractAllSktPEUnits(Collection<Tree> sktpe_raws) {
@@ -152,8 +153,11 @@ public class SktPETreesUtil {
 	}
 	
 	public static SktPEHandledResult ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts, TreeMap<String, ArrayList<String>> token_composes) {
+		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
 		SktPEHandledResult result = new SktPEHandledResult();
-		for (TreeNodeTwoMerge merge : merges) {
+		int m_size = merges.size();
+		for (int i=0;i<m_size;i++) {
+			TreeNodeTwoMerge merge = merges.get(i);
 			boolean merge_useful = false;
 			TreeNodeTwoMerge marked_merge = null;
 			for (Tree skt : skts) {
@@ -172,22 +176,22 @@ public class SktPETreesUtil {
 				}
 			}
 			if (merge_useful) {
-				Assert.isTrue(!token_composes.containsKey(marked_merge.GetMerged()), "conflict key:" + marked_merge.GetMerged());
 				ArrayList<String> ll = new ArrayList<String>();
 				String t0 = marked_merge.GetMerged();
-				token_composes.put(t0, ll);
 				String t1 = marked_merge.GetParent();
 				String t2 = marked_merge.GetNode();
-				if (token_composes.containsKey(t1)) {
-					ll.addAll(token_composes.get(t1));
-				} else {
+//				if (token_composes.containsKey(t1)) {
+//					ll.addAll(token_composes.get(t1));
+//				} else {
 					ll.add(t1);
-				}
-				if (token_composes.containsKey(t2)) {
-					ll.addAll(token_composes.get(t2));
-				} else {
+//				}
+//				if (token_composes.containsKey(t2)) {
+//					ll.addAll(token_composes.get(t2));
+//				} else {
 					ll.add(t2);
-				}
+//				}
+				Assert.isTrue(!token_composes.containsKey(t0), "conflict key:" + t0 + "====already list:" + PrintUtil.PrintListToString(token_composes.get(t0), "") + "====income list:" + PrintUtil.PrintListToString(ll, "") + "====merge:" + merge + "====index1:" + merges.indexOf(merge) + "====index2:" + merges.lastIndexOf(merge) + "====i:" + i);
+				token_composes.put(t0, ll);
 			}
 		}
 		result.vobs.addAll(ExtractAllSktPEUnits(skts));

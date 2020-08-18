@@ -49,11 +49,13 @@ public class SkeletonForestRecorder {
 	}
 
 	public void ApplySktPEMerges(List<TreeNodeTwoMerge> merges) {
+		ArrayList<Tree> all_trees = new ArrayList<Tree>();
 		ArrayList<Forest> fs = GetAllForests();
 		for (Forest f : fs) {
 			ArrayList<Tree> f_trees = f.GetAllTrees();
-			SktPETreesUtil.ApplySktPEMergesToTrees(merges, f_trees, token_composes);
+			all_trees.addAll(f_trees);
 		}
+		SktPETreesUtil.ApplySktPEMergesToTrees(merges, all_trees, token_composes);
 	}
 	
 	public ArrayList<String> GetComposedTokens(String merged) {

@@ -59,6 +59,9 @@ public class PrintUtil {
 	}
 	
 	public static <K> String PrintListToString(List<K> list, String extra_info) {
+		if (list == null) {
+			return "null";
+		}
 		StringBuilder sb = new StringBuilder(extra_info + ":");
 		for (K k : list) {
 			sb.append(k + "$");
