@@ -18,12 +18,12 @@ public class YStringUtil {
 			if (pos_v == -1) {
 				pos_v = Integer.MAX_VALUE;
 			}
-			int pos_m = base.indexOf("#m", pos+2);
-			if (pos_m == -1) {
-				pos_m = Integer.MAX_VALUE;
-			}
-			pos = Math.min(Math.min(pos_h, pos_v), pos_m);
-			Assert.isTrue(pos > -1 && pos < Integer.MAX_VALUE, "m:" + base + "======" + replace_content);
+//			int pos_m = base.indexOf("#m", pos+2);
+//			if (pos_m == -1) {
+//				pos_m = Integer.MAX_VALUE;
+//			}
+			pos = Math.min(pos_h, pos_v);// Math.min(, pos_m);
+			Assert.isTrue(pos > -1 && pos < Integer.MAX_VALUE, "base:" + base + "======" + replace_content + "======" + index + "======" + pos);
 			i++;
 		}
 		Assert.isTrue(pos != -1);

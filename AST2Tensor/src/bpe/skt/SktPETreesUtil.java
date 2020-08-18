@@ -12,6 +12,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
+import eclipse.jdt.JDTASTHelper;
 import tree.Tree;
 import tree.TreeNode;
 import util.MapUtil;
@@ -88,8 +89,9 @@ public class SktPETreesUtil {
 				}
 			}
 			if (rm_index > -1) {
-				TreeNode rm_tn = childs.remove(rm_index);
-				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
+//				TreeNode rm_tn = 
+				childs.remove(rm_index);
+//				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
 				tn.SetContent(pair.GetMerged());
 				really_merged = true;
 			}
@@ -153,21 +155,29 @@ public class SktPETreesUtil {
 		SktPEHandledResult result = new SktPEHandledResult();
 		for (TreeNodeTwoMerge merge : merges) {
 			boolean merge_useful = false;
+			TreeNodeTwoMerge marked_merge = null;
 			for (Tree skt : skts) {
 				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
 				Collection<TreeNode> tns = nodes.values();
 				for (TreeNode tn : tns) {
-					boolean curr_useful = MergeTwoTreeNodes(merge, tn);
-					merge_useful = merge_useful | curr_useful;
+					MarkMerge mark_merge = MergeTwoTreeNodesWhileMarkMergePoint(merge, tn);
+					merge_useful = merge_useful | mark_merge.merge_useful;
+					if (marked_merge == null) {
+						marked_merge = mark_merge.marked_merge;
+					} else {
+						if (mark_merge.merge_useful) {
+							Assert.isTrue(marked_merge.equals(mark_merge.marked_merge), "one:" + marked_merge + "======" + "two:" + mark_merge.marked_merge);
+						}
+					}
 				}
 			}
 			if (merge_useful) {
-				Assert.isTrue(!token_composes.containsKey(merge.GetMerged()));
+				Assert.isTrue(!token_composes.containsKey(marked_merge.GetMerged()), "conflict key:" + marked_merge.GetMerged());
 				ArrayList<String> ll = new ArrayList<String>();
-				String t0 = merge.GetMerged();
+				String t0 = marked_merge.GetMerged();
 				token_composes.put(t0, ll);
-				String t1 = merge.GetParent();
-				String t2 = merge.GetNode();
+				String t1 = marked_merge.GetParent();
+				String t2 = marked_merge.GetNode();
 				if (token_composes.containsKey(t1)) {
 					ll.addAll(token_composes.get(t1));
 				} else {
@@ -184,8 +194,9 @@ public class SktPETreesUtil {
 		return result;
 	}
 	
-	private static boolean MergeTwoTreeNodesWhileMarkMergePoint(TreeNodeTwoMerge pair, TreeNode tn) {
+	private static MarkMerge MergeTwoTreeNodesWhileMarkMergePoint(TreeNodeTwoMerge pair, TreeNode tn) {
 		boolean really_merged = false;
+		TreeNodeTwoMerge mark_merge = null;
 		if (pair.GetParent().equals(tn.GetContent())) {
 			ArrayList<TreeNode> childs = tn.GetChildren();
 			int index = -1;
@@ -199,13 +210,34 @@ public class SktPETreesUtil {
 			}
 			if (rm_index > -1) {
 				TreeNode rm_tn = childs.remove(rm_index);
-				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
-				tn.SetContent(pair.GetMerged());
+//				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
 				really_merged = true;
+				String r_par_val = tn.GetContent();
+				if (JDTASTHelper.IsIDLeafNode(rm_tn.GetClazz())) {
+//					try {
+					r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(r_par_val, "#m", rm_index);
+//					} catch (Exception e) {
+//						System.out.println("child_content:" + rm_tn.GetContent());
+//						throw e;
+//					}
+				}
+				mark_merge = new TreeNodeTwoMerge(rm_tn.GetContent(), r_par_val, pair.GetMerged());
+				tn.SetContent(pair.GetMerged());
 			}
 		}
-		return really_merged;
+		return new MarkMerge(really_merged, mark_merge);
 	}
 
 }
 
+class MarkMerge {
+	
+	boolean merge_useful = false;
+	TreeNodeTwoMerge marked_merge = null;
+	
+	public MarkMerge(boolean merge_useful, TreeNodeTwoMerge marked_merge) {
+		this.merge_useful = merge_useful;
+		this.marked_merge = marked_merge;
+	}
+	
+}

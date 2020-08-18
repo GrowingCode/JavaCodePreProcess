@@ -26,12 +26,21 @@ public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	@Override
 	public String toString() {
-		return merged + "#" + node + "#" + parent;
+		return "merged:" + merged + "====node:" + node + "====parent:" + parent;
 	}
 
 	@Override
 	public int compareTo(TreeNodeTwoMerge o) {
 		return toString().compareTo(o.toString());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		return toString().equals(obj.toString());
+//		return super.equals(obj);
 	}
 	
 }
