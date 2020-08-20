@@ -208,14 +208,7 @@ class SktTreeGenerator extends ASTVisitor {
 			if (to_create_tree_node) {
 //				Assert.isTrue(!sentry);
 				// create tree node
-				TreeNode tn = null;
-				if (JDTASTHelper.IsExprSpecPattern(node)) {
-					tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);
-				} else {
-					tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);
-				}
-				node_record.put(node, tn);
-				
+				int sib_index = 0;
 				ASTNode r_parent = parent_record.get(node);
 				if (r_parent == null) {
 					r_parent = node.getParent();
@@ -223,9 +216,21 @@ class SktTreeGenerator extends ASTVisitor {
 				Assert.isTrue(r_parent != null);
 				TreeNode rp_tn = node_record.get(r_parent);
 				if (rp_tn != null) {
-					rp_tn.AppendToChildren(tn);
+					sib_index = rp_tn.GetChildren().size();
 				} else {
 					Assert.isTrue(node == t_root);
+				}
+				
+				TreeNode tn = null;
+				if (JDTASTHelper.IsExprSpecPattern(node)) {
+					tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, sib_index, JDTASTHelper.GetExprSpec(node) != null);
+				} else {
+					tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt, sib_index);
+				}
+				node_record.put(node, tn);
+				
+				if (rp_tn != null) {
+					rp_tn.AppendToChildren(tn);
 				}
 			}
 		}

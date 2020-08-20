@@ -45,7 +45,7 @@ public class SktPETreesUtil {
 //					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
 //						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
 //					}
-					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), idx, r_par_val, mgd);
+					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), val.GetSiblingIndex(), r_par_val, mgd);
 					Integer n_freq = pairs.get(mm);
 					if (n_freq == null) {
 						n_freq = 0;
@@ -82,7 +82,7 @@ public class SktPETreesUtil {
 			int rm_index = -1;
 			for (TreeNode child : childs) {
 				index++;
-				if (pair.GetNode().equals(child.GetContent())) {
+				if (pair.GetNode().equals(child.GetContent()) && child.GetSiblingIndex() == pair.GetNodeIndex()) {
 					rm_index = index;
 					break;
 				}

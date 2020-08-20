@@ -11,14 +11,16 @@ public class TreeNode {
 	IBinding bind = null;
 	String content = null;
 	String tree_whole_content = null;
+	int sib_index = -1;
 	TreeNode parent = null;
 	ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 	
-	public TreeNode(Class<?> clazz, IBinding bind, String content, String tree_whole_content) {
+	public TreeNode(Class<?> clazz, IBinding bind, String content, String tree_whole_content, int sib_index) {
 		this.clazz = clazz;
 		this.bind = bind;
 		this.content = content;
 		this.tree_whole_content = tree_whole_content;
+		this.sib_index = sib_index;
 	}
 	
 	public void AppendToChildren(TreeNode tn) {
@@ -48,6 +50,10 @@ public class TreeNode {
 	
 	public String GetTreeWholeContent() {
 		return tree_whole_content;
+	}
+	
+	public int GetSiblingIndex() {
+		return sib_index;
 	}
 	
 	public ArrayList<TreeNode> GetChildren() {

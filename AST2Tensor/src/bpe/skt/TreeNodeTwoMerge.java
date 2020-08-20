@@ -32,7 +32,7 @@ public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	@Override
 	public String toString() {
-		return "merged:" + merged + "====node:" + node + "====parent:" + parent;
+		return "merged:" + merged + "====node:" + node + "====node_index:" + node_index + "====parent:" + parent;
 	}
 
 	@Override
