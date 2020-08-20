@@ -3,17 +3,23 @@ package bpe.skt;
 public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	String node = null;
+	int node_index = 0;
 	String parent = null;
 	String merged = null;
 	
-	public TreeNodeTwoMerge(String node, String parent, String merged) {
+	public TreeNodeTwoMerge(String node, int node_index, String parent, String merged) {
 		this.node = node;
+		this.node_index = node_index;
 		this.parent = parent;
 		this.merged = merged;
 	}
 	
 	public String GetNode() {
 		return node;
+	}
+	
+	public int GetNodeIndex() {
+		return node_index;
 	}
 	
 	public String GetParent() {

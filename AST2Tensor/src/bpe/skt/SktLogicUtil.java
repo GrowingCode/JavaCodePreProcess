@@ -5,8 +5,8 @@ import java.io.FileWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -136,12 +136,7 @@ public class SktLogicUtil {
 		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 
 		TreeMap<String, ArrayList<String>> atcs = sfr.GetAllTokenComposes();
-		Set<String> keys = atcs.keySet();
-		for (String k : keys) {
-			ArrayList<String> tcs = atcs.get(k);
-			pe_to_each_str.put(k, new ArrayList<String>(tcs));
-			pe_to_each.put(im.GetPESkeletonID(k), TranslateTokenToID(tcs, im, "GetEachSkeletonID"));
-		}
+		TreeSet<String> pe_keys = new TreeSet<String>();
 
 		for (ProjectForests pf : aps) {
 			TensorForProject tfp = new TensorForProject("skt");
@@ -181,12 +176,20 @@ public class SktLogicUtil {
 					one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 					one_to_pe.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
 							TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID"));
+					
+					pe_keys.addAll(tf.skt_pe_struct);
 				}
 				sst.HandleAllInfo();
 				e.add(sst);
 			}
 			tfp.AddTensors(e);
 			tfp.SaveToFile(pf.GetProjectInfo());
+		}
+		
+		for (String k : pe_keys) {
+			ArrayList<String> tcs = atcs.get(k);
+			pe_to_each_str.put(k, new ArrayList<String>(tcs));
+			pe_to_each.put(im.GetPESkeletonID(k), TranslateTokenToID(tcs, im, "GetEachSkeletonID"));
 		}
 
 		/*

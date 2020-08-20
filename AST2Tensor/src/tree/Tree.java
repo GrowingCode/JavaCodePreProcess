@@ -73,7 +73,7 @@ public class Tree implements Comparable<Tree> {
 //	}
 
 	private static void FlattenTreeNodeIntoOne(TreeFlatten tf, TreeNode rt) {
-		ArrayList<TreeNode> childs = new ArrayList<TreeNode>(rt.GetChildren());
+		ArrayList<TreeNode> childs = rt.GetChildren();
 		if (rt.GetContent().equals("{}")) {
 //			System.err.println("rt {} children size:" + childs.size());
 			Assert.isTrue(childs.size() == 0);
@@ -93,6 +93,7 @@ public class Tree implements Comparable<Tree> {
 					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rt.GetContent(), child.GetContent(), i);
 //					System.err.println("==== after merge:" + mgd + " ====");
 					rt.SetContent(mgd);
+					childs.remove(i);
 				}
 			}
 		}

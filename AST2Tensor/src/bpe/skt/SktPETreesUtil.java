@@ -11,7 +11,6 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
-import eclipse.jdt.JDTASTHelper;
 import tree.Tree;
 import tree.TreeNode;
 import util.MapUtil;
@@ -33,7 +32,7 @@ public class SktPETreesUtil {
 			Iterator<String> ai = all_keys.iterator();
 			while (ai.hasNext()) {
 				String key = ai.next();
-				Assert.isTrue(!key.equals("#h") && !key.equals("#v") && !key.equals("#m"), "wrong key:" + key);
+				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
 				TreeNode val = all_nodes.get(key);
 				TreeNode par_val = val.GetParent();
 				if (par_val != null) {
@@ -46,7 +45,7 @@ public class SktPETreesUtil {
 //					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
 //						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
 //					}
-					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), r_par_val, mgd);
+					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), idx, r_par_val, mgd);
 					Integer n_freq = pairs.get(mm);
 					if (n_freq == null) {
 						n_freq = 0;
@@ -159,20 +158,20 @@ public class SktPETreesUtil {
 		for (int i=0;i<m_size;i++) {
 			TreeNodeTwoMerge merge = merges.get(i);
 			boolean merge_useful = false;
-			TreeNodeTwoMerge marked_merge = null;
+			TreeNodeTwoMerge marked_merge = merge;
 			for (Tree skt : skts) {
 				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
 				Collection<TreeNode> tns = nodes.values();
 				for (TreeNode tn : tns) {
-					MarkMerge mark_merge = MergeTwoTreeNodesWhileMarkMergePoint(merge, tn);
-					merge_useful = merge_useful | mark_merge.merge_useful;
-					if (marked_merge == null) {
-						marked_merge = mark_merge.marked_merge;
-					} else {
-						if (mark_merge.merge_useful) {
-							Assert.isTrue(marked_merge.equals(mark_merge.marked_merge), "one:" + marked_merge + "======" + "two:" + mark_merge.marked_merge);
-						}
-					}
+					boolean curr_useful = MergeTwoTreeNodes(merge, tn);// MergeTwoTreeNodesWhileMarkMergePoint
+					merge_useful = merge_useful | curr_useful;
+//					if (marked_merge == null) {
+//						marked_merge = mark_merge.marked_merge;
+//					} else {
+//						if (mark_merge.merge_useful) {
+//							Assert.isTrue(marked_merge.equals(mark_merge.marked_merge), "one:" + marked_merge + "======" + "two:" + mark_merge.marked_merge);
+//						}
+//					}
 				}
 			}
 			if (merge_useful) {
@@ -180,16 +179,16 @@ public class SktPETreesUtil {
 				String t0 = marked_merge.GetMerged();
 				String t1 = marked_merge.GetParent();
 				String t2 = marked_merge.GetNode();
-//				if (token_composes.containsKey(t1)) {
-//					ll.addAll(token_composes.get(t1));
-//				} else {
+				if (token_composes.containsKey(t1)) {
+					ll.addAll(token_composes.get(t1));
+				} else {
 					ll.add(t1);
-//				}
-//				if (token_composes.containsKey(t2)) {
-//					ll.addAll(token_composes.get(t2));
-//				} else {
+				}
+				if (token_composes.containsKey(t2)) {
+					ll.addAll(token_composes.get(t2));
+				} else {
 					ll.add(t2);
-//				}
+				}
 				Assert.isTrue(!token_composes.containsKey(t0), "conflict key:" + t0 + "====already list:" + PrintUtil.PrintListToString(token_composes.get(t0), "") + "====income list:" + PrintUtil.PrintListToString(ll, "") + "====merge:" + merge + "====index1:" + merges.indexOf(merge) + "====index2:" + merges.lastIndexOf(merge) + "====i:" + i);
 				token_composes.put(t0, ll);
 			}
@@ -198,39 +197,39 @@ public class SktPETreesUtil {
 		return result;
 	}
 	
-	private static MarkMerge MergeTwoTreeNodesWhileMarkMergePoint(TreeNodeTwoMerge pair, TreeNode tn) {
-		boolean really_merged = false;
-		TreeNodeTwoMerge mark_merge = null;
-		if (pair.GetParent().equals(tn.GetContent())) {
-			ArrayList<TreeNode> childs = tn.GetChildren();
-			int index = -1;
-			int rm_index = -1;
-			for (TreeNode child : childs) {
-				index++;
-				if (pair.GetNode().equals(child.GetContent())) {
-					rm_index = index;
-					break;
-				}
-			}
-			if (rm_index > -1) {
-				TreeNode rm_tn = childs.remove(rm_index);
-//				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
-				really_merged = true;
-				String r_par_val = tn.GetContent();
-				if (JDTASTHelper.IsIDLeafNode(rm_tn.GetClazz())) {
-//					try {
-					r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(r_par_val, "#m", rm_index);
-//					} catch (Exception e) {
-//						System.out.println("child_content:" + rm_tn.GetContent());
-//						throw e;
-//					}
-				}
-				mark_merge = new TreeNodeTwoMerge(rm_tn.GetContent(), r_par_val, pair.GetMerged());
-				tn.SetContent(pair.GetMerged());
-			}
-		}
-		return new MarkMerge(really_merged, mark_merge);
-	}
+//	private static MarkMerge MergeTwoTreeNodesWhileMarkMergePoint(TreeNodeTwoMerge pair, TreeNode tn) {
+//		boolean really_merged = false;
+//		TreeNodeTwoMerge mark_merge = null;
+//		if (pair.GetParent().equals(tn.GetContent())) {
+//			ArrayList<TreeNode> childs = tn.GetChildren();
+//			int index = -1;
+//			int rm_index = -1;
+//			for (TreeNode child : childs) {
+//				index++;
+//				if (pair.GetNode().equals(child.GetContent())) {
+//					rm_index = index;
+//					break;
+//				}
+//			}
+//			if (rm_index > -1) {
+//				TreeNode rm_tn = childs.remove(rm_index);
+////				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
+//				really_merged = true;
+//				String r_par_val = tn.GetContent();
+////				if (JDTASTHelper.IsIDLeafNode(rm_tn.GetClazz())) {
+////					try {
+////					r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(r_par_val, "#m", rm_index);
+////					} catch (Exception e) {
+////						System.out.println("child_content:" + rm_tn.GetContent());
+////						throw e;
+////					}
+////				}
+//				mark_merge = new TreeNodeTwoMerge(rm_tn.GetContent(), r_par_val, pair.GetMerged());
+//				tn.SetContent(pair.GetMerged());
+//			}
+//		}
+//		return new MarkMerge(really_merged, mark_merge);
+//	}
 
 }
 
