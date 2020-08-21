@@ -163,6 +163,9 @@ public class SktLogicUtil {
 					is_var.add(-1);
 					
 					int count = YStringUtil.CountSubStringInString(o_str, "#h") + YStringUtil.CountSubStringInString(o_str, "#v");
+					if (count != tf.skt_token.size()) {
+						 tree.DebugPrintEachNode();
+					}
 					Assert.isTrue(count == tf.skt_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_token.size() + "#o_str:" + o_str + "#token list:" + PrintUtil.PrintListToString(tf.skt_token, "skt_tokens"));
 					info_str.addAll(tf.skt_token);
 					info.addAll(TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID"));
@@ -188,6 +191,10 @@ public class SktLogicUtil {
 		
 		for (String k : pe_keys) {
 			ArrayList<String> tcs = atcs.get(k);
+			if (tcs == null) {
+				tcs = new ArrayList<String>();
+				tcs.add(k);
+			}
 			pe_to_each_str.put(k, new ArrayList<String>(tcs));
 			pe_to_each.put(im.GetPESkeletonID(k), TranslateTokenToID(tcs, im, "GetEachSkeletonID"));
 		}

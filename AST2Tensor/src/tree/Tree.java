@@ -39,14 +39,16 @@ public class Tree implements Comparable<Tree> {
 		return root;
 	}
 
-	public TreeMap<String, TreeNode> GetAllNodes() {
-		TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
+	public ArrayList<TreeNode> GetAllNodes() {
+//		TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
+		ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
 		GetAllNodes(root, nodes);
 		return nodes;
 	}
 
-	private void GetAllNodes(TreeNode r_node, TreeMap<String, TreeNode> nodes) {
-		nodes.put(r_node.GetContent(), r_node);
+	private void GetAllNodes(TreeNode r_node, ArrayList<TreeNode> nodes) {
+//		nodes.put(r_node.GetContent(), r_node);
+		nodes.add(r_node);
 		ArrayList<TreeNode> childs = r_node.GetChildren();
 		for (TreeNode child : childs) {
 			GetAllNodes(child, nodes);
@@ -134,6 +136,21 @@ public class Tree implements Comparable<Tree> {
 			for (TreeNode child : childs) {
 				FlattenTreeNode(tf, child, token_composes);
 			}
+		}
+	}
+	
+	public void DebugPrintEachNode() {
+		System.out.println("==== Debug Tree Each Node Begin ====");
+		DebugPrintEachNode(root);
+		System.out.println("==== Debug Tree Each Node End ====");
+//		return "Debugging!";
+	}
+	
+	private void DebugPrintEachNode(TreeNode rt) {
+		System.out.println(rt.GetContent());
+		ArrayList<TreeNode> childs = rt.GetChildren();
+		for (TreeNode child : childs) {
+			DebugPrintEachNode(child);
 		}
 	}
 

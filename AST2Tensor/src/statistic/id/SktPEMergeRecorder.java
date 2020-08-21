@@ -1,10 +1,9 @@
 package statistic.id;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.google.gson.Gson;
 
@@ -17,7 +16,7 @@ public class SktPEMergeRecorder {
 	
 	List<TreeNodeTwoMerge> merges = new LinkedList<TreeNodeTwoMerge>();
 	
-	private Map<Tree, Integer> skt_times = new TreeMap<Tree, Integer>();
+	private ArrayList<Tree> skt_times = new ArrayList<Tree>();//, Integer
 	
 	public SktPEMergeRecorder() {
 	}
@@ -33,12 +32,13 @@ public class SktPEMergeRecorder {
 	}
 	
 	public void EncounterSkeleton(Tree skt, int encounter_time) {
-		Integer tt = skt_times.get(skt);
-		if (tt == null) {
-			tt = 0;
-		}
-		tt += encounter_time;
-		skt_times.put(skt, tt);
+//		Integer tt = skt_times.get(skt);
+//		if (tt == null) {
+//			tt = 0;
+//		}
+//		tt += encounter_time;
+//		skt_times.put(skt, tt);
+		skt_times.add(skt);
 	}
 	
 	public void GenerateSktPEMerges(int merge_num) {

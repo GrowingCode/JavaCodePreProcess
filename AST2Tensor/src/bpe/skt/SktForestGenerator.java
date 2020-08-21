@@ -208,7 +208,7 @@ class SktTreeGenerator extends ASTVisitor {
 			if (to_create_tree_node) {
 //				Assert.isTrue(!sentry);
 				// create tree node
-				int sib_index = 0;
+//				int sib_index = 0;
 				ASTNode r_parent = parent_record.get(node);
 				if (r_parent == null) {
 					r_parent = node.getParent();
@@ -216,16 +216,16 @@ class SktTreeGenerator extends ASTVisitor {
 				Assert.isTrue(r_parent != null);
 				TreeNode rp_tn = node_record.get(r_parent);
 				if (rp_tn != null) {
-					sib_index = rp_tn.GetChildren().size();
+//					sib_index = rp_tn.GetChildren().size();
 				} else {
 					Assert.isTrue(node == t_root);
 				}
 				
 				TreeNode tn = null;
 				if (JDTASTHelper.IsExprSpecPattern(node)) {
-					tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, sib_index, JDTASTHelper.GetExprSpec(node) != null);
+					tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
 				} else {
-					tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt, sib_index);
+					tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);//, sib_index
 				}
 				node_record.put(node, tn);
 				
