@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 public class FileUtil {
 
 	public static void EnsureDirectoryExist(String dir) {
@@ -223,6 +225,20 @@ public class FileUtil {
 				CopyFile(new File(sourcePath + File.separator + filePath[i]),
 						new File(r_new_path + File.separator + filePath[i]));
 			}
+		}
+	}
+	
+	public static void WriteJson(Object obj, String path) {
+		Gson gson = new Gson();
+		String pi_str = gson.toJson(obj);
+		File pi_file = new File(path);
+		try {
+			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
+			pi_fw.write(pi_str);
+			pi_fw.flush();
+			pi_fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

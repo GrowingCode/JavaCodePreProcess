@@ -27,6 +27,7 @@ import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
+import util.FileUtil;
 import util.PrintUtil;
 import util.YStringUtil;
 
@@ -134,9 +135,17 @@ public class SktLogicUtil {
 		Map<Integer, ArrayList<Integer>> one_to_pe = new TreeMap<Integer, ArrayList<Integer>>();
 		Map<String, ArrayList<String>> pe_to_each_str = new TreeMap<String, ArrayList<String>>();
 		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
-
+		
+		Map<Integer, ArrayList<Integer>> one_hv_num = new TreeMap<Integer, ArrayList<Integer>>();
+		Map<String, ArrayList<Integer>> one_str_hv_num = new TreeMap<String, ArrayList<Integer>>();
+		Map<Integer, ArrayList<Integer>> pe_hv_num = new TreeMap<Integer, ArrayList<Integer>>();
+		Map<String, ArrayList<Integer>> pe_str_hv_num = new TreeMap<String, ArrayList<Integer>>();
+		Map<Integer, ArrayList<Integer>> each_hv_num = new TreeMap<Integer, ArrayList<Integer>>();
+		Map<String, ArrayList<Integer>> each_str_hv_num = new TreeMap<String, ArrayList<Integer>>();
+		
 		TreeMap<String, ArrayList<String>> atcs = sfr.GetAllTokenComposes();
 		TreeSet<String> pe_keys = new TreeSet<String>();
+		TreeSet<String> each_keys = new TreeSet<String>();
 
 		for (ProjectForests pf : aps) {
 			TensorForProject tfp = new TensorForProject("skt");
@@ -162,7 +171,8 @@ public class SktLogicUtil {
 					kind.add(0);
 					is_var.add(-1);
 					
-					int count = YStringUtil.CountSubStringInString(o_str, "#h") + YStringUtil.CountSubStringInString(o_str, "#v");
+					Assert.isTrue(YStringUtil.CountSubStringInString(o_str, "#h") == 0);
+					int count = YStringUtil.CountSubStringInString(o_str, "#v");
 					if (count != tf.skt_token.size()) {
 						 tree.DebugPrintEachNode();
 					}
@@ -173,14 +183,30 @@ public class SktLogicUtil {
 					is_var.addAll(tf.skt_token_is_var);
 
 					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
+					if (one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
+						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_e_struct, "").equals(PrintUtil.PrintListToString(one_to_each_str.get(tf.skt_one_struct.get(0)), "")));
+					}
 					one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_e_struct));
 					one_to_each.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
 							TranslateTokenToID(tf.skt_e_struct, im, "GetEachSkeletonID"));
+					if (one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
+						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_pe_struct, "").equals(PrintUtil.PrintListToString(one_to_pe_str.get(tf.skt_one_struct.get(0)), "")));
+					}
 					one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 					one_to_pe.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
 							TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID"));
 					
+					ArrayList<Integer> hv = new ArrayList<Integer>();
+					hv.add(0);
+					hv.add(count);
+					if (one_str_hv_num.containsKey(tf.skt_one_struct.get(0))) {
+						Assert.isTrue(PrintUtil.PrintListToString(one_str_hv_num.get(tf.skt_one_struct.get(0)), "").equals(PrintUtil.PrintListToString(hv, "")));
+					}
+					one_hv_num.put(im.GetSkeletonID(tf.skt_one_struct.get(0)), hv);
+					one_str_hv_num.put(tf.skt_one_struct.get(0), hv);
+					
 					pe_keys.addAll(tf.skt_pe_struct);
+					each_keys.addAll(tf.skt_e_struct);
 				}
 				sst.HandleAllInfo();
 				e.add(sst);
@@ -198,64 +224,45 @@ public class SktLogicUtil {
 			pe_to_each_str.put(k, new ArrayList<String>(tcs));
 			pe_to_each.put(im.GetPESkeletonID(k), TranslateTokenToID(tcs, im, "GetEachSkeletonID"));
 		}
-
+		
+		for (String k : pe_keys) {
+			ArrayList<Integer> hv = new ArrayList<Integer>();
+			hv.add(YStringUtil.CountSubStringInString(k, "#h"));
+			hv.add(YStringUtil.CountSubStringInString(k, "#v"));
+			if (pe_str_hv_num.containsKey(k)) {
+				Assert.isTrue(PrintUtil.PrintListToString(pe_str_hv_num.get(k), "").equals(PrintUtil.PrintListToString(hv, "")));
+			}
+			pe_hv_num.put(im.GetPESkeletonID(k), hv);
+			pe_str_hv_num.put(k, hv);
+		}
+		
+		for (String k : each_keys) {
+			ArrayList<Integer> hv = new ArrayList<Integer>();
+			hv.add(YStringUtil.CountSubStringInString(k, "#h"));
+			hv.add(YStringUtil.CountSubStringInString(k, "#v"));
+			if (each_str_hv_num.containsKey(k)) {
+				Assert.isTrue(PrintUtil.PrintListToString(each_str_hv_num.get(k), "").equals(PrintUtil.PrintListToString(hv, "")));
+			}
+			each_hv_num.put(im.GetEachSkeletonID(k), hv);
+			each_str_hv_num.put(k, hv);
+		}
+		
 		/*
 		 * store one_to_each;one_to_pe;pe_to_each
 		 */
-		{
-			Gson gson = new Gson();
-			String pi_str = gson.toJson(one_to_each_str);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_each_str.json");
-			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
-			pi_fw.write(pi_str);
-			pi_fw.flush();
-			pi_fw.close();
-		}
-		{
-			Gson gson = new Gson();
-			String pi_str = gson.toJson(one_to_each);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_each.json");
-			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
-			pi_fw.write(pi_str);
-			pi_fw.flush();
-			pi_fw.close();
-		}
-		{
-			Gson gson = new Gson();
-			String pi_str = gson.toJson(one_to_pe_str);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe_str.json");
-			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
-			pi_fw.write(pi_str);
-			pi_fw.flush();
-			pi_fw.close();
-		}
-		{
-			Gson gson = new Gson();
-			String pi_str = gson.toJson(one_to_pe);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe.json");
-			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
-			pi_fw.write(pi_str);
-			pi_fw.flush();
-			pi_fw.close();
-		}
-		{
-			Gson gson = new Gson();
-			String pi_str = gson.toJson(pe_to_each_str);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
-			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
-			pi_fw.write(pi_str);
-			pi_fw.flush();
-			pi_fw.close();
-		}
-		{
-			Gson gson = new Gson();
-			String pi_str = gson.toJson(pe_to_each);
-			File pi_file = new File(MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each.json");
-			FileWriter pi_fw = new FileWriter(pi_file.getAbsoluteFile(), false);
-			pi_fw.write(pi_str);
-			pi_fw.flush();
-			pi_fw.close();
-		}
+		FileUtil.WriteJson(one_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_each_str.json");
+		FileUtil.WriteJson(one_to_each, MetaOfApp.DataDirectory + "/All_map_skt_one_to_each.json");
+		FileUtil.WriteJson(one_to_pe_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe_str.json");
+		FileUtil.WriteJson(one_to_pe, MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe.json");
+		FileUtil.WriteJson(pe_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
+		FileUtil.WriteJson(pe_to_each, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each.json");
+		
+		FileUtil.WriteJson(one_hv_num, MetaOfApp.DataDirectory + "/All_one_hv_num.json");
+		FileUtil.WriteJson(one_str_hv_num, MetaOfApp.DataDirectory + "/All_one_str_hv_num.json");
+		FileUtil.WriteJson(pe_hv_num, MetaOfApp.DataDirectory + "/All_pe_hv_num.json");
+		FileUtil.WriteJson(pe_str_hv_num, MetaOfApp.DataDirectory + "/All_pe_str_hv_num.json");
+		FileUtil.WriteJson(each_hv_num, MetaOfApp.DataDirectory + "/All_each_hv_num.json");
+		FileUtil.WriteJson(each_str_hv_num, MetaOfApp.DataDirectory + "/All_each_str_hv_num.json");
 	}
 
 	public static ArrayList<Integer> TranslateTokenToID(ArrayList<String> ss, IDManager im, String m_key)
