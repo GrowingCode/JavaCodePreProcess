@@ -1,6 +1,7 @@
 package bpe.skt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
+import main.MetaOfApp;
 import statis.trans.common.BasicGenerator;
 import statis.trans.common.RoleAssigner;
 import statistic.IDTools;
@@ -26,6 +28,7 @@ import tree.ExprSpecTreeNode;
 import tree.Forest;
 import tree.Tree;
 import tree.TreeNode;
+import util.YStringUtil;
 
 public class SktForestGenerator extends BasicGenerator {
 	
@@ -208,7 +211,7 @@ class SktTreeGenerator extends ASTVisitor {
 			if (to_create_tree_node) {
 //				Assert.isTrue(!sentry);
 				// create tree node
-//				int sib_index = 0;
+				int sib_index = -1;
 				ASTNode r_parent = parent_record.get(node);
 				if (r_parent == null) {
 					r_parent = node.getParent();
@@ -216,21 +219,36 @@ class SktTreeGenerator extends ASTVisitor {
 				Assert.isTrue(r_parent != null);
 				TreeNode rp_tn = node_record.get(r_parent);
 				if (rp_tn != null) {
-//					sib_index = rp_tn.GetChildren().size();
+					sib_index = rp_tn.GetChildren().size();
 				} else {
 					Assert.isTrue(node == t_root);
 				}
 				
-				TreeNode tn = null;
-				if (JDTASTHelper.IsExprSpecPattern(node)) {
-					tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
-				} else {
-					tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);//, sib_index
+				boolean real_create = true;
+				if (MetaOfApp.ignore_ast_type.length > 0) {
+					int positon = Arrays.asList(MetaOfApp.ignore_ast_type).indexOf(node.getClass());
+					if (positon >= 0)
+					{
+						real_create = false;
+						if (rp_tn != null) {
+							Assert.isTrue(sib_index >= 0);
+							rp_tn.SetContent(YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rp_tn.GetContent(), MetaOfApp.ignore_ast_dft_value[positon], sib_index));
+						}
+					}
 				}
-				node_record.put(node, tn);
 				
-				if (rp_tn != null) {
-					rp_tn.AppendToChildren(tn);
+				if (real_create) {
+					TreeNode tn = null;
+					if (JDTASTHelper.IsExprSpecPattern(node)) {
+						tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
+					} else {
+						tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);//, sib_index
+					}
+					node_record.put(node, tn);
+					
+					if (rp_tn != null) {
+						rp_tn.AppendToChildren(tn);
+					}
 				}
 			}
 		}

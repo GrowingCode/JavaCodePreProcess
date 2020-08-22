@@ -86,6 +86,9 @@ public class MetaOfApp {
 	public static boolean GenerateSkeletonToken = true;
 //	public static boolean GeneratePairEncodedSkeletonToken = false;
 	
+	public final static Class<?>[] ignore_ast_type = new Class<?>[] {};// StringLiteral.class
+	public final static String[] ignore_ast_dft_value = new String[] {};// "\"@Str\""
+	
 	public static boolean PrintTokenKindDebugInfo = false;
 	
 	public final static int ApproximateVarMode = TokenKindUtil.SimpleNameApproximateVariable;

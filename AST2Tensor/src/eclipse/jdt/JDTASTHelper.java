@@ -1,6 +1,7 @@
 package eclipse.jdt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -21,6 +22,7 @@ import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
+import main.MetaOfApp;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
 
@@ -74,6 +76,13 @@ public class JDTASTHelper {
 		String raw_cnt = node.toString();
 		if (node instanceof Block || node instanceof AnonymousClassDeclaration) {
 			raw_cnt = "{}";
+		}
+		if (MetaOfApp.ignore_ast_type.length > 0) {
+			int positon = Arrays.asList(MetaOfApp.ignore_ast_type).indexOf(node.getClass());
+			if (positon >= 0)
+			{
+				raw_cnt = MetaOfApp.ignore_ast_dft_value[positon];
+			}
 		}
 //		System.err.println("raw_cnt:" + raw_cnt);
 		String cnt = PreProcessContentHelper.PreProcessTypeContent(raw_cnt);
