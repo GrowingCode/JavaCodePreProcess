@@ -2,7 +2,6 @@ package statis.trans.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -17,7 +16,9 @@ public class SkeletonForestRecorder {
 	
 	ArrayList<ProjectForests> pfs = new ArrayList<ProjectForests>();
 	
-	TreeMap<String, ArrayList<String>> token_composes = new TreeMap<String, ArrayList<String>>();
+//	TreeMap<String, ArrayList<String>> token_composes = new TreeMap<String, ArrayList<String>>();
+	
+	ArrayList<Tree> all_trees = null;
 	
 	public SkeletonForestRecorder() {
 	}
@@ -49,27 +50,39 @@ public class SkeletonForestRecorder {
 	}
 
 	public void ApplySktPEMerges(List<TreeNodeTwoMerge> merges) {
-		ArrayList<Tree> all_trees = new ArrayList<Tree>();
-		ArrayList<Forest> fs = GetAllForests();
-		for (Forest f : fs) {
-			ArrayList<Tree> f_trees = f.GetAllTrees();
-			all_trees.addAll(f_trees);
-		}
-		SktPETreesUtil.ApplySktPEMergesToTrees(merges, all_trees, token_composes);
+		GetAllTrees();
+		SktPETreesUtil.ApplySktPEMergesToTrees(merges, all_trees);// , token_composes
 	}
 	
-	public ArrayList<String> GetComposedTokens(String merged) {
-		ArrayList<String> r = new ArrayList<String>();
-		ArrayList<String> tcs = token_composes.get(merged);
-		if (tcs != null) {
-			r.addAll(tcs);
-		}
-		return r;
+	public void PreProcessAllForests() {
+		GetAllTrees();
+		SktPETreesUtil.PreProcessAllTrees(all_trees);
 	}
 	
-	public TreeMap<String, ArrayList<String>> GetAllTokenComposes() {
-		return token_composes;
+	private ArrayList<Tree> GetAllTrees() {
+		if (all_trees == null) {
+			all_trees = new ArrayList<Tree>();
+			ArrayList<Forest> fs = GetAllForests();
+			for (Forest f : fs) {
+				ArrayList<Tree> f_trees = f.GetAllTrees();
+				all_trees.addAll(f_trees);
+			}
+		}
+		return all_trees;
 	}
+	
+//	public ArrayList<String> GetComposedTokens(String merged) {
+//		ArrayList<String> r = new ArrayList<String>();
+//		ArrayList<String> tcs = token_composes.get(merged);
+//		if (tcs != null) {
+//			r.addAll(tcs);
+//		}
+//		return r;
+//	}
+	
+//	public TreeMap<String, ArrayList<String>> GetAllTokenComposes() {
+//		return token_composes;
+//	}
 	
 }
 

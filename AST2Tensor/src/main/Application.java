@@ -179,6 +179,7 @@ public class Application implements IApplication {
 				// Handle SktPE logic
 				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
+				id_tool.stf_r.PreProcessAllForests();
 				id_tool.stf_r.ApplySktPEMerges(sktpe_mr.GetMerges());
 				SktLogicUtil.CountPairEncodedSkeletons(id_tool, id_tool.stf_r);
 			}

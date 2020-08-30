@@ -15,6 +15,8 @@ public class TreeNode {
 	TreeNode parent = null;
 	ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 	
+	String tree_uid = null;
+	
 	public TreeNode(Class<?> clazz, IBinding bind, String content, String tree_whole_content) {//, int sib_index
 		this.clazz = clazz;
 		this.bind = bind;
@@ -30,6 +32,10 @@ public class TreeNode {
 		} else {
 			Assert.isTrue(tn.parent == this);
 		}
+	}
+	
+	public void AppendAllChildren(ArrayList<TreeNode> children) {
+		this.children.addAll(children);
 	}
 	
 	public Class<?> GetClazz() {
@@ -66,6 +72,14 @@ public class TreeNode {
 	
 	public void SetParent(TreeNode parent) {
 		this.parent = parent ;
+	}
+	
+	public void SetTreeUid(String tree_uid) {
+		this.tree_uid = tree_uid;
+	}
+	
+	public String GetTreeUid() {
+		return tree_uid;
 	}
 	
 }

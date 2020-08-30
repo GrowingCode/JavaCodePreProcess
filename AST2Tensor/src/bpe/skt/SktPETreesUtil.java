@@ -11,10 +11,10 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
+import tree.MergedTreeNode;
 import tree.Tree;
 import tree.TreeNode;
 import util.MapUtil;
-import util.PrintUtil;
 import util.YStringUtil;
 
 public class SktPETreesUtil {
@@ -159,20 +159,20 @@ public class SktPETreesUtil {
 //		return bpes;
 //	}
 	
-	public static void ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts, TreeMap<String, ArrayList<String>> token_composes) {
-		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
+	public static void ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts) {// , TreeMap<String, ArrayList<String>> token_composes
+//		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
 //		SktPEHandledResult result = new SktPEHandledResult();
 		int m_size = merges.size();
 		for (int i=0;i<m_size;i++) {
 			TreeNodeTwoMerge merge = merges.get(i);
 			boolean merge_useful = false;
-			TreeNodeTwoMerge marked_merge = merge;
+//			TreeNodeTwoMerge marked_merge = merge;
 			for (Tree skt : skts) {
 //				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
 //				Collection<TreeNode> tns = nodes.values();
 				ArrayList<TreeNode> tns = skt.GetAllNodes();
 				for (TreeNode tn : tns) {
-					boolean curr_useful = MergeTwoTreeNodes(merge, tn);// MergeTwoTreeNodesWhileMarkMergePoint
+					boolean curr_useful = MergeTwoTreeNodesWithNewMergeNodeCreated(merge, tn);// MergeTwoTreeNodesWhileMarkMergePoint
 					merge_useful = merge_useful | curr_useful;
 //					if (marked_merge == null) {
 //						marked_merge = mark_merge.marked_merge;
@@ -183,27 +183,78 @@ public class SktPETreesUtil {
 //					}
 				}
 			}
-			if (merge_useful) {
-				ArrayList<String> ll = new ArrayList<String>();
-				String t0 = marked_merge.GetMerged();
-				String t1 = marked_merge.GetParent();
-				String t2 = marked_merge.GetNode();
-				if (token_composes.containsKey(t1)) {
-					ll.addAll(token_composes.get(t1));
-				} else {
-					ll.add(t1);
-				}
-				if (token_composes.containsKey(t2)) {
-					ll.addAll(token_composes.get(t2));
-				} else {
-					ll.add(t2);
-				}
-				Assert.isTrue(!token_composes.containsKey(t0), "conflict key:" + t0 + "====already list:" + PrintUtil.PrintListToString(token_composes.get(t0), "") + "====income list:" + PrintUtil.PrintListToString(ll, "") + "====merge:" + merge + "====index1:" + merges.indexOf(merge) + "====index2:" + merges.lastIndexOf(merge) + "====i:" + i);
-				token_composes.put(t0, ll);
-			}
+//			if (merge_useful) {
+//				ArrayList<String> ll = new ArrayList<String>();
+//				String t0 = marked_merge.GetMerged();
+//				String t1 = marked_merge.GetParent();
+//				String t2 = marked_merge.GetNode();
+//				if (token_composes.containsKey(t1)) {
+//					ll.addAll(token_composes.get(t1));
+//				} else {
+//					ll.add(t1);
+//				}
+//				if (token_composes.containsKey(t2)) {
+//					ll.addAll(token_composes.get(t2));
+//				} else {
+//					ll.add(t2);
+//				}
+//				Assert.isTrue(!token_composes.containsKey(t0), "conflict key:" + t0 + "====already list:" + PrintUtil.PrintListToString(token_composes.get(t0), "") + "====income list:" + PrintUtil.PrintListToString(ll, "") + "====merge:" + merge + "====index1:" + merges.indexOf(merge) + "====index2:" + merges.lastIndexOf(merge) + "====i:" + i);
+//				token_composes.put(t0, ll);
+//			}
 		}
 //		result.vobs.addAll(ExtractAllSktPEUnits(skts));
 //		return result;
+	}
+	
+	private static boolean MergeTwoTreeNodesWithNewMergeNodeCreated(TreeNodeTwoMerge pair, TreeNode tn) {
+		boolean really_merged = false;
+		if (pair.GetParent().equals(tn.GetContent())) {
+			ArrayList<TreeNode> childs = tn.GetChildren();
+			int index = -1;
+			int rm_index = -1;
+			for (TreeNode child : childs) {
+				index++;
+				if (pair.GetNode().equals(child.GetContent()) && index == pair.GetNodeIndex()) {//child.GetSiblingIndex()
+					rm_index = index;
+					break;
+				}
+			}
+			if (rm_index > -1) {
+				MergedTreeNode m_tn = new MergedTreeNode(tn.GetClazz(), tn.GetBinding(), pair.GetMerged(), tn.GetTreeWholeContent());
+				m_tn.SetParent(tn.GetParent());
+				m_tn.AppendAllChildren(childs);
+				ArrayList<TreeNode> m_childs = m_tn.GetChildren();
+				TreeNode child = m_childs.remove(rm_index);
+				m_tn.SetUpMergedInformation(tn, child);
+				ArrayList<TreeNode> ccs = child.GetChildren();
+				int ccs_len = ccs.size();
+				for (int cl = ccs_len - 1; cl >= 0; cl--) {
+					TreeNode child_child = ccs.get(cl);
+					m_childs.add(rm_index, child_child);
+					child_child.SetParent(m_tn);
+				}
+				really_merged = true;
+			}
+		}
+		return really_merged;
+	}
+	
+	public static void PreProcessAllTrees(ArrayList<Tree> all_trees) {
+		for (Tree t : all_trees) {
+			TreeNode t_root = t.GetRootNode();
+			PreProcessTreeNode(t_root, "0");
+		}
+	}
+	
+	private static void PreProcessTreeNode(TreeNode t_root, String t_path) {
+		Assert.isTrue(t_root.GetTreeUid() == null);
+		t_root.SetTreeUid(t_path);
+		ArrayList<TreeNode> childs = t_root.GetChildren();
+		int sib_index = -1;
+		for (TreeNode child : childs) {
+			sib_index++;
+			PreProcessTreeNode(child, t_path + " " + sib_index);
+		}
 	}
 	
 //	private static MarkMerge MergeTwoTreeNodesWhileMarkMergePoint(TreeNodeTwoMerge pair, TreeNode tn) {
