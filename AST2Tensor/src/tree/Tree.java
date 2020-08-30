@@ -55,11 +55,11 @@ public class Tree implements Comparable<Tree> {
 		}
 	}
 
-	public TreeFlatten FlattenTree(TreeMap<String, ArrayList<String>> token_composes) {
+	public TreeFlatten FlattenTree() {// TreeMap<String, ArrayList<String>> token_composes
 		if (tf == null) {
 //			Assert.isTrue(tf == null);
 			tf = new TreeFlatten();
-			FlattenTreeNode(tf, root, token_composes);
+			FlattenTreeNode(tf, root);// , token_composes
 			FlattenTreeNodeIntoOne(tf, root);
 			Assert.isTrue(tf.skt_one_struct.size() == 0);
 			tf.skt_one_struct.add(root.GetContent());
@@ -106,8 +106,7 @@ public class Tree implements Comparable<Tree> {
 //		}
 	}
 
-	private static void FlattenTreeNode(TreeFlatten tf, TreeNode rt,
-			TreeMap<String, ArrayList<String>> token_composes) {
+	private static void FlattenTreeNode(TreeFlatten tf, TreeNode rt) {// , TreeMap<String, ArrayList<String>> token_composes
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
@@ -115,7 +114,6 @@ public class Tree implements Comparable<Tree> {
 			tf.skt_token.add(rt.GetContent());
 			int tk = TokenKindUtil.GetTokenKind(rt);
 			tf.skt_token_kind.add(tk);
-
 			int token_is_var = rt.GetBinding() != null ? 1 : 0;
 			if (MetaOfApp.UseApproximateVariable) {
 				int base = 1;
@@ -127,16 +125,28 @@ public class Tree implements Comparable<Tree> {
 			tf.skt_token_is_var.add(token_is_var);
 		} else {
 			tf.skt_pe_struct.add(rt.GetContent());
-			ArrayList<String> composes = token_composes.get(rt.GetContent());
-			if (composes == null) {
-				tf.skt_e_struct.add(rt.GetContent());
+//			ArrayList<String> composes = token_composes.get(rt.GetContent());
+			if (rt instanceof MergedTreeNode) {
+//				tf.skt_e_struct.addAll(composes);
+				FlattenMergedTreeNode(tf, (MergedTreeNode) rt, rt.GetTreeUid());
 			} else {
-				tf.skt_e_struct.addAll(composes);
+				tf.skt_e_struct.add(rt.GetContent());
+				
 			}
 			for (TreeNode child : childs) {
-				FlattenTreeNode(tf, child, token_composes);
+				FlattenTreeNode(tf, child);// , token_composes
 			}
 		}
+	}
+	
+	private static void FlattenMergedTreeNode(TreeFlatten tf, MergedTreeNode mtn, final String tree_uid) {
+		TreeNode m_base_parent = mtn.GetMergeBaseParent();
+		TreeNode m_child = mtn.GetMergeChild();
+		String m_child_tree_uid = m_child.GetTreeUid();
+		String pfx = tree_uid + " ";
+		Assert.isTrue(m_child_tree_uid.startsWith(pfx));
+		String m_child_relative_tree_uid = m_child_tree_uid.substring(pfx.length(), m_child_tree_uid.length());
+		tf.skt_e_struct.add();
 	}
 	
 	public void DebugPrintEachNode() {
