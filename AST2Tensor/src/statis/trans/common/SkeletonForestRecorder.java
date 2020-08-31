@@ -59,6 +59,13 @@ public class SkeletonForestRecorder {
 		SktPETreesUtil.PreProcessAllTrees(all_trees);
 	}
 	
+	public void FlattenAllOriginTrees() {
+		GetAllTrees();
+		for (Tree o_tree : all_trees) {
+			o_tree.FlattenOriginTree();
+		}
+	}
+	
 	private ArrayList<Tree> GetAllTrees() {
 		if (all_trees == null) {
 			all_trees = new ArrayList<Tree>();

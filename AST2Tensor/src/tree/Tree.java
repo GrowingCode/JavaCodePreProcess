@@ -1,7 +1,6 @@
 package tree;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -12,7 +11,7 @@ import util.YStringUtil;
 
 public class Tree implements Comparable<Tree> {
 
-	TreeFlatten tf = null;
+	TreeFlatten tf = new TreeFlatten();
 	TreeNode root = null;
 //	TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
 
@@ -54,16 +53,27 @@ public class Tree implements Comparable<Tree> {
 			GetAllNodes(child, nodes);
 		}
 	}
+	
+	public void FlattenOriginTree() {// TreeMap<String, ArrayList<String>> token_composes
+		if (tf.skt_e_struct_token.size() == 0) {
+			FlattenOriginTreeNode(tf, root);
+		}
+	}
 
-	public TreeFlatten FlattenTree() {// TreeMap<String, ArrayList<String>> token_composes
-		if (tf == null) {
+	public void FlattenTree() {// TreeMap<String, ArrayList<String>> token_composes
+		if (tf.skt_one_struct.size() == 0) {
 //			Assert.isTrue(tf == null);
-			tf = new TreeFlatten();
+			tf.skt_one_struct_v_count.add(0);
 			FlattenTreeNode(tf, root);// , token_composes
 			FlattenTreeNodeIntoOne(tf, root);
 			Assert.isTrue(tf.skt_one_struct.size() == 0);
 			tf.skt_one_struct.add(root.GetContent());
 		}
+//		return tf;
+	}
+	
+	public TreeFlatten GetTreeFlattenResult() {
+		Assert.isTrue(tf.skt_one_struct.size() > 0 && tf.skt_e_struct_token.size() > 0);
 		return tf;
 	}
 
@@ -73,6 +83,16 @@ public class Tree implements Comparable<Tree> {
 //		FlattenTreeNodeIntoOne(tf, root);
 //		return tf;
 //	}
+	
+	private static void FlattenOriginTreeNode(TreeFlatten tf, TreeNode rt) {// , TreeMap<String, ArrayList<String>> token_composes
+		tf.skt_e_struct_token.add(rt.GetContent());
+		tf.skt_e_struct_token_tree_uid.add(rt.GetTreeUid());
+		tf.skt_e_struct_token_hv_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#h") + YStringUtil.CountSubStringInString(rt.GetContent(), "#v"));
+		ArrayList<TreeNode> childs = rt.GetChildren();
+		for (TreeNode child : childs) {
+			FlattenOriginTreeNode(tf, child);
+		}
+	}
 
 	private static void FlattenTreeNodeIntoOne(TreeFlatten tf, TreeNode rt) {
 		ArrayList<TreeNode> childs = rt.GetChildren();
@@ -82,7 +102,8 @@ public class Tree implements Comparable<Tree> {
 		}
 		Class<?> clz = rt.GetClazz();
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
-			// do nothing.
+			tf.skt_one_struct_v_count.set(0, tf.skt_one_struct_v_count.get(0) + 1);
+			tf.skt_one_struct_v_tree_uid.add(rt.GetTreeUid());
 		} else {
 			int i_len = childs.size();
 			for (int i = i_len-1; i >= 0; i--) {
@@ -105,7 +126,7 @@ public class Tree implements Comparable<Tree> {
 //			tf.skt_one_struct.set(0, tf.skt_one_struct.get(0) + "#" + rt.GetContent());
 //		}
 	}
-
+	
 	private static void FlattenTreeNode(TreeFlatten tf, TreeNode rt) {// , TreeMap<String, ArrayList<String>> token_composes
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
@@ -125,14 +146,45 @@ public class Tree implements Comparable<Tree> {
 			tf.skt_token_is_var.add(token_is_var);
 		} else {
 			tf.skt_pe_struct.add(rt.GetContent());
-//			ArrayList<String> composes = token_composes.get(rt.GetContent());
+			tf.skt_pe_e_struct.add(new ArrayList<String>());
+			tf.skt_pe_e_struct_tree_uid.add(new ArrayList<String>());
 			if (rt instanceof MergedTreeNode) {
-//				tf.skt_e_struct.addAll(composes);
 				FlattenMergedTreeNode(tf, (MergedTreeNode) rt, rt.GetTreeUid());
 			} else {
-				tf.skt_e_struct.add(rt.GetContent());
-				tf.skt_e_struct_tree_uid.add("");
+				int es_size = tf.skt_pe_e_struct.size();
+				int es_tu_size = tf.skt_pe_e_struct_tree_uid.size();
+				Assert.isTrue(es_size == es_tu_size);
+				tf.skt_pe_e_struct.get(es_size-1).add(rt.GetContent());
+				tf.skt_pe_e_struct_tree_uid.get(es_tu_size-1).add("");
+				tf.skt_one_e_struct.add(rt.GetContent());
+				tf.skt_one_e_struct_tree_uid.add(rt.GetTreeUid());
 			}
+			
+			int h_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#h");
+			int v_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#v");
+			tf.skt_pe_struct_h_count.add(h_count);
+			tf.skt_pe_struct_v_count.add(v_count);
+			Assert.isTrue(h_count + v_count == childs.size());
+			int r_h_count = 0;
+			int r_v_count = 0;
+//			 skt_pe_struct_v_tree_uid
+			ArrayList<String> h_tids = new ArrayList<String>();
+			tf.skt_pe_struct_h_tree_uid.add(h_tids);
+			ArrayList<String> v_tids = new ArrayList<String>();
+			tf.skt_pe_struct_v_tree_uid.add(v_tids);
+			for (TreeNode child : childs) {
+				String r_cid = ExtractRelativeTreeUid(child.GetTreeUid(), rt.GetTreeUid());
+				if (JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+					v_tids.add(r_cid);
+					r_v_count++;
+				} else {
+					h_tids.add(r_cid);
+					r_h_count++;
+				}
+			}
+			Assert.isTrue(r_h_count == h_count);
+			Assert.isTrue(r_v_count == v_count);
+			
 			for (TreeNode child : childs) {
 				FlattenTreeNode(tf, child);// , token_composes
 			}
@@ -160,11 +212,20 @@ public class Tree implements Comparable<Tree> {
 			return;
 		}
 		String m_child_tree_uid = m_child.GetTreeUid();
-		String pfx = tree_uid + " ";
-		Assert.isTrue(m_child_tree_uid.startsWith(pfx));
-		String m_child_relative_tree_uid = m_child_tree_uid.substring(pfx.length(), m_child_tree_uid.length());
-		tf.skt_e_struct.add(m_child.GetContent());
-		tf.skt_e_struct_tree_uid.add(m_child_relative_tree_uid);
+		String m_child_relative_tree_uid = ExtractRelativeTreeUid(m_child_tree_uid, tree_uid);
+		int es_size = tf.skt_pe_e_struct.size();
+		int es_tu_size = tf.skt_pe_e_struct_tree_uid.size();
+		Assert.isTrue(es_size == es_tu_size);
+		tf.skt_pe_e_struct.get(es_size-1).add(m_child.GetContent());
+		tf.skt_pe_e_struct_tree_uid.get(es_tu_size-1).add(m_child_relative_tree_uid);
+		tf.skt_one_e_struct.add(m_child.GetContent());
+		tf.skt_one_e_struct_tree_uid.add(m_child.GetTreeUid());
+	}
+	
+	private static String ExtractRelativeTreeUid(String child_tree_uid, String ancestor_tree_uid) {
+		String pfx = ancestor_tree_uid + " ";
+		Assert.isTrue(child_tree_uid.startsWith(pfx));
+		return child_tree_uid.substring(pfx.length(), child_tree_uid.length());
 	}
 	
 	public void DebugPrintEachNode() {
