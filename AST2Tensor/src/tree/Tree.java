@@ -131,7 +131,7 @@ public class Tree implements Comparable<Tree> {
 				FlattenMergedTreeNode(tf, (MergedTreeNode) rt, rt.GetTreeUid());
 			} else {
 				tf.skt_e_struct.add(rt.GetContent());
-				
+				tf.skt_e_struct_tree_uid.add("");
 			}
 			for (TreeNode child : childs) {
 				FlattenTreeNode(tf, child);// , token_composes
@@ -141,12 +141,30 @@ public class Tree implements Comparable<Tree> {
 	
 	private static void FlattenMergedTreeNode(TreeFlatten tf, MergedTreeNode mtn, final String tree_uid) {
 		TreeNode m_base_parent = mtn.GetMergeBaseParent();
+		if (m_base_parent instanceof MergedTreeNode) {
+			FlattenMergedTreeNode(tf, (MergedTreeNode) m_base_parent, tree_uid);
+		} else {
+			HandleTreeNodeFlatten(tf, m_base_parent, tree_uid);
+		}
+		
 		TreeNode m_child = mtn.GetMergeChild();
+		if (m_child instanceof MergedTreeNode) {
+			FlattenMergedTreeNode(tf, (MergedTreeNode) m_child, tree_uid);
+		} else {
+			HandleTreeNodeFlatten(tf, m_child, tree_uid);
+		}
+	}
+	
+	private static void HandleTreeNodeFlatten(TreeFlatten tf, TreeNode m_child, final String tree_uid) {
+		if (m_child instanceof MergedTreeNode) {
+			return;
+		}
 		String m_child_tree_uid = m_child.GetTreeUid();
 		String pfx = tree_uid + " ";
 		Assert.isTrue(m_child_tree_uid.startsWith(pfx));
 		String m_child_relative_tree_uid = m_child_tree_uid.substring(pfx.length(), m_child_tree_uid.length());
-		tf.skt_e_struct.add();
+		tf.skt_e_struct.add(m_child.GetContent());
+		tf.skt_e_struct_tree_uid.add(m_child_relative_tree_uid);
 	}
 	
 	public void DebugPrintEachNode() {
