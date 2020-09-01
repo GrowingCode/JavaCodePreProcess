@@ -66,6 +66,13 @@ public class SkeletonForestRecorder {
 		}
 	}
 	
+	public void FlattenAllTrees() {
+		GetAllTrees();
+		for (Tree o_tree : all_trees) {
+			o_tree.FlattenTree();
+		}
+	}
+	
 	private ArrayList<Tree> GetAllTrees() {
 		if (all_trees == null) {
 			all_trees = new ArrayList<Tree>();

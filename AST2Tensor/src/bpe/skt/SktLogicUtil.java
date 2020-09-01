@@ -39,7 +39,8 @@ public class SktLogicUtil {
 			int role = f.GetRole();
 			ArrayList<Tree> ts = f.GetAllTrees();
 			for (Tree t : ts) {
-				TreeFlatten tf = t.FlattenTree(sfr.GetAllTokenComposes());
+//				t.FlattenTree();// sfr.GetAllTokenComposes()
+				TreeFlatten tf = t.GetTreeFlattenResult();
 				{
 					String an = tf.skt_one_struct.get(0);
 					if (role <= RoleAssigner.train_seen_k) {
