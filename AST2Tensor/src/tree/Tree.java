@@ -85,17 +85,34 @@ public class Tree implements Comparable<Tree> {
 //	}
 	
 	private static void FlattenOriginTreeNode(TreeFlatten tf, TreeNode rt) {// , TreeMap<String, ArrayList<String>> token_composes
+		ArrayList<TreeNode> childs = rt.GetChildren();
 		if (JDTASTHelper.IsIDLeafNode(rt.GetClazz())) {
 			tf.skt_e_struct_token.add(rt.GetContent());
 			tf.skt_e_struct_token_tree_uid.add(rt.GetTreeUid());
 		} else {
 			tf.skt_e_struct.add(rt.GetContent());
 			tf.skt_e_struct_tree_uid.add(rt.GetTreeUid());
-			tf.skt_e_struct_h_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#h"));
-			tf.skt_e_struct_v_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#v"));
+			int h_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#h");
+			tf.skt_e_struct_h_count.add(h_count);
+			ArrayList<String> h_tree_uids = new ArrayList<String>();
+			tf.skt_e_struct_h_tree_uid.add(h_tree_uids);
+			int v_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#v");
+			tf.skt_e_struct_v_count.add(v_count);
+			ArrayList<String> v_tree_uids = new ArrayList<String>();
+			tf.skt_e_struct_v_tree_uid.add(v_tree_uids);
+			int index = -1;
+			for (TreeNode child : childs) {
+				index++;
+				if (JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+					v_tree_uids.add(index + "");
+				} else {
+					h_tree_uids.add(index + "");
+				}
+			}
+			Assert.isTrue(v_tree_uids.size() == v_count);
+			Assert.isTrue(h_tree_uids.size() == h_count);
 		}
 //		tf.skt_e_struct_token_hv_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#h") + YStringUtil.CountSubStringInString(rt.GetContent(), "#v"));
-		ArrayList<TreeNode> childs = rt.GetChildren();
 		for (TreeNode child : childs) {
 			FlattenOriginTreeNode(tf, child);
 		}
