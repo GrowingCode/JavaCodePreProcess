@@ -353,6 +353,19 @@ public class TokenKindUtil {
 //		}
 		return ContitionToKind(cls_pet);
 	}
+	
+	public static int GetTokenIsVar(TreeNode tn) {
+		int token_is_var = tn.GetBinding() != null ? 1 : 0;
+		if (MetaOfApp.UseApproximateVariable) {
+			int base = 1;
+			if (MetaOfApp.FurtherUseStrictVariable) {
+				base = token_is_var;
+			}
+			int tk = TokenKindUtil.GetTokenKind(tn);
+			token_is_var = base * (TokenKindUtil.IsApproximateVar(tk) ? 1 : 0);
+		}
+		return token_is_var;
+	}
 
 	private static Map<String, Integer> is_var_cls_pet_count = new TreeMap<String, Integer>();
 	private static Map<String, Integer> is_not_var_cls_pet_count = new TreeMap<String, Integer>();

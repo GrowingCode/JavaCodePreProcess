@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.Assert;
 
 import eclipse.jdt.JDTASTHelper;
-import main.MetaOfApp;
-import translation.tensor.util.TokenKindUtil;
 import util.YStringUtil;
 
 public class Tree implements Comparable<Tree> {
@@ -61,19 +59,21 @@ public class Tree implements Comparable<Tree> {
 	}
 
 	public void FlattenTree() {// TreeMap<String, ArrayList<String>> token_composes
-		if (tf.skt_one_struct.size() == 0) {
+//		if (tf.skt_one_struct.size() == 0) {
+		if (tf.skt_one_struct == null) {
 //			Assert.isTrue(tf == null);
-			tf.skt_one_struct_v_count.add(0);
+//			tf.skt_one_struct_v_count.add(0);
 			FlattenTreeNode(tf, root);// , token_composes
 			FlattenTreeNodeIntoOne(tf, root);
-			Assert.isTrue(tf.skt_one_struct.size() == 0);
-			tf.skt_one_struct.add(root.GetContent());
+//			Assert.isTrue(tf.skt_one_struct.size() == 0);
+//			tf.skt_one_struct.add(root.GetContent());
+			tf.skt_one_struct = root.GetContent();
 		}
 //		return tf;
 	}
 	
 	public TreeFlatten GetTreeFlattenResult() {
-		Assert.isTrue(tf.skt_one_struct.size() > 0 && tf.skt_e_struct_token.size() > 0);
+		Assert.isTrue(tf.skt_one_struct != null && tf.skt_e_struct_token.size() > 0);
 		return tf;
 	}
 
@@ -85,9 +85,16 @@ public class Tree implements Comparable<Tree> {
 //	}
 	
 	private static void FlattenOriginTreeNode(TreeFlatten tf, TreeNode rt) {// , TreeMap<String, ArrayList<String>> token_composes
-		tf.skt_e_struct_token.add(rt.GetContent());
-		tf.skt_e_struct_token_tree_uid.add(rt.GetTreeUid());
-		tf.skt_e_struct_token_hv_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#h") + YStringUtil.CountSubStringInString(rt.GetContent(), "#v"));
+		if (JDTASTHelper.IsIDLeafNode(rt.GetClazz())) {
+			tf.skt_e_struct_token.add(rt.GetContent());
+			tf.skt_e_struct_token_tree_uid.add(rt.GetTreeUid());
+		} else {
+			tf.skt_e_struct.add(rt.GetContent());
+			tf.skt_e_struct_tree_uid.add(rt.GetTreeUid());
+			tf.skt_e_struct_h_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#h"));
+			tf.skt_e_struct_v_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#v"));
+		}
+//		tf.skt_e_struct_token_hv_count.add(YStringUtil.CountSubStringInString(rt.GetContent(), "#h") + YStringUtil.CountSubStringInString(rt.GetContent(), "#v"));
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		for (TreeNode child : childs) {
 			FlattenOriginTreeNode(tf, child);
@@ -102,7 +109,7 @@ public class Tree implements Comparable<Tree> {
 		}
 		Class<?> clz = rt.GetClazz();
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
-			tf.skt_one_struct_v_count.set(0, tf.skt_one_struct_v_count.get(0) + 1);
+			tf.skt_one_struct_v_count = tf.skt_one_struct_v_count + 1;
 			tf.skt_one_struct_v_tree_uid.add(rt.GetTreeUid());
 		} else {
 			int i_len = childs.size();
@@ -133,17 +140,8 @@ public class Tree implements Comparable<Tree> {
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
 			Assert.isTrue(childs.size() == 0);
 			tf.skt_token.add(rt.GetContent());
-			int tk = TokenKindUtil.GetTokenKind(rt);
-			tf.skt_token_kind.add(tk);
-			int token_is_var = rt.GetBinding() != null ? 1 : 0;
-			if (MetaOfApp.UseApproximateVariable) {
-				int base = 1;
-				if (MetaOfApp.FurtherUseStrictVariable) {
-					base = token_is_var;
-				}
-				token_is_var = base * (TokenKindUtil.IsApproximateVar(tk) ? 1 : 0);
-			}
-			tf.skt_token_is_var.add(token_is_var);
+//			tf.skt_token_kind.add(TokenKindUtil.GetTokenKind(rt));
+//			tf.skt_token_is_var.add(TokenKindUtil.GetTokenIsVar(rt));
 		} else {
 			tf.skt_pe_struct.add(rt.GetContent());
 			tf.skt_pe_e_struct.add(new ArrayList<String>());
