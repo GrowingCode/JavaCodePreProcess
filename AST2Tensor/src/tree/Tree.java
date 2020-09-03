@@ -162,39 +162,39 @@ public class Tree implements Comparable<Tree> {
 //			tf.skt_token_is_var.add(TokenKindUtil.GetTokenIsVar(rt));
 		} else {
 			tf.skt_pe_struct.add(rt.GetContent());
-			tf.skt_pe_e_struct.add(new ArrayList<String>());
-			tf.skt_pe_e_struct_tree_uid.add(new ArrayList<String>());
+//			tf.skt_pe_e_struct.add(new ArrayList<String>());
+//			tf.skt_pe_e_struct_tree_uid.add(new ArrayList<String>());
 			if (rt instanceof MergedTreeNode) {
 				FlattenMergedTreeNode(tf, (MergedTreeNode) rt, rt.GetTreeUid());
 			} else {
-				int es_size = tf.skt_pe_e_struct.size();
-				int es_tu_size = tf.skt_pe_e_struct_tree_uid.size();
-				Assert.isTrue(es_size == es_tu_size);
-				tf.skt_pe_e_struct.get(es_size-1).add(rt.GetContent());
-				tf.skt_pe_e_struct_tree_uid.get(es_tu_size-1).add("");
+//				int es_size = tf.skt_pe_e_struct.size();
+//				int es_tu_size = tf.skt_pe_e_struct_tree_uid.size();
+//				Assert.isTrue(es_size == es_tu_size);
+//				tf.skt_pe_e_struct.get(es_size-1).add(rt.GetContent());
+//				tf.skt_pe_e_struct_tree_uid.get(es_tu_size-1).add("");
 				tf.skt_one_e_struct.add(rt.GetContent());
-				tf.skt_one_e_struct_tree_uid.add(rt.GetTreeUid());
+//				tf.skt_one_e_struct_tree_uid.add(rt.GetTreeUid());
 			}
 			
 			int h_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#h");
 			int v_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#v");
-			tf.skt_pe_struct_h_count.add(h_count);
-			tf.skt_pe_struct_v_count.add(v_count);
+//			tf.skt_pe_struct_h_count.add(h_count);
+//			tf.skt_pe_struct_v_count.add(v_count);
 			Assert.isTrue(h_count + v_count == childs.size());
 			int r_h_count = 0;
 			int r_v_count = 0;
 //			 skt_pe_struct_v_tree_uid
-			ArrayList<String> h_tids = new ArrayList<String>();
-			tf.skt_pe_struct_h_tree_uid.add(h_tids);
-			ArrayList<String> v_tids = new ArrayList<String>();
-			tf.skt_pe_struct_v_tree_uid.add(v_tids);
+//			ArrayList<String> h_tids = new ArrayList<String>();
+//			tf.skt_pe_struct_h_tree_uid.add(h_tids);
+//			ArrayList<String> v_tids = new ArrayList<String>();
+//			tf.skt_pe_struct_v_tree_uid.add(v_tids);
 			for (TreeNode child : childs) {
-				String r_cid = ExtractRelativeTreeUid(child.GetTreeUid(), rt.GetTreeUid());
+//				String r_cid = ExtractRelativeTreeUid(child.GetTreeUid(), rt.GetTreeUid());
 				if (JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
-					v_tids.add(r_cid);
+//					v_tids.add(r_cid);
 					r_v_count++;
 				} else {
-					h_tids.add(r_cid);
+//					h_tids.add(r_cid);
 					r_h_count++;
 				}
 			}
@@ -224,11 +224,9 @@ public class Tree implements Comparable<Tree> {
 	}
 	
 	private static void HandleTreeNodeFlatten(TreeFlatten tf, TreeNode m_child, final String tree_uid) {
-		if (m_child instanceof MergedTreeNode) {
-			return;
-		}
-		String m_child_tree_uid = m_child.GetTreeUid();
-		String m_child_relative_tree_uid = ExtractRelativeTreeUid(m_child_tree_uid, tree_uid);
+		Assert.isTrue(!(m_child instanceof MergedTreeNode));
+//		String m_child_tree_uid = m_child.GetTreeUid();
+//		String m_child_relative_tree_uid = ExtractRelativeTreeUid(m_child_tree_uid, tree_uid);
 //		int es_size = tf.skt_pe_e_struct.size();
 //		int es_tu_size = tf.skt_pe_e_struct_tree_uid.size();
 //		Assert.isTrue(es_size == es_tu_size);
@@ -238,11 +236,11 @@ public class Tree implements Comparable<Tree> {
 //		tf.skt_one_e_struct_tree_uid.add(m_child.GetTreeUid());
 	}
 	
-	private static String ExtractRelativeTreeUid(String child_tree_uid, String ancestor_tree_uid) {
-		String pfx = ancestor_tree_uid + " ";
-		Assert.isTrue(child_tree_uid.startsWith(pfx));
-		return child_tree_uid.substring(pfx.length(), child_tree_uid.length());
-	}
+//	private static String ExtractRelativeTreeUid(String child_tree_uid, String ancestor_tree_uid) {
+//		String pfx = ancestor_tree_uid + " ";
+//		Assert.isTrue(child_tree_uid.startsWith(pfx));
+//		return child_tree_uid.substring(pfx.length(), child_tree_uid.length());
+//	}
 	
 	public void DebugPrintEachNode() {
 		System.out.println("==== Debug Tree Each Node Begin ====");

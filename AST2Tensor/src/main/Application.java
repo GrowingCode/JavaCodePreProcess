@@ -180,7 +180,7 @@ public class Application implements IApplication {
 				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
 				id_tool.stf_r.PreProcessAllForests();
-				id_tool.stf_r.FlattenAllOriginTrees();
+//				id_tool.stf_r.FlattenAllOriginTrees();
 				id_tool.stf_r.ApplySktPEMerges(sktpe_mr.GetMerges());
 				id_tool.stf_r.FlattenAllTrees();
 				SktLogicUtil.CountPairEncodedSkeletons(id_tool, id_tool.stf_r);
