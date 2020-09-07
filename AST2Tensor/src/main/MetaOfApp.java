@@ -103,13 +103,14 @@ public class MetaOfApp {
 		meta_of_ast2tensor.put("MinimumNumberOfNodesInAST", MinimumNumberOfNodesInAST);
 		meta_of_ast2tensor.put("MaximumNumberOfNodesInAST", MaximumNumberOfNodesInAST);
 //		meta_of_ast2tensor.put("InBPEForm", InBPEForm ? 1 : 0);
+		meta_of_ast2tensor.put("GenerateSkeletonToken", GenerateSkeletonToken ? 1 : 0);
 		
 		meta_of_ast2tensor.put("UseLexicalToken", UseLexicalToken ? 1 : 0);
 //		meta_of_ast2tensor.put("TakeUnseenAsUnk", TakeUnseenAsUnk ? 1 : 0);
 		meta_of_ast2tensor.put("VariableNoLimit", VariableNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("MethodNoLimit", MethodNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);
-		String dir = System.getProperty("user.home") + "/ASTMeta";
+		String dir = System.getProperty("user.home") + "/AST_Metas";
 		File f = new File(dir);
 		if (!f.exists()) {
 			f.mkdirs();
