@@ -27,6 +27,7 @@ import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
 import util.FileUtil;
+import util.IntegerMapUtil;
 import util.PrintUtil;
 import util.YStringUtil;
 
@@ -289,9 +290,14 @@ public class SktLogicUtil {
 		 * store one_to_each;one_to_pe;pe_to_each
 		 */
 		FileUtil.WriteJson(one_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_each_str.json");
-		FileUtil.WriteJson(one_to_each, MetaOfApp.DataDirectory + "/All_map_skt_one_to_each.json");
 		FileUtil.WriteJson(one_to_pe_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe_str.json");
-		FileUtil.WriteJson(one_to_pe, MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe.json");
+		
+		ArrayList<ArrayList<Integer>> oe_container = IntegerMapUtil.MapToNestedList(one_to_each);
+		FileUtil.WriteJson(oe_container, MetaOfApp.DataDirectory + "/All_skt_one_to_each.json");
+		
+		ArrayList<ArrayList<Integer>> ope_container = IntegerMapUtil.MapToNestedList(one_to_pe);
+		FileUtil.WriteJson(ope_container, MetaOfApp.DataDirectory + "/All_skt_one_to_pe.json");
+		
 //		FileUtil.WriteJson(pe_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
 //		FileUtil.WriteJson(pe_to_each, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each.json");
 		
