@@ -15,7 +15,7 @@ public class TreeFlatten {
 	
 	public ArrayList<String> skt_pe_struct = new ArrayList<String>();// into meta info tensor
 	// the followings correspond to a pe_struct. 
-//	public ArrayList<ArrayList<String>> skt_pe_e_struct = new ArrayList<ArrayList<String>>();// into meta info tensor
+	public ArrayList<ArrayList<String>> skt_pe_e_struct = new ArrayList<ArrayList<String>>();// into meta info tensor
 //	public ArrayList<ArrayList<String>> skt_pe_e_struct_tree_uid = new ArrayList<ArrayList<String>>();// into meta info tensor
 //	public ArrayList<Integer> skt_pe_struct_h_count = new ArrayList<Integer>();// into meta info tensor
 //	public ArrayList<ArrayList<String>> skt_pe_struct_h_tree_uid = new ArrayList<ArrayList<String>>();// into meta info tensor

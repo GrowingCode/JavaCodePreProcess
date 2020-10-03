@@ -142,8 +142,8 @@ public class SktLogicUtil {
 		Map<String, ArrayList<String>> one_to_pe_str = new TreeMap<String, ArrayList<String>>();
 		Map<Integer, ArrayList<Integer>> one_to_pe = new TreeMap<Integer, ArrayList<Integer>>();
 		
-//		Map<String, ArrayList<String>> pe_to_each_str = new TreeMap<String, ArrayList<String>>();
-//		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
+		Map<String, ArrayList<String>> pe_to_each_str = new TreeMap<String, ArrayList<String>>();
+		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 //		Map<Integer, ArrayList<Integer>> pe_to_each_tree_uid = new TreeMap<Integer, ArrayList<Integer>>();
 //		Map<Integer, Integer> pe_h_count = new TreeMap<Integer, Integer>();
 //		Map<Integer, ArrayList<String>> pe_h_tree_uid = new TreeMap<Integer, ArrayList<String>>();
@@ -225,13 +225,14 @@ public class SktLogicUtil {
 //					one_v_count.put(skt_one_id, tf.skt_one_struct_v_count.get(0));
 //					one_v_tree_uid.put(skt_one_id, tf.skt_one_struct_v_tree_uid.get(0));
 					
-//					int index = -1;
-//					for (String pe : tf.skt_pe_struct) {
-//						index++;
-//						if (!pe_to_each_str.containsKey(pe)) {
-//							pe_to_each_str.put(pe, tf.skt_pe_e_struct.get(index));
-//						}
-//					}
+					int index = -1;
+					for (String pe : tf.skt_pe_struct) {
+						index++;
+						if (!pe_to_each_str.containsKey(pe)) {
+							pe_to_each_str.put(pe, tf.skt_pe_e_struct.get(index));
+							pe_to_each.put(im.GetPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
+						}
+					}
 					
 //					ArrayList<Integer> hv = new ArrayList<Integer>();
 //					hv.add(0);
@@ -291,6 +292,7 @@ public class SktLogicUtil {
 		 */
 		FileUtil.WriteJson(one_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_each_str.json");
 		FileUtil.WriteJson(one_to_pe_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe_str.json");
+		FileUtil.WriteJson(pe_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
 		
 		ArrayList<ArrayList<Integer>> oe_container = IntegerMapUtil.MapToNestedList(one_to_each);
 		FileUtil.WriteJson(oe_container, MetaOfApp.DataDirectory + "/All_skt_one_to_each.json");
@@ -298,8 +300,8 @@ public class SktLogicUtil {
 		ArrayList<ArrayList<Integer>> ope_container = IntegerMapUtil.MapToNestedList(one_to_pe);
 		FileUtil.WriteJson(ope_container, MetaOfApp.DataDirectory + "/All_skt_one_to_pe.json");
 		
-//		FileUtil.WriteJson(pe_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
-//		FileUtil.WriteJson(pe_to_each, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each.json");
+		ArrayList<ArrayList<Integer>> pee_container = IntegerMapUtil.MapToNestedList(one_to_pe);
+		FileUtil.WriteJson(pee_container, MetaOfApp.DataDirectory + "/All_skt_pe_to_each.json");
 		
 //		FileUtil.WriteJson(one_hv_num, MetaOfApp.DataDirectory + "/All_one_hv_num.json");
 //		FileUtil.WriteJson(one_str_hv_num, MetaOfApp.DataDirectory + "/All_one_str_hv_num.json");
