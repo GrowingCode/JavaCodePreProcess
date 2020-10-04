@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.Assert;
 
 import eclipse.jdt.JDTASTHelper;
+import translation.tensor.util.TokenKindUtil;
 import util.YStringUtil;
 
 public class Tree implements Comparable<Tree> {
@@ -60,7 +61,7 @@ public class Tree implements Comparable<Tree> {
 
 	public void FlattenTree() {// TreeMap<String, ArrayList<String>> token_composes
 //		if (tf.skt_one_struct.size() == 0) {
-		if (tf.skt_one_struct == null) {
+		if (tf.skt_one_struct.isEmpty()) {
 //			Assert.isTrue(tf == null);
 //			tf.skt_one_struct_v_count.add(0);
 			FlattenTreeNode(tf, root);// , token_composes
@@ -158,8 +159,8 @@ public class Tree implements Comparable<Tree> {
 		if (JDTASTHelper.IsIDLeafNode(clz)) {
 			Assert.isTrue(childs.size() == 0);
 			tf.skt_token.add(rt.GetContent());
-//			tf.skt_token_kind.add(TokenKindUtil.GetTokenKind(rt));
-//			tf.skt_token_is_var.add(TokenKindUtil.GetTokenIsVar(rt));
+			tf.skt_token_kind.add(TokenKindUtil.GetTokenKind(rt));
+			tf.skt_token_is_var.add(TokenKindUtil.GetTokenIsVar(rt));
 		} else {
 			tf.skt_pe_struct.add(rt.GetContent());
 			tf.skt_pe_e_struct.add(new ArrayList<String>());

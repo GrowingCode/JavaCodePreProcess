@@ -36,6 +36,7 @@ public class StatementSkeletonTensor extends Tensor {
 
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
 			ArrayList<Integer> is_var) {
+		Assert.isTrue(info.size() == is_var.size() && info.size() == kind.size(), "info.size():" + info.size() + "#is_var.size():" + is_var.size() + "#kind.size():" + kind.size());
 		stmt_token_str.addAll(info_str);
 		
 		stmt_token_info_start.add(stmt_token_info.size());
