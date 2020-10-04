@@ -11,6 +11,7 @@ import util.FileUtil;
 public class MetaOfApp {
 
 	public final static String DataDirectory = System.getProperty("user.home") + "/AST_Tensors";
+	public final static String MetaDirectory = System.getProperty("user.home") + "/AST_Metas";
 //	public final static boolean DetailDebugMode = false;
 //	public final static boolean DetailFollowStatementDebugMode = false;
 //	public final static boolean StatementsDetailDebugMode = true;
@@ -110,12 +111,12 @@ public class MetaOfApp {
 		meta_of_ast2tensor.put("VariableNoLimit", VariableNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("MethodNoLimit", MethodNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);
-		String dir = System.getProperty("user.home") + "/AST_Metas";
-		File f = new File(dir);
+//		String dir = System.getProperty("user.home") + "/AST_Metas";
+		File f = new File(MetaDirectory);
 		if (!f.exists()) {
 			f.mkdirs();
 		}
-		FileUtil.WriteToFile(new File(dir + "/" + "meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
+		FileUtil.WriteToFile(new File(MetaDirectory + "/" + "meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
 	}
 
 }
