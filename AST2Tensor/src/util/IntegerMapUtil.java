@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Assert;
+
 public class IntegerMapUtil {
 	
 	public static ArrayList<ArrayList<Integer>> MapToNestedList(Map<Integer, ArrayList<Integer>> one_to_each) {
@@ -18,13 +20,15 @@ public class IntegerMapUtil {
 		for (Integer oe_k : oe_keys) {
 			int origin_oe_size = oe_start.size();
 			for (int i=origin_oe_size;i<oe_k;i++) {
+//				oe.add(-1);
 				oe_start.add(-1);
 				oe_end.add(-2);
 			}
-			oe_start.add(one_to_each.size());
+			oe_start.add(oe.size());
 			ArrayList<Integer> oe_v = one_to_each.get(oe_k);
+			Assert.isTrue(oe_v.size() > 0);
 			oe.addAll(oe_v);
-			oe_end.add(one_to_each.size()-1);
+			oe_end.add(oe.size()-1);
 		}
 		return oe_container;
 	}
