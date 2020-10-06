@@ -19,6 +19,9 @@ public class IntegerMapUtil {
 		Set<Integer> oe_keys = one_to_each.keySet();
 		for (Integer oe_k : oe_keys) {
 			int origin_oe_size = oe_start.size();
+			if (origin_oe_size >= 3) {
+				Assert.isTrue(origin_oe_size == oe_k);
+			}
 			for (int i=origin_oe_size;i<oe_k;i++) {
 //				oe.add(-1);
 				oe_start.add(-1);
