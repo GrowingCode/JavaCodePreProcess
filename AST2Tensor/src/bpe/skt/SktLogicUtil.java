@@ -28,6 +28,7 @@ import tree.Tree;
 import tree.TreeFlatten;
 import util.FileUtil;
 import util.IntegerMapUtil;
+import util.ListUtil;
 import util.PrintUtil;
 import util.YStringUtil;
 
@@ -231,6 +232,8 @@ public class SktLogicUtil {
 						if (!pe_to_each_str.containsKey(pe)) {
 							pe_to_each_str.put(pe, tf.skt_pe_e_struct.get(index));
 							pe_to_each.put(im.GetPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
+						} else {
+							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), pe_to_each_str.get(pe)));
 						}
 					}
 					
@@ -300,7 +303,7 @@ public class SktLogicUtil {
 		ArrayList<ArrayList<Integer>> ope_container = IntegerMapUtil.MapToNestedList(one_to_pe);
 		FileUtil.WriteJson(ope_container, MetaOfApp.DataDirectory + "/All_skt_one_to_pe.json");
 		
-		ArrayList<ArrayList<Integer>> pee_container = IntegerMapUtil.MapToNestedList(one_to_pe);
+		ArrayList<ArrayList<Integer>> pee_container = IntegerMapUtil.MapToNestedList(pe_to_each);
 		FileUtil.WriteJson(pee_container, MetaOfApp.DataDirectory + "/All_skt_pe_to_each.json");
 		
 //		FileUtil.WriteJson(one_hv_num, MetaOfApp.DataDirectory + "/All_one_hv_num.json");
