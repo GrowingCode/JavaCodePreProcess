@@ -6,7 +6,6 @@ import java.net.URLClassLoader;
 import java.util.Map;
 
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -23,7 +22,7 @@ public class JDTLexicalParser {
 	
 	public static CompilationUnit ParseJavaFile(File f)
 	{
-		ASTParser parser = ASTParser.newParser(AST.JLS13);
+		ASTParser parser = ASTParser.newParser(JDTHelper.GetCurrentJavaVersion());// AST.JLS13
 		Map<String, String> options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_10);
 		parser.setCompilerOptions(options);
@@ -67,7 +66,7 @@ public class JDTLexicalParser {
 		if (!f_e_dir.exists()) {
 			f_e_dir.mkdirs();
 		}
-		ASTParser parser = ASTParser.newParser(AST.JLS13);
+		ASTParser parser = ASTParser.newParser(JDTHelper.GetCurrentJavaVersion());// AST.JLS13
 		Map<String, String> options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_10);
 		parser.setCompilerOptions(options);

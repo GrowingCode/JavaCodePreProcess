@@ -3,7 +3,6 @@ package eclipse.jdt;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -11,7 +10,7 @@ public class JDTParser {
 	
 	public static CompilationUnit ParseICompilationUnit(ICompilationUnit icu)
 	{
-		ASTParser parser= ASTParser.newParser(AST.JLS13);
+		ASTParser parser= ASTParser.newParser(JDTHelper.GetCurrentJavaVersion());// AST.JLS13
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setSource(icu);
@@ -32,7 +31,7 @@ public class JDTParser {
 	
 	public static CompilationUnit ParseOneClass(IClassFile f)
 	{
-		ASTParser parser= ASTParser.newParser(AST.JLS13);
+		ASTParser parser= ASTParser.newParser(JDTHelper.GetCurrentJavaVersion());// AST.JLS13
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setSource(f);
