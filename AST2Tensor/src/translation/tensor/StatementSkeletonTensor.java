@@ -13,10 +13,10 @@ import translation.tensor.util.TokenIndex;
 import translation.tensor.util.TokenIndexUtil;
 
 public class StatementSkeletonTensor extends Tensor {
-
+	
 	String sig = null;
 	ArrayList<String> stmt_token_str = new ArrayList<String>();
-
+	
 	ArrayList<Integer> stmt_token_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_leaf_info = new ArrayList<Integer>();
 	ArrayList<Integer> stmt_token_leaf_relative_info = new ArrayList<Integer>();
@@ -33,7 +33,7 @@ public class StatementSkeletonTensor extends Tensor {
 		super(tinfo);
 		this.sig = sig;
 	}	
-
+	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
 			ArrayList<Integer> is_var) {
 		Assert.isTrue(info.size() == is_var.size() && info.size() == kind.size(), "info.size():" + info.size() + "#is_var.size():" + is_var.size() + "#kind.size():" + kind.size());
@@ -59,6 +59,27 @@ public class StatementSkeletonTensor extends Tensor {
 //		System.out.println(" ==== stmt_token_variable_info end! ==== ");
 //		new Exception("haha").printStackTrace();
 //		System.exit(1);
+	}
+	
+	/**
+	 * In the following 3 functions, 4 inputs are needed: 
+	 * origin_sequence, relative_to_part_first, valid_mask, seq_part_skip
+	 * all these 4 arrays need to insert 0th element in the array
+	 */
+	
+	public void StoreStatementSkeletonBatchInfo(ArrayList<Integer> skt, ArrayList<Integer> token) {
+		// TODO
+		
+	}
+	
+	public void StoreStatementSkeletonPEBatchInfo(ArrayList<Integer> skt, ArrayList<Integer> token) {
+		// TODO
+		
+	}
+	
+	public void StoreStatementSkeletonEachBatchInfo(ArrayList<Integer> skt, ArrayList<Integer> token) {
+		// TODO
+		
 	}
 
 	public void HandleAllInfo() {
