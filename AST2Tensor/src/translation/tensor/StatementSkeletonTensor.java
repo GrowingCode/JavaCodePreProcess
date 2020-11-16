@@ -27,7 +27,11 @@ public class StatementSkeletonTensor extends Tensor {
 //	ArrayList<Integer> stmt_token_struct_info_end = new ArrayList<Integer>();
 	
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
-	TokenIndex ti = new TokenIndex();
+	TokenIndex t_idx = new TokenIndex();
+
+	public SktBatchTensor skt_batch_info = null;
+	public SktBatchTensor skt_pe_batch_info = null;
+	public SktBatchTensor skt_each_batch_info = null;
 	
 	public StatementSkeletonTensor(TensorInfo tinfo, String sig) {
 		super(tinfo);
@@ -47,7 +51,7 @@ public class StatementSkeletonTensor extends Tensor {
 		for (int i = 0; i < info.size(); i++) {
 			int leaf_id = -1;
 			if (is_var.get(i) > 0) {
-				leaf_id = TokenIndexUtil.AssignID(token_index_record, info.get(i) + "", ti);
+				leaf_id = TokenIndexUtil.AssignID(token_index_record, info.get(i) + "", t_idx);
 			}
 			leaf_info.add(leaf_id);
 		}
@@ -67,23 +71,23 @@ public class StatementSkeletonTensor extends Tensor {
 	 * all these 4 arrays need to insert 0th element in the array
 	 */
 	
-	public void StoreStatementSkeletonBatchInfo(ArrayList<Integer> skt, ArrayList<Integer> token) {
-		// TODO
-		
+	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt, token);
+		skt_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonPEBatchInfo(ArrayList<Integer> skt, ArrayList<Integer> token) {
-		// TODO
-		
+	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt, token);
+		skt_pe_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonEachBatchInfo(ArrayList<Integer> skt, ArrayList<Integer> token) {
-		// TODO
-		
+	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt, token);
+		skt_each_batch_info.Merge(one_stmt);
 	}
 	
 	private SktBatchTensor HandleSktInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
-		SktBatchTensor sbt = new SktBatchTensor();
+		SktBatchTensor sbt = new SktBatchTensor(ti);
 		
 		sbt.origin_sequence.add(0);
 		sbt.relative_to_part_first.add(0);
@@ -97,11 +101,13 @@ public class StatementSkeletonTensor extends Tensor {
 		
 		int r = 0;
 		for (int s : skt) {
+			assert s >= 0;
 			sbt.relative_to_part_first.add(r);
 			r++;
 		}
 		r = 0;
 		for (int t : token) {
+			assert t >= 0;
 			sbt.relative_to_part_first.add(r);
 			r++;
 		}
@@ -202,17 +208,54 @@ public class StatementSkeletonTensor extends Tensor {
 
 }
 
-class SktBatchTensor {
+class SktBatchTensor extends Tensor {
 	
 	ArrayList<Integer> origin_sequence = new ArrayList<Integer>();
 	ArrayList<Integer> relative_to_part_first = new ArrayList<Integer>();
 	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
 	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
 	
-	public SktBatchTensor() {
+	public SktBatchTensor(TensorInfo tinfo) {
+		super(tinfo);
 	}
 	
+	public void Merge(SktBatchTensor sbt) {
+		origin_sequence.addAll(sbt.origin_sequence);
+		relative_to_part_first.addAll(sbt.relative_to_part_first);
+		valid_mask.addAll(sbt.valid_mask);
+		seq_part_skip.addAll(sbt.seq_part_skip);
+	}
+
+	@Override
+	public int getSize() {
+		return origin_sequence.size();
+	}
+
+	@Override
+	public String toString() {
+		String result = ToStmtInfo("#");
+		return result;
+	}
 	
+	public String toDebugString() {
+		String separator = System.getProperty("line.separator");
+		String result = ToStmtInfo(separator);
+		return result;
+	}
+	
+	@Override
+	public String toOracleString() {
+		String separator = System.getProperty("line.separator");
+		String result = ToStmtInfo(separator);
+		return result;
+	}
+	
+	private String ToStmtInfo(String separator) {
+		return StringUtils.join(origin_sequence.toArray(), " ") + separator
+				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
+				+ StringUtils.join(valid_mask.toArray(), " ") + separator
+				+ StringUtils.join(seq_part_skip.toArray(), " ");
+	}
 	
 }
 

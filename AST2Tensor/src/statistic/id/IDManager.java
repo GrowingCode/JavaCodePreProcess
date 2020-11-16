@@ -78,11 +78,11 @@ public class IDManager {
 	private TreeMap<String, Integer> grammar_id_map = new TreeMap<String, Integer>();
 	private TreeMap<Integer, TreeSet<Integer>> grammar_id_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
 	
-	private int each_skeleton_hit_num = -1;
-	private int pe_skeleton_hit_num = -1;
-	private int skeleton_hit_num = -1;
-	private int skt_token_hit_num = -1;
-	private int token_hit_num = -1;
+	public int each_skeleton_hit_num = -1;
+	public int pe_skeleton_hit_num = -1;
+	public int skeleton_hit_num = -1;
+	public int skt_token_hit_num = -1;
+	public int token_hit_num = -1;
 
 //	private TreeMap<String, Integer> ast_type_content_id_map = new TreeMap<String, Integer>();
 //	private TreeMap<String, Integer> not_hit_ast_type_content_id_map = new TreeMap<String, Integer>();

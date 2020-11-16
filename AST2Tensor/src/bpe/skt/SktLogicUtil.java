@@ -169,9 +169,15 @@ public class SktLogicUtil {
 
 		for (ProjectForests pf : aps) {
 			TensorForProject tfp = new TensorForProject("skt");
+			TensorForProject tfp_one = new TensorForProject("skt_one");
+			TensorForProject tfp_pe = new TensorForProject("skt_pe");
+			TensorForProject tfp_e = new TensorForProject("skt_e");
 //			TensorForProject tfp_nv = new TensorForProject("skt_nv");
-
+			
 			ArrayList<Tensor> skt_tensors = new ArrayList<Tensor>();
+			ArrayList<Tensor> skt_one_tensors = new ArrayList<Tensor>();
+			ArrayList<Tensor> skt_pe_tensors = new ArrayList<Tensor>();
+			ArrayList<Tensor> skt_e_tensors = new ArrayList<Tensor>();
 //			ArrayList<Tensor> skt_nv_tensors = new ArrayList<Tensor>();
 			ArrayList<Forest> func_os = pf.GetAllForests();
 			for (Forest f : func_os) {
@@ -201,24 +207,30 @@ public class SktLogicUtil {
 					}
 					Assert.isTrue(count == tf.skt_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_token.size() + "#o_str:" + o_str + "#token list:" + PrintUtil.PrintListToString(tf.skt_token, "skt_tokens"));
 					info_str.addAll(tf.skt_token);
-					info.addAll(TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID"));
+					ArrayList<Integer> skt_token_ids = TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID");
+					info.addAll(skt_token_ids);
 					kind.addAll(tf.skt_token_kind);
 					is_var.addAll(tf.skt_token_is_var);
 					
-					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
+					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
 					
 					if (one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
 						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_one_e_struct, "").equals(PrintUtil.PrintListToString(one_to_each_str.get(tf.skt_one_struct.get(0)), "")));
 					}
 					one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
-					one_to_each.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
-							TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID"));
+					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
+					one_to_each.put(skt_one_ids.get(0), skt_each_ids);
 					if (one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
 						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_pe_struct, "").equals(PrintUtil.PrintListToString(one_to_pe_str.get(tf.skt_one_struct.get(0)), "")));
 					}
 					one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
-					one_to_pe.put(im.GetSkeletonID(tf.skt_one_struct.get(0)),
-							TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID"));
+					ArrayList<Integer> skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID");
+					one_to_pe.put(skt_one_ids.get(0), skt_pe_ids);
+
+					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
+					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, skt_one_ids, skt_token_ids);
+					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, skt_pe_ids, skt_token_ids);
+					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, skt_each_ids, skt_token_ids);
 					
 //					one_to_each_tree_uid.put(skt_one_id, tf.skt_one_e_struct_tree_uid);
 //					one_h_count.put(skt_one_id, tf.skt_one_struct_h_count.get(0));
@@ -251,10 +263,19 @@ public class SktLogicUtil {
 				}
 				sst.HandleAllInfo();
 				skt_tensors.add(sst);
+				skt_one_tensors.add(sst.skt_batch_info);
+				skt_pe_tensors.add(sst.skt_pe_batch_info);
+				skt_e_tensors.add(sst.skt_each_batch_info);
 			}
 			tfp.AddTensors(skt_tensors);
+			tfp_one.AddTensors(skt_one_tensors);
+			tfp_pe.AddTensors(skt_pe_tensors);
+			tfp_e.AddTensors(skt_e_tensors);
 //			tfp_nv.AddTensors(skt_nv_tensors);
 			tfp.SaveToFile(pf.GetProjectInfo());
+			tfp_one.SaveToFile(pf.GetProjectInfo());
+			tfp_pe.SaveToFile(pf.GetProjectInfo());
+			tfp_e.SaveToFile(pf.GetProjectInfo());
 //			tfp_nv.SaveToFile(pf.GetProjectInfo());
 		}
 		
