@@ -81,6 +81,68 @@ public class StatementSkeletonTensor extends Tensor {
 		// TODO
 		
 	}
+	
+	private SktBatchTensor HandleSktInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
+		SktBatchTensor sbt = new SktBatchTensor();
+		
+		sbt.origin_sequence.add(0);
+		sbt.relative_to_part_first.add(0);
+		sbt.valid_mask.add(0);
+		sbt.seq_part_skip.add(1);
+		
+		sbt.origin_sequence.addAll(skt);
+		for (int t : token) {
+			sbt.origin_sequence.add(t + skt_hit_num);
+		}
+		
+		int r = 0;
+		for (int s : skt) {
+			sbt.relative_to_part_first.add(r);
+			r++;
+		}
+		r = 0;
+		for (int t : token) {
+			sbt.relative_to_part_first.add(r);
+			r++;
+		}
+		
+		for (int s : skt) {
+			if (s > 2) {
+				sbt.valid_mask.add(1);
+			} else {
+				sbt.valid_mask.add(0);
+			}
+		}
+		for (int t : token) {
+			if (t > 2) {
+				sbt.valid_mask.add(1);
+			} else {
+				sbt.valid_mask.add(0);
+			}
+		}
+		
+		int q = 0;
+		for (int s : skt) {
+			assert s >= 0;
+			if (q == 0) {
+				sbt.seq_part_skip.add(skt.size());
+			} else {
+				sbt.seq_part_skip.add(0);
+			}
+			q++;
+		}
+		q = 0;
+		for (int t : token) {
+			assert t >= 0;
+			if (q == 0) {
+				sbt.seq_part_skip.add(token.size());
+			} else {
+				sbt.seq_part_skip.add(0);
+			}
+		}
+		
+		return sbt;
+	}
 
 	public void HandleAllInfo() {
 		stmt_token_leaf_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_leaf_info));
@@ -139,3 +201,20 @@ public class StatementSkeletonTensor extends Tensor {
 	}
 
 }
+
+class SktBatchTensor {
+	
+	ArrayList<Integer> origin_sequence = new ArrayList<Integer>();
+	ArrayList<Integer> relative_to_part_first = new ArrayList<Integer>();
+	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
+	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
+	
+	public SktBatchTensor() {
+	}
+	
+	
+	
+}
+
+
+
