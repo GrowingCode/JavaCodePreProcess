@@ -11,6 +11,7 @@ import translation.tensor.util.ConservedMemoryUtil;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndex;
 import translation.tensor.util.TokenIndexUtil;
+import util.StringUtil;
 
 public class StatementSkeletonTensor extends Tensor {
 	
@@ -74,28 +75,32 @@ public class StatementSkeletonTensor extends Tensor {
 	 * all these 4 arrays need to insert 0th element in the array
 	 */
 	
-	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt, token);
+	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_str, skt, token_str, token);
 		skt_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt, token);
+	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_str, skt, token_str, token);
 		skt_pe_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt, token);
+	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_str, skt, token_str, token);
 		skt_each_batch_info.Merge(one_stmt);
 	}
 	
-	private SktBatchTensor HandleSktInfo(int skt_hit_num, ArrayList<Integer> skt, ArrayList<Integer> token) {
+	private SktBatchTensor HandleSktInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor sbt = new SktBatchTensor(ti);
 		
+		sbt.origin_sequence_str.add("dft");
 		sbt.origin_sequence.add(0);
 		sbt.relative_to_part_first.add(0);
 		sbt.valid_mask.add(0);
 		sbt.seq_part_skip.add(1);
+		
+		sbt.origin_sequence_str.addAll(skt_str);
+		sbt.origin_sequence_str.addAll(token_str);
 		
 		sbt.origin_sequence.addAll(skt);
 		for (int t : token) {
@@ -219,6 +224,8 @@ class SktBatchTensor extends Tensor {
 	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
 	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
 	
+	int print_fixed_len = 25;
+	
 	public SktBatchTensor(TensorInfo tinfo) {
 		super(tinfo);
 	}
@@ -248,20 +255,20 @@ class SktBatchTensor extends Tensor {
 	
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		String result = StringUtils.join(origin_sequence.toArray(), " ") + separator
-				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
-				+ StringUtils.join(valid_mask.toArray(), " ") + separator
-				+ StringUtils.join(seq_part_skip.toArray(), " ");
+		String result = StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence, print_fixed_len).toArray(), " ") + separator
+				+ StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
+				+ StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
+				+ StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = StringUtils.join(origin_sequence_str.toArray(), " ") + separator
-				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
-				+ StringUtils.join(valid_mask.toArray(), " ") + separator
-				+ StringUtils.join(seq_part_skip.toArray(), " ");
+		String result = StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_str, print_fixed_len).toArray(), " ") + separator
+				+ StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
+				+ StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
+				+ StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
