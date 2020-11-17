@@ -36,6 +36,9 @@ public class StatementSkeletonTensor extends Tensor {
 	public StatementSkeletonTensor(TensorInfo tinfo, String sig) {
 		super(tinfo);
 		this.sig = sig;
+		skt_batch_info = new SktBatchTensor(tinfo);
+		skt_pe_batch_info = new SktBatchTensor(tinfo);
+		skt_each_batch_info = new SktBatchTensor(tinfo);
 	}
 	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
