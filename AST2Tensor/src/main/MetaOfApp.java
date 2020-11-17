@@ -77,7 +77,7 @@ public class MetaOfApp {
 	
 	public static boolean TrainValidTestFoldSeparationSpecified = true;
 	
-	public static boolean OutOfScopeReplacedByUnk = false;
+	public static boolean OutOfScopeReplacedByUnk = true;
 	public final static int NumberOfSkeletonUnk = 2;
 	public final static int MinimumNumberOfSkeletonVocabulary = 20;
 	public final static int NumberOfUnk = 1000;
