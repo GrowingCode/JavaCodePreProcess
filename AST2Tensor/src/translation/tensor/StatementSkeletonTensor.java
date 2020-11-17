@@ -36,7 +36,7 @@ public class StatementSkeletonTensor extends Tensor {
 	public StatementSkeletonTensor(TensorInfo tinfo, String sig) {
 		super(tinfo);
 		this.sig = sig;
-	}	
+	}
 	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
 			ArrayList<Integer> is_var) {
@@ -210,6 +210,7 @@ public class StatementSkeletonTensor extends Tensor {
 
 class SktBatchTensor extends Tensor {
 	
+	ArrayList<String> origin_sequence_str = new ArrayList<String>();
 	ArrayList<Integer> origin_sequence = new ArrayList<Integer>();
 	ArrayList<Integer> relative_to_part_first = new ArrayList<Integer>();
 	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
@@ -220,6 +221,7 @@ class SktBatchTensor extends Tensor {
 	}
 	
 	public void Merge(SktBatchTensor sbt) {
+		origin_sequence_str.addAll(sbt.origin_sequence_str);
 		origin_sequence.addAll(sbt.origin_sequence);
 		relative_to_part_first.addAll(sbt.relative_to_part_first);
 		valid_mask.addAll(sbt.valid_mask);
@@ -233,28 +235,31 @@ class SktBatchTensor extends Tensor {
 
 	@Override
 	public String toString() {
-		String result = ToStmtInfo("#");
+		String separator = "#";
+		String result = StringUtils.join(origin_sequence.toArray(), " ") + separator
+				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
+				+ StringUtils.join(valid_mask.toArray(), " ") + separator
+				+ StringUtils.join(seq_part_skip.toArray(), " ");
 		return result;
 	}
 	
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		String result = ToStmtInfo(separator);
+		String result = StringUtils.join(origin_sequence.toArray(), " ") + separator
+				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
+				+ StringUtils.join(valid_mask.toArray(), " ") + separator
+				+ StringUtils.join(seq_part_skip.toArray(), " ");
 		return result;
 	}
 	
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = ToStmtInfo(separator);
-		return result;
-	}
-	
-	private String ToStmtInfo(String separator) {
-		return StringUtils.join(origin_sequence.toArray(), " ") + separator
+		String result = StringUtils.join(origin_sequence_str.toArray(), " ") + separator
 				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
 				+ StringUtils.join(valid_mask.toArray(), " ") + separator
 				+ StringUtils.join(seq_part_skip.toArray(), " ");
+		return result;
 	}
 	
 }
