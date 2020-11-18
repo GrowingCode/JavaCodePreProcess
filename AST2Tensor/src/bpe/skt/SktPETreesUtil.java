@@ -163,7 +163,7 @@ public class SktPETreesUtil {
 		Tree skt_first = skts.iterator().next();
 		ArrayList<TreeNode> skt_first_all_nodes = skt_first.GetAllNodes();
 		for (TreeNode skt_first_node : skt_first_all_nodes) {
-			System.out.println("skt_first_node:" + skt_first_node);
+			System.out.println("skt_first_node:" + skt_first_node.GetContent());
 		}
 //		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
 //		SktPEHandledResult result = new SktPEHandledResult();
