@@ -160,6 +160,11 @@ public class SktPETreesUtil {
 //	}
 	
 	public static void ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts) {// , TreeMap<String, ArrayList<String>> token_composes
+		Tree skt_first = skts.iterator().next();
+		ArrayList<TreeNode> skt_first_all_nodes = skt_first.GetAllNodes();
+		for (TreeNode skt_first_node : skt_first_all_nodes) {
+			System.out.println("skt_first_node:" + skt_first_node);
+		}
 //		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
 //		SktPEHandledResult result = new SktPEHandledResult();
 		int m_size = merges.size();
