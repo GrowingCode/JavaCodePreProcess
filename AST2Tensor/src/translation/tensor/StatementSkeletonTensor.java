@@ -37,9 +37,9 @@ public class StatementSkeletonTensor extends Tensor {
 	public StatementSkeletonTensor(TensorInfo tinfo, String sig) {
 		super(tinfo);
 		this.sig = sig;
-		skt_batch_info = new SktBatchTensor(tinfo);
-		skt_pe_batch_info = new SktBatchTensor(tinfo);
-		skt_each_batch_info = new SktBatchTensor(tinfo);
+		skt_batch_info = new SktBatchTensor(tinfo, true);
+		skt_pe_batch_info = new SktBatchTensor(tinfo, true);
+		skt_each_batch_info = new SktBatchTensor(tinfo, true);
 	}
 	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
@@ -91,13 +91,7 @@ public class StatementSkeletonTensor extends Tensor {
 	}
 	
 	private SktBatchTensor HandleSktInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor sbt = new SktBatchTensor(ti);
-		
-		sbt.origin_sequence_str.add("dft");
-		sbt.origin_sequence.add(0);
-		sbt.relative_to_part_first.add(0);
-		sbt.valid_mask.add(0);
-		sbt.seq_part_skip.add(1);
+		SktBatchTensor sbt = new SktBatchTensor(ti, false);
 		
 		sbt.origin_sequence_str.addAll(skt_str);
 		sbt.origin_sequence_str.addAll(token_str);
@@ -226,8 +220,15 @@ class SktBatchTensor extends Tensor {
 	
 	int print_fixed_len = 25;
 	
-	public SktBatchTensor(TensorInfo tinfo) {
+	public SktBatchTensor(TensorInfo tinfo, boolean insert_default_element) {
 		super(tinfo);
+		if (insert_default_element) {
+			this.origin_sequence_str.add("dft");
+			this.origin_sequence.add(0);
+			this.relative_to_part_first.add(0);
+			this.valid_mask.add(0);
+			this.seq_part_skip.add(1);
+		}
 	}
 	
 	public void Merge(SktBatchTensor sbt) {
