@@ -1,6 +1,7 @@
 package tree;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -13,7 +14,7 @@ public class Tree implements Comparable<Tree> {
 	TreeFlatten tf = new TreeFlatten();
 	TreeNode root = null;
 //	TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
-
+	
 	public Tree(TreeNode root) {
 		this.root = root;
 	}
@@ -32,11 +33,29 @@ public class Tree implements Comparable<Tree> {
 	public int compareTo(Tree o) {
 		return root.GetTreeWholeContent().compareTo(o.root.GetTreeWholeContent());
 	}
+	
+	public void SetRootNode(TreeNode rt_node) {
+		this.root = rt_node;
+	}
 
 	public TreeNode GetRootNode() {
 		return root;
 	}
-
+	
+	public TreeMap<String, ArrayList<TreeNode>> GetAllContentNodeMap() {
+		TreeMap<String, ArrayList<TreeNode>> map = new TreeMap<String, ArrayList<TreeNode>>();
+		ArrayList<TreeNode> nodes = GetAllNodes();
+		for (TreeNode node : nodes) {
+			ArrayList<TreeNode> inners = map.get(node.GetContent());
+			if (inners == null) {
+				inners = new ArrayList<TreeNode>();
+				map.put(node.GetContent(), inners);
+			}
+			inners.add(node);
+		}
+		return map;
+	}
+	
 	public ArrayList<TreeNode> GetAllNodes() {
 //		TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
 		ArrayList<TreeNode> nodes = new ArrayList<TreeNode>();
