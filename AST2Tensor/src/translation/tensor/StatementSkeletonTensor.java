@@ -29,7 +29,7 @@ public class StatementSkeletonTensor extends Tensor {
 	
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex t_idx = new TokenIndex();
-
+	
 	public SktBatchTensor skt_batch_info = null;
 	public SktBatchTensor skt_pe_batch_info = null;
 	public SktBatchTensor skt_each_batch_info = null;
@@ -161,6 +161,14 @@ public class StatementSkeletonTensor extends Tensor {
 	@Override
 	public int getSize() {
 		return stmt_token_info.size();
+	}
+	
+	@Override
+	public void SetRole(int role) {
+		super.SetRole(role);
+		skt_batch_info.SetRole(role);
+		skt_pe_batch_info.SetRole(role);
+		skt_each_batch_info.SetRole(role);
 	}
 
 	private String ToStmtInfo(String separator) {

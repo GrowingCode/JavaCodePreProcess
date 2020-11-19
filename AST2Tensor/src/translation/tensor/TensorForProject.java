@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
+
 import eclipse.project.ProjectInfo;
 import main.MetaOfApp;
 import statis.trans.common.RoleAssigner;
@@ -88,6 +90,9 @@ public class TensorForProject {
 		while (titr.hasNext()) {
 			Tensor t = titr.next();
 //			System.err.println("role:" + t.GetRole());
+			if (t.GetRole() < 0) {
+				Assert.isTrue(false);
+			}
 			if (t.GetRole() <= RoleAssigner.train_k) {
 				train_tensors.add(t);
 			} else if (t.GetRole() == RoleAssigner.valid_k) {
