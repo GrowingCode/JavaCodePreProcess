@@ -19,12 +19,6 @@ public class RoleAssigner {
 	TreeMap<String, Integer> path_roles = new TreeMap<String, Integer>();
 	TreeMap<String, Integer> roles = new TreeMap<String, Integer>();
 	
-	public final static int all = 5;
-	public final static int train_seen = 2;
-	public final static int train = 2;
-	public final static int valid = 3;
-	public final static int test = 4;
-	
 	public final static int train_seen_k = 0;
 	public final static int train_k = 1;
 	public final static int valid_k = 2;
@@ -102,11 +96,11 @@ public class RoleAssigner {
 		num++;
 		m_num.setValue(num);
 //		System.err.println("num:" + num);
-		if (num % all <= train_seen) {
+		if ((num % MetaOfApp.all) <= MetaOfApp.train_seen) {
 			return train_seen_k;
-		} else if (num % all <= train) {
+		} else if ((num % MetaOfApp.all) <= MetaOfApp.train) {
 			return train_k;
-		} else if (num % all <= valid) {
+		} else if ((num % MetaOfApp.all) <= MetaOfApp.valid) {
 			return valid_k;
 		} else {
 			return test_k;

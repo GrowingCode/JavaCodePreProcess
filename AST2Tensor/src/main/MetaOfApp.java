@@ -22,6 +22,12 @@ public class MetaOfApp {
 	public static boolean PrintTensorInfoForEachExampleInTestSet = false;
 	public final static String[] PrintTensorInfoKind = new String[] {"stmt"};
 	
+	public final static int all = 5;
+	public final static int train_seen = 2;
+	public final static int train = 2;
+	public final static int valid = 3;
+	public final static int test = 4;
+	
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
 //	public final static int ContentHuffTreeStandardChildrenNum = 1000;
 //	public final static int TypeContentHuffTreeStandardChildrenNum = 10000;
