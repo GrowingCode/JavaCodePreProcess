@@ -20,9 +20,13 @@ public class EnvClear {
 			skt_mj.delete();
 		}
 		
-		File f = new File(MetaOfApp.DataDirectory);
-		if (f.exists()) {
-			FileUtil.DeleteFile(f);
+		File f1 = new File(MetaOfApp.DataDirectory);
+		if (f1.exists()) {
+			FileUtil.DeleteFile(f1);
+		}
+		File f2 = new File(MetaOfApp.MetaDirectory);
+		if (f2.exists()) {
+			FileUtil.DeleteFile(f2);
 		}
 		System.out.println("Environment has been Cleared Successfully!");
 	}
