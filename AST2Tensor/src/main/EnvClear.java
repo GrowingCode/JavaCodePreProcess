@@ -6,7 +6,7 @@ import util.FileUtil;
 
 public class EnvClear {
 	
-	public static void main(String[] args) {
+	public static void ClearEnv() {
 		File bpe_mj = new File(Application.bpe_merges_json);
 		if (bpe_mj.exists()) {
 			bpe_mj.delete();
@@ -29,6 +29,10 @@ public class EnvClear {
 			FileUtil.DeleteFile(f2);
 		}
 		System.out.println("Environment has been Cleared Successfully!");
+	}
+	
+	public static void main(String[] args) {
+		ClearEnv();
 	}
 	
 }

@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
@@ -25,6 +23,7 @@ import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
 import statistic.id.IDManager;
 import statistic.id.PreProcessContentHelper;
+import util.StringUtil;
 
 public class JDTASTHelper {
 
@@ -73,10 +72,13 @@ public class JDTASTHelper {
 
 	public static String GetContentRepresentationForASTNode(ASTNode node) {
 		Assert.isTrue(JDTSearchForChildrenOfASTNode.GetChildren(node).isEmpty());
-		String raw_cnt = node.toString();
-		if (node instanceof Block || node instanceof AnonymousClassDeclaration) {
-			raw_cnt = "{}";
+		String raw_cnt = node.toString().trim();
+		if (raw_cnt.startsWith("{")) {
+			raw_cnt = StringUtil.UniformEmptyBlockString(raw_cnt);
 		}
+//		if (node instanceof Block || node instanceof AnonymousClassDeclaration) {
+//			raw_cnt = "{}";
+//		}
 		if (MetaOfApp.ignore_ast_type.length > 0) {
 			int positon = Arrays.asList(MetaOfApp.ignore_ast_type).indexOf(node.getClass());
 			if (positon >= 0)

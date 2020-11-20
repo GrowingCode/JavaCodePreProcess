@@ -58,6 +58,11 @@ public class TreeNode {
 		return tree_whole_content;
 	}
 	
+	@Override
+	public String toString() {
+		return content + "#" + hashCode();
+	}
+	
 //	public int GetSiblingIndex() {
 //		return sib_index;
 //	}

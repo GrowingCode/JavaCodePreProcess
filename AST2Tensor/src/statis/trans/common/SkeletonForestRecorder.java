@@ -11,6 +11,9 @@ import eclipse.project.ProjectInfo;
 import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
+import tree.TreeNode;
+import util.PrintUtil;
+import util.YStringUtil;
 
 public class SkeletonForestRecorder {
 	
@@ -81,8 +84,21 @@ public class SkeletonForestRecorder {
 				ArrayList<Tree> f_trees = f.GetAllTrees();
 				all_trees.addAll(f_trees);
 			}
+			ValidateAllTrees();
 		}
 		return all_trees;
+	}
+	
+	private void ValidateAllTrees() {
+		for (Tree o_tree : all_trees) {
+			ArrayList<TreeNode> ans = o_tree.GetAllNodes();
+			for (TreeNode an : ans) {
+				int h_count = YStringUtil.CountSubStringInString(an.GetContent(), "#h");
+				int v_count = YStringUtil.CountSubStringInString(an.GetContent(), "#v");
+				ArrayList<TreeNode> childs = an.GetChildren();
+				Assert.isTrue(h_count + v_count == childs.size(), "Origin Tree Validation Failed!" + "#h_count:" + h_count + "#v_count:" + v_count + "#childs.size():" + childs.size() + "#rt.GetContent():" + an.GetContent() + "#childs:" + PrintUtil.PrintListToString(childs, "tns"));
+			}
+		}
 	}
 	
 //	public ArrayList<String> GetComposedTokens(String merged) {

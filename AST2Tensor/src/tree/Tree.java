@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.Assert;
 
 import eclipse.jdt.JDTASTHelper;
 import translation.tensor.util.TokenKindUtil;
+import util.PrintUtil;
 import util.YStringUtil;
 
 public class Tree implements Comparable<Tree> {
@@ -200,7 +201,7 @@ public class Tree implements Comparable<Tree> {
 			int v_count = YStringUtil.CountSubStringInString(rt.GetContent(), "#v");
 //			tf.skt_pe_struct_h_count.add(h_count);
 //			tf.skt_pe_struct_v_count.add(v_count);
-			Assert.isTrue(h_count + v_count == childs.size());
+			Assert.isTrue(h_count + v_count == childs.size(), "h_count:" + h_count + "#v_count:" + v_count + "#childs.size():" + childs.size() + "#rt.GetContent():" + rt.GetContent() + "#childs:" + PrintUtil.PrintListToString(childs, "tns"));
 			int r_h_count = 0;
 			int r_v_count = 0;
 //			 skt_pe_struct_v_tree_uid
