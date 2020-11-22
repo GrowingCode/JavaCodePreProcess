@@ -75,22 +75,22 @@ public class StatementSkeletonTensor extends Tensor {
 	 * all these 4 arrays need to insert 0th element in the array
 	 */
 	
-	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_str, skt, token_str, token);
+	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
 		skt_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_str, skt, token_str, token);
+	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
 		skt_pe_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_str, skt, token_str, token);
+	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
 		skt_each_batch_info.Merge(one_stmt);
 	}
 	
-	private SktBatchTensor HandleSktInfo(int skt_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+	private SktBatchTensor HandleSktInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor sbt = new SktBatchTensor(ti, false);
 		
 		sbt.origin_sequence_str.addAll(skt_str);
@@ -98,7 +98,9 @@ public class StatementSkeletonTensor extends Tensor {
 		
 		sbt.origin_sequence.addAll(skt);
 		for (int t : token) {
-			sbt.origin_sequence.add(t + skt_hit_num);
+			int h_t = t + skt_hit_num;
+			Assert.isTrue(h_t < skt_hit_num + skt_token_hit_num);
+			sbt.origin_sequence.add(h_t);
 		}
 		
 		int r = 0;

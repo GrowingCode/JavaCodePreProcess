@@ -228,9 +228,9 @@ public class SktLogicUtil {
 					one_to_pe.put(skt_one_ids.get(0), skt_pe_ids);
 
 					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
-					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, tf.skt_one_struct, skt_one_ids, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, tf.skt_pe_struct, skt_pe_ids, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, tf.skt_one_e_struct, skt_each_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, skt_one_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, skt_pe_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_e_struct, skt_each_ids, tf.skt_token, skt_token_ids);
 					
 //					one_to_each_tree_uid.put(skt_one_id, tf.skt_one_e_struct_tree_uid);
 //					one_h_count.put(skt_one_id, tf.skt_one_struct_h_count.get(0));

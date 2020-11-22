@@ -155,7 +155,7 @@ public class IDManager {
 			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train, id_tool.one_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 			
 			Regist(skt_token_id_map, reserved_words);
-			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train, id_tool.s_tr.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
+			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train, id_tool.s_tr.not_hit_train, MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -1195,6 +1195,8 @@ public class IDManager {
 		meta_of_ast2tensor.put("SkeletonPEHitNum", pe_skeleton_hit_num);
 		meta_of_ast2tensor.put("SkeletonEachNum", each_skeleton_id_map.size());
 		meta_of_ast2tensor.put("SkeletonEachHitNum", each_skeleton_hit_num);
+		meta_of_ast2tensor.put("SkeletonTokenNum", skt_token_id_map.size());
+		meta_of_ast2tensor.put("SkeletonTokenHitNum", skt_token_hit_num);
 		meta_of_ast2tensor.put("TokenNum", token_id_map.size());
 		meta_of_ast2tensor.put("TokenHitNum", token_hit_num);
 		meta_of_ast2tensor.put("SwordNum", subword_num);
@@ -1276,6 +1278,9 @@ public class IDManager {
 //		}
 		// only for debug
 		GenerateIDJson(dir, skeleton_id_map, "skeleton");
+		GenerateIDJson(dir, pe_skeleton_id_map, "skeleton_pe");
+		GenerateIDJson(dir, each_skeleton_id_map, "skeleton_each");
+		GenerateIDJson(dir, skt_token_id_map, "skt_token");
 		GenerateIDJson(dir, token_id_map, "token");
 		GenerateIDJson(dir, grammar_id_map, "grammar");
 		SaveGrammarToDirectory(dir);
@@ -1374,7 +1379,7 @@ public class IDManager {
 //				+ "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size()
 				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
 				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
-				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0) 
+				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0)
 //				+ "#pair_encoded_skeleton_hit_num:" + pair_encoded_skeleton_hit_num
 				+ "#Skeleton_Preset_Unk_Num:" + MetaOfApp.NumberOfSkeletonUnk
 //				+ "#Skeleton_Raw_Hit_Train_Num:" + id_tool.one_struct_r.hit_train.size()
