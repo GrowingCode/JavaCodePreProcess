@@ -1368,21 +1368,21 @@ public class IDManager {
 	public String WordVocabularyInfo() {
 		return "Summary -- " + "#Vocabulary_Word_Size:" + token_hit_num + "#OutOfVocabulary_Word_Size:"
 				+ (token_id_map.size() - token_hit_num) + "#Unseen_Rate:"
-				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0) 
+				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0)
 				+ "#Word_Preset_Unk_Num:" + MetaOfApp.NumberOfUnk
-				+ "#Word_Hit_Num:" + id_tool.tr.hit_train.size() 
-				+ "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size() 
+//				+ "#Word_Hit_Num:" + id_tool.tr.hit_train.size()
+//				+ "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size()
 				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
-				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num) 
+				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
 				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0) 
 //				+ "#pair_encoded_skeleton_hit_num:" + pair_encoded_skeleton_hit_num
 				+ "#Skeleton_Preset_Unk_Num:" + MetaOfApp.NumberOfSkeletonUnk
-				+ "#Skeleton_Hit_Num:" + id_tool.one_struct_r.hit_train.size()
-				+ "#Skeleton_Not_Hit_Num:" + id_tool.one_struct_r.not_hit_train.size()
-				+ "#PESkeleton_Hit_Num:" + id_tool.pe_struct_r.hit_train.size()
-				+ "#PESkeleton_Not_Hit_Num:" + id_tool.pe_struct_r.not_hit_train.size()
-				+ "#EachSkeleton_Hit_Num:" + id_tool.e_struct_r.hit_train.size()
-				+ "#EachSkeleton_Not_Hit_Num:" + id_tool.e_struct_r.not_hit_train.size()
+//				+ "#Skeleton_Raw_Hit_Train_Num:" + id_tool.one_struct_r.hit_train.size()
+//				+ "#Skeleton_Raw_Not_Hit_Train_Num:" + id_tool.one_struct_r.not_hit_train.size()
+//				+ "#PESkeleton_Raw_Hit_Train_Num:" + id_tool.pe_struct_r.hit_train.size()
+//				+ "#PESkeleton_Raw_Not_Hit_Train_Num:" + id_tool.pe_struct_r.not_hit_train.size()
+//				+ "#EachSkeleton_Raw_Hit_Train_Num:" + id_tool.e_struct_r.hit_train.size()
+//				+ "#EachSkeleton_Raw_Not_Hit_Train_Num:" + id_tool.e_struct_r.not_hit_train.size()
 				;
 		// + "#OutOfVocabulary_API_Comb_Size:"
 		// +
