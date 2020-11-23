@@ -151,8 +151,14 @@ public class StatementSkeletonTensor extends Tensor {
 			}
 		}
 		
-		// TODO
-		
+		for (int s : skt) {
+			assert s >= 0;
+			sbt.token_type.add(0);
+		}
+		for (int t : token) {
+			assert t >= 0;
+			sbt.token_type.add(1);
+		}
 		
 		return sbt;
 	}
@@ -242,6 +248,7 @@ class SktBatchTensor extends Tensor {
 			this.relative_to_part_first.add(0);
 			this.valid_mask.add(0);
 			this.seq_part_skip.add(1);
+			this.token_type.add(-1);
 		}
 	}
 	
@@ -251,6 +258,7 @@ class SktBatchTensor extends Tensor {
 		relative_to_part_first.addAll(sbt.relative_to_part_first);
 		valid_mask.addAll(sbt.valid_mask);
 		seq_part_skip.addAll(sbt.seq_part_skip);
+		token_type.addAll(sbt.token_type);
 	}
 
 	@Override
@@ -264,7 +272,8 @@ class SktBatchTensor extends Tensor {
 		String result = StringUtils.join(origin_sequence.toArray(), " ") + separator
 				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
 				+ StringUtils.join(valid_mask.toArray(), " ") + separator
-				+ StringUtils.join(seq_part_skip.toArray(), " ");
+				+ StringUtils.join(seq_part_skip.toArray(), " ") + separator
+				+ StringUtils.join(token_type.toArray(), " ");
 		return result;
 	}
 	
@@ -273,7 +282,8 @@ class SktBatchTensor extends Tensor {
 		String result = StringUtil.FixedLengthString("id:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("relative_first:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("valid_mask:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ");
+				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
@@ -283,7 +293,8 @@ class SktBatchTensor extends Tensor {
 		String result = StringUtil.FixedLengthString("id:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_str, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("relative_first:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("valid_mask:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ");
+				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
