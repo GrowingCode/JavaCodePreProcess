@@ -151,6 +151,9 @@ public class StatementSkeletonTensor extends Tensor {
 			}
 		}
 		
+		// TODO
+		
+		
 		return sbt;
 	}
 
@@ -227,6 +230,7 @@ class SktBatchTensor extends Tensor {
 	ArrayList<Integer> relative_to_part_first = new ArrayList<Integer>();
 	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
 	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
+	ArrayList<Integer> token_type = new ArrayList<Integer>();
 	
 	int print_fixed_len = 25;
 	

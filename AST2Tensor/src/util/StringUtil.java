@@ -16,8 +16,15 @@ public class StringUtil {
 	}
 	
 	public static String FixedLengthString(String content, int fixed_length) {
-		String n_cnt = String.format("%"+fixed_length+"s", content);
-		n_cnt = n_cnt.substring(0, fixed_length);
+		int r_f_len = fixed_length;
+		if (content.length() > fixed_length) {
+			r_f_len = fixed_length - 1;
+		}
+		String n_cnt = String.format("%"+r_f_len+"s", content);
+		n_cnt = n_cnt.substring(0, r_f_len);
+		if (content.length() > fixed_length) {
+			n_cnt += "~";
+		}
 		return n_cnt;
 	}
 	
