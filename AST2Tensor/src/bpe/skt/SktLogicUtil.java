@@ -22,6 +22,7 @@ import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.Tensor;
 import translation.tensor.TensorForProject;
 import translation.tensor.TensorInfo;
+import translation.tensor.util.IntsWrapper;
 import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
@@ -166,7 +167,11 @@ public class SktLogicUtil {
 //		TreeMap<String, ArrayList<String>> atcs = sfr.GetAllTokenComposes();
 //		TreeSet<String> pe_keys = new TreeSet<String>();
 //		TreeSet<String> each_keys = new TreeSet<String>();
-
+		
+		IntsWrapper skt_batch_relative_part_max = new IntsWrapper();
+		IntsWrapper skt_pe_batch_relative_part_max = new IntsWrapper();
+		IntsWrapper skt_each_batch_relative_part_max = new IntsWrapper();
+		
 		for (ProjectForests pf : aps) {
 			TensorForProject tfp = new TensorForProject("skt");
 			TensorForProject tfp_one = new TensorForProject("skt_one");
@@ -182,7 +187,7 @@ public class SktLogicUtil {
 			ArrayList<Forest> func_os = pf.GetAllForests();
 			for (Forest f : func_os) {
 				TensorInfo tinfo = new TensorInfo(f.GetFilePath(), f.GetSignature());
-				StatementSkeletonTensor sst = new StatementSkeletonTensor(tinfo, f.GetSignature());
+				StatementSkeletonTensor sst = new StatementSkeletonTensor(tinfo, f.GetSignature(), skt_batch_relative_part_max, skt_pe_batch_relative_part_max, skt_each_batch_relative_part_max);
 				sst.SetRole(f.GetRole());
 				ArrayList<Tree> trees = f.GetAllTrees();
 				for (Tree tree : trees) {
@@ -326,6 +331,10 @@ public class SktLogicUtil {
 		
 		ArrayList<ArrayList<Integer>> pee_container = IntegerMapUtil.MapToNestedList(pe_to_each);
 		FileUtil.WriteJson(pee_container, MetaOfApp.DataDirectory + "/All_skt_pe_to_each.json");
+		
+		System.out.println("skt_relative_part_max:" + skt_batch_relative_part_max.it1 + "#token_relative_part_max:" + skt_batch_relative_part_max.it2);
+		System.out.println("skt_pe_relative_part_max:" + skt_pe_batch_relative_part_max.it1 + "#token_pe_relative_part_max:" + skt_pe_batch_relative_part_max.it2);
+		System.out.println("skt_each_relative_part_max:" + skt_each_batch_relative_part_max.it1 + "#token_each_relative_part_max:" + skt_pe_batch_relative_part_max.it2);
 		
 //		FileUtil.WriteJson(one_hv_num, MetaOfApp.DataDirectory + "/All_one_hv_num.json");
 //		FileUtil.WriteJson(one_str_hv_num, MetaOfApp.DataDirectory + "/All_one_str_hv_num.json");

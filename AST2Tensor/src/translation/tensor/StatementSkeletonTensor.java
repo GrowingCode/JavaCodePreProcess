@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Assert;
 
 import main.MetaOfApp;
 import translation.tensor.util.ConservedMemoryUtil;
+import translation.tensor.util.IntsWrapper;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndex;
 import translation.tensor.util.TokenIndexUtil;
@@ -30,16 +31,24 @@ public class StatementSkeletonTensor extends Tensor {
 	TreeMap<String, Integer> token_index_record = new TreeMap<String, Integer>();
 	TokenIndex t_idx = new TokenIndex();
 	
+	public IntsWrapper skt_batch_relative_part_max = null;
+	public IntsWrapper skt_pe_batch_relative_part_max = null;
+	public IntsWrapper skt_each_batch_relative_part_max = null;
+	
 	public SktBatchTensor skt_batch_info = null;
 	public SktBatchTensor skt_pe_batch_info = null;
 	public SktBatchTensor skt_each_batch_info = null;
 	
-	public StatementSkeletonTensor(TensorInfo tinfo, String sig) {
+	public StatementSkeletonTensor(TensorInfo tinfo, String sig, IntsWrapper skt_batch_relative_part_max, IntsWrapper skt_pe_batch_relative_part_max, IntsWrapper skt_each_batch_relative_part_max) {
 		super(tinfo);
 		this.sig = sig;
 		skt_batch_info = new SktBatchTensor(tinfo, true);
 		skt_pe_batch_info = new SktBatchTensor(tinfo, true);
 		skt_each_batch_info = new SktBatchTensor(tinfo, true);
+		
+		this.skt_batch_relative_part_max = skt_batch_relative_part_max;
+		this.skt_pe_batch_relative_part_max = skt_pe_batch_relative_part_max;
+		this.skt_each_batch_relative_part_max = skt_each_batch_relative_part_max;
 	}
 	
 	public void StoreStatementSkeletonInfo(ArrayList<String> info_str, ArrayList<Integer> info, ArrayList<Integer> kind, 
@@ -76,21 +85,21 @@ public class StatementSkeletonTensor extends Tensor {
 	 */
 	
 	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
+		SktBatchTensor one_stmt = HandleSktInfo(skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
 		skt_batch_info.Merge(one_stmt);
 	}
 	
 	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
+		SktBatchTensor one_stmt = HandleSktInfo(skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
 		skt_pe_batch_info.Merge(one_stmt);
 	}
 	
 	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
+		SktBatchTensor one_stmt = HandleSktInfo(skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, token_str, token);
 		skt_each_batch_info.Merge(one_stmt);
 	}
 	
-	private SktBatchTensor HandleSktInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
+	private SktBatchTensor HandleSktInfo(IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor sbt = new SktBatchTensor(ti, false);
 		
 		sbt.origin_sequence_str.addAll(skt_str);
@@ -109,11 +118,21 @@ public class StatementSkeletonTensor extends Tensor {
 			sbt.relative_to_part_first.add(r);
 			r++;
 		}
+		if (iw.it1 == null) {
+			iw.it1 = r;
+		} else {
+			iw.it1 = iw.it1 < r ? r : iw.it1;
+		}
 		r = 0;
 		for (int t : token) {
 			assert t >= 0;
 			sbt.relative_to_part_first.add(r);
 			r++;
+		}
+		if (iw.it2 == null) {
+			iw.it2 = r;
+		} else {
+			iw.it2 = iw.it2 < r ? r : iw.it2;
 		}
 		
 		for (int s : skt) {
