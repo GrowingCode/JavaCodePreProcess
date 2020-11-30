@@ -266,7 +266,7 @@ class SktBatchTensor extends Tensor {
 			this.origin_sequence.add(0);
 			this.relative_to_part_first.add(0);
 			this.valid_mask.add(0);
-			this.seq_part_skip.add(1);
+			this.seq_part_skip.add(0);
 			this.token_type.add(-1);
 		}
 	}
