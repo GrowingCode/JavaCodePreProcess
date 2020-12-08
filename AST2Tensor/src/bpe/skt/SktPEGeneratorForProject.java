@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import eclipse.jdt.JDTParser;
 import eclipse.search.EclipseSearchForICompilationUnits;
 import logger.DebugLogger;
+import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
 import translation.TensorTools;
 import tree.Forest;
@@ -28,7 +29,7 @@ public class SktPEGeneratorForProject {
 		this.tensor_tool = tensor_tool;
 	}
 	
-	public int GenerateForOneProject() {
+	public int GenerateForOneProject(SkeletonForestRecorder stf_r) {
 		List<ICompilationUnit> units = null;
 		try {
 			units = EclipseSearchForICompilationUnits.SearchForAllICompilationUnits(java_project);
@@ -46,7 +47,7 @@ public class SktPEGeneratorForProject {
 				SktForestGenerator tg = new SktForestGenerator(null, icu, cu, tool);
 				cu.accept(tg);
 				ArrayList<Forest> funcs = tg.GetFunctions();
-				tool.stf_r.AddForests(funcs);
+				stf_r.AddForests(funcs);
 			}
 		}
 		return length;

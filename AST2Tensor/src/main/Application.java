@@ -99,7 +99,6 @@ public class Application implements IApplication {
 		IDTools id_tool = null;
 		{
 			BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
-			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
 			TokenRecorder tr = new TokenRecorder();
 //			TokenRecorder sr = new TokenRecorder();
 			TokenRecorder one_struct_r = new TokenRecorder();
@@ -109,8 +108,9 @@ public class Application implements IApplication {
 			GrammarRecorder gr = new GrammarRecorder();
 			APIRecorder ar = new APIRecorder();
 			ChildrenNumCounter cnc = new ChildrenNumCounter();
-//			sr, 
-			id_tool = new IDTools(bpe_mr, stf_r, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc);
+			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
+//			stf_r, 
+			id_tool = new IDTools(bpe_mr, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc, sktpe_mr);
 		}
 		{
 			File bpe_mj = new File(bpe_merges_json);
@@ -138,7 +138,6 @@ public class Application implements IApplication {
 				System.out.println("==== BPECount End ====");
 			}
 		}
-		SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
 		if (MetaOfApp.GenerateSkeletonToken)
 		{
 			File sktpe_mj = new File(sktpe_merges_json);
@@ -147,24 +146,24 @@ public class Application implements IApplication {
 //				Assert.isTrue(sktpe_ttj.exists());
 				List<TreeNodeTwoMerge> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<ArrayList<TreeNodeTwoMerge>>(){}.getType());
 //				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
-				sktpe_mr.Initialize(merges);// , token_times
+				id_tool.sktpe_mr.Initialize(merges);// , token_times
 				System.out.println("==== SktPECount Loaded ====");
 			} else {
 				System.out.println("==== SktPECount Begin ====");
 				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
-				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
+				SktPEGenerateMergeForOneProjectHandle handle = new SktPEGenerateMergeForOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
-				ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
-				for (Forest f : fs) {
-					ArrayList<Tree> f_trees = f.GetAllTrees();
-					for (Tree t : f_trees) {
-						sktpe_mr.EncounterSkeleton(t, 1);
-					}
-				}
-				sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
-				sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
-				id_tool.stf_r.Clear();
-				AnalysisEnvironment.DeleteAllProjects();
+//				ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
+//				for (Forest f : fs) {
+//					ArrayList<Tree> f_trees = f.GetAllTrees();
+//					for (Tree t : f_trees) {
+//						id_tool.sktpe_mr.EncounterSkeleton(t, 1);
+//					}
+//				}
+//				id_tool.sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
+//				id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
+//				id_tool.stf_r.Clear();
+//				AnalysisEnvironment.DeleteAllProjects();
 				RoleAssigner.GetInstance().ClearRoles();
 				System.out.println("==== SktPECount End ====");
 			}
@@ -177,13 +176,8 @@ public class Application implements IApplication {
 			 */
 			if (MetaOfApp.GenerateSkeletonToken) {
 				// Handle SktPE logic
-				SktPEOneProjectHandle handle = new SktPEOneProjectHandle();
+				SktPECountOneProjectHandle handle = new SktPECountOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
-				id_tool.stf_r.PreProcessAllForests();
-//				id_tool.stf_r.FlattenAllOriginTrees();
-				id_tool.stf_r.ApplySktPEMerges(sktpe_mr.GetMerges());
-				id_tool.stf_r.FlattenAllTrees();
-				SktLogicUtil.CountPairEncodedSkeletons(id_tool, id_tool.stf_r);
 			}
 			/**
 			 * normal handle
@@ -225,7 +219,8 @@ public class Application implements IApplication {
 			 * store the map of skeleton one token to scatter tokens. 
 			 */
 			if (MetaOfApp.GenerateSkeletonToken) {
-				SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(tensor_tool, id_tool.stf_r);
+				SktPETranslateOneProjectHandle handle = new SktPETranslateOneProjectHandle();
+				HandleEachProjectFramework(all_projs, handle, null, tensor_tool);
 			}
 			/**
 			 * normal handle
@@ -316,19 +311,80 @@ public class Application implements IApplication {
 		}
 	}
 	
-	static int SktPEOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+	static int SktPEGenerateMergeForOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+		File sktpe_mj = new File(sktpe_merges_json);
 		int project_size = 0;
 		try {
 			SystemUtil.Delay(1000);
 			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
-			id_tool.stf_r.EncounterNewProject(proj.GetInfo());
-			project_size = irgfop.GenerateForOneProject();
+			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
+			// stf_r should be declared locally. 
+			stf_r.EncounterNewProject(proj.GetInfo());
+			project_size = irgfop.GenerateForOneProject(stf_r);
+			stf_r.PreProcessAllForests();
+//			id_tool.stf_r.FlattenAllOriginTrees();
+//			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges());
+//			stf_r.FlattenAllTrees();
+//			SktLogicUtil.CountPairEncodedSkeletons(id_tool, stf_r);
+			
+			ArrayList<Forest> fs = stf_r.GetAllForests();
+			for (Forest f : fs) {
+				ArrayList<Tree> f_trees = f.GetAllTrees();
+				for (Tree t : f_trees) {
+					id_tool.sktpe_mr.EncounterSkeleton(t, 1);
+				}
+			}
+			id_tool.sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
+			id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
+//			id_tool.stf_r.Clear();
+//			AnalysisEnvironment.DeleteAllProjects();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return project_size;
 	}
 
+	static int SktPECountOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+		int project_size = 0;
+		try {
+			SystemUtil.Delay(1000);
+			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
+			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
+			// stf_r should be declared locally. 
+			stf_r.EncounterNewProject(proj.GetInfo());
+			project_size = irgfop.GenerateForOneProject(stf_r);
+			stf_r.PreProcessAllForests();
+//			id_tool.stf_r.FlattenAllOriginTrees();
+			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges());
+			stf_r.FlattenAllTrees();
+			SktLogicUtil.CountPairEncodedSkeletons(id_tool, stf_r);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return project_size;
+	}
+
+	static int SktPETranslateOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+		int project_size = 0;
+		try {
+			SystemUtil.Delay(1000);
+			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
+			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
+			// stf_r should be declared locally. 
+			stf_r.EncounterNewProject(proj.GetInfo());
+			project_size = irgfop.GenerateForOneProject(stf_r);
+			stf_r.PreProcessAllForests();
+//			id_tool.stf_r.FlattenAllOriginTrees();
+			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges());
+			stf_r.FlattenAllTrees();
+			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return project_size;
+	}
+	
 	static int BPEOneProject(STProject proj, IDTools id_tool) {
 		int project_size = 0;
 		try {
@@ -453,14 +509,14 @@ class BPEOneProjectHandle implements HandleOneProject {
 
 }
 
-class SktPEOneProjectHandle implements HandleOneProject {
+class SktPEGenerateMergeForOneProjectHandle implements HandleOneProject {
 
 //	String proj_path, int all_size
 	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
 //		IJavaProject java_project = null;
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.SktPEOneProject(proj, id_tool, tensor_tool);
+			int all_size = Application.SktPEGenerateMergeForOneProject(proj, id_tool, tensor_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {
@@ -474,3 +530,51 @@ class SktPEOneProjectHandle implements HandleOneProject {
 	}
 
 }
+
+class SktPECountOneProjectHandle implements HandleOneProject {
+
+//	String proj_path, int all_size
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+//		IJavaProject java_project = null;
+//		try {
+//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			int all_size = Application.SktPECountOneProject(proj, id_tool, tensor_tool);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				ProjectLoader.CloseAllProjects();
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+		return all_size;
+	}
+
+}
+
+class SktPETranslateOneProjectHandle implements HandleOneProject {
+
+//	String proj_path, int all_size
+	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
+//		IJavaProject java_project = null;
+//		try {
+//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
+			int all_size = Application.SktPETranslateOneProject(proj, id_tool, tensor_tool);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				ProjectLoader.CloseAllProjects();
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+		return all_size;
+	}
+
+}
+
+
+
+

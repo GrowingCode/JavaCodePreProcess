@@ -166,10 +166,10 @@ public class TensorGeneratorForProject {
 //						Assert.isTrue(sst.GetRole() == s.GetRole());
 //						StringTensor r = new StringTensor();
 //						r.SetRole(s.GetRole());
-						Assert.isTrue(st.getSize() + 1 == t.getSize(),
-								"s.getSize():" + st.getSize() + ";t.getSize():" + t.getSize());
-						Assert.isTrue(s.getSize() == st.getSize(),
-								"s.getSize():" + s.getSize() + ";st.getSize():" + st.getSize());
+						Assert.isTrue(st.GetSize() + 1 == t.GetSize(),
+								"s.getSize():" + st.GetSize() + ";t.getSize():" + t.GetSize());
+						Assert.isTrue(s.GetSize() == st.GetSize(),
+								"s.getSize():" + s.GetSize() + ";st.getSize():" + st.GetSize());
 //						r.SetSize(s.getSize());
 //						r.SetToString(s.toString() + "$" + t.toString() + "$" + sst.toString());
 //						r.SetToDebugString(s.toDebugString() + "\n\n\n\n$\n\n\n\n" + t.toDebugString() + "\n\n\n\n$\n\n\n\n"

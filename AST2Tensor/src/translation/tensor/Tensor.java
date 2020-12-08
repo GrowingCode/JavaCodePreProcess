@@ -1,8 +1,5 @@
 package translation.tensor;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.eclipse.core.runtime.Assert;
 
 public abstract class Tensor {
@@ -10,12 +7,14 @@ public abstract class Tensor {
 //	IDManager im = null;
 //	String origin_file = null;
 	int role = -1;
+
+	int size = -1;
 	
 	TensorInfo ti = null;
 
 	// processed
-	int inner_index = -1;
-	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
+//	int inner_index = -1;
+//	Map<Integer, Integer> inner_index_map = new TreeMap<Integer, Integer>();
 
 //	String origin_file, 
 	public Tensor(TensorInfo ti) {// IDManager im, int role
@@ -41,8 +40,17 @@ public abstract class Tensor {
 	public TensorInfo GetTensorInfo() {
 		return ti;
 	}
-
-	public abstract int getSize();
+	
+	public void SetSize(int size) {
+		this.size = size;
+	}
+	
+	public int GetSize() {
+		Assert.isTrue(size > 0);
+		return size;
+	}
+	
+//	public abstract int getSize();
 
 	public abstract String toString();
 

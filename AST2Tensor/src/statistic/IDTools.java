@@ -1,16 +1,16 @@
 package statistic;
 
-import statis.trans.common.SkeletonForestRecorder;
 import statistic.ast.ChildrenNumCounter;
 import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
+import statistic.id.SktPEMergeRecorder;
 import statistic.id.TokenRecorder;
 
 public class IDTools {
 	
 	public BPEMergeRecorder bpe_mr = null;
-	public SkeletonForestRecorder stf_r = null;
+//	public SkeletonForestRecorder stf_r = null;
 	public TokenRecorder tr = null;
 //	public TokenRecorder sr = null;
 	public TokenRecorder one_struct_r = null;
@@ -20,11 +20,11 @@ public class IDTools {
 	public GrammarRecorder gr = null;
 	public APIRecorder ar = null;
 	public ChildrenNumCounter cnc = null;
+	public SktPEMergeRecorder sktpe_mr = null;
 	
 	// TokenRecorder sr, 
-	public IDTools(BPEMergeRecorder bpe_mr, SkeletonForestRecorder stf_r, TokenRecorder tr, TokenRecorder one_struct_r, TokenRecorder pe_struct_r, TokenRecorder e_struct_r, TokenRecorder s_tr, GrammarRecorder gr, APIRecorder ar, ChildrenNumCounter cnc) {
+	public IDTools(BPEMergeRecorder bpe_mr, TokenRecorder tr, TokenRecorder one_struct_r, TokenRecorder pe_struct_r, TokenRecorder e_struct_r, TokenRecorder s_tr, GrammarRecorder gr, APIRecorder ar, ChildrenNumCounter cnc, SktPEMergeRecorder sktpe_mr) {
 		this.bpe_mr = bpe_mr;
-		this.stf_r = stf_r;
 		this.tr = tr;
 //		this.sr = sr;
 		this.one_struct_r = one_struct_r;
@@ -34,6 +34,7 @@ public class IDTools {
 		this.gr = gr;
 		this.ar = ar;
 		this.cnc = cnc;
+		this.sktpe_mr = sktpe_mr;
 	}
 	
 }

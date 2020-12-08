@@ -245,7 +245,7 @@ public class StatementTensor extends Tensor {
 	}
 
 	@Override
-	public int getSize() {
+	public int GetSize() {
 		return stmt_token_info.size();
 	}
 

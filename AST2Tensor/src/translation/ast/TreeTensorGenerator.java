@@ -64,7 +64,7 @@ public class TreeTensorGenerator extends TreeVisitor {
 		st.SetToString(curr_tensor.toString());
 		st.SetToDebugString(curr_tensor.toDebugString());
 		st.SetToOracleString(curr_tensor.toOracleString());
-		st.SetSize(curr_tensor.getSize());
+		st.SetSize(curr_tensor.GetSize());
 		return st;
 	}
 

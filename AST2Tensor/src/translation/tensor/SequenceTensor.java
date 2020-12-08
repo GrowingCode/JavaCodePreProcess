@@ -43,10 +43,11 @@ public class SequenceTensor extends Tensor {
 		token_var_relative.addAll(RepetitionUtil.GenerateRepetitionRelative(token_var));
 		conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(token_var, token_var_relative,
 				MetaOfApp.ConservedContextLength));
+		SetSize(token_en.size());
 	}
 
 	@Override
-	public int getSize() {
+	public int GetSize() {
 		return token_en.size();
 	}
 

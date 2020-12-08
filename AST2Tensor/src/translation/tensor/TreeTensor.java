@@ -57,7 +57,7 @@ public class TreeTensor extends Tensor {
 	}
 
 	@Override
-	public int getSize() {
+	public int GetSize() {
 		return post_order_node_type_content_en.size();
 	}
 

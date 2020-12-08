@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,21 +16,30 @@ import org.eclipse.core.runtime.Assert;
 import eclipse.project.ProjectInfo;
 import main.MetaOfApp;
 import statis.trans.common.RoleAssigner;
+import translation.tensor.util.TensorComparator;
 
 public class TensorForProject {
-	
+
 	String kind = null;
 	List<Tensor> tensors = new LinkedList<Tensor>();
-	
+
 	public TensorForProject(String kind) {
 		this.kind = kind;
 	}
-	
+
 	public void AddTensors(List<Tensor> e) {
 		tensors.addAll(e);
 	}
-	
-	private void SaveToFile(List<Tensor> tensors_to, String type, ProjectInfo info) {
+
+	private List<Tensor> SortInNaturalOrder(List<Tensor> tensors) {
+		List<Tensor> arrays = new ArrayList<Tensor>(tensors);
+		Collections.sort(arrays, new TensorComparator());
+		return arrays;
+	}
+
+	private void SaveToFile(List<Tensor> tensors, String type, ProjectInfo info) {
+		List<Tensor> tensors_to = SortInNaturalOrder(tensors);
+
 		File dest = new File(MetaOfApp.DataDirectory + "/" + type + "_data.txt");
 		File debug_dest = new File(MetaOfApp.DataDirectory + "/debug_" + type + "_data.txt");
 		File oracle_dest = new File(MetaOfApp.DataDirectory + "/oracle_" + type + "_data.txt");
@@ -80,7 +91,7 @@ public class TensorForProject {
 			}
 		}
 	}
-	
+
 	public void SaveToFile(ProjectInfo info) {// int total_of_tensors
 //		System.err.println("tensor_size:" + tensors.size());
 		LinkedList<Tensor> train_tensors = new LinkedList<Tensor>();
@@ -101,15 +112,16 @@ public class TensorForProject {
 				test_tensors.add(t);
 			}
 		}
-		SaveToFile(tensors, kind + "_all", info);
+//		SaveToFile(tensors, kind + "_all", info);
 //		System.err.println("train_tensor_size:" + train_tensors.size());
 		SaveToFile(train_tensors, kind + "_train", info);
 //		System.err.println("test_tensor_size:" + test_tensors.size());
 		SaveToFile(test_tensors, kind + "_test", info);
 //		System.err.println("valid_tensor_size:" + valid_tensors.size());
 		SaveToFile(valid_tensors, kind + "_valid", info);
-		
-		if (MetaOfApp.PrintTensorInfoForEachExampleInTestSet && Arrays.asList(MetaOfApp.PrintTensorInfoKind).contains(kind)) {
+
+		if (MetaOfApp.PrintTensorInfoForEachExampleInTestSet
+				&& Arrays.asList(MetaOfApp.PrintTensorInfoKind).contains(kind)) {
 			System.err.println("print each tensor info in test set in project:" + info.getName());
 			int index = 0;
 			for (Tensor t : test_tensors) {
@@ -122,5 +134,5 @@ public class TensorForProject {
 //	public int GetNumOfTensors() {
 //		return tensors.size();
 //	}
-	
+
 }

@@ -181,15 +181,19 @@ public class StatementSkeletonTensor extends Tensor {
 		
 		return sbt;
 	}
-
+	
 	public void HandleAllInfo() {
 		stmt_token_leaf_relative_info.addAll(RepetitionUtil.GenerateRepetitionRelative(stmt_token_leaf_info));
 		stmt_token_conserved_memory_length.addAll(ConservedMemoryUtil.GenerateConservedMemory(stmt_token_leaf_info,
 				stmt_token_leaf_relative_info, MetaOfApp.ConservedContextLength));
+		SetSize(stmt_token_info.size());
+		skt_batch_info.HandleAllInfo();
+		skt_pe_batch_info.HandleAllInfo();
+		skt_each_batch_info.HandleAllInfo();
 	}
-
+	
 	@Override
-	public int getSize() {
+	public int GetSize() {
 		return stmt_token_info.size();
 	}
 	
@@ -280,8 +284,12 @@ class SktBatchTensor extends Tensor {
 		token_type.addAll(sbt.token_type);
 	}
 
+	public void HandleAllInfo() {
+		SetSize(origin_sequence.size());
+	}
+	
 	@Override
-	public int getSize() {
+	public int GetSize() {
 		return origin_sequence.size();
 	}
 
