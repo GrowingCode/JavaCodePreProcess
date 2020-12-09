@@ -220,7 +220,7 @@ public class Application implements IApplication {
 			 */
 			if (MetaOfApp.GenerateSkeletonToken) {
 				SktPETranslateOneProjectHandle handle = new SktPETranslateOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, null, tensor_tool);
+				HandleEachProjectFramework(all_projs, handle, id_tool, tensor_tool);
 			}
 			/**
 			 * normal handle
