@@ -3,6 +3,7 @@ package main;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.app.IApplication;
@@ -36,6 +37,7 @@ import translation.tensor.TensorForProject;
 import tree.Forest;
 import tree.Tree;
 import util.FileUtil;
+import util.JsonPrintUtil;
 import util.SystemUtil;
 
 public class Application implements IApplication {
@@ -266,6 +268,12 @@ public class Application implements IApplication {
 		AnalysisEnvironment.DeleteAllProjects();
 		SystemUtil.Flush();
 		SystemUtil.Delay(2500);
+		
+		int proj_num = all_projs.size();
+		TreeMap<String, Integer> meta_of_app_handle = new TreeMap<String, Integer>();
+		meta_of_app_handle.put("ProjectSize", proj_num);
+		JsonPrintUtil.PrintMapToJsonFile(meta_of_app_handle, MetaOfApp.MetaDirectory, "meta_of_app_handle.json");
+		
 		return IApplication.EXIT_OK;
 	}
 

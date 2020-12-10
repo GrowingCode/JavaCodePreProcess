@@ -1,12 +1,9 @@
 package main;
 
-import java.io.File;
 import java.util.TreeMap;
 
-import com.google.gson.Gson;
-
 import translation.tensor.util.TokenKindUtil;
-import util.FileUtil;
+import util.JsonPrintUtil;
 
 public class MetaOfApp {
 
@@ -101,7 +98,7 @@ public class MetaOfApp {
 	public final static int ApproximateVarMode = TokenKindUtil.SimpleNameApproximateVariable;
 
 	public static void SaveToDirectory() {
-		Gson gson = new Gson();
+//		Gson gson = new Gson();
 		TreeMap<String, Integer> meta_of_ast2tensor = new TreeMap<String, Integer>();
 //		meta_of_ast2tensor.put("AddZeroIfNoVariable", AddZeroIfNoVariable);
 //		meta_of_ast2tensor.put("MaximumHandlingNodeNumInOneTree", MaximumHandlingNodeNumInOneTree);
@@ -118,11 +115,12 @@ public class MetaOfApp {
 		meta_of_ast2tensor.put("MethodNoLimit", MethodNoLimit ? 1 : 0);
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);
 //		String dir = System.getProperty("user.home") + "/AST_Metas";
-		File f = new File(MetaDirectory);
-		if (!f.exists()) {
-			f.mkdirs();
-		}
-		FileUtil.WriteToFile(new File(MetaDirectory + "/" + "meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
+//		File f = new File(MetaDirectory);
+//		if (!f.exists()) {
+//			f.mkdirs();
+//		}
+//		FileUtil.WriteToFile(new File(MetaDirectory + "/" + "meta_of_ast2tensor.json"), gson.toJson(meta_of_ast2tensor));
+		JsonPrintUtil.PrintMapToJsonFile(meta_of_ast2tensor, MetaDirectory, "meta_of_ast2tensor.json");
 	}
 
 }
