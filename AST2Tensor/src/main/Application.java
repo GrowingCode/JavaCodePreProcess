@@ -266,13 +266,14 @@ public class Application implements IApplication {
 		System.out.println(im.WordVocabularyInfo());
 		System.out.println(StatementTensor.StatementSummaryInfo());
 		AnalysisEnvironment.DeleteAllProjects();
-		SystemUtil.Flush();
-		SystemUtil.Delay(2500);
 		
 		int proj_num = all_projs.size();
 		TreeMap<String, Integer> meta_of_app_handle = new TreeMap<String, Integer>();
 		meta_of_app_handle.put("ProjectSize", proj_num);
 		JsonPrintUtil.PrintMapToJsonFile(meta_of_app_handle, MetaOfApp.MetaDirectory, "meta_of_app_handle.json");
+		
+		SystemUtil.Flush();
+		SystemUtil.Delay(2500);
 		
 		return IApplication.EXIT_OK;
 	}
