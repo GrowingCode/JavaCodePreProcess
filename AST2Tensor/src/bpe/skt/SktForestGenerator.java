@@ -10,13 +10,14 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 
 import eclipse.jdt.JDTASTHelper;
@@ -31,6 +32,7 @@ import tree.ExprSpecTreeNode;
 import tree.Forest;
 import tree.Tree;
 import tree.TreeNode;
+import util.PrintUtil;
 import util.YStringUtil;
 
 public class SktForestGenerator extends BasicGenerator {
@@ -63,7 +65,7 @@ public class SktForestGenerator extends BasicGenerator {
 		for (ASTNode stmt_root : stmt_roots) {
 			SktTreeGenerator stg = null;
 			try {
-				stg = new SktTreeGenerator(icu.getBuffer().getContents());
+				stg = new SktTreeGenerator(icu.getBuffer().getContents(), cu.getJavaElement());
 			} catch (JavaModelException e) {
 				e.printStackTrace();
 			}
@@ -94,6 +96,7 @@ public class SktForestGenerator extends BasicGenerator {
 class SktTreeGenerator extends ASTVisitor {
 	
 	String icu_buffer = null;
+	IJavaElement jele = null;
 	
 	ASTNode t_root = null;
 	Map<ASTNode, ASTNode> parent_record = new HashMap<ASTNode, ASTNode>();
@@ -110,8 +113,9 @@ class SktTreeGenerator extends ASTVisitor {
 //		});
 //	}
 	
-	public SktTreeGenerator(String icu_buffer) {
+	public SktTreeGenerator(String icu_buffer, IJavaElement jele) {
 		this.icu_buffer = icu_buffer;
+		this.jele = jele;
 	}
 	
 	@Override
@@ -146,7 +150,7 @@ class SktTreeGenerator extends ASTVisitor {
 //			AnonymousClassDeclaration acd = (AnonymousClassDeclaration) node;
 //			System.err.println("AnonymousClassDeclaration:" + acd);
 //		}
-		if ((node instanceof Statement && !(node instanceof Block)) || node instanceof MethodDeclaration) {
+		if ((node instanceof Statement && !(node instanceof Block)) || node instanceof BodyDeclaration) {
 			// (node instanceof Block) || 
 			if ((t_root != node)) {
 				ctn = false;
@@ -188,7 +192,7 @@ class SktTreeGenerator extends ASTVisitor {
 							 * mode is 0: remove. 
 							 * mode is 1: replace. 
 							 */
-							if ((c instanceof Statement && !(c instanceof Block)) || c instanceof MethodDeclaration) {
+							if ((c instanceof Statement && !(c instanceof Block)) || c instanceof BodyDeclaration) {
 								holder = "";
 							} else {
 								holder = GetHolder(c);
@@ -246,7 +250,7 @@ class SktTreeGenerator extends ASTVisitor {
 				if (rp_tn != null) {
 					sib_index = rp_tn.GetChildren().size();
 				} else {
-					Assert.isTrue(node == t_root);
+					Assert.isTrue(node == t_root, "Wrong Java Element:" + jele.getElementName() + "#node:" + node + "#type of node:" + node.getClass() + "#r_parent:" + r_parent.toString() + "#r_parent childs:" + PrintUtil.PrintListToElementClassString(JDTSearchForChildrenOfASTNode.GetChildren(r_parent), "types of childs of r_parent") + "#Java Element Details:" + jele.toString());
 				}
 				
 				boolean real_create = true;
@@ -292,11 +296,15 @@ class SktTreeGenerator extends ASTVisitor {
 	public void SetUpSelfSkipZeroChildParentNode(ASTNode node, ArrayList<ASTNode> children) {
 		ASTNode c0 = children.get(0);
 //		System.err.println("pass through:" + c0.getClass());
-		ASTNode r_parent = parent_record.get(node);
-		if (r_parent == null) {
-			r_parent = node.getParent();
+		if (t_root == node) {
+			t_root = c0;
+		} else {
+			ASTNode r_parent = parent_record.get(node);
+			if (r_parent == null) {
+				r_parent = node.getParent();
+			}
+			parent_record.put(c0, r_parent);
 		}
-		parent_record.put(c0, r_parent);
 	}
 	
 }

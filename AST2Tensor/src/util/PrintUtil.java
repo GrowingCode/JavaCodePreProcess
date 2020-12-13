@@ -68,6 +68,17 @@ public class PrintUtil {
 		}
 		return sb.toString();
 	}
+
+	public static <K> String PrintListToElementClassString(List<K> list, String extra_info) {
+		if (list == null) {
+			return "null";
+		}
+		StringBuilder sb = new StringBuilder(extra_info + ":");
+		for (K k : list) {
+			sb.append(k.getClass() + "$");
+		}
+		return sb.toString();
+	}
 	
 	public static <S, K> void PrintThreeLists(List<S> list0, List<K> list1, List<K> list2, String extra_info, int one_ele_length) {
 		System.out.println("===== two lists " + extra_info + " print begin =====");
