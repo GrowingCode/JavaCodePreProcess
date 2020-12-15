@@ -1,6 +1,8 @@
 package statistic.id;
 
-import java.util.TreeMap;
+import org.eclipse.core.runtime.Assert;
+
+import statistic.id.util.DCapacityMap;
 
 public class TokenRecorder {
 
@@ -21,13 +23,18 @@ public class TokenRecorder {
 
 //	private TreeMap<String, Boolean> ast_type_is_leaf = new TreeMap<String, Boolean>();
 
-	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
-	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
+//	TreeMap<String, Integer> hit_train = new TreeMap<String, Integer>();
+//	TreeMap<String, Integer> not_hit_train = new TreeMap<String, Integer>();
+	
+	DCapacityMap<String, Integer> hit_train = null;
+	DCapacityMap<String, Integer> not_hit_train = null;
 	
 //	TreeMap<String, String> hit_train_parent_type_content = new TreeMap<String, String>();
 //	TreeMap<String, String> not_hit_train_parent_type = new TreeMap<String, String>();
 
-	public TokenRecorder() {
+	public TokenRecorder(int capacity) {
+		hit_train = new DCapacityMap<String, Integer>(capacity);
+		not_hit_train = new DCapacityMap<String, Integer>(capacity);
 		for (String r_w : IDManager.reserved_words) {
 //			"null", 
 			TokenHitInTrainSet(r_w, Integer.MAX_VALUE/2);
@@ -47,28 +54,30 @@ public class TokenRecorder {
 //		type_content = PreProcessContentHelper.PreProcessTypeContent(type_content);
 //		hit_train.add(type_content);
 //		System.out.println("hit_train type_content:" + type_content);
-		Integer h_count = hit_train.get(type_content);
+		Integer h_count = hit_train.GetValueBasedOnKey(type_content);
 		if (h_count == null) {
 			h_count = 0;
 		}
 		h_count += count;
-		Integer val = not_hit_train.remove(type_content);
-		if (val != null) {
+		Integer val = not_hit_train.RemoveKey(type_content);
+		Assert.isTrue(val != null);
+//		if (val != null) {
 //			h_count += val;
-		}
-		hit_train.put(type_content, h_count);
+//		}
+		hit_train.PutKeyValue(type_content, h_count);
+//		hit_train.put(type_content, h_count);
 //		hit_train_parent_type_content.put(type_content, parent_type_content);
 	}
 
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {
 //		System.out.println("not_hit_train type_content:" + type_content);
-		if (!hit_train.containsKey(type_content)) {
-			Integer nh_count = not_hit_train.get(type_content);
+		if (!hit_train.ContainsKey(type_content)) {
+			Integer nh_count = not_hit_train.GetValueBasedOnKey(type_content);
 			if (nh_count == null) {
 				nh_count = 0;
 			}
 			nh_count += count;
-			not_hit_train.put(type_content, nh_count);
+			not_hit_train.PutKeyValue(type_content, nh_count);
 		}
 	}
 

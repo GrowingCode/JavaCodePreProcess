@@ -101,12 +101,12 @@ public class Application implements IApplication {
 		IDTools id_tool = null;
 		{
 			BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
-			TokenRecorder tr = new TokenRecorder();
+			TokenRecorder tr = new TokenRecorder(MetaOfApp.MaximumTokenCapacity);
 //			TokenRecorder sr = new TokenRecorder();
-			TokenRecorder one_struct_r = new TokenRecorder();
-			TokenRecorder pe_struct_r = new TokenRecorder();
-			TokenRecorder e_struct_r = new TokenRecorder();
-			TokenRecorder s_t_r = new TokenRecorder();
+			TokenRecorder one_struct_r = new TokenRecorder(MetaOfApp.MaximumSkeletonTokenCapacity);
+			TokenRecorder pe_struct_r = new TokenRecorder(MetaOfApp.MaximumSkeletonTokenCapacity);
+			TokenRecorder e_struct_r = new TokenRecorder(MetaOfApp.MaximumSkeletonTokenCapacity);
+			TokenRecorder s_t_r = new TokenRecorder(MetaOfApp.MaximumTokenCapacity);
 			GrammarRecorder gr = new GrammarRecorder();
 			APIRecorder ar = new APIRecorder();
 			ChildrenNumCounter cnc = new ChildrenNumCounter();

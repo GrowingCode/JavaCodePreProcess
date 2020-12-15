@@ -80,10 +80,16 @@ public class MetaOfApp {
 	
 	public static boolean TrainValidTestFoldSeparationSpecified = true;
 	
+	public final static int MaximumTokenCapacity = 50000;
+	public final static int MaximumSkeletonTokenCapacity = 25000;
+	
+	public final static int MinimumNotUnkAppearTime = 2;
+	public final static int MinimumSkeletonNotUnkAppearTime = 1;
+	
 	public static boolean OutOfScopeReplacedByUnk = true;
-	public final static int NumberOfSkeletonUnk = 2;
+	public final static int NumberOfSkeletonUnk = 5;
 	public final static int MinimumNumberOfSkeletonVocabulary = 20;
-	public final static int NumberOfUnk = 1000;
+	public final static int NumberOfUnk = 50;
 	public final static int MinimumNumberOfVocabulary = 50;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	

@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -23,6 +25,7 @@ import bpe.BPEHandledResult;
 import bpe.BPEWordsUtil;
 import main.MetaOfApp;
 import statistic.IDTools;
+import statistic.id.util.DCapacityMap;
 import util.FileUtil;
 import util.MapUtil;
 import util.PrintUtil;
@@ -146,16 +149,24 @@ public class IDManager {
 //		}
 		if (MetaOfApp.GenerateSkeletonToken) {
 			Regist(each_skeleton_id_map, reserved_words);
-			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train, id_tool.e_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
+//			id_tool.e_struct_r.not_hit_train.GetOriginMap(), 
+			TrimUtil(id_tool.e_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
 			
+//			id_tool.pe_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(pe_skeleton_id_map, reserved_words);
-			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train, id_tool.pe_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
+			TrimUtil(id_tool.pe_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
 			
+//			id_tool.one_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(skeleton_id_map, reserved_words);
-			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train, id_tool.one_struct_r.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
+			TrimUtil(id_tool.one_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 			
+//			id_tool.s_tr.not_hit_train.GetOriginMap(), 
 			Regist(skt_token_id_map, reserved_words);
-			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train, id_tool.s_tr.not_hit_train, MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
+			TrimUtil(id_tool.s_tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
+			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -175,7 +186,9 @@ public class IDManager {
 //		} else 
 		{
 			Regist(token_id_map, reserved_words);
-			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train, id_tool.tr.not_hit_train, MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
+			TrimUtil(id_tool.tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
+//			id_tool.tr.not_hit_train.GetOriginMap(), 
+			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
 //			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
 //					MapUtil.SortMapByValue(id_tool.tr.hit_train));
 //			Collections.reverse(tk_ht);
@@ -255,7 +268,15 @@ public class IDManager {
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
 	}
 	
-	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, Map<String, Integer> not_hit, int unk_num, int minimum_num, String desc) {
+	private static void TrimUtil(DCapacityMap<String, Integer> dcm, Integer trim_threshold_inclusive) {
+		IntStream int_stream = IntStream.rangeClosed(0, trim_threshold_inclusive);
+		Stream<Integer> integer_stream = int_stream.boxed();
+		Integer[] trim_vs = (Integer[]) integer_stream.toArray();
+		dcm.RemoveValueMatchedKeys(trim_vs);
+	}
+	
+//	Map<String, Integer> not_hit, 
+	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, int unk_num, int minimum_num, String desc) {
 		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(hit));
 		Collections.reverse(sk_ht);
@@ -269,10 +290,10 @@ public class IDManager {
 		}
 		PrintUtil.PrintPartOfEntryList(sk_ht, hit_num, id_map.size(), "SetUnk" + desc,
 				desc, "count");
-		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
-				MapUtil.SortMapByValue(not_hit));
-		Collections.reverse(sk_nht);
-		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
+//		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
+//				MapUtil.SortMapByValue(not_hit));
+//		Collections.reverse(sk_nht);
+//		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
 		return hit_num;
 	}
 
@@ -525,9 +546,9 @@ public class IDManager {
 		while (ati_itr.hasNext()) {
 			Integer ii = ati_itr.next();
 			String tk = ati_out.get(ii);
-			boolean is_hit = id_tool.tr.hit_train.containsKey(tk);
+			boolean is_hit = id_tool.tr.hit_train.ContainsKey(tk);
 			if (!is_hit) {
-				Assert.isTrue(id_tool.tr.not_hit_train.containsKey(tk));
+				Assert.isTrue(id_tool.tr.not_hit_train.ContainsKey(tk));
 			}
 			Assert.isTrue(ii == id_is_hit.size() && index == ii);
 			id_is_hit.add(is_hit ? 1 : 0);
@@ -845,14 +866,14 @@ public class IDManager {
 
 	private void GenerateAndSaveBPESubWordSequenceInCascadeForm(String dir) {
 //		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
-
-		TreeMap<String, Integer> ht = id_tool.tr.hit_train;
-		Set<String> ht_keys = ht.keySet();
+		
+		DCapacityMap<String, Integer> ht = id_tool.tr.hit_train;
+		Set<String> ht_keys = ht.GetKeys();
 		Set<String> inserted_ht_keys = BPEWordsUtil.InsertSpaceToTokens(ht_keys);
 		BPEHandledResult hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_ht_keys);
-
-		TreeMap<String, Integer> nht = id_tool.tr.not_hit_train;
-		Set<String> nht_keys = nht.keySet();
+		
+		DCapacityMap<String, Integer> nht = id_tool.tr.not_hit_train;
+		Set<String> nht_keys = nht.GetKeys();
 		Set<String> inserted_nht_keys = BPEWordsUtil.InsertSpaceToTokens(nht_keys);
 		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
 
@@ -914,7 +935,7 @@ public class IDManager {
 			Assert.isTrue(origin_after.get(token) != null, "token:" + token);
 			ArrayList<String> subwords = new ArrayList<String>(Arrays.asList(origin_after.get(token).split(" ")));
 			int subwords_size = subwords.size();
-			if (id_tool.tr.hit_train.containsKey(ori_token)) {
+			if (id_tool.tr.hit_train.ContainsKey(ori_token)) {
 ////				in_hit_total_subword_num += subwords_size;
 				in_hit_sub_words.addAll(subwords);
 ////				if (in_hit_max_subword_num_in_one_token < subwords_size) {
