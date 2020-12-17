@@ -3,19 +3,20 @@ package statistic.id;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.gson.Gson;
 
 import bpe.BPEWordsUtil;
+import main.MetaOfApp;
+import statistic.id.util.DCapacityMap;
 import util.FileUtil;
 
 public class BPEMergeRecorder {
 	
 	List<String> merges = new LinkedList<String>();
 	
-	private Map<String, Integer> token_times = new TreeMap<String, Integer>();
+	private DCapacityMap<String, Integer> token_times = new DCapacityMap<String, Integer>(MetaOfApp.MaximumTokenCapacity);
 	
 	public BPEMergeRecorder() {
 	}
@@ -27,19 +28,22 @@ public class BPEMergeRecorder {
 	}
 	
 	public void EncounterToken(String token, int encounter_time) {
-		Integer tt = token_times.get(token);
+		Integer tt = token_times.GetValueBasedOnKey(token);
 		if (tt == null) {
 			tt = 0;
 		}
 		tt += encounter_time;
-		token_times.put(token, tt);
+		token_times.PutKeyValue(token, tt);
 	}
 	
 	public void GenerateBPEMerges(int merge_num) {
 //		PrintUtil.PrintMap(token_times, "token_times");
 //		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 //		PrintUtil.PrintMap(sub_words, "sub_words");
-		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(token_times);// sub_words
+		token_times.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
+		
+		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(token_times.GetOriginMap());// sub_words
+		
 //		PrintUtil.PrintMap(n_vob, "n_vob");
 		List<String> mgs = BPEWordsUtil.GenerateBPEMerges(n_vob, merge_num);
 //		PrintUtil.PrintList(mgs, "mgs");
@@ -52,7 +56,7 @@ public class BPEMergeRecorder {
 //		}
 //		System.out.println("==== end printing vocabulary ====");
 		merges.clear();
-		token_times.clear();
+		token_times.Clear();
 		merges.addAll(mgs);
 	}
 	

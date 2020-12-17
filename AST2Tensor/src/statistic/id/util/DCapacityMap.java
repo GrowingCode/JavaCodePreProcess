@@ -43,7 +43,7 @@ public class DCapacityMap<K, V> {
 	
 	public V RemoveKey(K k) {
 		V v = kv.remove(k);
-		Assert.isTrue(v != null);
+		Assert.isTrue(v != null, "Inexisted kv, k:" + k +"#v:" + v);
 		HashSet<K> set_k = vk.get(v);
 		Assert.isTrue(set_k != null);
 		set_k.remove(k);
@@ -51,6 +51,28 @@ public class DCapacityMap<K, V> {
 			vk.remove(v);
 		}
 		return v;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void TrimBasedOnValueInNaturalOrder(V trim_threshold_inclusive) {
+		Set<V> vs = vk.keySet();
+		for (V v : vs) {
+			if (((Comparable<V>)v).compareTo(trim_threshold_inclusive) <= 0) {
+				HashSet<K> set_k = vk.remove(v);
+				if (set_k != null) {
+					for (K k : set_k) {
+						V ov = kv.remove(k);
+						Assert.isTrue(ov.equals(v));
+					}
+				}
+			} else {
+				break;
+			}
+		}
+//		IntStream int_stream = IntStream.rangeClosed(0, trim_threshold_inclusive);
+//		Stream<Integer> integer_stream = int_stream.boxed();
+//		Integer[] trim_vs = integer_stream.toArray(Integer[]::new);
+//		RemoveValueMatchedKeys(trim_vs);
 	}
 	
 	public boolean ContainsKey(K k) {
@@ -69,17 +91,17 @@ public class DCapacityMap<K, V> {
 		return kv;
 	}
 	
-	public void RemoveValueMatchedKeys(V[] vs) {
-		for (V v : vs) {
-			HashSet<K> set_k = vk.remove(v);
-			if (set_k != null) {
-				for (K k : set_k) {
-					V ov = kv.remove(k);
-					Assert.isTrue(ov.equals(v));
-				}
-			}
-		}
-	}
+//	public void RemoveValueMatchedKeys(V[] vs) {
+//		for (V v : vs) {
+//			HashSet<K> set_k = vk.remove(v);
+//			if (set_k != null) {
+//				for (K k : set_k) {
+//					V ov = kv.remove(k);
+//					Assert.isTrue(ov.equals(v));
+//				}
+//			}
+//		}
+//	}
 	
 	private void RemoveOneKeyBasedOnValueNaturalOrder() {
 		Set<V> vs = vk.keySet();
@@ -93,6 +115,11 @@ public class DCapacityMap<K, V> {
 			vk.remove(nt_v);
 		}
 		kv.remove(fk);
+	}
+
+	public void Clear() {
+		kv.clear();
+		vk.clear();
 	}
 	
 }

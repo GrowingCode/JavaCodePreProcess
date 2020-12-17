@@ -1,7 +1,5 @@
 package statistic.id;
 
-import org.eclipse.core.runtime.Assert;
-
 import statistic.id.util.DCapacityMap;
 
 public class TokenRecorder {
@@ -59,8 +57,13 @@ public class TokenRecorder {
 			h_count = 0;
 		}
 		h_count += count;
-		Integer val = not_hit_train.RemoveKey(type_content);
-		Assert.isTrue(val != null);
+		
+//		Integer val = ;
+		if (not_hit_train.ContainsKey(type_content)) {
+			not_hit_train.RemoveKey(type_content);
+		}
+//		Assert.isTrue(val != null);
+		
 //		if (val != null) {
 //			h_count += val;
 //		}

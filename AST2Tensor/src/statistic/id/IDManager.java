@@ -14,8 +14,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -149,23 +147,27 @@ public class IDManager {
 //		}
 		if (MetaOfApp.GenerateSkeletonToken) {
 			Regist(each_skeleton_id_map, reserved_words);
-//			id_tool.e_struct_r.not_hit_train.GetOriginMap(), 
-			TrimUtil(id_tool.e_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			id_tool.e_struct_r.not_hit_train.GetOriginMap(),
+			id_tool.e_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			TrimUtil(id_tool.e_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
 			
 //			id_tool.pe_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(pe_skeleton_id_map, reserved_words);
-			TrimUtil(id_tool.pe_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+			id_tool.pe_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			TrimUtil(id_tool.pe_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
 			
 //			id_tool.one_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(skeleton_id_map, reserved_words);
-			TrimUtil(id_tool.one_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+			id_tool.one_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			TrimUtil(id_tool.one_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 			
 //			id_tool.s_tr.not_hit_train.GetOriginMap(), 
 			Regist(skt_token_id_map, reserved_words);
-			TrimUtil(id_tool.s_tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
+			id_tool.s_tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
+//			TrimUtil(id_tool.s_tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
 			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
@@ -186,7 +188,8 @@ public class IDManager {
 //		} else 
 		{
 			Regist(token_id_map, reserved_words);
-			TrimUtil(id_tool.tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
+			id_tool.tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
+//			TrimUtil(id_tool.tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
 //			id_tool.tr.not_hit_train.GetOriginMap(), 
 			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
 //			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
@@ -232,11 +235,12 @@ public class IDManager {
 				TreeSet<Integer> children_ids = new TreeSet<Integer>();
 				grammar_id_token_id_map.put(g_id, children_ids);
 				for (String child : children) {
-					int t_id = token_id_map.get(child);
-					int r_id = t_id;
-					if (t_id >= token_hit_num) {
-						r_id = token_id_map.get(Unk);
-					}
+					int r_id = GetTypeContentID(child);
+//					int t_id = token_id_map.get(child);
+//					int r_id = t_id;
+//					if (t_id >= token_hit_num) {
+//						r_id = token_id_map.get(Unk);
+//					}
 					children_ids.add(r_id);
 				}
 			}
@@ -268,19 +272,11 @@ public class IDManager {
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
 	}
 	
-	private static void TrimUtil(DCapacityMap<String, Integer> dcm, Integer trim_threshold_inclusive) {
-		IntStream int_stream = IntStream.rangeClosed(0, trim_threshold_inclusive);
-		Stream<Integer> integer_stream = int_stream.boxed();
-		Integer[] trim_vs = (Integer[]) integer_stream.toArray();
-		dcm.RemoveValueMatchedKeys(trim_vs);
-	}
-	
 //	Map<String, Integer> not_hit, 
 	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, int unk_num, int minimum_num, String desc) {
 		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(hit));
 		Collections.reverse(sk_ht);
-		Regist(id_map, MapUtil.EntryListToKeyList(sk_ht));
 		int hit_num = id_map.size() - unk_num;
 		if (hit_num < minimum_num) {
 			hit_num = minimum_num;
@@ -288,6 +284,10 @@ public class IDManager {
 		if (hit_num > id_map.size()) {
 			hit_num = id_map.size();
 		}
+		List<Entry<String, Integer>> r_skt_ht = sk_ht.subList(0, hit_num);
+		
+		Regist(id_map, MapUtil.EntryListToKeyList(r_skt_ht));
+		
 		PrintUtil.PrintPartOfEntryList(sk_ht, hit_num, id_map.size(), "SetUnk" + desc,
 				desc, "count");
 //		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
@@ -411,8 +411,8 @@ public class IDManager {
 	
 	public int GetEachSkeletonID(String skeleton) {
 		Integer id = each_skeleton_id_map.get(skeleton);
-		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
-		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= each_skeleton_hit_num) {
+//		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
+		if (id == null || id >= each_skeleton_hit_num) {// MetaOfApp.OutOfScopeReplacedByUnk && 
 			id = each_skeleton_id_map.get(Unk);
 		}
 //		if (id == null) {
@@ -424,8 +424,8 @@ public class IDManager {
 	
 	public int GetPESkeletonID(String skeleton) {
 		Integer id = pe_skeleton_id_map.get(skeleton);
-		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
-		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= pe_skeleton_hit_num) {
+//		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
+		if (id == null || id >= pe_skeleton_hit_num) {// MetaOfApp.OutOfScopeReplacedByUnk && 
 			id = pe_skeleton_id_map.get(Unk);
 		}
 //		if (id == null) {
@@ -437,8 +437,8 @@ public class IDManager {
 
 	public int GetSkeletonID(String skeleton) {
 		Integer id = skeleton_id_map.get(skeleton);
-		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
-		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= skeleton_hit_num) {
+//		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
+		if (id == null || id >= skeleton_hit_num) {// MetaOfApp.OutOfScopeReplacedByUnk && 
 			id = skeleton_id_map.get(Unk);
 		}
 //		if (id == null) {
@@ -450,8 +450,8 @@ public class IDManager {
 	
 	public int GetSkeletonTypeContentID(String type_content) {
 		Integer id = skt_token_id_map.get(type_content);
-		Assert.isTrue(id != null, "unseen type_content:" + type_content);
-		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= skt_token_hit_num) {
+//		Assert.isTrue(id != null, "unseen type_content:" + type_content);
+		if (id == null || id >= skt_token_hit_num) {// MetaOfApp.OutOfScopeReplacedByUnk && 
 			id = skt_token_id_map.get(Unk);
 		}
 		return id;
@@ -465,8 +465,8 @@ public class IDManager {
 
 	public int GetTypeContentID(String type_content) {
 		Integer id = token_id_map.get(type_content);
-		Assert.isTrue(id != null, "unseen type_content:" + type_content);
-		if (MetaOfApp.OutOfScopeReplacedByUnk && id >= token_hit_num) {
+//		Assert.isTrue(id != null, "unseen type_content:" + type_content);
+		if (id == null || id >= token_hit_num) {// MetaOfApp.OutOfScopeReplacedByUnk && 
 //			System.err.println("id:"+id+"#token_hit_num:"+token_hit_num);
 			id = token_id_map.get(Unk);
 		}
@@ -872,24 +872,24 @@ public class IDManager {
 		Set<String> inserted_ht_keys = BPEWordsUtil.InsertSpaceToTokens(ht_keys);
 		BPEHandledResult hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_ht_keys);
 		
-		DCapacityMap<String, Integer> nht = id_tool.tr.not_hit_train;
-		Set<String> nht_keys = nht.GetKeys();
-		Set<String> inserted_nht_keys = BPEWordsUtil.InsertSpaceToTokens(nht_keys);
-		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
+//		DCapacityMap<String, Integer> nht = id_tool.tr.not_hit_train;
+//		Set<String> nht_keys = nht.GetKeys();
+//		Set<String> inserted_nht_keys = BPEWordsUtil.InsertSpaceToTokens(nht_keys);
+//		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
 
 		Map<String, String> origin_after = new TreeMap<String, String>();
 		PrintUtil.PrintMap(hit_res.origin_after, "hit_res.origin_after", 100);
 		origin_after.putAll(hit_res.origin_after);
-		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after", 100);
-		origin_after.putAll(not_hit_res.origin_after);
+//		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after", 100);
+//		origin_after.putAll(not_hit_res.origin_after);
 //		PrintUtil.PrintMap(origin_after, "origin_after");
 //		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
 //		ts.removeAll(id_tool.tr.hit_train.keySet());
 //		ts.removeAll(id_tool.tr.not_hit_train.keySet());
 //		PrintUtil.PrintSet(ts, "left things");
 
-		Assert.isTrue(origin_after.size() == token_id_map.size(),
-				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
+//		Assert.isTrue(origin_after.size() == token_id_map.size(),
+//				"token_id_map.size():" + token_id_map.size() + "#origin_after.size():" + origin_after.size());
 
 //		// in train
 //		Set<String> in_train_vobs = new TreeSet<String>(hit_res.vobs);
@@ -913,7 +913,7 @@ public class IDManager {
 //		int in_hit_max_subword_num_in_one_token = 0;
 //		int in_hit_token_num = 0;
 //		int not_in_hit_total_subword_num = 0;
-		Set<String> not_in_hit_sub_words = new TreeSet<String>();
+//		Set<String> not_in_hit_sub_words = new TreeSet<String>();
 //		int not_in_hit_max_subword_num_in_one_token = 0;
 //		int not_in_hit_token_num = 0;
 
@@ -946,7 +946,7 @@ public class IDManager {
 //					not_in_hit_sub_words.remove(subword);
 //				}
 			} else {
-				not_in_hit_sub_words.addAll(subwords);
+//				not_in_hit_sub_words.addAll(subwords);
 //				Assert.isTrue(id_tool.tr.not_hit_train.containsKey(ori_token));
 ////				int n_h_num = 0;
 //				for (String subword : subwords) {
@@ -989,16 +989,16 @@ public class IDManager {
 //		System.out.println("in_hit_token_num:" + in_hit_token_num);
 //		System.out.println("not_in_hit_token_num:" + not_in_hit_token_num);
 //		System.out.println("total_token_unseen_rate:" + (not_in_hit_token_num * 1.0) / ((in_hit_token_num + not_in_hit_token_num)*1.0));
-		not_in_hit_sub_words.removeAll(in_hit_sub_words);
+//		not_in_hit_sub_words.removeAll(in_hit_sub_words);
 		int in_hit_total_subword_num = in_hit_sub_words.size();
-		int not_in_hit_total_subword_num = not_in_hit_sub_words.size();
+//		int not_in_hit_total_subword_num = not_in_hit_sub_words.size();
 		System.out.println("in_hit_total_subword_num:" + in_hit_total_subword_num);
 //		System.out.println("in_hit_average_subword_num_in_one_token:"
 //				+ ((in_hit_total_subword_num * 1.0) / (in_hit_token_num * 1.0)));
 //		System.out.println("in_hit_max_subword_num_in_one_token:" + in_hit_max_subword_num_in_one_token);
-		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
-		System.out.println("total_subword_unseen_rate:"
-				+ (not_in_hit_total_subword_num * 1.0) / ((in_hit_total_subword_num) * 1.0));
+//		System.out.println("not_in_hit_total_subword_num:" + not_in_hit_total_subword_num);
+//		System.out.println("total_subword_unseen_rate:"
+//				+ (not_in_hit_total_subword_num * 1.0) / ((in_hit_total_subword_num) * 1.0));
 //		System.out.println("not_in_hit_average_subword_num_in_one_token:"
 //				+ ((not_in_hit_total_subword_num * 1.0) / (not_in_hit_token_num * 1.0)));
 //		System.out.println("not_in_hit_max_subword_num_in_one_token:" + not_in_hit_max_subword_num_in_one_token);
@@ -1392,15 +1392,16 @@ public class IDManager {
 //	}
 
 	public String WordVocabularyInfo() {
-		return "Summary -- " + "#Vocabulary_Word_Size:" + token_hit_num + "#OutOfVocabulary_Word_Size:"
-				+ (token_id_map.size() - token_hit_num) + "#Unseen_Rate:"
-				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0)
+		return "Summary -- " + "#Vocabulary_Word_Size:" + token_hit_num
+//				+ "#OutOfVocabulary_Word_Size:"
+//				+ (token_id_map.size() - token_hit_num) + "#Unseen_Rate:"
+//				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0)
 				+ "#Word_Preset_Unk_Num:" + MetaOfApp.NumberOfUnk
 //				+ "#Word_Hit_Num:" + id_tool.tr.hit_train.size()
 //				+ "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size()
 				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
-				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
-				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0)
+//				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
+//				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0)
 //				+ "#pair_encoded_skeleton_hit_num:" + pair_encoded_skeleton_hit_num
 				+ "#Skeleton_Preset_Unk_Num:" + MetaOfApp.NumberOfSkeletonUnk
 //				+ "#Skeleton_Raw_Hit_Train_Num:" + id_tool.one_struct_r.hit_train.size()
