@@ -8,10 +8,6 @@ import org.eclipse.core.runtime.Assert;
 
 public class RepetitionUtil {
 	
-	public RepetitionUtil() {
-		
-	}
-	
 	public static ArrayList<Integer> GenerateRepetitionRelative(ArrayList<Integer> stmt_token_variable_info) {
 		Map<Integer, Integer> latest_index = new TreeMap<Integer, Integer>();
 		int i_len = stmt_token_variable_info.size();

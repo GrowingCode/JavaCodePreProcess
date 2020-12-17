@@ -98,6 +98,21 @@ public class Tree implements Comparable<Tree> {
 		Assert.isTrue(tf.skt_one_struct.size() > 0);
 		return tf;
 	}
+	
+	public void Accept(TreeVisitor tv) {
+		RecursiveAccept(tv, root);
+	}
+	
+	private void RecursiveAccept(TreeVisitor tv, TreeNode t_r) {
+		boolean ctn = tv.PreVisit(t_r);
+		if (ctn) {
+			ArrayList<TreeNode> childs = t_r.GetChildren();
+			for (TreeNode child : childs) {
+				RecursiveAccept(tv, child);
+			}
+		}
+		tv.PostVisit(t_r);
+	}
 
 //	public TreeFlatten ReFlattenTree(TreeMap<String, ArrayList<String>> token_composes) {
 //		tf = new TreeFlatten();

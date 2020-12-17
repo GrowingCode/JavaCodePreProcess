@@ -80,6 +80,10 @@ public class MetaOfApp {
 	
 	public static boolean TrainValidTestFoldSeparationSpecified = true;
 	
+//	public final static boolean FilterFairly = true;
+	public final static double FilterMinimumScore = 0.0;
+	public final static double FilterRate = 0.2;
+	
 	public final static int MaximumTokenCapacity = 50000;
 	public final static int MaximumSkeletonTokenCapacity = 25000;
 	

@@ -64,7 +64,7 @@ public class StatementSkeletonTensor extends Tensor {
 		for (int i = 0; i < info.size(); i++) {
 			int leaf_id = -1;
 			if (is_var.get(i) > 0) {
-				leaf_id = TokenIndexUtil.AssignID(token_index_record, info.get(i) + "", t_idx);
+				leaf_id = TokenIndexUtil.AssignID(token_index_record, info_str.get(i), t_idx);
 			}
 			leaf_info.add(leaf_id);
 		}
