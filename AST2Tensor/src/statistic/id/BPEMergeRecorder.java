@@ -40,7 +40,9 @@ public class BPEMergeRecorder {
 //		PrintUtil.PrintMap(token_times, "token_times");
 //		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 //		PrintUtil.PrintMap(sub_words, "sub_words");
+//		System.out.println("BPEMerges pre token_times.GetSize():" + token_times.GetSize());
 		token_times.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
+//		System.out.println("BPEMerges post token_times.GetSize():" + token_times.GetSize());
 		
 		TreeMap<String, Integer> n_vob = BPEWordsUtil.InsertSpaceToTokens(token_times.GetOriginMap());// sub_words
 		

@@ -274,17 +274,20 @@ public class IDManager {
 	
 //	Map<String, Integer> not_hit, 
 	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, int unk_num, int minimum_num, String desc) {
+		int pre_size = id_map.size();
 		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(hit));
 		Collections.reverse(sk_ht);
-		int hit_num = id_map.size() - unk_num;
+		int hit_num = sk_ht.size() - unk_num;
 		if (hit_num < minimum_num) {
 			hit_num = minimum_num;
 		}
-		if (hit_num > id_map.size()) {
-			hit_num = id_map.size();
+		if (hit_num > sk_ht.size()) {
+			hit_num = sk_ht.size();
 		}
 		List<Entry<String, Integer>> r_skt_ht = sk_ht.subList(0, hit_num);
+		
+//		System.out.println(desc + " hit_num:" + hit_num + "#id_map.size():" + id_map.size());
 		
 		Regist(id_map, MapUtil.EntryListToKeyList(r_skt_ht));
 		
@@ -294,7 +297,9 @@ public class IDManager {
 //				MapUtil.SortMapByValue(not_hit));
 //		Collections.reverse(sk_nht);
 //		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
-		return hit_num;
+		int r_hit_num = id_map.size();
+		Assert.isTrue(hit_num <= r_hit_num && r_hit_num <= pre_size + hit_num, "r_hit_num:" + r_hit_num +"#pre_size + hit_num:" + (pre_size + hit_num));
+		return r_hit_num;
 	}
 
 	private static void Regist(Map<String, Integer> reg_map, List<String> ele_set) {

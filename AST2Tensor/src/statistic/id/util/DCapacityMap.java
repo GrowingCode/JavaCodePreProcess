@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -55,9 +56,13 @@ public class DCapacityMap<K, V> {
 
 	@SuppressWarnings("unchecked")
 	public void TrimBasedOnValueInNaturalOrder(V trim_threshold_inclusive) {
-		Set<V> vs = vk.keySet();
+//		System.out.println("pre-trim kv.size():" + kv.size());
+		Set<V> vs = new TreeSet<V>(vk.keySet());
+//		PrintUtil.PrintSet(vs, "trim_threshold_inclusive:" + trim_threshold_inclusive + "#");
 		for (V v : vs) {
-			if (((Comparable<V>)v).compareTo(trim_threshold_inclusive) <= 0) {
+			int cmp = ((Comparable<V>)v).compareTo(trim_threshold_inclusive);
+//			System.out.println("cmp:" + cmp);
+			if (cmp <= 0) {
 				HashSet<K> set_k = vk.remove(v);
 				if (set_k != null) {
 					for (K k : set_k) {
@@ -73,6 +78,11 @@ public class DCapacityMap<K, V> {
 //		Stream<Integer> integer_stream = int_stream.boxed();
 //		Integer[] trim_vs = integer_stream.toArray(Integer[]::new);
 //		RemoveValueMatchedKeys(trim_vs);
+//		System.out.println("post-trim kv.size():" + kv.size());
+	}
+	
+	public int GetSize() {
+		return kv.size();
 	}
 	
 	public boolean ContainsKey(K k) {
