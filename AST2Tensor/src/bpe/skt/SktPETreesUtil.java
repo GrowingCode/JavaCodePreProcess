@@ -11,9 +11,11 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
+import main.MetaOfApp;
 import tree.MergedTreeNode;
 import tree.Tree;
 import tree.TreeNode;
+import unit.PairContainer;
 import util.MapUtil;
 import util.YStringUtil;
 
@@ -119,8 +121,9 @@ public class SktPETreesUtil {
 //			num_merges = Integer.MAX_VALUE;
 //		}
 //		System.out.println("num_merges:" + num_merges);
-		Assert.isTrue(num_merges > 0);
-		for (int i=0;i<num_merges;i++) {
+//		Assert.isTrue(num_merges > 0);
+//		for (int i=0;i<num_merges;i++) {
+		while (true) {
 			Map<TreeNodeTwoMerge, Integer> pairs = GetStats(vocab);
 //			System.out.println("pairs.size():" + pairs.size());
 			if (pairs.size() == 0) {
@@ -137,10 +140,13 @@ public class SktPETreesUtil {
 //				break;
 //			}
 //			MapUtil.FindKeyWithMaxValue(pairs);
-			TreeNodeTwoMerge best = MapUtil.FindKeyWithMaxValue(pairs);
-			MergeVocab(best, vocab);
-			Assert.isTrue(!merges.contains(best), "already exist merge:" + best);
-			merges.add(best);
+			PairContainer<TreeNodeTwoMerge, Integer> best = MapUtil.FindKeyValuePairWithMaxValue(pairs);
+			if (best.v < MetaOfApp.MinimumThresholdOfSkeletonMerge) {
+				break;
+			}
+			MergeVocab(best.k, vocab);
+			Assert.isTrue(!merges.contains(best.k), "already exist merge:" + best);
+			merges.add(best.k);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");

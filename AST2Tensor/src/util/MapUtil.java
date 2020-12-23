@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import unit.PairContainer;
+
 public class MapUtil {
 
 	public static <K, V> TreeMap<V, K> ReverseKeyValueInMap(Map<K, V> map) {
@@ -76,8 +78,9 @@ public class MapUtil {
 		System.out.println(map.remove("A"));
 	}
 
-	public static <K, T> K FindKeyWithMaxValue(Map<K, T> pairs) {
+	public static <K, T> PairContainer<K, T> FindKeyValuePairWithMaxValue(Map<K, T> pairs) {
 		K max_k = null;
+		T max_t = null;
 		Comparable<T> max = null;
 		Set<K> ks = pairs.keySet();
 		Iterator<K> k_itr = ks.iterator();
@@ -88,15 +91,17 @@ public class MapUtil {
 			Comparable<T> cmp = (Comparable<T>) t;
 			if (max == null) {
 				max_k = k;
+				max_t = t;
 				max = cmp;
 			} else {
 				if (max.compareTo(t) < 0) {
 					max_k = k;
+					max_t = t;
 					max = cmp;
 				}
 			}
 		}
-		return max_k;
+		return new PairContainer<K, T>(max_k, max_t);
 	}
 	
 	public static <K> void CountOneKey(Map<K, Integer> m, K key, int count) {

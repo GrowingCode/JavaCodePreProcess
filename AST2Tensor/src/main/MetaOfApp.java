@@ -52,6 +52,8 @@ public class MetaOfApp {
 
 //	public final static boolean CharInCascadeForm = false;
 
+	public final static int MinimumThresholdOfMerge = 3;
+	public final static int MinimumThresholdOfSkeletonMerge = 2;
 	public final static int NumberOfMerges = 2000;
 	public final static int NumberOfSkeletonMerges = 1000;
 
