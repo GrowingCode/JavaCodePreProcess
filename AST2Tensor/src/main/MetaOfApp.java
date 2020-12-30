@@ -54,8 +54,8 @@ public class MetaOfApp {
 
 	public final static int MinimumThresholdOfMerge = 3;
 	public final static int MinimumThresholdOfSkeletonMerge = 2;
-	public final static int NumberOfMerges = 2000;
-	public final static int NumberOfSkeletonMerges = 1000;
+//	public final static int NumberOfMerges = 2000;
+//	public final static int NumberOfSkeletonMerges = 1000;
 
 //	public final static int MinimumNumberOfStatementsInAST = 10;
 	public final static int MinimumNumberOfNodesInAST = 50;
@@ -115,7 +115,7 @@ public class MetaOfApp {
 //		meta_of_ast2tensor.put("AddZeroIfNoVariable", AddZeroIfNoVariable);
 //		meta_of_ast2tensor.put("MaximumHandlingNodeNumInOneTree", MaximumHandlingNodeNumInOneTree);
 //		meta_of_ast2tensor.put("MaximumStringLength", MaximumStringLength);
-		meta_of_ast2tensor.put("NumberOfMerges", NumberOfMerges);
+//		meta_of_ast2tensor.put("NumberOfMerges", NumberOfMerges);
 		meta_of_ast2tensor.put("MinimumNumberOfNodesInAST", MinimumNumberOfNodesInAST);
 		meta_of_ast2tensor.put("MaximumNumberOfNodesInAST", MaximumNumberOfNodesInAST);
 //		meta_of_ast2tensor.put("InBPEForm", InBPEForm ? 1 : 0);

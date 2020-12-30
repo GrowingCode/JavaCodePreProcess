@@ -114,7 +114,7 @@ public class SktPETreesUtil {
 	 * @param num_merges
 	 * @return
 	 */
-	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(ArrayList<Tree> vocab, int num_merges) {
+	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(ArrayList<Tree> vocab) {// , int num_merges
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
 		Set<TreeNodeTwoMerge> merges = new TreeSet<TreeNodeTwoMerge>();
 //		if (num_merges == -1) {

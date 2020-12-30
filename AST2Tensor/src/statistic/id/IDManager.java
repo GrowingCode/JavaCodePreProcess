@@ -1122,8 +1122,8 @@ public class IDManager {
 			Assert.isTrue((token).equals(exp_tk), "token:" + token + "#expected:" + exp_tk);
 			token_subwords.put(exp_tk, sbwds);
 		}
-		System.out.println("=== unsubword token num:" + token_subwords.size() + "#number_of_merges:"
-				+ MetaOfApp.NumberOfMerges + " ===");
+		System.out.println("=== unsubword token num:" + token_subwords.size() + " ===");
+		//  + "#number_of_merges:" + MetaOfApp.NumberOfMerges 
 //		PrintUtil.PrintMap(token_subwords, "token_subwords");
 
 //		Gson gson0 = new Gson();

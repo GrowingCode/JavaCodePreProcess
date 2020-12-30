@@ -132,7 +132,7 @@ public class Application implements IApplication {
 				BPEOneProjectHandle handle = new BPEOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, id_tool, null);
 	//			System.out.println("==== BPEMerge Begin ====");
-				id_tool.bpe_mr.GenerateBPEMerges(MetaOfApp.NumberOfMerges);
+				id_tool.bpe_mr.GenerateBPEMerges();// MetaOfApp.NumberOfMerges
 	//			System.out.println("==== BPEMerge End ====");
 				id_tool.bpe_mr.SaveTo(bpe_mj);// , bpe_ttj
 				AnalysisEnvironment.DeleteAllProjects();
@@ -343,7 +343,7 @@ public class Application implements IApplication {
 					id_tool.sktpe_mr.EncounterSkeleton(t, 1);
 				}
 			}
-			id_tool.sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
+			id_tool.sktpe_mr.GenerateSktPEMerges();// MetaOfApp.NumberOfSkeletonMerges
 			id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
 //			id_tool.stf_r.Clear();
 //			AnalysisEnvironment.DeleteAllProjects();

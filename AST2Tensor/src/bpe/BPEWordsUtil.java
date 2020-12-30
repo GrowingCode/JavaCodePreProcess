@@ -52,7 +52,7 @@ public class BPEWordsUtil {
 		return new_vocab;
 	}
 	
-	public static List<String> GenerateBPEMerges(Map<String, Integer> vocab, int num_merges) {
+	public static List<String> GenerateBPEMerges(Map<String, Integer> vocab) {// , int num_merges
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
 		List<String> merges = new LinkedList<String>();
 		Map<String, Integer> vocab_r = new TreeMap<String, Integer>(vocab);
@@ -187,10 +187,10 @@ public class BPEWordsUtil {
 	    vocab.put("lower", 2);
 	    vocab.put("newest", 6);
 	    vocab.put("widest", 3);
-		int num_merges = 10;
+//		int num_merges = 10;
 		
 		TreeMap<String, Integer> n_vob = InsertSpaceToTokens(vocab);
-		List<String> merges = GenerateBPEMerges(n_vob, num_merges);
+		List<String> merges = GenerateBPEMerges(n_vob);// , num_merges
 		BPEHandledResult result = ApplyBPEMergesToTokens(merges, n_vob.keySet());
 		Set<String> vbs = result.vobs;
 //		Set<String> vbs = GenerateBEPVocabulary(n_vob, num_merges);

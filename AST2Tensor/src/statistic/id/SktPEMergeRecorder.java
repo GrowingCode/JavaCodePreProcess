@@ -41,12 +41,12 @@ public class SktPEMergeRecorder {
 		skt_times.add(skt);
 	}
 	
-	public void GenerateSktPEMerges(int merge_num) {
+	public void GenerateSktPEMerges() {// int merge_num
 //		PrintUtil.PrintMap(token_times, "token_times");
 //		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 //		PrintUtil.PrintMap(sub_words, "sub_words");
 //		PrintUtil.PrintMap(n_vob, "n_vob");
-		List<TreeNodeTwoMerge> mgs = SktPETreesUtil.GenerateSktPEMerges(skt_times, merge_num);
+		List<TreeNodeTwoMerge> mgs = SktPETreesUtil.GenerateSktPEMerges(skt_times);// , merge_num
 //		PrintUtil.PrintList(mgs, "mgs");
 //		BPEHandledResult result = ApplyBPEMergesToTokens(merges, n_vob.keySet());
 //		Set<String> vbs = result.vobs;
