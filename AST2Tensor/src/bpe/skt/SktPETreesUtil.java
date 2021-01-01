@@ -62,6 +62,15 @@ public class SktPETreesUtil {
 		}
 		return pairs;
 	}
+	
+	private static void AssertAllMerged(ArrayList<Tree> vocab) {
+		Iterator<Tree> vk_itr = vocab.iterator();
+		while (vk_itr.hasNext()) {
+			Tree vk = vk_itr.next();
+			ArrayList<TreeNode> all_nodes = vk.GetAllNodes();
+			Assert.isTrue(all_nodes.size() == 1);
+		}
+	}
 
 	private static void MergeVocab(TreeNodeTwoMerge pair, ArrayList<Tree> old_vocab) {
 //		Set<Tree> ov_set = old_vocab.keySet();
@@ -147,6 +156,11 @@ public class SktPETreesUtil {
 			MergeVocab(best.k, vocab);
 			Assert.isTrue(!merges.contains(best.k), "already exist merge:" + best);
 			merges.add(best.k);
+		}
+		
+		int pred = MetaOfApp.MinimumThresholdOfSkeletonMerge;
+		if (pred == 1) {
+			AssertAllMerged(vocab);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");
