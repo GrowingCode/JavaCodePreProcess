@@ -277,33 +277,37 @@ public class IDManager {
 		int pre_size = id_map.size();
 		ArrayList<Entry<String, Integer>> raw_sk_ht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(hit));
-//		Collections.reverse(sk_ht);
+		Collections.reverse(raw_sk_ht);
+		
 		int i=0;
 		for (;i<raw_sk_ht.size();i++) {
 			Entry<String, Integer> ent = raw_sk_ht.get(i);
-			if (ent.getValue() >= minimum_value_threshold) {
+			if (ent.getValue() < minimum_value_threshold) {
 				break;
 			}
 		}
-		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(raw_sk_ht.subList(i, raw_sk_ht.size()));
-		Collections.reverse(sk_ht);
+//		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(raw_sk_ht.subList(i, raw_sk_ht.size()));
+//		Collections.reverse(sk_ht);
 		
-		int hit_num = sk_ht.size() - unk_num;
+		int hit_num = i - unk_num;
 		if (hit_num < minimum_num) {
 			hit_num = minimum_num;
 		}
-		if (hit_num > sk_ht.size()) {
-			hit_num = sk_ht.size();
+		if (hit_num > i) {
+			hit_num = i;
 		}
-		List<Entry<String, Integer>> r_skt_ht = sk_ht.subList(0, hit_num);
 //		System.out.println(desc + " hit_num:" + hit_num + "#id_map.size():" + id_map.size());
-		Regist(id_map, MapUtil.EntryListToKeyList(r_skt_ht));
+		Regist(id_map, MapUtil.EntryListToKeyList(raw_sk_ht.subList(0, hit_num)));
 
 		int r_hit_num = id_map.size();
 		Assert.isTrue(hit_num <= r_hit_num && r_hit_num <= pre_size + hit_num, "r_hit_num:" + r_hit_num +"#pre_size + hit_num:" + (pre_size + hit_num));
 		
-		PrintUtil.PrintPartOfEntryList(sk_ht, hit_num, id_map.size(), "SetUnk" + desc,
+		if (hit_num < raw_sk_ht.size()) {
+			Regist(id_map, MapUtil.EntryListToKeyList(raw_sk_ht.subList(hit_num, raw_sk_ht.size())));
+		}
+		PrintUtil.PrintPartOfEntryList(raw_sk_ht, hit_num, raw_sk_ht.size(), "SetUnk" + desc,
 				desc, "count");
+		
 		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(not_hit));
 		Collections.reverse(sk_nht);
