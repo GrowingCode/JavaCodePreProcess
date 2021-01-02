@@ -1424,6 +1424,7 @@ public class IDManager {
 
 	public String WordVocabularyInfo() {
 		return "Summary -- " + "#Vocabulary_Word_Size:" + token_hit_num
+				+ "#All_Word_Size:" + token_id_map.size()
 //				+ "#OutOfVocabulary_Word_Size:"
 //				+ (token_id_map.size() - token_hit_num) + "#Unseen_Rate:"
 //				+ ((token_id_map.size() - token_hit_num) * 1.0) / (token_hit_num * 1.0)
@@ -1431,6 +1432,11 @@ public class IDManager {
 //				+ "#Word_Hit_Num:" + id_tool.tr.hit_train.size()
 //				+ "#Word_Not_Hit_Num:" + id_tool.tr.not_hit_train.size()
 				+ "#Vocabulary_Skeleton_Size:" + skeleton_hit_num
+				+ "#All_Skeleton_Size:" + skeleton_id_map.size()
+				+ "#Vocabulary_PESkeleton_Size:" + pe_skeleton_hit_num
+				+ "#All_PESkeleton_Size:" + pe_skeleton_id_map.size()
+				+ "#Vocabulary_EachSkeleton_Size:" + each_skeleton_hit_num
+				+ "#All_EachSkeleton_Size:" + each_skeleton_id_map.size()
 //				+ "#OutOfVocabulary_Skeleton_Size:" + (skeleton_id_map.size() - skeleton_hit_num)
 //				+ "#Unseen_Rate:" + ((skeleton_id_map.size() - skeleton_hit_num) * 1.0) / (skeleton_hit_num * 1.0)
 //				+ "#pair_encoded_skeleton_hit_num:" + pair_encoded_skeleton_hit_num
