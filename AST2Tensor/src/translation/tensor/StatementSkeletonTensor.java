@@ -84,33 +84,36 @@ public class StatementSkeletonTensor extends Tensor {
 	 * all these 4 arrays need to insert 0th element in the array
 	 */
 	
-	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, int flatten_each_valid_num, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, flatten_each_valid_num, token_str, token);
+	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, skt_exact, token_str, token);
 		skt_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, int flatten_each_valid_num, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, flatten_each_valid_num, token_str, token);
+	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, skt_exact, token_str, token);
 		skt_pe_batch_info.Merge(one_stmt);
 	}
 	
-	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, int flatten_each_valid_num, ArrayList<String> token_str, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, flatten_each_valid_num, token_str, token);
+	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
+		SktBatchTensor one_stmt = HandleSktInfo(skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, skt_exact, token_str, token);
 		skt_each_batch_info.Merge(one_stmt);
 	}
 	
-	private SktBatchTensor HandleSktInfo(IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, int skt_flatten_each_valid_num, ArrayList<String> token_str, ArrayList<Integer> token) {
+	private SktBatchTensor HandleSktInfo(IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor sbt = new SktBatchTensor(ti, false);
 		
 		sbt.origin_sequence_str.addAll(skt_str);
 		sbt.origin_sequence_str.addAll(token_str);
 		
-		sbt.origin_sequence.addAll(skt);
+		ArrayList<Integer> r_tokens = new ArrayList<Integer>();
 		for (int t : token) {
 			int h_t = t + skt_hit_num;
 			Assert.isTrue(h_t < skt_hit_num + skt_token_hit_num);
-			sbt.origin_sequence.add(h_t);
+			r_tokens.add(h_t);
 		}
+		
+		sbt.origin_sequence.addAll(skt);
+		sbt.origin_sequence.addAll(r_tokens);
 		
 		int r = 0;
 		for (int s : skt) {
@@ -170,7 +173,6 @@ public class StatementSkeletonTensor extends Tensor {
 			}
 		}
 		
-		int token_valid_num = 0;
 		for (int s : skt) {
 			assert s >= 0;
 			sbt.token_type.add(0);
@@ -178,28 +180,10 @@ public class StatementSkeletonTensor extends Tensor {
 		for (int t : token) {
 			assert t >= 0;
 			sbt.token_type.add(1);
-			token_valid_num++;
 		}
 		
-		int w = 0;
-		for (int s : skt) {
-			assert s >= 0;
-			if (w == 0) {
-				sbt.seq_part_valid_number.add(skt_flatten_each_valid_num);
-			} else {
-				sbt.seq_part_valid_number.add(0);
-			}
-			w++;
-		}
-		w = 0;
-		for (int t : token) {
-			assert t >= 0;
-			if (w == 0) {
-				sbt.seq_part_valid_number.add(token_valid_num);
-			} else {
-				sbt.seq_part_valid_number.add(0);
-			}
-		}
+		sbt.origin_sequence_exact.addAll(skt_exact);
+		sbt.origin_sequence_exact.addAll(r_tokens);
 		
 		return sbt;
 	}
@@ -282,7 +266,7 @@ class SktBatchTensor extends Tensor {
 	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
 	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
 	ArrayList<Integer> token_type = new ArrayList<Integer>();
-	ArrayList<Integer> seq_part_valid_number = new ArrayList<Integer>();
+	ArrayList<Integer> origin_sequence_exact = new ArrayList<Integer>();
 	
 	int print_fixed_len = 25;
 	
@@ -295,7 +279,7 @@ class SktBatchTensor extends Tensor {
 			this.valid_mask.add(0);
 			this.seq_part_skip.add(0);
 			this.token_type.add(-1);
-			this.seq_part_valid_number.add(0);
+			this.origin_sequence_exact.add(0);
 		}
 	}
 	
@@ -306,7 +290,7 @@ class SktBatchTensor extends Tensor {
 		valid_mask.addAll(sbt.valid_mask);
 		seq_part_skip.addAll(sbt.seq_part_skip);
 		token_type.addAll(sbt.token_type);
-		seq_part_valid_number.addAll(sbt.seq_part_valid_number);
+		origin_sequence_exact.addAll(sbt.origin_sequence_exact);
 	}
 
 	public void HandleAllInfo() {
@@ -326,30 +310,30 @@ class SktBatchTensor extends Tensor {
 				+ StringUtils.join(valid_mask.toArray(), " ") + separator
 				+ StringUtils.join(seq_part_skip.toArray(), " ") + separator
 				+ StringUtils.join(token_type.toArray(), " ") + separator
-				+ StringUtils.join(seq_part_valid_number.toArray(), " ");
+				+ StringUtils.join(origin_sequence_exact.toArray(), " ");
 		return result;
 	}
 	
 	public String toDebugString() {
 		String separator = System.getProperty("line.separator");
-		String result = StringUtil.FixedLengthString("id:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("relative_first:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("valid_mask:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("seq_part_skip:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("token_type:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("seq_part_valid_number:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_valid_number, print_fixed_len).toArray(), " ");
+		String result = StringUtil.FixedLengthString("id:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("relative_first:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("valid_mask:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
 	@Override
 	public String toOracleString() {
 		String separator = System.getProperty("line.separator");
-		String result = StringUtil.FixedLengthString("id:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_str, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("relative_first:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("valid_mask:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("seq_part_skip:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("token_type:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("seq_part_valid_number:", 25) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_valid_number, print_fixed_len).toArray(), " ");
+		String result = StringUtil.FixedLengthString("id:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_str, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("relative_first:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("valid_mask:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	

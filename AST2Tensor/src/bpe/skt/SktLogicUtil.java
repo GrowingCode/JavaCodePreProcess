@@ -292,36 +292,38 @@ public class SktLogicUtil {
 					is_var.addAll(tf.skt_token_is_var);
 					
 					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
-					
+					ArrayList<Integer> exact_skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetExactSkeletonID");
 					if (one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
 						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_one_e_struct, "").equals(PrintUtil.PrintListToString(one_to_each_str.get(tf.skt_one_struct.get(0)), "")));
 					}
 					one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
 					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
-					if (skt_one_ids.get(0) > 2) {
-						one_to_each.put(skt_one_ids.get(0), skt_each_ids);
-					}
+//					if (skt_one_ids.get(0) > 2) {
+					one_to_each.put(exact_skt_one_ids.get(0), skt_each_ids);
+//					}
+					
 					if (one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
 						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_pe_struct, "").equals(PrintUtil.PrintListToString(one_to_pe_str.get(tf.skt_one_struct.get(0)), "")));
 					}
 					one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 					ArrayList<Integer> skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID");
-					if (skt_one_ids.get(0) > 2) {
-						one_to_pe.put(skt_one_ids.get(0), skt_pe_ids);
-					}
+					ArrayList<Integer> exact_skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetExactPESkeletonID");
+//					if (skt_one_ids.get(0) > 2) {
+					one_to_pe.put(exact_skt_one_ids.get(0), skt_pe_ids);
+//					}
 					
-					int skt_each_id_valid_count = 0;
-					for (int s : skt_each_ids) {
-						if (s > 2) {
-							skt_each_id_valid_count++;
-						} else {
-						}
-					}
+//					int skt_each_id_valid_count = 0;
+//					for (int s : skt_each_ids) {
+//						if (s > 2) {
+//							skt_each_id_valid_count++;
+//						} else {
+//						}
+//					}
 					
 					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
-					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, skt_one_ids, skt_each_id_valid_count, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, skt_pe_ids, skt_each_id_valid_count, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_e_struct, skt_each_ids, skt_each_id_valid_count, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, skt_one_ids, exact_skt_one_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, skt_pe_ids, exact_skt_pe_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_e_struct, skt_each_ids, skt_each_ids, tf.skt_token, skt_token_ids);
 					
 //					one_to_each_tree_uid.put(skt_one_id, tf.skt_one_e_struct_tree_uid);
 //					one_h_count.put(skt_one_id, tf.skt_one_struct_h_count.get(0));
@@ -334,9 +336,9 @@ public class SktLogicUtil {
 						index++;
 						if (!pe_to_each_str.containsKey(pe)) {
 							pe_to_each_str.put(pe, tf.skt_pe_e_struct.get(index));
-							if (im.GetPESkeletonID(pe) > 2) {
-								pe_to_each.put(im.GetPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
-							}
+//							if (im.GetPESkeletonID(pe) > 2) {
+							pe_to_each.put(im.GetExactPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
+//							}
 						} else {
 							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), pe_to_each_str.get(pe)));
 						}

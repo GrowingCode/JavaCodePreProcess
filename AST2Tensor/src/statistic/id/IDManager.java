@@ -148,27 +148,27 @@ public class IDManager {
 		if (MetaOfApp.GenerateSkeletonToken) {
 			Regist(each_skeleton_id_map, reserved_words);
 //			id_tool.e_struct_r.not_hit_train.GetOriginMap(),
-			id_tool.e_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			id_tool.e_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.e_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
+			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.e_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
 			
 //			id_tool.pe_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(pe_skeleton_id_map, reserved_words);
-			id_tool.pe_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			id_tool.pe_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.pe_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
+			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.pe_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
 			
 //			id_tool.one_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(skeleton_id_map, reserved_words);
-			id_tool.one_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
+//			id_tool.one_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.one_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
+			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.one_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 			
 //			id_tool.s_tr.not_hit_train.GetOriginMap(), 
 			Regist(skt_token_id_map, reserved_words);
-			id_tool.s_tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
+//			id_tool.s_tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
 //			TrimUtil(id_tool.s_tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
-			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
+			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train.GetOriginMap(), MetaOfApp.MinimumNotUnkAppearTime, id_tool.s_tr.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -188,10 +188,10 @@ public class IDManager {
 //		} else 
 		{
 			Regist(token_id_map, reserved_words);
-			id_tool.tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
+//			id_tool.tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
 //			TrimUtil(id_tool.tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
 //			id_tool.tr.not_hit_train.GetOriginMap(), 
-			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
+			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train.GetOriginMap(), MetaOfApp.MinimumNotUnkAppearTime, id_tool.tr.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
 //			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
 //					MapUtil.SortMapByValue(id_tool.tr.hit_train));
 //			Collections.reverse(tk_ht);
@@ -272,12 +272,22 @@ public class IDManager {
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
 	}
 	
-//	Map<String, Integer> not_hit, 
-	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, int unk_num, int minimum_num, String desc) {
+	
+	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, int minimum_value_threshold, Map<String, Integer> not_hit, int unk_num, int minimum_num, String desc) {
 		int pre_size = id_map.size();
-		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(
+		ArrayList<Entry<String, Integer>> raw_sk_ht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(hit));
+//		Collections.reverse(sk_ht);
+		int i=0;
+		for (;i<raw_sk_ht.size();i++) {
+			Entry<String, Integer> ent = raw_sk_ht.get(i);
+			if (ent.getValue() >= minimum_value_threshold) {
+				break;
+			}
+		}
+		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(raw_sk_ht.subList(i, raw_sk_ht.size()));
 		Collections.reverse(sk_ht);
+		
 		int hit_num = sk_ht.size() - unk_num;
 		if (hit_num < minimum_num) {
 			hit_num = minimum_num;
@@ -286,19 +296,19 @@ public class IDManager {
 			hit_num = sk_ht.size();
 		}
 		List<Entry<String, Integer>> r_skt_ht = sk_ht.subList(0, hit_num);
-		
 //		System.out.println(desc + " hit_num:" + hit_num + "#id_map.size():" + id_map.size());
-		
 		Regist(id_map, MapUtil.EntryListToKeyList(r_skt_ht));
+
+		int r_hit_num = id_map.size();
+		Assert.isTrue(hit_num <= r_hit_num && r_hit_num <= pre_size + hit_num, "r_hit_num:" + r_hit_num +"#pre_size + hit_num:" + (pre_size + hit_num));
 		
 		PrintUtil.PrintPartOfEntryList(sk_ht, hit_num, id_map.size(), "SetUnk" + desc,
 				desc, "count");
-//		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
-//				MapUtil.SortMapByValue(not_hit));
-//		Collections.reverse(sk_nht);
-//		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
-		int r_hit_num = id_map.size();
-		Assert.isTrue(hit_num <= r_hit_num && r_hit_num <= pre_size + hit_num, "r_hit_num:" + r_hit_num +"#pre_size + hit_num:" + (pre_size + hit_num));
+		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
+				MapUtil.SortMapByValue(not_hit));
+		Collections.reverse(sk_nht);
+		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
+		
 		return r_hit_num;
 	}
 
@@ -450,6 +460,18 @@ public class IDManager {
 //			System.out.println("==== Unk type_content: " + type_content + " ====");
 //			return skeleton_id_map.get(Unk);
 //		}
+		return id + MetaOfApp.SkeletonIDBase;
+	}
+	
+	public int GetExactPESkeletonID(String skeleton) {
+		Integer id = pe_skeleton_id_map.get(skeleton);
+		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
+		return id + MetaOfApp.SkeletonIDBase;
+	}
+
+	public int GetExactSkeletonID(String skeleton) {
+		Integer id = skeleton_id_map.get(skeleton);
+		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
 		return id + MetaOfApp.SkeletonIDBase;
 	}
 	
