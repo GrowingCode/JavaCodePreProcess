@@ -52,8 +52,8 @@ public class MetaOfApp {
 
 //	public final static boolean CharInCascadeForm = false;
 
-	public final static int MinimumThresholdOfMerge = 3;
-	public final static int MinimumThresholdOfSkeletonMerge = 2;
+	public final static int MinimumThresholdOfMerge = 2;
+	public final static int MinimumThresholdOfSkeletonMerge = 1;
 //	public final static int NumberOfMerges = 2000;
 //	public final static int NumberOfSkeletonMerges = 1000;
 
@@ -89,13 +89,13 @@ public class MetaOfApp {
 	public final static int MaximumTokenCapacity = 50000;
 	public final static int MaximumSkeletonTokenCapacity = 25000;
 	
-	public final static int MinimumNotUnkAppearTime = 3;
-	public final static int MinimumSkeletonNotUnkAppearTime = 2;
+	public final static int MinimumNotUnkAppearTime = 2;
+	public final static int MinimumSkeletonNotUnkAppearTime = 1;
 	
 	public static boolean OutOfScopeReplacedByUnk = true;
-	public final static int NumberOfSkeletonUnk = 5;
+	public final static int NumberOfSkeletonUnk = 0;
 	public final static int MinimumNumberOfSkeletonVocabulary = 20;
-	public final static int NumberOfUnk = 50;
+	public final static int NumberOfUnk = 0;
 	public final static int MinimumNumberOfVocabulary = 50;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
