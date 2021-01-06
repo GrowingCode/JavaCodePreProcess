@@ -20,7 +20,8 @@ public class IntegerMapUtil {
 		for (Integer oe_k : oe_keys) {
 			int origin_oe_size = oe_start.size();
 			if (origin_oe_size >= 3) {
-				Assert.isTrue(origin_oe_size == oe_k);
+				Assert.isTrue(origin_oe_size <= oe_k);
+//				Assert.isTrue(origin_oe_size == oe_k, "wrong origin_oe_size:" + origin_oe_size + "#oe_k:" + oe_k);
 			}
 			for (int i=origin_oe_size;i<oe_k;i++) {
 //				oe.add(-1);

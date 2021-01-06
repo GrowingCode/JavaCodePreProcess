@@ -12,5 +12,5 @@ public class TensorTools {
 //		this.role_assigner = role_assigner;
 		this.im = im;
 	}
-	
+		
 }

@@ -21,6 +21,7 @@ import statis.trans.common.RoleAssigner;
 import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
 import statistic.id.IDManager;
+import translation.SktTensorTools;
 import translation.TensorTools;
 import translation.ast.StatementScoreGenerator;
 import translation.tensor.StatementSkeletonTensor;
@@ -33,15 +34,13 @@ import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
 import unit.PairContainer;
-import util.FileUtil;
-import util.IntegerMapUtil;
 import util.ListUtil;
 import util.MapUtil;
 import util.PrintUtil;
 import util.YStringUtil;
 
 public class SktLogicUtil {
-
+	
 	public static void CountPairEncodedSkeletons(IDTools id_tool, SkeletonForestRecorder sfr) {
 		ArrayList<Forest> fs = sfr.GetAllForests();
 		for (Forest f : fs) {
@@ -167,7 +166,7 @@ public class SktLogicUtil {
 		}
 	}
 
-	public static void TranslatePairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr)
+	public static void TranslatePairEncodedSkeletonsAndTokens(SktTensorTools tensor_tool, SkeletonForestRecorder sfr)
 			throws Exception {
 		IDManager im = tensor_tool.im;
 		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
@@ -207,19 +206,12 @@ public class SktLogicUtil {
 		}
 		
 		// meta tensor
-		Map<String, ArrayList<String>> one_to_each_str = new TreeMap<String, ArrayList<String>>();
-		Map<Integer, ArrayList<Integer>> one_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 //		Map<Integer, ArrayList<String>> one_to_each_tree_uid = new TreeMap<Integer, ArrayList<String>>();
 //		Map<Integer, Integer> one_h_count = new TreeMap<Integer, Integer>();
 //		Map<Integer, ArrayList<String>> one_h_tree_uid = new TreeMap<Integer, ArrayList<String>>();
 //		Map<Integer, Integer> one_v_count = new TreeMap<Integer, Integer>();
 //		Map<Integer, ArrayList<String>> one_v_tree_uid = new TreeMap<Integer, ArrayList<String>>();
 		
-		Map<String, ArrayList<String>> one_to_pe_str = new TreeMap<String, ArrayList<String>>();
-		Map<Integer, ArrayList<Integer>> one_to_pe = new TreeMap<Integer, ArrayList<Integer>>();
-		
-		Map<String, ArrayList<String>> pe_to_each_str = new TreeMap<String, ArrayList<String>>();
-		Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 //		Map<Integer, ArrayList<Integer>> pe_to_each_tree_uid = new TreeMap<Integer, ArrayList<Integer>>();
 //		Map<Integer, Integer> pe_h_count = new TreeMap<Integer, Integer>();
 //		Map<Integer, ArrayList<String>> pe_h_tree_uid = new TreeMap<Integer, ArrayList<String>>();
@@ -293,23 +285,23 @@ public class SktLogicUtil {
 					
 					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
 					ArrayList<Integer> exact_skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetExactSkeletonID");
-					if (one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
-						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_one_e_struct, "").equals(PrintUtil.PrintListToString(one_to_each_str.get(tf.skt_one_struct.get(0)), "")));
+					if (tensor_tool.one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
+						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_one_e_struct, "").equals(PrintUtil.PrintListToString(tensor_tool.one_to_each_str.get(tf.skt_one_struct.get(0)), "")));
 					}
-					one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
+					tensor_tool.one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
 					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
 //					if (skt_one_ids.get(0) > 2) {
-					one_to_each.put(exact_skt_one_ids.get(0), skt_each_ids);
+					tensor_tool.one_to_each.put(exact_skt_one_ids.get(0), skt_each_ids);
 //					}
 					
-					if (one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
-						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_pe_struct, "").equals(PrintUtil.PrintListToString(one_to_pe_str.get(tf.skt_one_struct.get(0)), "")));
+					if (tensor_tool.one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
+						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_pe_struct, "").equals(PrintUtil.PrintListToString(tensor_tool.one_to_pe_str.get(tf.skt_one_struct.get(0)), "")));
 					}
-					one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
+					tensor_tool.one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 					ArrayList<Integer> skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID");
 					ArrayList<Integer> exact_skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetExactPESkeletonID");
 //					if (skt_one_ids.get(0) > 2) {
-					one_to_pe.put(exact_skt_one_ids.get(0), skt_pe_ids);
+					tensor_tool.one_to_pe.put(exact_skt_one_ids.get(0), skt_pe_ids);
 //					}
 					
 //					int skt_each_id_valid_count = 0;
@@ -334,13 +326,13 @@ public class SktLogicUtil {
 					int index = -1;
 					for (String pe : tf.skt_pe_struct) {
 						index++;
-						if (!pe_to_each_str.containsKey(pe)) {
-							pe_to_each_str.put(pe, tf.skt_pe_e_struct.get(index));
+						if (!tensor_tool.pe_to_each_str.containsKey(pe)) {
+							tensor_tool.pe_to_each_str.put(pe, tf.skt_pe_e_struct.get(index));
 //							if (im.GetPESkeletonID(pe) > 2) {
-							pe_to_each.put(im.GetExactPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
+							tensor_tool.pe_to_each.put(im.GetExactPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
 //							}
 						} else {
-							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), pe_to_each_str.get(pe)));
+							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), tensor_tool.pe_to_each_str.get(pe)));
 						}
 					}
 					
@@ -405,22 +397,6 @@ public class SktLogicUtil {
 //			each_hv_num.put(im.GetEachSkeletonID(k), hv);
 //			each_str_hv_num.put(k, hv);
 //		}
-		
-		/*
-		 * store one_to_each;one_to_pe;pe_to_each
-		 */
-		FileUtil.WriteJson(one_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_each_str.json");
-		FileUtil.WriteJson(one_to_pe_str, MetaOfApp.DataDirectory + "/All_map_skt_one_to_pe_str.json");
-		FileUtil.WriteJson(pe_to_each_str, MetaOfApp.DataDirectory + "/All_map_skt_pe_to_each_str.json");
-		
-		ArrayList<ArrayList<Integer>> oe_container = IntegerMapUtil.MapToNestedList(one_to_each);
-		FileUtil.WriteJson(oe_container, MetaOfApp.DataDirectory + "/All_skt_one_to_each.json");
-		
-		ArrayList<ArrayList<Integer>> ope_container = IntegerMapUtil.MapToNestedList(one_to_pe);
-		FileUtil.WriteJson(ope_container, MetaOfApp.DataDirectory + "/All_skt_one_to_pe.json");
-		
-		ArrayList<ArrayList<Integer>> pee_container = IntegerMapUtil.MapToNestedList(pe_to_each);
-		FileUtil.WriteJson(pee_container, MetaOfApp.DataDirectory + "/All_skt_pe_to_each.json");
 		
 		System.out.println("skt_relative_part_max:" + skt_batch_relative_part_max.it1 + "#token_relative_part_max:" + skt_batch_relative_part_max.it2);
 		System.out.println("skt_pe_relative_part_max:" + skt_pe_batch_relative_part_max.it1 + "#token_pe_relative_part_max:" + skt_pe_batch_relative_part_max.it2);

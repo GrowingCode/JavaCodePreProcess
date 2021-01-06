@@ -30,6 +30,7 @@ import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
 import statistic.id.SktPEMergeRecorder;
 import statistic.id.TokenRecorder;
+import translation.SktTensorTools;
 import translation.TensorGeneratorForProject;
 import translation.TensorTools;
 import translation.tensor.StatementTensor;
@@ -215,18 +216,21 @@ public class Application implements IApplication {
 //		}
 		{
 			System.out.println("==== GenerateTensor Begin ====");
-			TensorTools tensor_tool = new TensorTools(im);
+			
 			Assert.isTrue((root_dir.isDirectory()), "The root path given in parameter should be a directory which contains zip files or with-project directories");
 			/**
 			 * store the map of skeleton one token to scatter tokens. 
 			 */
 			if (MetaOfApp.GenerateSkeletonToken) {
+				SktTensorTools skt_tensor_tool = new SktTensorTools(im);
 				SktPETranslateOneProjectHandle handle = new SktPETranslateOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, id_tool, tensor_tool);
+				HandleEachProjectFramework(all_projs, handle, id_tool, skt_tensor_tool);
+				skt_tensor_tool.SaveSkeletonComposeData();
 			}
 			/**
 			 * normal handle
 			 */
+			TensorTools tensor_tool = new TensorTools(im);
 			{
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
 				HandleEachProjectFramework(all_projs, handle, null, tensor_tool);
@@ -388,7 +392,7 @@ public class Application implements IApplication {
 			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges());
 			stf_r.FlattenAllTrees();
 			SktLogicUtil.FilterPairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
-			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
+			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens((SktTensorTools) tensor_tool, stf_r);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -7,6 +7,10 @@ import org.eclipse.core.runtime.Assert;
 
 public class StringUtil {
 	
+	public static String EliminateWhiteSpace(String str) {
+		return str.replaceAll("\\s*", "");
+	}
+	
 	public static String UniformEmptyBlockString(String block_str) {
 		Assert.isTrue(block_str.startsWith("{"));
 		Assert.isTrue(block_str.endsWith("}"));
