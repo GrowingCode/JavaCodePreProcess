@@ -895,6 +895,7 @@ public class IDManager {
 				gson3.toJson(each_char_sequence_end));
 	}
 
+	@SuppressWarnings("unused")
 	private void GenerateAndSaveBPESubWordSequenceInCascadeForm(String dir) {
 //		PrintUtil.PrintList(id_tool.bpe_mr.merges, "id_tool.bpe_mr.merges");
 		
@@ -1325,7 +1326,7 @@ public class IDManager {
 //		GenerateIDJson(dir, ast_type_content_id_map, "type_content");
 //		if (MetaOfApp.InBPEForm) {
 //			GenerateAndSaveCharSequence(dir);
-		GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
+//		GenerateAndSaveBPESubWordSequenceInCascadeForm(dir);
 //		} else {
 //		}
 		// only for debug
