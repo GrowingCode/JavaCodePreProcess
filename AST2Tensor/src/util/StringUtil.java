@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.Assert;
 public class StringUtil {
 	
 	public static String EliminateWhiteSpace(String str) {
-		return str.replaceAll("\\s*", "");
+		return str.replaceAll("\\s+", "");
 	}
 	
 	public static String UniformEmptyBlockString(String block_str) {
@@ -45,6 +45,8 @@ public class StringUtil {
 	public static void main(String[] args) {
 		String n_p = StringUtil.FixedLengthString("sad", 10);
 		System.out.println(n_p);
+		String e_p = StringUtil.EliminateWhiteSpace("a b");
+		System.out.println(e_p);
 	}
 	
 }

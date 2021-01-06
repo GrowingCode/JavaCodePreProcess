@@ -33,6 +33,7 @@ import tree.Forest;
 import tree.Tree;
 import tree.TreeNode;
 import util.PrintUtil;
+import util.StringUtil;
 import util.YStringUtil;
 
 public class SktForestGenerator extends BasicGenerator {
@@ -267,6 +268,9 @@ class SktTreeGenerator extends ASTVisitor {
 				}
 				
 				if (real_create) {
+					if (!is_leaf) {
+						node_cnt = StringUtil.EliminateWhiteSpace(node_cnt);
+					}
 					TreeNode tn = null;
 					if (JDTASTHelper.IsExprSpecPattern(node)) {
 						tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
