@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.Assert;
 import eclipse.jdt.JDTASTHelper;
 import translation.tensor.util.TokenKindUtil;
 import util.PrintUtil;
-import util.StringUtil;
 import util.YStringUtil;
 
 public class Tree implements Comparable<Tree> {
@@ -88,8 +87,7 @@ public class Tree implements Comparable<Tree> {
 			FlattenTreeNode(tf, root);// , token_composes
 			FlattenTreeNodeIntoOne(tf, root);
 //			Assert.isTrue(tf.skt_one_struct.size() == 0);
-			String rt_cnt = StringUtil.EliminateWhiteSpace(root.GetContent());
-			tf.skt_one_struct.add(rt_cnt);
+			tf.skt_one_struct.add(root.GetContent());
 //			tf.skt_one_struct = root.GetContent();
 		}
 //		return tf;
@@ -191,7 +189,7 @@ public class Tree implements Comparable<Tree> {
 	}
 	
 	private static void FlattenTreeNode(TreeFlatten tf, TreeNode rt) {// , TreeMap<String, ArrayList<String>> token_composes
-		String rt_cnt = StringUtil.EliminateWhiteSpace(rt.GetContent());
+		String rt_cnt = rt.GetContent();
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
 		if (JDTASTHelper.IsIDLeafNode(clz)) {

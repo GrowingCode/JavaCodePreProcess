@@ -286,7 +286,9 @@ public class SktLogicUtil {
 					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
 					ArrayList<Integer> exact_skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetExactSkeletonID");
 					if (tensor_tool.one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
-						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_one_e_struct, "").equals(PrintUtil.PrintListToString(tensor_tool.one_to_each_str.get(tf.skt_one_struct.get(0)), "")));
+						String str1 = PrintUtil.PrintListToString(tf.skt_one_e_struct, "");
+						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_each_str.get(tf.skt_one_struct.get(0)), "");
+						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
 					}
 					tensor_tool.one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
 					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
@@ -295,7 +297,9 @@ public class SktLogicUtil {
 //					}
 					
 					if (tensor_tool.one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
-						Assert.isTrue(PrintUtil.PrintListToString(tf.skt_pe_struct, "").equals(PrintUtil.PrintListToString(tensor_tool.one_to_pe_str.get(tf.skt_one_struct.get(0)), "")));
+						String str1 = PrintUtil.PrintListToString(tf.skt_pe_struct, "");
+						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_pe_str.get(tf.skt_one_struct.get(0)), "");
+						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_pe, str1:" + str1 + "#str2:" + str2);
 					}
 					tensor_tool.one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 					ArrayList<Integer> skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID");
