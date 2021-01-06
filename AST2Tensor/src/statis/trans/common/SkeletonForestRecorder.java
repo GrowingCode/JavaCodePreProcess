@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.core.dom.StringLiteral;
 
 import bpe.skt.SktPETreesUtil;
 import bpe.skt.TreeNodeTwoMerge;
@@ -93,10 +94,15 @@ public class SkeletonForestRecorder {
 		for (Tree o_tree : all_trees) {
 			ArrayList<TreeNode> ans = o_tree.GetAllNodes();
 			for (TreeNode an : ans) {
-				int h_count = YStringUtil.CountSubStringInString(an.GetContent(), "#h");
-				int v_count = YStringUtil.CountSubStringInString(an.GetContent(), "#v");
 				ArrayList<TreeNode> childs = an.GetChildren();
-				Assert.isTrue(h_count + v_count == childs.size(), "Origin Tree Validation Failed!" + "#h_count:" + h_count + "#v_count:" + v_count + "#childs.size():" + childs.size() + "#rt.GetContent():" + an.GetContent() + "#childs:" + PrintUtil.PrintListToString(childs, "tns"));
+				if (an.GetClazz().equals(StringLiteral.class) || an.GetContent().indexOf("\"") != an.GetContent().lastIndexOf("\"")) {
+					// do nothing. 
+				} else {
+					int h_count = YStringUtil.CountSubStringInString(an.GetContent(), "#h");
+					int v_count = YStringUtil.CountSubStringInString(an.GetContent(), "#v");
+					
+					Assert.isTrue(h_count + v_count == childs.size(), "Origin Tree Validation Failed!" + "#h_count:" + h_count + "#v_count:" + v_count + "#childs.size():" + childs.size() + "#rt.GetContent():" + an.GetClazz() + "#rt.GetContent():" + an.GetContent() + "#childs:" + PrintUtil.PrintListToString(childs, "tns"));
+				}
 			}
 		}
 	}

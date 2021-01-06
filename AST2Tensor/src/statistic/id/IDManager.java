@@ -305,8 +305,8 @@ public class IDManager {
 		if (hit_num < raw_sk_ht.size()) {
 			Regist(id_map, MapUtil.EntryListToKeyList(raw_sk_ht.subList(hit_num, raw_sk_ht.size())));
 		}
-		PrintUtil.PrintPartOfEntryList(raw_sk_ht, hit_num, raw_sk_ht.size(), "SetUnk" + desc,
-				desc, "count");
+//		PrintUtil.PrintPartOfEntryList(raw_sk_ht, hit_num, raw_sk_ht.size(), "SetUnk" + desc,
+//				desc, "count");
 		
 		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
 				MapUtil.SortMapByValue(not_hit));
@@ -910,9 +910,9 @@ public class IDManager {
 //		BPEHandledResult not_hit_res = BPEWordsUtil.ApplyBPEMergesToTokens(id_tool.bpe_mr.merges, inserted_nht_keys);
 
 		Map<String, String> origin_after = new TreeMap<String, String>();
-		PrintUtil.PrintMap(hit_res.origin_after, "hit_res.origin_after", 100);
+		PrintUtil.PrintMap(hit_res.origin_after, "hit_res.origin_after", 25);
 		origin_after.putAll(hit_res.origin_after);
-//		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after", 100);
+//		PrintUtil.PrintMap(not_hit_res.origin_after, "not_hit_res.origin_after",  25);
 //		origin_after.putAll(not_hit_res.origin_after);
 //		PrintUtil.PrintMap(origin_after, "origin_after");
 //		TreeSet<String> ts = new TreeSet<String>(token_id_map.keySet());
