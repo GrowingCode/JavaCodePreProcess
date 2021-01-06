@@ -151,7 +151,8 @@ public class AppMainRoot implements IApplication {
 				id_tool.sktpe_mr.Initialize(merges);// , token_times
 				System.out.println("==== SktPEMerge Loaded ====");
 			} else {
-				System.out.println("==== SktPEMerge Not Exist! Please Set Up! ====");
+				System.out.println("==== SktPEMerge Not Exist! Set Up and Exit Program! ====");
+				AppSktMergeSetUp.SetUp();
 				return IApplication.EXIT_OK;
 			}
 		}

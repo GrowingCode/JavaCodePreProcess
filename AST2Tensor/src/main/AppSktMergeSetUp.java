@@ -21,7 +21,7 @@ import util.SystemUtil;
 
 public class AppSktMergeSetUp {
 	
-	public static void main(String[] args) {
+	public static void SetUp() {
 		IDTools id_tool = null;
 		{
 			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
