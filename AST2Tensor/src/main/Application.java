@@ -101,7 +101,8 @@ public class Application implements IApplication {
 //		}
 		IDTools id_tool = null;
 		{
-			BPEMergeRecorder bpe_mr = new BPEMergeRecorder();
+			BPEMergeRecorder bpe_mr = null;
+//			new BPEMergeRecorder();
 			TokenRecorder tr = new TokenRecorder(MetaOfApp.MaximumTokenCapacity);
 //			TokenRecorder sr = new TokenRecorder();
 			TokenRecorder one_struct_r = new TokenRecorder(MetaOfApp.MaximumSkeletonTokenCapacity);
@@ -115,32 +116,32 @@ public class Application implements IApplication {
 //			stf_r, 
 			id_tool = new IDTools(bpe_mr, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc, sktpe_mr);
 		}
-		{
-			File bpe_mj = new File(bpe_merges_json);
-//			File bpe_ttj = new File(bpe_token_times_json);
-			if (bpe_mj.exists()) {
-//				Assert.isTrue(bpe_ttj.exists());
-				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<List<String>>(){}.getType());
-//				String bpe_mj_content = FileUtil.ReadFromFile(bpe_mj);
-//				System.out.println("bpe_mj_content:" + bpe_mj_content);
-//				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
-//				, token_times
-				id_tool.bpe_mr.Initialize(merges);
-				System.out.println("==== BPECount Loaded ====");
-			} else {
-				System.out.println("==== BPECount Begin ====");
-				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
-				BPEOneProjectHandle handle = new BPEOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, id_tool, null);
-	//			System.out.println("==== BPEMerge Begin ====");
-				id_tool.bpe_mr.GenerateBPEMerges();// MetaOfApp.NumberOfMerges
-	//			System.out.println("==== BPEMerge End ====");
-				id_tool.bpe_mr.SaveTo(bpe_mj);// , bpe_ttj
-				AnalysisEnvironment.DeleteAllProjects();
-				RoleAssigner.GetInstance().ClearRoles();
-				System.out.println("==== BPECount End ====");
-			}
-		}
+//		{
+//			File bpe_mj = new File(bpe_merges_json);
+////			File bpe_ttj = new File(bpe_token_times_json);
+//			if (bpe_mj.exists()) {
+////				Assert.isTrue(bpe_ttj.exists());
+//				List<String> merges = new Gson().fromJson(FileUtil.ReadFromFile(bpe_mj), new TypeToken<List<String>>(){}.getType());
+////				String bpe_mj_content = FileUtil.ReadFromFile(bpe_mj);
+////				System.out.println("bpe_mj_content:" + bpe_mj_content);
+////				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(bpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
+////				, token_times
+//				id_tool.bpe_mr.Initialize(merges);
+//				System.out.println("==== BPECount Loaded ====");
+//			} else {
+//				System.out.println("==== BPECount Begin ====");
+//				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
+//				BPEOneProjectHandle handle = new BPEOneProjectHandle();
+//				HandleEachProjectFramework(all_projs, handle, id_tool, null);
+//	//			System.out.println("==== BPEMerge Begin ====");
+//				id_tool.bpe_mr.GenerateBPEMerges();// MetaOfApp.NumberOfMerges
+//	//			System.out.println("==== BPEMerge End ====");
+//				id_tool.bpe_mr.SaveTo(bpe_mj);// , bpe_ttj
+//				AnalysisEnvironment.DeleteAllProjects();
+//				RoleAssigner.GetInstance().ClearRoles();
+//				System.out.println("==== BPECount End ====");
+//			}
+//		}
 		if (MetaOfApp.GenerateSkeletonToken)
 		{
 			File sktpe_mj = new File(sktpe_merges_json);
