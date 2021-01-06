@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
+import logger.DebugLogger;
 import main.MetaOfApp;
 import tree.MergedTreeNode;
 import tree.Tree;
@@ -124,6 +125,7 @@ public class SktPETreesUtil {
 	 * @return
 	 */
 	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(ArrayList<Tree> vocab) {// , int num_merges
+		DebugLogger.Log("all trees size:" + vocab.size());
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
 		Set<TreeNodeTwoMerge> merges = new TreeSet<TreeNodeTwoMerge>();
 //		if (num_merges == -1) {
@@ -132,6 +134,7 @@ public class SktPETreesUtil {
 //		System.out.println("num_merges:" + num_merges);
 //		Assert.isTrue(num_merges > 0);
 //		for (int i=0;i<num_merges;i++) {
+		int turn = 0;
 		while (true) {
 			Map<TreeNodeTwoMerge, Integer> pairs = GetStats(vocab);
 //			System.out.println("pairs.size():" + pairs.size());
@@ -153,6 +156,8 @@ public class SktPETreesUtil {
 			if (best.v < MetaOfApp.MinimumThresholdOfSkeletonMerge) {
 				break;
 			}
+			turn++;
+			DebugLogger.Log("best.v:" + best.v + " turn " + turn + " stats over");
 			MergeVocab(best.k, vocab);
 			Assert.isTrue(!merges.contains(best.k), "already exist merge:" + best);
 			merges.add(best.k);

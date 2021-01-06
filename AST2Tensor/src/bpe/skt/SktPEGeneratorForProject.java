@@ -36,7 +36,7 @@ public class SktPEGeneratorForProject {
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
-		DebugLogger.Log("ID: ICompilationUnit_size of project:" + units.size());
+		DebugLogger.Log("Begin gen_forest: ICompilationUnit_size of project:" + units.size());
 		int length = 0;
 		if (units != null) {
 			for (ICompilationUnit icu : units) {
@@ -50,6 +50,7 @@ public class SktPEGeneratorForProject {
 				stf_r.AddForests(funcs);
 			}
 		}
+		DebugLogger.Log("End gen_forest: ICompilationUnit_size of project:" + units.size());
 		return length;
 	}
 	

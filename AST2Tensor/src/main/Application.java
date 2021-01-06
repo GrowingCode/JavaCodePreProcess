@@ -18,7 +18,8 @@ import bpe.skt.SktPEGeneratorForProject;
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
-import statis.trans.common.RoleAssigner;
+import main.util.AppRunUtil;
+import main.util.HandleOneProject;
 import statis.trans.common.SkeletonForestRecorder;
 import statis.trans.project.STProject;
 import statistic.IDGeneratorForProject;
@@ -35,8 +36,6 @@ import translation.TensorGeneratorForProject;
 import translation.TensorTools;
 import translation.tensor.StatementTensor;
 import translation.tensor.TensorForProject;
-import tree.Forest;
-import tree.Tree;
 import util.FileUtil;
 import util.JsonPrintUtil;
 import util.SystemUtil;
@@ -93,7 +92,6 @@ public class Application implements IApplication {
 		File root_dir = new File(data);
 
 //		String bpe_proj_paths = args[1];
-		File bpe_dir = new File(witness);
 
 //		int max_handle_projs = -1;
 //		if (args.length >= 2) {
@@ -151,25 +149,10 @@ public class Application implements IApplication {
 				List<TreeNodeTwoMerge> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<ArrayList<TreeNodeTwoMerge>>(){}.getType());
 //				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
 				id_tool.sktpe_mr.Initialize(merges);// , token_times
-				System.out.println("==== SktPECount Loaded ====");
+				System.out.println("==== SktPEMerge Loaded ====");
 			} else {
-				System.out.println("==== SktPECount Begin ====");
-				List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
-				SktPEGenerateMergeForOneProjectHandle handle = new SktPEGenerateMergeForOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, id_tool, null);
-//				ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
-//				for (Forest f : fs) {
-//					ArrayList<Tree> f_trees = f.GetAllTrees();
-//					for (Tree t : f_trees) {
-//						id_tool.sktpe_mr.EncounterSkeleton(t, 1);
-//					}
-//				}
-//				id_tool.sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
-//				id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
-//				id_tool.stf_r.Clear();
-//				AnalysisEnvironment.DeleteAllProjects();
-				RoleAssigner.GetInstance().ClearRoles();
-				System.out.println("==== SktPECount End ====");
+				System.out.println("==== SktPEMerge Not Exist! Please Set Up! ====");
+				System.exit(1);
 			}
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
@@ -181,14 +164,14 @@ public class Application implements IApplication {
 			if (MetaOfApp.GenerateSkeletonToken) {
 				// Handle SktPE logic
 				SktPECountOneProjectHandle handle = new SktPECountOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, id_tool, null);
+				AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, null);
 			}
 			/**
 			 * normal handle
 			 */
 			{
 				CountOneProjectHandle handle = new CountOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, id_tool, null);
+				AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, null);
 			}
 			// max_handle_projs,
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
@@ -225,7 +208,7 @@ public class Application implements IApplication {
 			if (MetaOfApp.GenerateSkeletonToken) {
 				SktTensorTools skt_tensor_tool = new SktTensorTools(im);
 				SktPETranslateOneProjectHandle handle = new SktPETranslateOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, id_tool, skt_tensor_tool);
+				AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, skt_tensor_tool);
 				skt_tensor_tool.SaveSkeletonComposeData();
 			}
 			/**
@@ -234,7 +217,7 @@ public class Application implements IApplication {
 			TensorTools tensor_tool = new TensorTools(im);
 			{
 				TranslateOneProjectHandle handle = new TranslateOneProjectHandle();
-				HandleEachProjectFramework(all_projs, handle, null, tensor_tool);
+				AppRunUtil.HandleEachProjectFramework(all_projs, handle, null, tensor_tool);
 			}
 				// max_handle_projs,
 //				File[] files = root_dir.listFiles();
@@ -282,83 +265,7 @@ public class Application implements IApplication {
 		
 		return IApplication.EXIT_OK;
 	}
-
-	// int max_handle_projs, RoleAssigner role_assigner
-	// File root_dir
-	private static void HandleEachProjectFramework(List<STProject> projs, HandleOneProject run, IDTools id_tool,
-			TensorTools tensor_tool) {
-//		System.err.println(root_dir.getAbsolutePath());
-//		File[] files = root_dir.listFiles();
-//		int count_projs = 0;
-//		int all_size = 0;
-//		for (File f : files) {
-		for (STProject proj : projs) {
-//			if (max_handle_projs >= 0 && count_projs >= max_handle_projs) {
-//				break;
-//			}
-//			all_size += 
-			run.Handle(proj, id_tool, tensor_tool);
-//			if (f.isDirectory()) {
-////				count_projs++;
-////				f.getAbsolutePath(), all_size
-//				all_size += run.Handle(proj, id_tool, tensor_tool);
-//			} else {
-//				Assert.isTrue(false);
-//				File unzip_out_dir = new File(TemporaryUnzipWorkingSpace);
-//				if (unzip_out_dir.exists()) {
-//					FileUtil.DeleteFile(unzip_out_dir);
-//				}
-//				unzip_out_dir.mkdirs();
-//				if (f.getName().endsWith(".zip")) {
-//					try {
-//						ZIPUtil.Unzip(f, unzip_out_dir);
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-////					unzip_out_dir.getAbsolutePath(), all_size
-//					all_size += run.Handle(proj, id_tool, tensor_tool);
-//				}
-////				if (unzip_out_dir.exists()) {
-////					FileUtil.DeleteFile(unzip_out_dir);
-////				}
-//			}
-		}
-	}
 	
-	static int SktPEGenerateMergeForOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
-		File sktpe_mj = new File(sktpe_merges_json);
-		int project_size = 0;
-		try {
-			SystemUtil.Delay(1000);
-			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
-			SkeletonForestRecorder stf_r = new SkeletonForestRecorder();
-			// stf_r should be declared locally. 
-			stf_r.EncounterNewProject(proj.GetInfo());
-			project_size = irgfop.GenerateForOneProject(stf_r);
-			stf_r.PreProcessAllForests();
-//			id_tool.stf_r.FlattenAllOriginTrees();
-//			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges());
-//			stf_r.FlattenAllTrees();
-//			SktLogicUtil.CountPairEncodedSkeletons(id_tool, stf_r);
-			
-			ArrayList<Forest> fs = stf_r.GetAllForests();
-			for (Forest f : fs) {
-				ArrayList<Tree> f_trees = f.GetAllTrees();
-				for (Tree t : f_trees) {
-					id_tool.sktpe_mr.EncounterSkeleton(t, 1);
-				}
-			}
-			id_tool.sktpe_mr.GenerateSktPEMerges();// MetaOfApp.NumberOfSkeletonMerges
-			id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
-//			id_tool.stf_r.Clear();
-//			AnalysisEnvironment.DeleteAllProjects();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return project_size;
-	}
-
 	static int SktPECountOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
 		int project_size = 0;
 		try {
@@ -444,11 +351,6 @@ public class Application implements IApplication {
 
 }
 
-interface HandleOneProject {
-//	String proj_path, int all_size
-	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool);
-}
-
 class TranslateOneProjectHandle implements HandleOneProject {
 
 //	String proj_path, int all_size, 
@@ -510,28 +412,6 @@ class BPEOneProjectHandle implements HandleOneProject {
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 			int all_size = Application.BPEOneProject(proj, id_tool);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			try {
-//				ProjectLoader.CloseAllProjects();
-//			} catch (Exception e1) {
-//				e1.printStackTrace();
-//			}
-//		}
-		return all_size;
-	}
-
-}
-
-class SktPEGenerateMergeForOneProjectHandle implements HandleOneProject {
-
-//	String proj_path, int all_size
-	public int Handle(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
-//		IJavaProject java_project = null;
-//		try {
-//			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.SktPEGenerateMergeForOneProject(proj, id_tool, tensor_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {
