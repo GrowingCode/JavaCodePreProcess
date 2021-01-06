@@ -29,7 +29,7 @@ public class AppSktMergeSetUp {
 		}
 		
 		System.out.println("==== SktPECount Begin ====");
-		File bpe_dir = new File(Application.witness);
+		File bpe_dir = new File(AppMainRoot.witness);
 		List<STProject> all_projs = null;
 		try {
 			all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
@@ -80,7 +80,7 @@ class SktPEGenerateMergeForOneProjectHandle implements HandleOneProject {
 	
 
 	public static int SktPEGenerateMergeForOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
-		File sktpe_mj = new File(Application.sktpe_merges_json);
+		File sktpe_mj = new File(AppMainRoot.sktpe_merges_json);
 		int project_size = 0;
 		try {
 			SystemUtil.Delay(1000);

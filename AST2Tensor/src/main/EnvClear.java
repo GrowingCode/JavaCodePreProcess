@@ -7,7 +7,7 @@ import util.FileUtil;
 public class EnvClear {
 	
 	public static void ClearEnv() {
-		File bpe_mj = new File(Application.bpe_merges_json);
+		File bpe_mj = new File(AppMainRoot.bpe_merges_json);
 		if (bpe_mj.exists()) {
 			bpe_mj.delete();
 		}
@@ -15,7 +15,7 @@ public class EnvClear {
 //		if (bpe_ttj.exists()) {
 //			bpe_ttj.delete();
 //		}
-		File skt_mj = new File(Application.sktpe_merges_json);
+		File skt_mj = new File(AppMainRoot.sktpe_merges_json);
 		if (skt_mj.exists()) {
 			skt_mj.delete();
 		}

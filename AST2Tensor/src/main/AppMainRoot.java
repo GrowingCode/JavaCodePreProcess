@@ -40,7 +40,7 @@ import util.FileUtil;
 import util.JsonPrintUtil;
 import util.SystemUtil;
 
-public class Application implements IApplication {
+public class AppMainRoot implements IApplication {
 
 	public static final String user_home = System.getProperty("user.home");
 	
@@ -152,7 +152,7 @@ public class Application implements IApplication {
 				System.out.println("==== SktPEMerge Loaded ====");
 			} else {
 				System.out.println("==== SktPEMerge Not Exist! Please Set Up! ====");
-				System.exit(1);
+				return IApplication.EXIT_OK;
 			}
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
@@ -360,7 +360,7 @@ class TranslateOneProjectHandle implements HandleOneProject {
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
 //			TensorGeneratorForProject ttgfop = new TreeTensorGeneratorForProject(role_assigner, java_project, im);
-			Application.TranslateOneProject(proj, tensor_tool);// proj_path, , ttgfop
+			AppMainRoot.TranslateOneProject(proj, tensor_tool);// proj_path, , ttgfop
 //			TensorGeneratorForProject stgfop = new SequenceTensorGeneratorForProject(role_assigner, java_project, im);
 //			Application.TranslateOneProject(role_assigner, im, stgfop, "sequence");// proj_path, 
 //		} catch (Exception e) {
@@ -385,7 +385,7 @@ class CountOneProjectHandle implements HandleOneProject {
 //		IJavaProject java_project = null;
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.CountOneProject(proj, id_tool);
+			int all_size = AppMainRoot.CountOneProject(proj, id_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {
@@ -411,7 +411,7 @@ class BPEOneProjectHandle implements HandleOneProject {
 //		IJavaProject java_project = null;
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.BPEOneProject(proj, id_tool);
+			int all_size = AppMainRoot.BPEOneProject(proj, id_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {
@@ -433,7 +433,7 @@ class SktPECountOneProjectHandle implements HandleOneProject {
 //		IJavaProject java_project = null;
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.SktPECountOneProject(proj, id_tool, tensor_tool);
+			int all_size = AppMainRoot.SktPECountOneProject(proj, id_tool, tensor_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {
@@ -455,7 +455,7 @@ class SktPETranslateOneProjectHandle implements HandleOneProject {
 //		IJavaProject java_project = null;
 //		try {
 //			java_project = ProjectLoader.LoadProjectAccordingToArgs(proj_path);
-			int all_size = Application.SktPETranslateOneProject(proj, id_tool, tensor_tool);
+			int all_size = AppMainRoot.SktPETranslateOneProject(proj, id_tool, tensor_tool);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		} finally {
