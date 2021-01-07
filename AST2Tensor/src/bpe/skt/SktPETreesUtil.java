@@ -5,9 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -127,7 +126,7 @@ public class SktPETreesUtil {
 	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(ArrayList<Tree> vocab) {// , int num_merges
 		DebugLogger.Log("all trees size:" + vocab.size());
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
-		Set<TreeNodeTwoMerge> merges = new TreeSet<TreeNodeTwoMerge>();
+		Map<TreeNodeTwoMerge, Integer> merges = new TreeMap<TreeNodeTwoMerge, Integer>();
 //		if (num_merges == -1) {
 //			num_merges = Integer.MAX_VALUE;
 //		}
@@ -159,8 +158,10 @@ public class SktPETreesUtil {
 			turn++;
 			DebugLogger.Log("best.v:" + best.v + " turn " + turn + " stats over");
 			MergeVocab(best.k, vocab);
-			Assert.isTrue(!merges.contains(best.k), "already exist merge:" + best);
-			merges.add(best.k);
+			String merge_info = "already exist merge:" + best.k + " best.v:" + best.v + "#existing merge turn:" + merges.get(best.k);
+			DebugLogger.Log(merge_info);
+			Assert.isTrue(!merges.containsKey(best.k), merge_info);
+			merges.put(best.k, turn);
 		}
 		
 		int pred = MetaOfApp.MinimumThresholdOfSkeletonMerge;
@@ -169,7 +170,12 @@ public class SktPETreesUtil {
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");
-		return new ArrayList<TreeNodeTwoMerge>(merges);
+		List<Entry<TreeNodeTwoMerge, Integer>> smbv = MapUtil.SortMapByValue(merges);
+		ArrayList<TreeNodeTwoMerge> res = new ArrayList<TreeNodeTwoMerge>();
+		for (Entry<TreeNodeTwoMerge, Integer> e : smbv) {
+			res.add(e.getKey());
+		}
+		return res;
 	}
 	
 //	public static Set<String> ExtractAllSktPEUnits(Collection<Tree> sktpe_raws) {
