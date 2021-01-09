@@ -23,13 +23,13 @@ public class StringUtil {
 		StringBuffer sb = new StringBuffer();
 		Pattern p = Pattern.compile(reg);
 		Matcher m = p.matcher(str);
-		System.err.println("=== begin printing ===");
+//		System.err.println("=== begin printing ===");
 		while(m.find()){
 //			System.err.println("group count:" + m.groupCount());
 //			for (int i=0;i<m.groupCount();i++) {
 //				System.err.println("gp " + i + ":" + m.group(i));
 //			}
-			System.err.println("group:" + m.group());
+//			System.err.println("group:" + m.group());
 //			String tmp = m.group(rep_index);
 //			System.err.println("tmp:" + tmp);
 			String v = "";
@@ -41,9 +41,9 @@ public class StringUtil {
 		return sb_str;
 	}
 
-	public static String EliminateWhiteSpace(String str) {
-		return str.replaceAll("\\s+", "");
-	}
+//	public static String EliminateWhiteSpace(String str) {
+//		return str.replaceAll("\\s+", "");
+//	}
 
 	public static String UniformEmptyBlockString(String block_str) {
 		Assert.isTrue(block_str.startsWith("{"));

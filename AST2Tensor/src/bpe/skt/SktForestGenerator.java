@@ -269,7 +269,7 @@ class SktTreeGenerator extends ASTVisitor {
 				
 				if (real_create) {
 					if (!is_leaf) {
-						node_cnt = StringUtil.EliminateWhiteSpace(node_cnt);
+						node_cnt = StringUtil.EliminateNonStrSplitWhiteSpace(node_cnt);
 					}
 					TreeNode tn = null;
 					if (JDTASTHelper.IsExprSpecPattern(node)) {
