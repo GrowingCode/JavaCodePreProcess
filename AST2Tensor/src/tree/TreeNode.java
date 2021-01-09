@@ -1,9 +1,13 @@
 package tree;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.IBinding;
+
+import tree.util.TreeNodePairUtil;
+import unit.PairContainer;
 
 public class TreeNode {
 	
@@ -85,6 +89,26 @@ public class TreeNode {
 	
 	public String GetTreeUid() {
 		return tree_uid;
+	}
+	
+	public void PreProcessTreeNode(String t_path, TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>> parent_child_node_pairs) {
+		Assert.isTrue(this.GetTreeUid() == null);
+		this.SetTreeUid(t_path);
+		ArrayList<TreeNode> childs = this.GetChildren();
+		int sib_index = -1;
+		for (TreeNode child : childs) {
+			sib_index++;
+			String pp = TreeNodePairUtil.GetParentChildPairPresentation(this.GetContent(), child.GetContent());
+			
+			ArrayList<PairContainer<TreeNode, TreeNode>> pp_ll = parent_child_node_pairs.get(pp);
+			if (pp_ll == null) {
+				pp_ll = new ArrayList<PairContainer<TreeNode, TreeNode>>();
+				parent_child_node_pairs.put(pp, pp_ll);
+			}
+			pp_ll.add(new PairContainer<TreeNode, TreeNode>(this, child));
+			
+			child.PreProcessTreeNode(t_path + " " + sib_index, parent_child_node_pairs);
+		}
 	}
 	
 }

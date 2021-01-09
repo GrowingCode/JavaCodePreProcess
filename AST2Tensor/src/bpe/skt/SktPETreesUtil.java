@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.Assert;
 
 import logger.DebugLogger;
 import main.MetaOfApp;
-import tree.MergedTreeNode;
 import tree.Tree;
 import tree.TreeNode;
 import unit.PairContainer;
@@ -77,45 +76,46 @@ public class SktPETreesUtil {
 		Iterator<Tree> os_itr = old_vocab.iterator();
 		while (os_itr.hasNext()) {
 			Tree os = os_itr.next();
-			ArrayList<TreeNode> ans = os.GetAllNodes();
-//			Set<String> ans_keys = ans.keySet();
-			for (TreeNode tn : ans) {
-//				TreeNode tn = ans.get(an_key);
-				MergeTwoTreeNodes(pair, tn);
-			}
+			os.ApplyMerge(pair);
+//			ArrayList<TreeNode> ans = os.GetAllNodes();
+////			Set<String> ans_keys = ans.keySet();
+//			for (TreeNode tn : ans) {
+////				TreeNode tn = ans.get(an_key);
+//				MergeTwoTreeNodes(pair, tn);
+//			}
 		}
 	}
 	
-	private static boolean MergeTwoTreeNodes(TreeNodeTwoMerge pair, TreeNode tn) {
-		boolean really_merged = false;
-		if (pair.GetParent().equals(tn.GetContent())) {
-			ArrayList<TreeNode> childs = tn.GetChildren();
-			int index = -1;
-			int rm_index = -1;
-			for (TreeNode child : childs) {
-				index++;
-				if (pair.GetNode().equals(child.GetContent()) && index == pair.GetNodeIndex()) {//child.GetSiblingIndex()
-					rm_index = index;
-					break;
-				}
-			}
-			if (rm_index > -1) {
-//				TreeNode rm_tn = 
-				TreeNode child = childs.remove(rm_index);
-				ArrayList<TreeNode> ccs = child.GetChildren();
-				int ccs_len = ccs.size();
-				for (int cl = ccs_len - 1; cl >= 0; cl--) {
-					TreeNode child_child = ccs.get(cl);
-					childs.add(rm_index, child_child);
-					child_child.SetParent(tn);
-				}
-//				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
-				tn.SetContent(pair.GetMerged());
-				really_merged = true;
-			}
-		}
-		return really_merged;
-	}
+//	private static boolean MergeTwoTreeNodes(TreeNodeTwoMerge pair, TreeNode tn) {
+//		boolean really_merged = false;
+//		if (pair.GetParent().equals(tn.GetContent())) {
+//			ArrayList<TreeNode> childs = tn.GetChildren();
+//			int index = -1;
+//			int rm_index = -1;
+//			for (TreeNode child : childs) {
+//				index++;
+//				if (pair.GetNode().equals(child.GetContent()) && index == pair.GetNodeIndex()) {//child.GetSiblingIndex()
+//					rm_index = index;
+//					break;
+//				}
+//			}
+//			if (rm_index > -1) {
+////				TreeNode rm_tn = 
+//				TreeNode child = childs.remove(rm_index);
+//				ArrayList<TreeNode> ccs = child.GetChildren();
+//				int ccs_len = ccs.size();
+//				for (int cl = ccs_len - 1; cl >= 0; cl--) {
+//					TreeNode child_child = ccs.get(cl);
+//					childs.add(rm_index, child_child);
+//					child_child.SetParent(tn);
+//				}
+////				Assert.isTrue(rm_tn.GetChildren().size() == 0, "strange, children size:" + rm_tn.GetChildren().size() + "@strange child node:" + rm_tn.GetContent() + "@strange par node:" + tn.GetContent());
+//				tn.SetContent(pair.GetMerged());
+//				really_merged = true;
+//			}
+//		}
+//		return really_merged;
+//	}
 	
 	/**
 	 * This function has side effect to parameters
@@ -215,13 +215,14 @@ public class SktPETreesUtil {
 		for (Tree skt : skts) {
 //				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
 //				Collection<TreeNode> tns = nodes.values();
-			TreeMap<String, ArrayList<TreeNode>> mp = skt.GetAllContentNodeMap();
+//			TreeMap<String, ArrayList<TreeNode>> mp = skt.GetAllContentNodeMap();
 			for (int i=0;i<m_size;i++) {
 				TreeNodeTwoMerge merge = merges.get(i);
+				skt.ApplyMerge(merge);
 //				ArrayList<TreeNode> tns = skt.GetAllNodes();
 //				for (TreeNode tn : tns) {
 //					boolean curr_useful =  
-					MergeTwoTreeNodesWithNewMergeNodeCreated(skt, mp, merge);// MergeTwoTreeNodesWhileMarkMergePoint
+//					MergeTwoTreeNodesWithNewMergeNodeCreated(skt, mp, merge);// MergeTwoTreeNodesWhileMarkMergePoint
 //					merge_useful = merge_useful | curr_useful;
 //					if (marked_merge == null) {
 //						marked_merge = mark_merge.marked_merge;
@@ -255,108 +256,9 @@ public class SktPETreesUtil {
 //		return result;
 	}
 	
-	private static boolean MergeTwoTreeNodesWithNewMergeNodeCreated(Tree skt, TreeMap<String, ArrayList<TreeNode>> mp, TreeNodeTwoMerge pair) {
-		// if some nodes already be merged, it won't be merged anymore. 
-		boolean really_merged = false;
-		
-		String node_str = pair.GetNode();
-		String parent_str = pair.GetParent();
-		
-		ArrayList<TreeNode> ini_tns = mp.get(node_str);
-		if (ini_tns != null) {
-			ArrayList<TreeNode> tns = new ArrayList<TreeNode>(ini_tns);
-			for (TreeNode tn : tns) {
-				TreeNode tn_par = tn.GetParent();
-				if (parent_str.equals(tn_par.GetContent())) {
-					int tn_sib_index = tn_par.GetChildren().indexOf(tn);
-					if (pair.GetNodeIndex() == tn_sib_index) {
-						// exactly matched
-						TreeNode tn_par_par = tn_par.GetParent();
-						MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.GetBinding(), pair.GetMerged(), tn_par.GetTreeWholeContent());
-						m_tn_par.SetParent(tn_par_par);
-						m_tn_par.AppendAllChildren(tn_par.GetChildren());
-						ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();
-						for (TreeNode m_child : m_childs) {
-							m_child.SetParent(m_tn_par);
-						}
-						TreeNode child = m_childs.remove(tn_sib_index);
-						m_tn_par.SetUpMergedInformation(tn_par, child);
-						ArrayList<TreeNode> ccs = child.GetChildren();
-						int ccs_len = ccs.size();
-						for (int cl = ccs_len - 1; cl >= 0; cl--) {
-							TreeNode child_child = ccs.get(cl);
-							m_childs.add(tn_sib_index, child_child);
-							child_child.SetParent(m_tn_par);
-						}
-						
-						if (tn_par_par == null) {
-							// tn_par is the root node and tn_par_par is null. 
-							Assert.isTrue(skt.GetRootNode() == tn_par);
-							skt.SetRootNode(m_tn_par);
-						} else {
-							ArrayList<TreeNode> sibs = tn_par_par.GetChildren();
-							int tn_sib_idx = sibs.indexOf(tn_par);
-							Assert.isTrue(tn_sib_idx >= 0);
-							sibs.set(tn_sib_idx, m_tn_par);
-						}
-						
-						// remove tn and tn_par in mp and add merged node in mp
-						ini_tns.remove(tn);
-						if (ini_tns.isEmpty()) {
-							mp.remove(node_str);
-						}
-						ArrayList<TreeNode> ini_parent_tns = mp.get(parent_str);
-						boolean rm_res = ini_parent_tns.remove(tn_par);
-						Assert.isTrue(rm_res);
-						if (ini_parent_tns.isEmpty()) {
-							mp.remove(parent_str);
-						}
-						ArrayList<TreeNode> ini_parent_m_tns = mp.get(m_tn_par.GetContent());
-						if (ini_parent_m_tns == null) {
-							ini_parent_m_tns = new ArrayList<TreeNode>();
-							mp.put(m_tn_par.GetContent(), ini_parent_m_tns);
-						}
-						ini_parent_m_tns.add(m_tn_par);
-						
-						really_merged = true;
-					}
-				}
-			}
-		}
-		
-		/* if (pair.GetParent().equals(tn.GetContent())) {
-			ArrayList<TreeNode> childs = tn.GetChildren();
-			int index = -1;
-			int rm_index = -1;
-			for (TreeNode child : childs) {
-				index++;
-				if (pair.GetNode().equals(child.GetContent()) && index == pair.GetNodeIndex()) {//child.GetSiblingIndex()
-					rm_index = index;
-					break;
-				}
-			}
-			if (rm_index > -1) {
-				
-			}
-		} */
-		return really_merged;
-	}
-	
 	public static void PreProcessAllTrees(ArrayList<Tree> all_trees) {
 		for (Tree t : all_trees) {
-			TreeNode t_root = t.GetRootNode();
-			PreProcessTreeNode(t_root, "0");
-		}
-	}
-	
-	private static void PreProcessTreeNode(TreeNode t_root, String t_path) {
-		Assert.isTrue(t_root.GetTreeUid() == null);
-		t_root.SetTreeUid(t_path);
-		ArrayList<TreeNode> childs = t_root.GetChildren();
-		int sib_index = -1;
-		for (TreeNode child : childs) {
-			sib_index++;
-			PreProcessTreeNode(child, t_path + " " + sib_index);
+			t.PreProcessTree();
 		}
 	}
 	

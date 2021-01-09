@@ -1,5 +1,7 @@
 package bpe.skt;
 
+import tree.util.TreeNodePairUtil;
+
 public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	String node = null;
@@ -28,6 +30,10 @@ public class TreeNodeTwoMerge implements Comparable<TreeNodeTwoMerge> {
 	
 	public String GetMerged() {
 		return merged;
+	}
+	
+	public String GetParentChildPairPresentation() {
+		return TreeNodePairUtil.GetParentChildPairPresentation(parent, node);
 	}
 	
 	@Override

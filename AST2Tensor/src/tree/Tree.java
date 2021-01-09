@@ -5,16 +5,21 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
+import bpe.skt.TreeNodeTwoMerge;
 import eclipse.jdt.JDTASTHelper;
 import translation.tensor.util.TokenKindUtil;
+import tree.util.TreeNodePairUtil;
+import unit.PairContainer;
+import unit.util.PairContainerUtil;
 import util.PrintUtil;
 import util.YStringUtil;
 
 public class Tree implements Comparable<Tree> {
-
+	
 	TreeFlatten tf = new TreeFlatten();
 	TreeNode root = null;
 //	TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
+	TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>> parent_child_node_pairs = null;
 	
 	public Tree(TreeNode root) {
 		this.root = root;
@@ -43,19 +48,19 @@ public class Tree implements Comparable<Tree> {
 		return root;
 	}
 	
-	public TreeMap<String, ArrayList<TreeNode>> GetAllContentNodeMap() {
-		TreeMap<String, ArrayList<TreeNode>> map = new TreeMap<String, ArrayList<TreeNode>>();
-		ArrayList<TreeNode> nodes = GetAllNodes();
-		for (TreeNode node : nodes) {
-			ArrayList<TreeNode> inners = map.get(node.GetContent());
-			if (inners == null) {
-				inners = new ArrayList<TreeNode>();
-				map.put(node.GetContent(), inners);
-			}
-			inners.add(node);
-		}
-		return map;
-	}
+//	public TreeMap<String, ArrayList<TreeNode>> GetAllContentNodeMap() {
+//		TreeMap<String, ArrayList<TreeNode>> map = new TreeMap<String, ArrayList<TreeNode>>();
+//		ArrayList<TreeNode> nodes = GetAllNodes();
+//		for (TreeNode node : nodes) {
+//			ArrayList<TreeNode> inners = map.get(node.GetContent());
+//			if (inners == null) {
+//				inners = new ArrayList<TreeNode>();
+//				map.put(node.GetContent(), inners);
+//			}
+//			inners.add(node);
+//		}
+//		return map;
+//	}
 	
 	public ArrayList<TreeNode> GetAllNodes() {
 //		TreeMap<String, TreeNode> nodes = new TreeMap<String, TreeNode>();
@@ -293,5 +298,96 @@ public class Tree implements Comparable<Tree> {
 			DebugPrintEachNode(child);
 		}
 	}
+	
+	public void PreProcessTree() {
+		Assert.isTrue(parent_child_node_pairs == null);
+		parent_child_node_pairs = new TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>>();
+		root.PreProcessTreeNode("0", parent_child_node_pairs);
+	}
 
+	public boolean ApplyMerge(TreeNodeTwoMerge pair) {
+		boolean really_merged = false;
+		ArrayList<PairContainer<TreeNode, TreeNode>> pairs = parent_child_node_pairs.get(pair.GetParentChildPairPresentation());
+		if (pairs == null || pairs.size() == 0) {
+			return false;
+		}
+		for (PairContainer<TreeNode, TreeNode> pc : pairs) {
+			String parent_str = pair.GetParent();
+			String node_str = pair.GetNode();
+			
+			TreeNode tn_par = pc.k;
+			TreeNode tn = pc.v;
+			
+			if (parent_str.equals(tn_par.GetContent()) && node_str.contentEquals(tn.GetContent())) {
+				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+				if (pair.GetNodeIndex() == tn_sib_index) {
+					// exactly matched
+					TreeNode tn_par_par = tn_par.GetParent();
+					if (tn_par_par != null) {
+						RemoveFromParentChildNodePairs(tn_par_par, tn_par);
+					}
+					MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.GetBinding(), pair.GetMerged(), tn_par.GetTreeWholeContent());
+					m_tn_par.SetParent(tn_par_par);
+					m_tn_par.AppendAllChildren(tn_par.GetChildren());
+					ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();
+					for (TreeNode m_child : m_childs) {
+						m_child.SetParent(m_tn_par);
+						RemoveFromParentChildNodePairs(tn_par, m_child);
+					}
+					TreeNode child = m_childs.remove(tn_sib_index);
+					m_tn_par.SetUpMergedInformation(tn_par, child);
+					ArrayList<TreeNode> ccs = child.GetChildren();
+					int ccs_len = ccs.size();
+					for (int cl = ccs_len - 1; cl >= 0; cl--) {
+						TreeNode child_child = ccs.get(cl);
+						m_childs.add(tn_sib_index, child_child);
+						child_child.SetParent(m_tn_par);
+						RemoveFromParentChildNodePairs(child, child_child);
+					}
+					
+					for (TreeNode m_child : m_childs) {
+						AddToParentChildNodePairs(m_tn_par, m_child);
+					}
+					
+					
+					if (tn_par_par == null) {
+						// tn_par is the root node and tn_par_par is null. 
+						Assert.isTrue(this.GetRootNode() == tn_par);
+						this.SetRootNode(m_tn_par);
+					} else {
+						ArrayList<TreeNode> sibs = tn_par_par.GetChildren();
+						int tn_sib_idx = sibs.indexOf(tn_par);
+						Assert.isTrue(tn_sib_idx >= 0);
+						sibs.set(tn_sib_idx, m_tn_par);
+						
+						AddToParentChildNodePairs(tn_par_par, m_tn_par);
+					}
+					
+					really_merged = true;
+				}
+			}
+		}
+		return really_merged;
+	}
+	
+	private void RemoveFromParentChildNodePairs(TreeNode tn_par_par, TreeNode tn_par) {
+		String key = TreeNodePairUtil.GetParentChildPairPresentation(tn_par_par.GetContent(), tn_par.GetContent());
+		ArrayList<PairContainer<TreeNode, TreeNode>> pcnps = parent_child_node_pairs.get(key);
+		PairContainer<TreeNode, TreeNode> rmd = PairContainerUtil.RemovePairContainerFromListAccordingToValue(pcnps, tn_par);
+		Assert.isTrue(rmd != null);
+		if (pcnps.size() == 0) {
+			parent_child_node_pairs.remove(key);
+		}
+	}
+	
+	private void AddToParentChildNodePairs(TreeNode tn_par_par, TreeNode tn_par) {
+		String n_pcp = TreeNodePairUtil.GetParentChildPairPresentation(tn_par_par.GetContent(), tn_par.GetContent());
+		ArrayList<PairContainer<TreeNode, TreeNode>> pvnps = parent_child_node_pairs.get(n_pcp);
+		if (pvnps == null) {
+			pvnps = new ArrayList<PairContainer<TreeNode, TreeNode>>();
+			parent_child_node_pairs.put(n_pcp, pvnps);
+		}
+		pvnps.add(new PairContainer<TreeNode, TreeNode>(tn_par_par, tn_par));
+	}
+	
 }
