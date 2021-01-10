@@ -304,8 +304,15 @@ public class Tree implements Comparable<Tree> {
 		parent_child_node_pairs = new TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>>();
 		root.PreProcessTreeNode("0", parent_child_node_pairs);
 	}
-
-	public boolean ApplyMerge(TreeNodeTwoMerge pair) {
+	
+	public void ApplyMerge(TreeNodeTwoMerge pair) {
+		boolean am_res = true;
+		while (am_res) {
+			am_res = ApplyOneMerge(pair);
+		}
+	}
+	
+	public boolean ApplyOneMerge(TreeNodeTwoMerge pair) {
 		boolean really_merged = false;
 		ArrayList<PairContainer<TreeNode, TreeNode>> pairs = parent_child_node_pairs.get(pair.GetParentChildPairPresentation());
 		if (pairs == null || pairs.size() == 0) {
