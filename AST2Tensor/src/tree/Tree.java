@@ -311,6 +311,8 @@ public class Tree implements Comparable<Tree> {
 		if (pairs == null || pairs.size() == 0) {
 			return false;
 		}
+		
+		PairContainer<TreeNode, TreeNode> match_pc = null;
 		for (PairContainer<TreeNode, TreeNode> pc : pairs) {
 			String parent_str = pair.GetParent();
 			String node_str = pair.GetNode();
@@ -321,51 +323,58 @@ public class Tree implements Comparable<Tree> {
 			if (parent_str.equals(tn_par.GetContent()) && node_str.contentEquals(tn.GetContent())) {
 				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
 				if (pair.GetNodeIndex() == tn_sib_index) {
-					// exactly matched
-					TreeNode tn_par_par = tn_par.GetParent();
-					if (tn_par_par != null) {
-						RemoveFromParentChildNodePairs(tn_par_par, tn_par);
-					}
-					MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.GetBinding(), pair.GetMerged(), tn_par.GetTreeWholeContent());
-					m_tn_par.SetParent(tn_par_par);
-					m_tn_par.AppendAllChildren(tn_par.GetChildren());
-					ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();
-					for (TreeNode m_child : m_childs) {
-						m_child.SetParent(m_tn_par);
-						RemoveFromParentChildNodePairs(tn_par, m_child);
-					}
-					TreeNode child = m_childs.remove(tn_sib_index);
-					m_tn_par.SetUpMergedInformation(tn_par, child);
-					ArrayList<TreeNode> ccs = child.GetChildren();
-					int ccs_len = ccs.size();
-					for (int cl = ccs_len - 1; cl >= 0; cl--) {
-						TreeNode child_child = ccs.get(cl);
-						m_childs.add(tn_sib_index, child_child);
-						child_child.SetParent(m_tn_par);
-						RemoveFromParentChildNodePairs(child, child_child);
-					}
-					
-					for (TreeNode m_child : m_childs) {
-						AddToParentChildNodePairs(m_tn_par, m_child);
-					}
-					
-					
-					if (tn_par_par == null) {
-						// tn_par is the root node and tn_par_par is null. 
-						Assert.isTrue(this.GetRootNode() == tn_par);
-						this.SetRootNode(m_tn_par);
-					} else {
-						ArrayList<TreeNode> sibs = tn_par_par.GetChildren();
-						int tn_sib_idx = sibs.indexOf(tn_par);
-						Assert.isTrue(tn_sib_idx >= 0);
-						sibs.set(tn_sib_idx, m_tn_par);
-						
-						AddToParentChildNodePairs(tn_par_par, m_tn_par);
-					}
-					
-					really_merged = true;
+					match_pc = pc;
+					break;
 				}
 			}
+		}
+		
+		if (match_pc != null) {
+			TreeNode tn_par = match_pc.k;
+			TreeNode tn = match_pc.v;
+			int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+			// exactly matched
+			TreeNode tn_par_par = tn_par.GetParent();
+			if (tn_par_par != null) {
+				RemoveFromParentChildNodePairs(tn_par_par, tn_par);
+			}
+			MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.GetBinding(), pair.GetMerged(), tn_par.GetTreeWholeContent());
+			m_tn_par.SetParent(tn_par_par);
+			m_tn_par.AppendAllChildren(tn_par.GetChildren());
+			ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();
+			for (TreeNode m_child : m_childs) {
+				m_child.SetParent(m_tn_par);
+				RemoveFromParentChildNodePairs(tn_par, m_child);
+			}
+			TreeNode child = m_childs.remove(tn_sib_index);
+			m_tn_par.SetUpMergedInformation(tn_par, child);
+			ArrayList<TreeNode> ccs = child.GetChildren();
+			int ccs_len = ccs.size();
+			for (int cl = ccs_len - 1; cl >= 0; cl--) {
+				TreeNode child_child = ccs.get(cl);
+				m_childs.add(tn_sib_index, child_child);
+				child_child.SetParent(m_tn_par);
+				RemoveFromParentChildNodePairs(child, child_child);
+			}
+			
+			for (TreeNode m_child : m_childs) {
+				AddToParentChildNodePairs(m_tn_par, m_child);
+			}
+			
+			if (tn_par_par == null) {
+				// tn_par is the root node and tn_par_par is null. 
+				Assert.isTrue(this.GetRootNode() == tn_par);
+				this.SetRootNode(m_tn_par);
+			} else {
+				ArrayList<TreeNode> sibs = tn_par_par.GetChildren();
+				int tn_sib_idx = sibs.indexOf(tn_par);
+				Assert.isTrue(tn_sib_idx >= 0);
+				sibs.set(tn_sib_idx, m_tn_par);
+				
+				AddToParentChildNodePairs(tn_par_par, m_tn_par);
+			}
+			
+			really_merged = true;
 		}
 		return really_merged;
 	}
