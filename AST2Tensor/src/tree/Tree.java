@@ -347,6 +347,7 @@ public class Tree implements Comparable<Tree> {
 				RemoveFromParentChildNodePairs(tn_par, m_child);
 			}
 			TreeNode child = m_childs.remove(tn_sib_index);
+			Assert.isTrue(child == tn);
 			m_tn_par.SetUpMergedInformation(tn_par, child);
 			ArrayList<TreeNode> ccs = child.GetChildren();
 			int ccs_len = ccs.size();
