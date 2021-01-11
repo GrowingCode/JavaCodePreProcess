@@ -36,8 +36,11 @@ public class StatementScoreGenerator extends TreeVisitor {
 	}
 	
 	public double GetScore() {
-		Assert.isTrue(token_all_num > 0);
-		double valid_rate = (token_all_num - token_unk_num) / (token_all_num * 1.0);
+		Assert.isTrue(token_all_num >= token_unk_num);
+		double valid_rate = 1.0;
+		if (token_all_num > 0) {
+			valid_rate = (token_all_num - token_unk_num) / (token_all_num * 1.0);
+		}
 		return valid_rate;
 	}
 
