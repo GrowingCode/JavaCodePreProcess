@@ -336,7 +336,7 @@ public class SktLogicUtil {
 							tensor_tool.pe_to_each.put(im.GetExactPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
 //							}
 						} else {
-							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), tensor_tool.pe_to_each_str.get(pe)));
+							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), tensor_tool.pe_to_each_str.get(pe)), "pe:" + pe + "====Not equal two lists, list1:" + PrintUtil.PrintListToString(tf.skt_pe_e_struct.get(index), "list1") + "==== list2:" + PrintUtil.PrintListToString(tensor_tool.pe_to_each_str.get(pe), "list2"));
 						}
 					}
 					
