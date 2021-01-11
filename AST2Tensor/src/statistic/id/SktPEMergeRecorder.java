@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
+
 import com.google.gson.Gson;
 
 import bpe.skt.SktPETreesUtil;
@@ -23,6 +25,9 @@ public class SktPEMergeRecorder {
 	
 //	, Map<String, Integer> token_times
 	public void Initialize(List<TreeNodeTwoMerge> merges) {
+		for (TreeNodeTwoMerge merge : merges) {
+			Assert.isTrue(!merge.GetMerged().contains("\n"));
+		}
 		this.merges.addAll(merges);
 //		this.token_times.putAll(token_times);
 	}

@@ -346,6 +346,12 @@ public class Tree implements Comparable<Tree> {
 				RemoveFromParentChildNodePairs(tn_par_par, tn_par);
 			}
 			MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.GetBinding(), pair.GetMerged(), tn_par.GetTreeWholeContent());
+			
+//			if (m_tn_par.GetContent().equals("#h&&#h&&#h")) {
+//				System.err.println("#h&&#h&&#h merge tree whole content:" + m_tn_par.GetTreeWholeContent());
+//				System.exit(1);
+//			}
+			
 			m_tn_par.SetParent(tn_par_par);
 			m_tn_par.AppendAllChildren(tn_par.GetChildren());
 			ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();

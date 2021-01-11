@@ -93,6 +93,8 @@ public class TreeNode {
 	
 	public void PreProcessTreeNode(String t_path, TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>> parent_child_node_pairs) {
 		Assert.isTrue(this.GetTreeUid() == null);
+		Assert.isTrue(!this.GetContent().contains("\n"));
+//		Assert.isTrue(!this.GetContent().equals("#h&&#h&&#h"), "strange node clazz:" + GetClazz() + "#node whole content:" + GetTreeWholeContent());
 		this.SetTreeUid(t_path);
 		ArrayList<TreeNode> childs = this.GetChildren();
 		int sib_index = -1;

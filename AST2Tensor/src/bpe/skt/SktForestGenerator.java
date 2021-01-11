@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -16,9 +15,11 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.CharacterLiteral;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
 
 import eclipse.jdt.JDTASTHelper;
 import eclipse.search.JDTSearchForChildrenOfASTNode;
@@ -223,17 +224,16 @@ class SktTreeGenerator extends ASTVisitor {
 						prev_c_start = c_start;
 					}
 					node_cnt = node_cnt_builder.toString().trim();
-					node_cnt = node_cnt.replaceAll("\\s+", " ");
-					if (node_cnt.startsWith("{")) {
-						Assert.isTrue(node_cnt.endsWith("}"));
-//						with_block_types.add(node.getClass().getName());
-						if (Pattern.matches("\\{\\s*\\}", node_cnt)) {
-							node_cnt = "{}";
-						}
-//						System.err.println("{ } wrapped node cnt: " + node_cnt + "#node oricnt:" + node.toString());
-//						Assert.isTrue(Pattern.matches("\\{\\s*\\}", node_cnt) || node_cnt.contains(","), "unmatch content:" + node_cnt);
-//						node_cnt = "{}";
-					}
+//					if (node_cnt.startsWith("{")) {
+//						Assert.isTrue(node_cnt.endsWith("}"));
+////						with_block_types.add(node.getClass().getName());
+//						if (Pattern.matches("\\{\\s*\\}", node_cnt)) {
+//							node_cnt = "{}";
+//						}
+////						System.err.println("{ } wrapped node cnt: " + node_cnt + "#node oricnt:" + node.toString());
+////						Assert.isTrue(Pattern.matches("\\{\\s*\\}", node_cnt) || node_cnt.contains(","), "unmatch content:" + node_cnt);
+////						node_cnt = "{}";
+//					}
 //					if (node_cnt.trim().equals("")) Assert.isTrue(node_cnt.equals(""));
 //					node_cnt.equals("#h") || node_cnt.equals("#v")
 				}
@@ -268,7 +268,8 @@ class SktTreeGenerator extends ASTVisitor {
 				}
 				
 				if (real_create) {
-					if (!is_leaf) {
+					node_cnt = node_cnt.replaceAll("\\s+", " ");
+					if (!(node instanceof StringLiteral || node instanceof CharacterLiteral)) {
 						node_cnt = StringUtil.EliminateNonStrSplitWhiteSpace(node_cnt);
 					}
 					TreeNode tn = null;
