@@ -210,14 +210,15 @@ public class SktPETreesUtil {
 //		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
 //		SktPEHandledResult result = new SktPEHandledResult();
 		int m_size = merges.size();
+		int t_size = skts.size();
 //			boolean merge_useful = false;
 //			TreeNodeTwoMerge marked_merge = merge;
-		for (Tree skt : skts) {
+		for (int i=0;i<m_size;i++) {
+			TreeNodeTwoMerge merge = merges.get(i);
+			for (Tree skt : skts) {
 //				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
 //				Collection<TreeNode> tns = nodes.values();
 //			TreeMap<String, ArrayList<TreeNode>> mp = skt.GetAllContentNodeMap();
-			for (int i=0;i<m_size;i++) {
-				TreeNodeTwoMerge merge = merges.get(i);
 				skt.ApplyMerge(merge);
 //				ArrayList<TreeNode> tns = skt.GetAllNodes();
 //				for (TreeNode tn : tns) {
@@ -233,6 +234,8 @@ public class SktPETreesUtil {
 //					}
 //				}
 			}
+			String merge_info = "All tree size:" + t_size + "#merge turn:" + i + " #handled merge:" + merge;
+			DebugLogger.Log(merge_info);
 		}
 //			if (merge_useful) {
 //				ArrayList<String> ll = new ArrayList<String>();
