@@ -1456,5 +1456,23 @@ public class IDManager {
 		// api_comb_hit_num);
 		// + "#Vocabulary_API_Comb_Size:" + api_comb_id_map.size()
 	}
+	
+	
+	public int GetAndRegistExtraExactSkeletonID(String skt) {
+		return GetAndRegistExtraExactID(skeleton_id_map, skt);
+	}
+	
+	public int GetAndRegistExtraExactPESkeletonID(String skt_pe) {
+		return GetAndRegistExtraExactID(pe_skeleton_id_map, skt_pe);
+	}
+	
+	private int GetAndRegistExtraExactID(TreeMap<String, Integer> extra_id_map, String skt) {
+		Integer skt_id = extra_id_map.get(skt);
+		if (skt_id == null) {
+			skt_id = extra_id_map.size();
+			extra_id_map.put(skt, skt_id);
+		}
+		return skt_id;
+	}
 
 }

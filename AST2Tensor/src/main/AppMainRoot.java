@@ -189,12 +189,6 @@ public class AppMainRoot implements IApplication {
 			System.out.println("==== IDCount End ====");
 		}
 		IDManager im = new IDManager(id_tool);
-		{
-			MetaOfApp.SaveToDirectory();
-			id_tool.cnc.SaveToDirectory(MetaOfApp.DataDirectory);
-			im.SaveToDirectory(MetaOfApp.DataDirectory);
-//			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
-		}
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);
 //			tr.FullFillIDManager(im);
@@ -260,6 +254,14 @@ public class AppMainRoot implements IApplication {
 		TreeMap<String, Integer> meta_of_app_handle = new TreeMap<String, Integer>();
 		meta_of_app_handle.put("ProjectSize", proj_num);
 		JsonPrintUtil.PrintMapToJsonFile(meta_of_app_handle, MetaOfApp.MetaDirectory, "meta_of_app_handle.json");
+		
+		System.out.println("==== Save IDManager ====");
+		{
+			MetaOfApp.SaveToDirectory();
+			id_tool.cnc.SaveToDirectory(MetaOfApp.DataDirectory);
+			im.SaveToDirectory(MetaOfApp.DataDirectory);
+//			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
+		}
 		
 		SystemUtil.Flush();
 		SystemUtil.Delay(2500);

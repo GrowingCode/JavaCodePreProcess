@@ -34,7 +34,6 @@ import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
 import unit.PairContainer;
-import util.ListUtil;
 import util.MapUtil;
 import util.PrintUtil;
 import util.YStringUtil;
@@ -284,28 +283,37 @@ public class SktLogicUtil {
 					is_var.addAll(tf.skt_token_is_var);
 					
 					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
-					ArrayList<Integer> exact_skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetExactSkeletonID");
-					if (tensor_tool.one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
+					ArrayList<Integer> exact_skt_one_ids = new ArrayList<Integer>();// (tf.skt_one_struct, im, "GetExactSkeletonID");
+					
+					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
+					
+					if (!tensor_tool.one_to_each_str.containsKey(tf.skt_one_struct.get(0))) {
+						tensor_tool.one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
+//						if (skt_one_ids.get(0) > 2) {
+						tensor_tool.one_to_each.put(skt_one_ids.get(0), skt_each_ids);
+					}
+					
+					{
 						String str1 = PrintUtil.PrintListToString(tf.skt_one_e_struct, "");
 						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_each_str.get(tf.skt_one_struct.get(0)), "");
-						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
+						if (!str1.equals(str2)) {
+							int exid = im.GetAndRegistExtraExactSkeletonID("YYX SkeletonID, MUST unseen:" + "==" + tf.skt_one_struct.get(0) + "==" + str1);
+							exact_skt_one_ids.add(exid);
+						} else {
+							exact_skt_one_ids.add(skt_one_ids.get(0));
+						}
+						System.err.println("Warning one:" + tf.skt_one_struct.get(0) + "#unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
+//						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
 					}
-					tensor_tool.one_to_each_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_one_e_struct));
-					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
-//					if (skt_one_ids.get(0) > 2) {
-					tensor_tool.one_to_each.put(exact_skt_one_ids.get(0), skt_each_ids);
-//					}
 					
-					if (tensor_tool.one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
-						String str1 = PrintUtil.PrintListToString(tf.skt_pe_struct, "");
-						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_pe_str.get(tf.skt_one_struct.get(0)), "");
-						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_pe, str1:" + str1 + "#str2:" + str2);
-					}
-					tensor_tool.one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
-					ArrayList<Integer> skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID");
-					ArrayList<Integer> exact_skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetExactPESkeletonID");
+//					if (tensor_tool.one_to_pe_str.containsKey(tf.skt_one_struct.get(0))) {
+//						String str1 = PrintUtil.PrintListToString(tf.skt_pe_struct, "");
+//						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_pe_str.get(tf.skt_one_struct.get(0)), "");
+//						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_pe, str1:" + str1 + "#str2:" + str2);
+//					}
+//					tensor_tool.one_to_pe_str.put(tf.skt_one_struct.get(0), new ArrayList<String>(tf.skt_pe_struct));
 //					if (skt_one_ids.get(0) > 2) {
-					tensor_tool.one_to_pe.put(exact_skt_one_ids.get(0), skt_pe_ids);
+//					tensor_tool.one_to_pe.put(exact_skt_one_ids.get(0), skt_pe_ids);
 //					}
 					
 //					int skt_each_id_valid_count = 0;
@@ -316,16 +324,14 @@ public class SktLogicUtil {
 //						}
 //					}
 					
-					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
-					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, skt_one_ids, exact_skt_one_ids, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, skt_pe_ids, exact_skt_pe_ids, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_e_struct, skt_each_ids, skt_each_ids, tf.skt_token, skt_token_ids);
-					
 //					one_to_each_tree_uid.put(skt_one_id, tf.skt_one_e_struct_tree_uid);
 //					one_h_count.put(skt_one_id, tf.skt_one_struct_h_count.get(0));
 //					one_h_tree_uid.put(skt_one_id, tf.skt_one_struct_h_tree_uid.get(0));
 //					one_v_count.put(skt_one_id, tf.skt_one_struct_v_count.get(0));
 //					one_v_tree_uid.put(skt_one_id, tf.skt_one_struct_v_tree_uid.get(0));
+					
+					ArrayList<Integer> skt_pe_ids = TranslateTokenToID(tf.skt_pe_struct, im, "GetPESkeletonID");
+					ArrayList<Integer> exact_skt_pe_ids = new ArrayList<Integer>();// TranslateTokenToID(tf.skt_pe_struct, im, "GetExactPESkeletonID");
 					
 					int index = -1;
 					for (String pe : tf.skt_pe_struct) {
@@ -335,10 +341,23 @@ public class SktLogicUtil {
 //							if (im.GetPESkeletonID(pe) > 2) {
 							tensor_tool.pe_to_each.put(im.GetExactPESkeletonID(pe), TranslateTokenToID(tf.skt_pe_e_struct.get(index), im, "GetEachSkeletonID"));
 //							}
-						} else {
-							Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), tensor_tool.pe_to_each_str.get(pe)), "pe:" + pe + "====Not equal two lists, list1:" + PrintUtil.PrintListToString(tf.skt_pe_e_struct.get(index), "list1") + "==== list2:" + PrintUtil.PrintListToString(tensor_tool.pe_to_each_str.get(pe), "list2"));
 						}
+						String str1 = PrintUtil.PrintListToString(tf.skt_pe_e_struct, "");
+						String str2 = PrintUtil.PrintListToString(tensor_tool.pe_to_each_str.get(pe), "");
+						if (!str1.equals(str2)) {
+							int exid = im.GetAndRegistExtraExactPESkeletonID("YYX PESkeletonID, MUST unseen:" + "==" + pe + "==" + str1);
+							exact_skt_pe_ids.add(exid);
+						} else {
+							exact_skt_pe_ids.add(im.GetExactPESkeletonID(pe));
+						}
+						System.err.println("Warning pe:" + pe + "#unexpected not equal pe_to_each, str1:" + str1 + "#str2:" + str2);
+//						Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_e_struct.get(index), tensor_tool.pe_to_each_str.get(pe)), "pe:" + pe + "====Not equal two lists, list1:" + PrintUtil.PrintListToString(tf.skt_pe_e_struct.get(index), "list1") + "==== list2:" + PrintUtil.PrintListToString(tensor_tool.pe_to_each_str.get(pe), "list2"));
 					}
+
+					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
+					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, skt_one_ids, exact_skt_one_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, skt_pe_ids, exact_skt_pe_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_e_struct, skt_each_ids, skt_each_ids, tf.skt_token, skt_token_ids);
 					
 //					ArrayList<Integer> hv = new ArrayList<Integer>();
 //					hv.add(0);
