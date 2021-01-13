@@ -299,8 +299,8 @@ public class SktLogicUtil {
 						String str1 = PrintUtil.PrintListToString(tf.skt_one_e_struct, "");
 						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_each_str.get(tf.skt_one_struct.get(0)), "");
 						if (!str1.equals(str2)) {
-							System.err.println("Warning one:" + tf.skt_one_struct.get(0) + "#unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
 							int exid = im.GetAndRegistExtraExactSkeletonID("YYX SkeletonID, MUST unseen:" + "==" + tf.skt_one_struct.get(0) + "==" + str1);
+							System.err.println("Warning one:" + tf.skt_one_struct.get(0) + "#exid:" + exid + "#unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
 							exact_skt_one_ids.add(exid);
 						} else {
 							exact_skt_one_ids.add(dft_exact_skt_id);
@@ -348,8 +348,8 @@ public class SktLogicUtil {
 						String str1 = PrintUtil.PrintListToString(tf.skt_pe_e_struct.get(index), "");
 						String str2 = PrintUtil.PrintListToString(tensor_tool.pe_to_each_str.get(pe), "");
 						if (!str1.equals(str2)) {
-							System.err.println("Warning pe:" + pe + "#unexpected not equal pe_to_each, str1:" + str1 + "#str2:" + str2);
 							int exid = im.GetAndRegistExtraExactPESkeletonID("YYX PESkeletonID, MUST unseen:" + "==" + pe + "==" + str1);
+							System.err.println("Warning pe:" + pe + "#exid:" + exid + "#unexpected not equal pe_to_each, str1:" + str1 + "#str2:" + str2);
 							exact_skt_pe_ids.add(exid);
 						} else {
 							exact_skt_pe_ids.add(dft_exact_pe_id);
