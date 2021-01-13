@@ -6,6 +6,8 @@ import util.FileUtil;
 
 public class EnvClear {
 	
+	public static boolean remove_sktpe_merges = false;
+	
 	public static void ClearEnv() {
 		File bpe_mj = new File(AppMainRoot.bpe_merges_json);
 		if (bpe_mj.exists()) {
@@ -15,9 +17,11 @@ public class EnvClear {
 //		if (bpe_ttj.exists()) {
 //			bpe_ttj.delete();
 //		}
-		File skt_mj = new File(AppMainRoot.sktpe_merges_json);
-		if (skt_mj.exists()) {
-			skt_mj.delete();
+		if (remove_sktpe_merges) {
+			File skt_mj = new File(AppMainRoot.sktpe_merges_json);
+			if (skt_mj.exists()) {
+				skt_mj.delete();
+			}
 		}
 		
 		File f1 = new File(MetaOfApp.DataDirectory);
