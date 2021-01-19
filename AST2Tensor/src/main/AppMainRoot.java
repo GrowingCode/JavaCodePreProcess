@@ -34,6 +34,7 @@ import statistic.id.TokenRecorder;
 import translation.SktTensorTools;
 import translation.TensorGeneratorForProject;
 import translation.TensorTools;
+import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.StatementTensor;
 import translation.tensor.TensorForProject;
 import util.FileUtil;
@@ -248,6 +249,8 @@ public class AppMainRoot implements IApplication {
 		System.out.println("==== TranslateProject Over ====");
 		System.out.println(im.WordVocabularyInfo());
 		System.out.println(StatementTensor.StatementSummaryInfo());
+		System.out.println("==== Save TensorInfo ====");
+		StatementSkeletonTensor.GenerateSktTensorSummary(MetaOfApp.DataDirectory);
 		AnalysisEnvironment.DeleteAllProjects();
 		
 		int proj_num = all_projs.size();

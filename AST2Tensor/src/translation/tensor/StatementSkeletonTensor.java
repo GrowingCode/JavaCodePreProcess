@@ -1,10 +1,13 @@
 package translation.tensor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
+
+import com.google.gson.Gson;
 
 import main.MetaOfApp;
 import translation.tensor.util.ConservedMemoryUtil;
@@ -12,6 +15,7 @@ import translation.tensor.util.IntsWrapper;
 import translation.tensor.util.RepetitionUtil;
 import translation.tensor.util.TokenIndex;
 import translation.tensor.util.TokenIndexUtil;
+import util.FileUtil;
 import util.StringUtil;
 
 public class StatementSkeletonTensor extends Tensor {
@@ -38,6 +42,13 @@ public class StatementSkeletonTensor extends Tensor {
 	public SktBatchTensor skt_batch_info = null;
 	public SktBatchTensor skt_pe_batch_info = null;
 	public SktBatchTensor skt_each_batch_info = null;
+	
+	public static int max_skt_number_of_one_statement = Integer.MIN_VALUE;
+	public static int max_token_number_of_one_statement = Integer.MIN_VALUE;
+	public static int max_skt_number_of_pe_statement = Integer.MIN_VALUE;
+	public static int max_token_number_of_pe_statement = Integer.MIN_VALUE;
+	public static int max_skt_number_of_e_statement = Integer.MIN_VALUE;
+	public static int max_token_number_of_e_statement = Integer.MIN_VALUE;
 	
 	public StatementSkeletonTensor(TensorInfo tinfo, String sig, IntsWrapper skt_batch_relative_part_max, IntsWrapper skt_pe_batch_relative_part_max, IntsWrapper skt_each_batch_relative_part_max) {
 		super(tinfo);
@@ -87,16 +98,25 @@ public class StatementSkeletonTensor extends Tensor {
 	public void StoreStatementSkeletonBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor one_stmt = HandleSktInfo(skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, skt_exact, token_str, token);
 		skt_batch_info.Merge(one_stmt);
+		
+		max_skt_number_of_one_statement = Math.max(max_skt_number_of_one_statement, skt_str.size());
+		max_token_number_of_one_statement = Math.max(max_token_number_of_one_statement, token_str.size());
 	}
 	
 	public void StoreStatementSkeletonPEBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor one_stmt = HandleSktInfo(skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, skt_exact, token_str, token);
 		skt_pe_batch_info.Merge(one_stmt);
+		
+		max_skt_number_of_pe_statement = Math.max(max_skt_number_of_pe_statement, skt_str.size());
+		max_token_number_of_pe_statement = Math.max(max_token_number_of_pe_statement, token_str.size());
 	}
 	
 	public void StoreStatementSkeletonEachBatchInfo(int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
 		SktBatchTensor one_stmt = HandleSktInfo(skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, skt, skt_exact, token_str, token);
 		skt_each_batch_info.Merge(one_stmt);
+		
+		max_skt_number_of_e_statement = Math.max(max_skt_number_of_e_statement, skt_str.size());
+		max_token_number_of_e_statement = Math.max(max_token_number_of_e_statement, token_str.size());
 	}
 	
 	private SktBatchTensor HandleSktInfo(IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> token) {
@@ -254,6 +274,25 @@ public class StatementSkeletonTensor extends Tensor {
 			result.append(r.trim() + separator);
 		}
 		return result.toString();
+	}
+	
+	public static void GenerateSktTensorSummary(String dir) {
+		Gson gson = new Gson();
+		TreeMap<String, Integer> meta_of_skt = new TreeMap<String, Integer>();
+		meta_of_skt.put("max_skt_number_of_one_statement", max_skt_number_of_one_statement);
+		meta_of_skt.put("max_token_number_of_one_statement", max_token_number_of_one_statement);
+		meta_of_skt.put("max_skt_number_of_pe_statement", max_skt_number_of_pe_statement);
+		meta_of_skt.put("max_token_number_of_pe_statement", max_token_number_of_pe_statement);
+		meta_of_skt.put("max_skt_number_of_e_statement", max_skt_number_of_e_statement);
+		meta_of_skt.put("max_token_number_of_e_statement", max_token_number_of_e_statement);
+		FileUtil.WriteToFile(new File(dir + "/" + "All_skt_tensor_summary.json"), gson.toJson(meta_of_skt));
+		String skt_meta = "max_skt_number_of_one_statement:" + max_skt_number_of_one_statement
+				+ "\n" + "max_token_number_of_one_statement:" + max_token_number_of_one_statement
+				+ "\n" + "max_skt_number_of_pe_statement:" + max_skt_number_of_pe_statement
+				+ "\n" + "max_token_number_of_pe_statement:" + max_token_number_of_pe_statement
+				+ "\n" + "max_skt_number_of_e_statement:" + max_skt_number_of_e_statement
+				+ "\n" + "max_token_number_of_e_statement:" + max_token_number_of_e_statement;
+		System.out.println(skt_meta);
 	}
 
 }
