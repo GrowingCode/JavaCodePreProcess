@@ -234,7 +234,7 @@ public class SktPETreesUtil {
 //					}
 //				}
 			}
-			String merge_info = "All tree size:" + t_size + "#merge turn:" + i + " #handled merge:" + merge;
+			String merge_info = "All tree size:" + t_size + "#merge turn:" + i;//  + " #handled merge:" + merge
 			DebugLogger.Log(merge_info);
 		}
 //			if (merge_useful) {
