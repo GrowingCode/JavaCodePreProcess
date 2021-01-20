@@ -280,9 +280,13 @@ public class IDManager {
 		Collections.reverse(raw_sk_ht);
 		
 		int i=0;
+		int prev_val = Integer.MAX_VALUE;
 		for (;i<raw_sk_ht.size();i++) {
 			Entry<String, Integer> ent = raw_sk_ht.get(i);
-			if (ent.getValue() < minimum_value_threshold) {
+			int e_val = ent.getValue();
+			Assert.isTrue(prev_val >= e_val);
+			prev_val = e_val;
+			if (e_val < minimum_value_threshold) {
 				break;
 			}
 		}
@@ -293,8 +297,8 @@ public class IDManager {
 		if (hit_num < minimum_num) {
 			hit_num = minimum_num;
 		}
-		if (hit_num > i) {
-			hit_num = i;
+		if (hit_num > raw_sk_ht.size()) {
+			hit_num = raw_sk_ht.size();
 		}
 //		System.out.println(desc + " hit_num:" + hit_num + "#id_map.size():" + id_map.size());
 		Regist(id_map, MapUtil.EntryListToKeyList(raw_sk_ht.subList(0, hit_num)));
