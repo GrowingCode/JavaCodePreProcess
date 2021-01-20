@@ -89,12 +89,12 @@ public class MetaOfApp {
 	public final static int MaximumTokenCapacity = 50000;
 	public final static int MaximumSkeletonTokenCapacity = 25000;
 	
-	public final static int MinimumNotUnkAppearTime = 3;
+	public final static int MinimumNotUnkAppearTime = 2;
 	public final static int MinimumSkeletonNotUnkAppearTime = 2;
 	
 	public static boolean OutOfScopeReplacedByUnk = true;
 	public final static int NumberOfSkeletonUnk = 5;
-	public final static int MinimumNumberOfSkeletonVocabulary = 20;
+	public final static int MinimumNumberOfSkeletonVocabulary = 50;
 	public final static int NumberOfUnk = 5;
 	public final static int MinimumNumberOfVocabulary = 50;
 	public final static int MaxParentTypeRemoveTimes = 1;
