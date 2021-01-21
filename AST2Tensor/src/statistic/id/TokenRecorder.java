@@ -60,7 +60,8 @@ public class TokenRecorder {
 		
 //		Integer val = ;
 		if (not_hit_train.ContainsKey(type_content)) {
-			not_hit_train.RemoveKey(type_content);
+			Integer nh_count = not_hit_train.RemoveKey(type_content);
+			h_count += nh_count;
 		}
 //		Assert.isTrue(val != null);
 		
@@ -74,13 +75,17 @@ public class TokenRecorder {
 
 	public void TokenNotHitInTrainSet(String type_content, Integer count) {
 //		System.out.println("not_hit_train type_content:" + type_content);
-		if (!hit_train.ContainsKey(type_content)) {
+		Integer h_count = hit_train.GetValueBasedOnKey(type_content);
+		if (h_count == null) {
 			Integer nh_count = not_hit_train.GetValueBasedOnKey(type_content);
 			if (nh_count == null) {
 				nh_count = 0;
 			}
 			nh_count += count;
 			not_hit_train.PutKeyValue(type_content, nh_count);
+		} else {
+			h_count += count;
+			hit_train.PutKeyValue(type_content, h_count);
 		}
 	}
 
