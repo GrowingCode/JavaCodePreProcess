@@ -213,7 +213,8 @@ public class SktPETreesUtil {
 		int t_size = skts.size();
 //			boolean merge_useful = false;
 //			TreeNodeTwoMerge marked_merge = merge;
-		for (int i=0;i<m_size;i++) {
+		int r_m_size = Math.min(MetaOfApp.MaximumNumberOfApplyingSkeletonMerge, m_size);
+		for (int i=0;i<r_m_size;i++) {
 			TreeNodeTwoMerge merge = merges.get(i);
 			for (Tree skt : skts) {
 //				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();

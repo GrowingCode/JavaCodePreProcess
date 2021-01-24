@@ -150,13 +150,13 @@ public class IDManager {
 //			id_tool.e_struct_r.not_hit_train.GetOriginMap(),
 //			id_tool.e_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.e_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.e_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
+			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, id_tool.e_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
 			
 //			id_tool.pe_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(pe_skeleton_id_map, reserved_words);
 //			id_tool.pe_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.pe_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.pe_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
+			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumPESkeletonNotUnkAppearTime, id_tool.pe_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
 			
 //			id_tool.one_struct_r.not_hit_train.GetOriginMap(), 
 			Regist(skeleton_id_map, reserved_words);

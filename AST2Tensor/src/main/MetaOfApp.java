@@ -54,6 +54,7 @@ public class MetaOfApp {
 
 	public final static int MinimumThresholdOfMerge = 10;
 	public final static int MinimumThresholdOfSkeletonMerge = 10;
+	public final static int MaximumNumberOfApplyingSkeletonMerge = 2000;
 //	public final static int NumberOfMerges = 2000;
 //	public final static int NumberOfSkeletonMerges = 1000;
 
@@ -86,11 +87,13 @@ public class MetaOfApp {
 	public final static double FilterMinimumScore = 0.0;
 	public final static double FilterRate = 0.2;
 	
-	public final static int MaximumTokenCapacity = 50000;
-	public final static int MaximumSkeletonTokenCapacity = 25000;
+	public final static int MaximumTokenCapacity = 10000;
+	public final static int MaximumSkeletonTokenCapacity = 5000;
 	
 	public final static int MinimumNotUnkAppearTime = 2;
 	public final static int MinimumSkeletonNotUnkAppearTime = 2;
+	public final static int MinimumPESkeletonNotUnkAppearTime = 2;
+	public final static int MinimumEachSkeletonNotUnkAppearTime = 2;
 	
 	public static boolean OutOfScopeReplacedByUnk = true;
 	public final static int NumberOfSkeletonUnk = 0;
