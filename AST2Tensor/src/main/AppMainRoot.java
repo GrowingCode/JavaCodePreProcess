@@ -305,7 +305,7 @@ public class AppMainRoot implements IApplication {
 //			id_tool.stf_r.FlattenAllOriginTrees();
 			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges());
 			stf_r.FlattenAllTrees();
-			SktLogicUtil.FilterPairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
+//			SktLogicUtil.FilterPairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
 			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens((SktTensorTools) tensor_tool, stf_r);
 		} catch (Exception e) {
 			e.printStackTrace();
