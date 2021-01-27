@@ -81,7 +81,7 @@ public class JDTASTHelper {
 //		}
 		if (MetaOfApp.ignore_ast_type.length > 0) {
 			int positon = Arrays.asList(MetaOfApp.ignore_ast_type).indexOf(node.getClass());
-			if (positon >= 0)
+			if (positon > -1)
 			{
 				raw_cnt = MetaOfApp.ignore_ast_dft_value[positon];
 			}

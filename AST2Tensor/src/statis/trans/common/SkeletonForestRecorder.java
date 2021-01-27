@@ -73,7 +73,7 @@ public class SkeletonForestRecorder {
 	public void FlattenAllTrees() {
 		GetAllTrees();
 		for (Tree o_tree : all_trees) {
-			o_tree.FlattenTree();
+			o_tree.FlattenTree(true);
 		}
 	}
 	

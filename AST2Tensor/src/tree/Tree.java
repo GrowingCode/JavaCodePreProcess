@@ -68,6 +68,10 @@ public class Tree implements Comparable<Tree> {
 		GetAllNodes(root, nodes);
 		return nodes;
 	}
+	
+	public TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>> GetParentChildNodePairs() {
+		return parent_child_node_pairs;
+	}
 
 	private void GetAllNodes(TreeNode r_node, ArrayList<TreeNode> nodes) {
 //		nodes.put(r_node.GetContent(), r_node);
@@ -84,13 +88,15 @@ public class Tree implements Comparable<Tree> {
 //		}
 //	}
 
-	public void FlattenTree() {// TreeMap<String, ArrayList<String>> token_composes
+	public void FlattenTree(boolean flatten_one) {// TreeMap<String, ArrayList<String>> token_composes
 //		if (tf.skt_one_struct.size() == 0) {
 		if (tf.skt_one_struct.isEmpty()) {
 //			Assert.isTrue(tf == null);
 //			tf.skt_one_struct_v_count.add(0);
 			FlattenTreeNode(tf, root);// , token_composes
-			FlattenTreeNodeIntoOne(tf, root);
+			if (flatten_one) {
+				FlattenTreeNodeIntoOne(tf, root);
+			}
 //			Assert.isTrue(tf.skt_one_struct.size() == 0);
 			tf.skt_one_struct.add(root.GetContent());
 //			tf.skt_one_struct = root.GetContent();
@@ -330,6 +336,8 @@ public class Tree implements Comparable<Tree> {
 			
 			if (parent_str.equals(tn_par.GetContent()) && node_str.equals(tn.GetContent())) {
 				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+//				System.out.println("tn_sib_index:" + tn_sib_index);
+				Assert.isTrue(tn_sib_index > -1);
 				if (pair.GetNodeIndex() == tn_sib_index) {
 					match_pc = pc;
 					break;
@@ -341,6 +349,7 @@ public class Tree implements Comparable<Tree> {
 			TreeNode tn_par = match_pc.k;
 			TreeNode tn = match_pc.v;
 			int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+			Assert.isTrue(tn_sib_index > -1);
 			// exactly matched
 			TreeNode tn_par_par = tn_par.GetParent();
 			if (tn_par_par != null) {

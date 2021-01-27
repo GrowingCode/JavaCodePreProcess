@@ -16,7 +16,7 @@ import bpe.BPEGeneratorForProject;
 import bpe.skt.SktLogicUtil;
 import bpe.skt.SktPEGeneratorForProject;
 import bpe.skt.TreeNodeTwoMerge;
-import bpe.skt.debug.MultiMergediffTest;
+import bpe.skt.debug.MultiMergeDiffTest;
 import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
 import main.util.AppRunUtil;
@@ -159,7 +159,7 @@ public class AppMainRoot implements IApplication {
 			}
 		}
 		if (MetaOfApp.OnlyDebugTreeMerge) {
-			MultiMergediffTest.Test(id_tool.sktpe_mr);
+			MultiMergeDiffTest.Test(id_tool.sktpe_mr);
 			return IApplication.EXIT_OK;
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);

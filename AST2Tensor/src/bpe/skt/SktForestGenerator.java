@@ -257,7 +257,7 @@ class SktTreeGenerator extends ASTVisitor {
 				boolean real_create = true;
 				if (MetaOfApp.ignore_ast_type.length > 0) {
 					int positon = Arrays.asList(MetaOfApp.ignore_ast_type).indexOf(node.getClass());
-					if (positon >= 0)
+					if (positon > -1)
 					{
 						real_create = false;
 						if (rp_tn != null) {

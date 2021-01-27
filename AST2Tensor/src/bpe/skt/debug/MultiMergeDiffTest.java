@@ -19,7 +19,7 @@ import tree.TreeFlatten;
 import util.PrintUtil;
 import util.SystemUtil;
 
-public class MultiMergediffTest {
+public class MultiMergeDiffTest {
 	
 	public static void Test(SktPEMergeRecorder sktpe_mr) throws Exception {
 		File root_dir = new File(AppMainRoot.data);

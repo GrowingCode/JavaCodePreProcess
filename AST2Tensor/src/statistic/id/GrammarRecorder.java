@@ -29,7 +29,7 @@ public class GrammarRecorder {
 			parent_str = parent.GetContent();
 			ArrayList<TreeNode> siblings = parent.GetChildren();
 			int sib_index = siblings.indexOf(node);
-			if (sib_index > 0) {
+			if (sib_index > -1) {
 				TreeNode prev_sibling = siblings.get(sib_index-1);
 				prev_sibling_str = prev_sibling.GetContent();
 			}
