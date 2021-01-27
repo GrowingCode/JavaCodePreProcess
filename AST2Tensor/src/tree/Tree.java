@@ -269,12 +269,13 @@ public class Tree implements Comparable<Tree> {
 		Assert.isTrue(!(m_child instanceof MergedTreeNode));
 //		String m_child_tree_uid = m_child.GetTreeUid();
 //		String m_child_relative_tree_uid = ExtractRelativeTreeUid(m_child_tree_uid, tree_uid);
+		String cnt = m_child.GetContent();
 		int es_size = tf.skt_pe_e_struct.size();
 //		int es_tu_size = tf.skt_pe_e_struct_tree_uid.size();
 //		Assert.isTrue(es_size == es_tu_size);
-		tf.skt_pe_e_struct.get(es_size-1).add(m_child.GetContent());
+		tf.skt_pe_e_struct.get(es_size-1).add(cnt);
 //		tf.skt_pe_e_struct_tree_uid.get(es_tu_size-1).add(m_child_relative_tree_uid);
-		tf.skt_one_e_struct.add(m_child.GetContent());
+		tf.skt_one_e_struct.add(cnt);
 //		tf.skt_one_e_struct_tree_uid.add(m_child.GetTreeUid());
 	}
 	
@@ -327,7 +328,7 @@ public class Tree implements Comparable<Tree> {
 			TreeNode tn_par = pc.k;
 			TreeNode tn = pc.v;
 			
-			if (parent_str.equals(tn_par.GetContent()) && node_str.contentEquals(tn.GetContent())) {
+			if (parent_str.equals(tn_par.GetContent()) && node_str.equals(tn.GetContent())) {
 				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
 				if (pair.GetNodeIndex() == tn_sib_index) {
 					match_pc = pc;
@@ -396,7 +397,7 @@ public class Tree implements Comparable<Tree> {
 	private void RemoveFromParentChildNodePairs(TreeNode tn_par_par, TreeNode tn_par) {
 		String key = TreeNodePairUtil.GetParentChildPairPresentation(tn_par_par.GetContent(), tn_par.GetContent());
 		ArrayList<PairContainer<TreeNode, TreeNode>> pcnps = parent_child_node_pairs.get(key);
-		PairContainer<TreeNode, TreeNode> rmd = PairContainerUtil.RemovePairContainerFromListAccordingToValue(pcnps, tn_par);
+		PairContainer<TreeNode, TreeNode> rmd = PairContainerUtil.RemovePairContainerFromListAccordingToKeyValue(pcnps, tn_par_par, tn_par);
 		Assert.isTrue(rmd != null);
 		if (pcnps.size() == 0) {
 			parent_child_node_pairs.remove(key);

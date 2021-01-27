@@ -30,6 +30,8 @@ public class MetaOfApp {
 //	public final static int TypeContentHuffTreeStandardChildrenNum = 10000;
 
 	public static boolean ClassLevelTensorGeneration = false;
+	
+	public static boolean OnlyDebugTreeMerge = false;
 
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10
 //	public final static double TreeShouldSplitNodeNumRate = 1.2;

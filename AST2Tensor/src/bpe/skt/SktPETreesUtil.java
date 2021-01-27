@@ -190,7 +190,7 @@ public class SktPETreesUtil {
 //		return bpes;
 //	}
 	
-	public static void ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts) {// , TreeMap<String, ArrayList<String>> token_composes
+	public static void ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts, int merge_num) {// , TreeMap<String, ArrayList<String>> token_composes
 		/* Tree skt_first = skts.iterator().next();
 		ArrayList<TreeNode> skt_first_all_nodes = skt_first.GetAllNodes();
 		boolean encounter = false;
@@ -213,7 +213,7 @@ public class SktPETreesUtil {
 		int t_size = skts.size();
 //			boolean merge_useful = false;
 //			TreeNodeTwoMerge marked_merge = merge;
-		int r_m_size = Math.min(MetaOfApp.MaximumNumberOfApplyingSkeletonMerge, m_size);
+		int r_m_size = Math.min(merge_num, m_size);
 		for (int i=0;i<r_m_size;i++) {
 			TreeNodeTwoMerge merge = merges.get(i);
 			for (Tree skt : skts) {

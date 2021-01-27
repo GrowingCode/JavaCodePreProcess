@@ -56,7 +56,14 @@ public class RoleAssigner {
 	
 	public int AssignRole(String f_path, ICompilationUnit icu) {
 //		String f_path = f.getAbsolutePath();
-		Assert.isTrue(!path_roles.containsKey(f_path), "already contained path:" + f_path);
+//		Assert.isTrue(!path_roles.containsKey(f_path), "already contained path:" + f_path);
+		String icu_path = icu.getPath().toOSString();
+		if (path_roles.containsKey(f_path)) {
+			int ir = path_roles.get(f_path);
+			int raw_r = roles.get(icu_path);
+			Assert.isTrue(ir == raw_r);
+			return path_roles.get(f_path);
+		}
 		Integer raw_p_role = path_roles.get(f_path);
 		Integer p_role = raw_p_role;
 		if (p_role == null) {
@@ -65,16 +72,14 @@ public class RoleAssigner {
 			path_roles.put(f_path, p_role);
 		}
 		
-		String icu_path = icu.getPath().toOSString();
-		Assert.isTrue(!roles.containsKey(icu_path), "already contained path:" + icu_path);
-		Integer raw_role = roles.get(icu_path);
-		Integer role = raw_role;
-		if (role == null) {
-			Assert.isTrue(raw_p_role == null);
+//		Assert.isTrue(!roles.containsKey(icu_path), "already contained path:" + icu_path);
+		Integer role = p_role;
+		if (raw_p_role == null) {
+//			Assert.isTrue(raw_p_role == null);
 			role = p_role;
 			roles.put(icu_path, role);
 		} else {
-			Assert.isTrue((int)raw_role == (int)raw_p_role);
+			Assert.isTrue((int)role == (int)p_role);
 		}
 		return role;
 	}

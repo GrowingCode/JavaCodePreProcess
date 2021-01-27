@@ -53,9 +53,9 @@ public class SkeletonForestRecorder {
 		pfs.clear();
 	}
 
-	public void ApplySktPEMerges(List<TreeNodeTwoMerge> merges) {
+	public void ApplySktPEMerges(List<TreeNodeTwoMerge> merges, int merge_num) {
 		GetAllTrees();
-		SktPETreesUtil.ApplySktPEMergesToTrees(merges, all_trees);// , token_composes
+		SktPETreesUtil.ApplySktPEMergesToTrees(merges, all_trees, merge_num);// , token_composes
 	}
 	
 	public void PreProcessAllForests() {

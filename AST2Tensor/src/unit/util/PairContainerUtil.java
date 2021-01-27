@@ -8,10 +8,10 @@ import unit.PairContainer;
 
 public class PairContainerUtil {
 	
-	public static <K, V> PairContainer<K, V> RemovePairContainerFromListAccordingToValue(ArrayList<PairContainer<K, V>> pcnps, V v) {
+	public static <K, V> PairContainer<K, V> RemovePairContainerFromListAccordingToKeyValue(ArrayList<PairContainer<K, V>> pcnps, K k, V v) {
 		PairContainer<K, V> res = null;
 		for (PairContainer<K, V> pcnp : pcnps) {
-			if (pcnp.v.equals(v)) {
+			if (pcnp.k.equals(k) && pcnp.v.equals(v)) {
 				res = pcnp;
 			}
 		}
