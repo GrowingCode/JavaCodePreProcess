@@ -58,7 +58,7 @@ public class SktPETreesUtil {
 					n_freq += freq;
 					pairs.put(mm, n_freq);
 				} else {
-					Assert.isTrue(rt == val);
+					Assert.isTrue(rt == val || not_merge);
 				}
 			}
 		}
