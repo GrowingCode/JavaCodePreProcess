@@ -48,12 +48,14 @@ public class MetaOfApp {
 
 	public final static int MaximumFollowingStatements = 5;
 
+	public static boolean NotMergeIDLeaf = false;
+	
 //	public static int AddZeroIfNoVariable = 0;
 
 //	public final static boolean ReplaceLeastWithUnk = false;
 
 //	public final static boolean CharInCascadeForm = false;
-
+	
 	public final static int MinimumThresholdOfMerge = 10;
 	public final static int MinimumThresholdOfSkeletonMerge = 10;
 	public final static int MaximumNumberOfApplyingSkeletonMerge = 2000;

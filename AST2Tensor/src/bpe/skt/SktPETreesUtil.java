@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
+import eclipse.jdt.JDTASTHelper;
 import logger.DebugLogger;
 import main.MetaOfApp;
 import tree.Tree;
@@ -37,7 +38,9 @@ public class SktPETreesUtil {
 //				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
 //				TreeNode val = all_nodes.get(key);
 				TreeNode par_val = val.GetParent();
-				if (par_val != null) {
+				boolean not_merge = MetaOfApp.NotMergeIDLeaf && JDTASTHelper.IsIDLeafNode(val.GetClazz());
+				
+				if (par_val != null && !not_merge) {
 					ArrayList<TreeNode> childs = par_val.GetChildren();
 					int idx = childs.indexOf(val);
 					Assert.isTrue(idx > -1);
