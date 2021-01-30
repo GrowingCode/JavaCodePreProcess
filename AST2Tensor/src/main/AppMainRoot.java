@@ -18,7 +18,6 @@ import bpe.skt.SktPEGeneratorForProject;
 import bpe.skt.TreeNodeTwoMerge;
 import bpe.skt.debug.MultiMergeDiffTest;
 import eclipse.project.AnalysisEnvironment;
-import logger.DebugLogger;
 import main.util.AppRunUtil;
 import main.util.HandleOneProject;
 import statis.trans.common.SkeletonForestRecorder;
@@ -64,26 +63,28 @@ public class AppMainRoot implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 //		DebugLogger.Log("Start is invoked!");
-		SystemUtil.Delay(2000);
+		EnvClear.ClearEnv(false, false);
+//		SystemUtil.Delay(2000);
 //		while (!PlatformUI.isWorkbenchRunning()) {
 //			DebugLogger.Log("Waiting the creation of the workbench.");
 //			SystemUtil.Delay(1000);
 //		}
 		{
 			// clear data.
-			DebugLogger.Log(
-					"===== Data Directory:" + System.getProperty("user.home") + "/AST_Tensors" + "; created!!! =====");
+//			DebugLogger.Log(
+//					"===== Data Directory:" + System.getProperty("user.home") + "/AST_Tensors" + "; created!!! =====");
 			File dd = new File(MetaOfApp.DataDirectory);
-			if (dd.exists()) {
-				FileUtil.DeleteFile(dd);
-			}
-			Thread.sleep(5000);
+//			if (dd.exists()) {
+//				FileUtil.DeleteFile(dd);
+//			}
+//			Thread.sleep(5000);
 			dd.mkdirs();
-			Thread.sleep(5000);
 			Assert.isTrue(dd.listFiles().length == 0);
 			// clear projects. 
 			AnalysisEnvironment.DeleteAllProjects();
+			Thread.sleep(2500);
 		}
+		
 		// load and execute the project.
 //		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 //		if (args.length < 2) {
