@@ -1,7 +1,6 @@
 package bpe.skt;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,8 @@ import org.eclipse.core.runtime.Assert;
 import eclipse.jdt.JDTASTHelper;
 import logger.DebugLogger;
 import main.MetaOfApp;
+import statis.trans.common.RoleAssigner;
+import tree.Forest;
 import tree.Tree;
 import tree.TreeNode;
 import unit.PairContainer;
@@ -193,7 +194,7 @@ public class SktPETreesUtil {
 //		return bpes;
 //	}
 	
-	public static void ApplySktPEMergesToTrees(List<TreeNodeTwoMerge> merges, Collection<Tree> skts, int merge_num) {// , TreeMap<String, ArrayList<String>> token_composes
+	public static void ApplySktPEMergesToTrees(ArrayList<Forest> pfs, List<TreeNodeTwoMerge> merges, int merge_num) {// , TreeMap<String, ArrayList<String>> token_composes
 		/* Tree skt_first = skts.iterator().next();
 		ArrayList<TreeNode> skt_first_all_nodes = skt_first.GetAllNodes();
 		boolean encounter = false;
@@ -213,34 +214,50 @@ public class SktPETreesUtil {
 //		Assert.isTrue(token_composes.isEmpty(), "size:" + token_composes.size());
 //		SktPEHandledResult result = new SktPEHandledResult();
 		int m_size = merges.size();
-		int t_size = skts.size();
+		int pf_size = pfs.size();
+//		int t_size = skts.size();
 //			boolean merge_useful = false;
 //			TreeNodeTwoMerge marked_merge = merge;
+		int real_merge_time = 0;
 		int r_m_size = Math.min(merge_num, m_size);
 		for (int i=0;i<r_m_size;i++) {
 			TreeNodeTwoMerge merge = merges.get(i);
-			for (Tree skt : skts) {
-//				TreeMap<String, TreeNode> nodes = skt.GetAllNodes();
-//				Collection<TreeNode> tns = nodes.values();
-//			TreeMap<String, ArrayList<TreeNode>> mp = skt.GetAllContentNodeMap();
-				skt.ApplyMerge(merge);
-//				ArrayList<TreeNode> tns = skt.GetAllNodes();
-//				for (TreeNode tn : tns) {
-//					boolean curr_useful =  
-//					MergeTwoTreeNodesWithNewMergeNodeCreated(skt, mp, merge);// MergeTwoTreeNodesWhileMarkMergePoint
-//					merge_useful = merge_useful | curr_useful;
-//					if (marked_merge == null) {
-//						marked_merge = mark_merge.marked_merge;
-//					} else {
-//						if (mark_merge.merge_useful) {
-//							Assert.isTrue(marked_merge.equals(mark_merge.marked_merge), "one:" + marked_merge + "======" + "two:" + mark_merge.marked_merge);
-//						}
-//					}
-//				}
+			boolean exist_in_train = false;
+			boolean exist_in_test = false;
+			if (MetaOfApp.ApplyTrainTestJoinTreeMerge) {
+				for (int j=0;j<pf_size;j++) {
+					Forest pf = pfs.get(j);
+					ArrayList<Tree> skts = pf.GetAllTrees();
+					for (Tree skt : skts) {
+						if (skt.CanMerge(merge)) {
+							if (pf.GetRole() <= RoleAssigner.train_k) {
+								exist_in_train = exist_in_train | true;
+							} else {
+								exist_in_test = exist_in_test | true;
+							}
+						}
+					}
+				}
 			}
-			String merge_info = "All tree size:" + t_size + "#merge turn:" + i;//  + " #handled merge:" + merge
+			if ((exist_in_train && exist_in_test) || !MetaOfApp.ApplyTrainTestJoinTreeMerge) {
+				boolean r_a_merge = false;
+				for (int j=0;j<pf_size;j++) {
+					Forest pf = pfs.get(j);
+					ArrayList<Tree> skts = pf.GetAllTrees();
+					for (Tree skt : skts) {
+						boolean r_merge = skt.ApplyMerge(merge);
+						r_a_merge = r_a_merge || r_merge;
+					}
+				}
+				if (r_a_merge) {
+					real_merge_time++;
+				}
+			}
+//			"All tree size:" + t_size + 
+			String merge_info = "#merge turn:" + i;//  + " #handled merge:" + merge
 			DebugLogger.Log(merge_info);
 		}
+		System.out.println("valid_merge_num:" + real_merge_time);
 //			if (merge_useful) {
 //				ArrayList<String> ll = new ArrayList<String>();
 //				String t0 = marked_merge.GetMerged();

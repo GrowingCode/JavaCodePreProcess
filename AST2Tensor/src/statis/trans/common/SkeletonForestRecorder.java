@@ -21,6 +21,7 @@ public class SkeletonForestRecorder {
 	ArrayList<ProjectForests> pfs = new ArrayList<ProjectForests>();
 	
 //	TreeMap<String, ArrayList<String>> token_composes = new TreeMap<String, ArrayList<String>>();
+	ArrayList<Forest> all_forests = null;
 	
 	ArrayList<Tree> all_trees = null;
 	
@@ -36,11 +37,13 @@ public class SkeletonForestRecorder {
 	}
 	
 	public ArrayList<Forest> GetAllForests() {
-		ArrayList<Forest> funcs = new ArrayList<Forest>();
-		for (ProjectForests pf : pfs) {
-			funcs.addAll(pf.GetAllForests());
+		if (all_forests == null) {
+			all_forests = new ArrayList<Forest>();
+			for (ProjectForests pf : pfs) {
+				all_forests.addAll(pf.GetAllForests());
+			}
 		}
-		return funcs;
+		return all_forests;
 	}
 	
 	public void AddForests(ArrayList<Forest> funcs) {
@@ -55,7 +58,7 @@ public class SkeletonForestRecorder {
 
 	public void ApplySktPEMerges(List<TreeNodeTwoMerge> merges, int merge_num) {
 		GetAllTrees();
-		SktPETreesUtil.ApplySktPEMergesToTrees(merges, all_trees, merge_num);// , token_composes
+		SktPETreesUtil.ApplySktPEMergesToTrees(all_forests, merges, merge_num);// , token_composes
 	}
 	
 	public void PreProcessAllForests() {

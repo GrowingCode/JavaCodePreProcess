@@ -312,39 +312,19 @@ public class Tree implements Comparable<Tree> {
 		root.PreProcessTreeNode("0", parent_child_node_pairs);
 	}
 	
-	public void ApplyMerge(TreeNodeTwoMerge pair) {
+	public boolean ApplyMerge(TreeNodeTwoMerge pair) {
 		boolean am_res = true;
+		boolean r_res = false;
 		while (am_res) {
 			am_res = ApplyOneMerge(pair);
+			r_res = r_res || am_res;
 		}
+		return r_res;
 	}
 	
 	public boolean ApplyOneMerge(TreeNodeTwoMerge pair) {
 		boolean really_merged = false;
-		ArrayList<PairContainer<TreeNode, TreeNode>> pairs = parent_child_node_pairs.get(pair.GetParentChildPairPresentation());
-		if (pairs == null || pairs.size() == 0) {
-			return false;
-		}
-		
-		PairContainer<TreeNode, TreeNode> match_pc = null;
-		for (PairContainer<TreeNode, TreeNode> pc : pairs) {
-			String parent_str = pair.GetParent();
-			String node_str = pair.GetNode();
-			
-			TreeNode tn_par = pc.k;
-			TreeNode tn = pc.v;
-			
-			if (parent_str.equals(tn_par.GetContent()) && node_str.equals(tn.GetContent())) {
-				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
-//				System.out.println("tn_sib_index:" + tn_sib_index);
-				Assert.isTrue(tn_sib_index > -1);
-				if (pair.GetNodeIndex() == tn_sib_index) {
-					match_pc = pc;
-					break;
-				}
-			}
-		}
-		
+		PairContainer<TreeNode, TreeNode> match_pc = GetMatchedPC(pair);
 		if (match_pc != null) {
 			TreeNode tn_par = match_pc.k;
 			TreeNode tn = match_pc.v;
@@ -401,6 +381,37 @@ public class Tree implements Comparable<Tree> {
 			really_merged = true;
 		}
 		return really_merged;
+	}
+	
+	public boolean CanMerge(TreeNodeTwoMerge pair) {
+		return GetMatchedPC(pair) != null;
+	}
+
+	private PairContainer<TreeNode, TreeNode> GetMatchedPC(TreeNodeTwoMerge pair) {
+		ArrayList<PairContainer<TreeNode, TreeNode>> pairs = parent_child_node_pairs.get(pair.GetParentChildPairPresentation());
+		if (pairs == null || pairs.size() == 0) {
+			return null;
+		}
+		
+		PairContainer<TreeNode, TreeNode> match_pc = null;
+		for (PairContainer<TreeNode, TreeNode> pc : pairs) {
+			String parent_str = pair.GetParent();
+			String node_str = pair.GetNode();
+			
+			TreeNode tn_par = pc.k;
+			TreeNode tn = pc.v;
+			
+			if (parent_str.equals(tn_par.GetContent()) && node_str.equals(tn.GetContent())) {
+				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+//				System.out.println("tn_sib_index:" + tn_sib_index);
+				Assert.isTrue(tn_sib_index > -1);
+				if (pair.GetNodeIndex() == tn_sib_index) {
+					match_pc = pc;
+					break;
+				}
+			}
+		}
+		return match_pc;
 	}
 	
 	private void RemoveFromParentChildNodePairs(TreeNode tn_par_par, TreeNode tn_par) {

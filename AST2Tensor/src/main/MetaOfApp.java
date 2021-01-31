@@ -32,6 +32,8 @@ public class MetaOfApp {
 	public static boolean ClassLevelTensorGeneration = false;
 	
 	public static boolean OnlyDebugTreeMerge = false;
+	
+	public static boolean ApplyTrainTestJoinTreeMerge = true;
 
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10
 //	public final static double TreeShouldSplitNodeNumRate = 1.2;
