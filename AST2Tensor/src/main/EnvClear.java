@@ -6,12 +6,12 @@ import util.FileUtil;
 
 public class EnvClear {
 	
-	public static boolean remove_sktpe_merges = false;
-	
-	public static void ClearEnv() {
-		File bpe_mj = new File(AppMainRoot.bpe_merges_json);
-		if (bpe_mj.exists()) {
-			bpe_mj.delete();
+	public static void ClearEnv(boolean remove_bpe_merges, boolean remove_sktpe_merges) {
+		if (remove_bpe_merges) {
+			File bpe_mj = new File(AppMainRoot.bpe_merges_json);
+			if (bpe_mj.exists()) {
+				bpe_mj.delete();
+			}
 		}
 //		File bpe_ttj = new File(Application.bpe_token_times_json);
 //		if (bpe_ttj.exists()) {
@@ -36,7 +36,7 @@ public class EnvClear {
 	}
 	
 	public static void main(String[] args) {
-		ClearEnv();
+		ClearEnv(true, true);
 	}
 	
 }
