@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -23,71 +24,84 @@ import util.YStringUtil;
 
 public class SktPETreesUtil {
 
-	private static Map<TreeNodeTwoMerge, Integer> GetStats(ArrayList<Tree> vocab) {
-		Map<TreeNodeTwoMerge, Integer> pairs = new TreeMap<TreeNodeTwoMerge, Integer>();
+	private static Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> GetStats(ArrayList<Forest> pfs) {// ArrayList<Tree> vocab
+		Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> pairs = new TreeMap<TreeNodeTwoMerge, PairContainer<Integer, Integer>>();
 //		Set<Tree> vks = vocab.keySet();
-		Iterator<Tree> vk_itr = vocab.iterator();
-		while (vk_itr.hasNext()) {
-			Tree vk = vk_itr.next();
-			ArrayList<TreeNode> all_nodes = vk.GetAllNodes();
-			TreeNode rt = vk.GetRootNode();
-			int freq = 1;// vocab.get(vk);
-//			Set<String> all_keys = all_nodes.keySet();
-//			Iterator<String> ai = all_keys.iterator();
-//			while (ai.hasNext()) {
-			for (TreeNode val : all_nodes) {
-//				String key = ai.next();
-//				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
-//				TreeNode val = all_nodes.get(key);
-				TreeNode par_val = val.GetParent();
-				boolean not_merge = MetaOfApp.NotMergeIDLeaf && JDTASTHelper.IsIDLeafNode(val.GetClazz());
-				
-				if (par_val != null && !not_merge) {
-					ArrayList<TreeNode> childs = par_val.GetChildren();
-					int idx = childs.indexOf(val);
-					Assert.isTrue(idx > -1);
-//					"#h", 
-					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), val.GetContent(), idx);
-					String r_par_val = par_val.GetContent();
-//					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
-//						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
-//					}
-					TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), idx, r_par_val, mgd);//val.GetSiblingIndex()
-					Integer n_freq = pairs.get(mm);
-					if (n_freq == null) {
-						n_freq = 0;
+		for (Forest pf : pfs) {
+			ArrayList<Tree> trees = pf.GetAllTrees();
+			Iterator<Tree> vk_itr = trees.iterator();
+	//		Iterator<Tree> vk_itr = vocab.iterator();
+			while (vk_itr.hasNext()) {
+				Tree vk = vk_itr.next();
+				ArrayList<TreeNode> all_nodes = vk.GetAllNodes();
+				TreeNode rt = vk.GetRootNode();
+				int freq = 1;// vocab.get(vk);
+	//			Set<String> all_keys = all_nodes.keySet();
+	//			Iterator<String> ai = all_keys.iterator();
+	//			while (ai.hasNext()) {
+				for (TreeNode val : all_nodes) {
+	//				String key = ai.next();
+	//				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
+	//				TreeNode val = all_nodes.get(key);
+					TreeNode par_val = val.GetParent();
+					boolean not_merge = MetaOfApp.NotMergeIDLeaf && JDTASTHelper.IsIDLeafNode(val.GetClazz());
+					if (par_val != null && !not_merge) {
+						ArrayList<TreeNode> childs = par_val.GetChildren();
+						int idx = childs.indexOf(val);
+						Assert.isTrue(idx > -1);
+	//					"#h", 
+						String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), val.GetContent(), idx);
+						String r_par_val = par_val.GetContent();
+	//					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
+	//						r_par_val = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(par_val.GetContent(), "#m", idx);
+	//					}
+						TreeNodeTwoMerge mm = new TreeNodeTwoMerge(val.GetContent(), idx, r_par_val, mgd);//val.GetSiblingIndex()
+						PairContainer<Integer, Integer> n_freq = pairs.get(mm);
+						if (n_freq == null) {
+							n_freq = new PairContainer<Integer, Integer>(0, 0);
+							pairs.put(mm, n_freq);
+						}
+						if (pf.GetRole() <= RoleAssigner.train_k) {
+							n_freq.k += freq;
+						} else {
+							n_freq.v += freq;
+						}
+					} else {
+						Assert.isTrue(rt == val || not_merge);
 					}
-					n_freq += freq;
-					pairs.put(mm, n_freq);
-				} else {
-					Assert.isTrue(rt == val || not_merge);
 				}
 			}
 		}
 		return pairs;
 	}
 	
-	private static void AssertAllMerged(ArrayList<Tree> vocab) {
-		Iterator<Tree> vk_itr = vocab.iterator();
-		while (vk_itr.hasNext()) {
-			Tree vk = vk_itr.next();
-			ArrayList<TreeNode> all_nodes = vk.GetAllNodes();
-			Assert.isTrue(all_nodes.size() == 1);
+	private static void AssertAllMerged(ArrayList<Forest> pfs) {// ArrayList<Tree> vocab
+		for (Forest pf : pfs) {
+			ArrayList<Tree> trees = pf.GetAllTrees();
+			Iterator<Tree> vk_itr = trees.iterator();
+			while (vk_itr.hasNext()) {
+				Tree vk = vk_itr.next();
+				ArrayList<TreeNode> all_nodes = vk.GetAllNodes();
+				Assert.isTrue(all_nodes.size() == 1);
+			}
 		}
 	}
 
-	private static void MergeVocab(TreeNodeTwoMerge pair, ArrayList<Tree> old_vocab) {
+	private static void MergeVocab(TreeNodeTwoMerge pair, ArrayList<Forest> pfs) {// ArrayList<Tree> old_vocab
 //		Set<Tree> ov_set = old_vocab.keySet();
-		Iterator<Tree> os_itr = old_vocab.iterator();
-		while (os_itr.hasNext()) {
-			Tree os = os_itr.next();
-			os.ApplyMerge(pair);
-//			ArrayList<TreeNode> ans = os.GetAllNodes();
-////			Set<String> ans_keys = ans.keySet();
-//			for (TreeNode tn : ans) {
-////				TreeNode tn = ans.get(an_key);
-//				MergeTwoTreeNodes(pair, tn);
-//			}
+		for (Forest pf : pfs) {
+			ArrayList<Tree> trees = pf.GetAllTrees();
+			Iterator<Tree> os_itr = trees.iterator();
+			while (os_itr.hasNext()) {
+				Tree os = os_itr.next();
+				os.ApplyMerge(pair);
+//				ArrayList<TreeNode> ans = os.GetAllNodes();
+////				Set<String> ans_keys = ans.keySet();
+//				for (TreeNode tn : ans) {
+////					TreeNode tn = ans.get(an_key);
+//					MergeTwoTreeNodes(pair, tn);
+//				}
+			}
 		}
 	}
 	
@@ -128,8 +142,8 @@ public class SktPETreesUtil {
 	 * @param num_merges
 	 * @return
 	 */
-	public static List<TreeNodeTwoMergeWithFreqs> GenerateSktPEMerges(ArrayList<Tree> vocab) {// , int num_merges
-		DebugLogger.Log("all trees size:" + vocab.size());
+	public static List<TreeNodeTwoMergeWithFreqs> GenerateSktPEMerges(ArrayList<Forest> pfs) {// ArrayList<Tree> vocab, int num_merges
+//		DebugLogger.Log("all trees size:" + vocab.size());
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
 		Map<TreeNodeTwoMergeWithFreqs, Integer> merges = new TreeMap<TreeNodeTwoMergeWithFreqs, Integer>();
 //		if (num_merges == -1) {
@@ -140,7 +154,7 @@ public class SktPETreesUtil {
 //		for (int i=0;i<num_merges;i++) {
 		int turn = 0;
 		while (true) {
-			Map<TreeNodeTwoMerge, Integer> pairs = GetStats(vocab);
+			Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> pairs = GetStats(pfs);
 //			System.out.println("pairs.size():" + pairs.size());
 			if (pairs.size() == 0) {
 				break;
@@ -156,13 +170,16 @@ public class SktPETreesUtil {
 //				break;
 //			}
 //			MapUtil.FindKeyWithMaxValue(pairs);
-			PairContainer<TreeNodeTwoMerge, Integer> best = MapUtil.FindKeyValuePairWithMaxValue(pairs);
+			PairContainer<TreeNodeTwoMerge, Integer> best = FindKeyValuePairWithMaxValueWithFiltering(pairs);
+			if (best == null) {
+				break;
+			}
 			if (best.v < MetaOfApp.MinimumThresholdOfSkeletonMerge) {
 				break;
 			}
 			turn++;
 			DebugLogger.Log("best.v:" + best.v + " turn " + turn + " stats over");
-			MergeVocab(best.k, vocab);
+			MergeVocab(best.k, pfs);
 			String merge_info = "already exist merge:" + best.k + " best.v:" + best.v + "#existing merge turn:" + merges.get(best.k);
 			DebugLogger.Log(merge_info);
 			Assert.isTrue(!merges.containsKey(best.k), merge_info);
@@ -171,7 +188,7 @@ public class SktPETreesUtil {
 		
 		int pred = MetaOfApp.MinimumThresholdOfSkeletonMerge;
 		if (pred == 1) {
-			AssertAllMerged(vocab);
+			AssertAllMerged(pfs);
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");
@@ -181,6 +198,39 @@ public class SktPETreesUtil {
 			res.add(e.getKey());
 		}
 		return res;
+	}
+	
+	private static PairContainer<TreeNodeTwoMerge, Integer> FindKeyValuePairWithMaxValueWithFiltering(Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> pairs) {
+		TreeNodeTwoMerge max_k = null;
+		Integer max_t = null;
+		Integer max = null;
+		Set<TreeNodeTwoMerge> ks = pairs.keySet();
+		Iterator<TreeNodeTwoMerge> k_itr = ks.iterator();
+		while (k_itr.hasNext()) {
+			TreeNodeTwoMerge k = k_itr.next();
+			PairContainer<Integer, Integer> p_t = pairs.get(k);
+			boolean apply_meet = SktMergeApplyCondition.MeetTrainTestJoinCondition(p_t.k, p_t.v);
+			if (!MetaOfApp.GenFilterTrainTestJoinTreeMerge || apply_meet) {
+				Integer t = p_t.k + p_t.v;
+//				Integer cmp = t;
+				if (max == null) {
+					max_k = k;
+					max_t = t;
+					max = t;
+				} else {
+					if (max.compareTo(t) < 0) {
+						max_k = k;
+						max_t = t;
+						max = t;
+					}
+				}
+			}
+		}
+		if (max_k == null || max_t == null) {
+			Assert.isTrue(max_k == null && max_t == null);
+			return null;
+		}
+		return new PairContainer<TreeNodeTwoMerge, Integer>(max_k, max_t);
 	}
 	
 //	public static Set<String> ExtractAllSktPEUnits(Collection<Tree> sktpe_raws) {

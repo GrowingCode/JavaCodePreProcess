@@ -16,7 +16,6 @@ import statistic.IDTools;
 import statistic.id.SktPEMergeRecorder;
 import translation.TensorTools;
 import tree.Forest;
-import tree.Tree;
 import util.SystemUtil;
 
 public class AppSktMergeSetUp {
@@ -97,12 +96,13 @@ class SktPEGenerateMergeForOneProjectHandle implements HandleOneProject {
 			DebugLogger.Log("Forest preprocessed!");
 			
 			ArrayList<Forest> fs = stf_r.GetAllForests();
-			for (Forest f : fs) {
-				ArrayList<Tree> f_trees = f.GetAllTrees();
-				for (Tree t : f_trees) {
-					id_tool.sktpe_mr.EncounterSkeleton(t, 1);
-				}
-			}
+//			for (Forest f : fs) {
+//				ArrayList<Tree> f_trees = f.GetAllTrees();
+//				for (Tree t : f_trees) {
+//					id_tool.sktpe_mr.EncounterSkeleton(t, 1);
+//				}
+//			}
+			id_tool.sktpe_mr.EncounterSkeleton(fs);
 			id_tool.sktpe_mr.GenerateSktPEMerges();// MetaOfApp.NumberOfSkeletonMerges
 			id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
 //			id_tool.stf_r.Clear();

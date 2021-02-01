@@ -33,6 +33,7 @@ public class MetaOfApp {
 	
 	public static boolean OnlyDebugTreeMerge = false;
 	
+	public static boolean GenFilterTrainTestJoinTreeMerge = true;
 	public static boolean ApplyTrainTestJoinTreeMerge = true;
 
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10

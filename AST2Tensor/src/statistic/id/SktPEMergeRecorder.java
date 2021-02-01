@@ -12,14 +12,14 @@ import com.google.gson.Gson;
 import bpe.skt.SktPETreesUtil;
 import bpe.skt.TreeNodeTwoMerge;
 import bpe.skt.TreeNodeTwoMergeWithFreqs;
-import tree.Tree;
+import tree.Forest;
 import util.FileUtil;
 
 public class SktPEMergeRecorder {
 	
 	List<TreeNodeTwoMergeWithFreqs> merges = new LinkedList<TreeNodeTwoMergeWithFreqs>();
 	
-	private ArrayList<Tree> skt_times = new ArrayList<Tree>();//, Integer
+	private ArrayList<Forest> sktf_times = new ArrayList<Forest>();//, Integer
 	
 	public SktPEMergeRecorder() {
 	}
@@ -37,14 +37,14 @@ public class SktPEMergeRecorder {
 		return merges;
 	}
 	
-	public void EncounterSkeleton(Tree skt, int encounter_time) {
+	public void EncounterSkeleton(ArrayList<Forest> fs) {
 //		Integer tt = skt_times.get(skt);
 //		if (tt == null) {
 //			tt = 0;
 //		}
 //		tt += encounter_time;
 //		skt_times.put(skt, tt);
-		skt_times.add(skt);
+		sktf_times.addAll(fs);
 	}
 	
 	public void GenerateSktPEMerges() {// int merge_num
@@ -52,7 +52,7 @@ public class SktPEMergeRecorder {
 //		Map<String, Integer> sub_words = BPEWordsUtil.ExtractAllSubWords(token_times);
 //		PrintUtil.PrintMap(sub_words, "sub_words");
 //		PrintUtil.PrintMap(n_vob, "n_vob");
-		List<TreeNodeTwoMergeWithFreqs> mgs = SktPETreesUtil.GenerateSktPEMerges(skt_times);// , merge_num
+		List<TreeNodeTwoMergeWithFreqs> mgs = SktPETreesUtil.GenerateSktPEMerges(sktf_times);// , merge_num
 //		PrintUtil.PrintList(mgs, "mgs");
 //		BPEHandledResult result = ApplyBPEMergesToTokens(merges, n_vob.keySet());
 //		Set<String> vbs = result.vobs;
@@ -63,7 +63,7 @@ public class SktPEMergeRecorder {
 //		}
 //		System.out.println("==== end printing vocabulary ====");
 		merges.clear();
-		skt_times.clear();
+		sktf_times.clear();
 		merges.addAll(mgs);
 	}
 	
