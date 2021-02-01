@@ -22,7 +22,7 @@ public class MetaOfApp {
 	public final static int all = 5;
 	public final static int train_seen = 2;
 	public final static int train = 2;
-	public final static int valid = 3;
+	public final static int valid = 2;
 	public final static int test = 4;
 	
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
@@ -58,8 +58,8 @@ public class MetaOfApp {
 
 //	public final static boolean CharInCascadeForm = false;
 	
-	public final static int MinimumThresholdOfMerge = 10;
-	public final static int MinimumThresholdOfSkeletonMerge = 10;
+	public final static int MinimumThresholdOfMerge = 100;
+	public final static int MinimumThresholdOfSkeletonMerge = 100;
 	public final static int MaximumNumberOfApplyingSkeletonMerge = 2000;
 //	public final static int NumberOfMerges = 2000;
 //	public final static int NumberOfSkeletonMerges = 1000;
