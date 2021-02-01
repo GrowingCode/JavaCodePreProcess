@@ -312,18 +312,20 @@ public class Tree implements Comparable<Tree> {
 		root.PreProcessTreeNode("0", parent_child_node_pairs);
 	}
 	
-	public boolean ApplyMerge(TreeNodeTwoMerge pair) {
-		boolean am_res = true;
-		boolean r_res = false;
-		while (am_res) {
-			am_res = ApplyOneMerge(pair);
-			r_res = r_res || am_res;
+	public int ApplyMerge(TreeNodeTwoMerge pair) {
+		int count = 0;
+		while (true) {
+			int merge_count = ApplyOneMerge(pair);
+			if (merge_count == 0) {
+				break;
+			}
+			count += merge_count;
 		}
-		return r_res;
+		return count;
 	}
 	
-	public boolean ApplyOneMerge(TreeNodeTwoMerge pair) {
-		boolean really_merged = false;
+	public int ApplyOneMerge(TreeNodeTwoMerge pair) {
+		int really_merged = 0;
 		PairContainer<TreeNode, TreeNode> match_pc = GetMatchedPC(pair);
 		if (match_pc != null) {
 			TreeNode tn_par = match_pc.k;
@@ -378,7 +380,7 @@ public class Tree implements Comparable<Tree> {
 				AddToParentChildNodePairs(tn_par_par, m_tn_par);
 			}
 			
-			really_merged = true;
+			really_merged = 1;
 		}
 		return really_merged;
 	}

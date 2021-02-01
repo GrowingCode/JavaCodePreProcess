@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
+import bpe.skt.util.SktMergeApplyCondition;
 import eclipse.jdt.JDTASTHelper;
 import logger.DebugLogger;
 import main.MetaOfApp;
@@ -224,37 +225,45 @@ public class SktPETreesUtil {
 			TreeNodeTwoMergeWithFreqs merge = merges.get(i);
 			int exist_in_train = 0;
 			int exist_in_test = 0;
-			if (MetaOfApp.ApplyTrainTestJoinTreeMerge) {
-				for (int j=0;j<pf_size;j++) {
-					Forest pf = pfs.get(j);
-					ArrayList<Tree> skts = pf.GetAllTrees();
-					for (Tree skt : skts) {
-						if (skt.CanMerge(merge)) {
-							if (pf.GetRole() <= RoleAssigner.train_k) {
-								exist_in_train += 1;
-							} else {
-								exist_in_test = 1;
-							}
+//			if (MetaOfApp.ApplyTrainTestJoinTreeMerge) {
+			for (int j=0;j<pf_size;j++) {
+				Forest pf = pfs.get(j);
+				ArrayList<Tree> skts = pf.GetAllTrees();
+				for (Tree skt : skts) {
+					if (skt.CanMerge(merge)) {
+						if (pf.GetRole() <= RoleAssigner.train_k) {
+							exist_in_train += 1;
+						} else {
+							exist_in_test += 1;
 						}
 					}
 				}
 			}
-			if ((exist_in_train > 0 && exist_in_test > 0) || !MetaOfApp.ApplyTrainTestJoinTreeMerge) {
-				boolean r_a_merge = false;
+//			}
+			int r_exist_in_train = 0;
+			int r_exist_in_test = 0;
+			int mm_count = 0;
+			boolean meet_join = SktMergeApplyCondition.MeetTrainTestJoinCondition(r_exist_in_train, r_exist_in_test);
+			if (meet_join || !MetaOfApp.ApplyTrainTestJoinTreeMerge) {
 				for (int j=0;j<pf_size;j++) {
 					Forest pf = pfs.get(j);
 					ArrayList<Tree> skts = pf.GetAllTrees();
 					for (Tree skt : skts) {
-						boolean r_merge = skt.ApplyMerge(merge);
-						r_a_merge = r_a_merge || r_merge;
+						int merge_count = skt.ApplyMerge(merge);
+						mm_count += merge_count;
+						if (pf.GetRole() <= RoleAssigner.train_k) {
+							r_exist_in_train += merge_count;
+						} else {
+							r_exist_in_test += merge_count;
+						}
 					}
 				}
-				if (r_a_merge) {
+				if (mm_count > 0) {
 					valid_merge_num++;
 				}
 			}
 //			"All tree size:" + t_size + 
-			String merge_info = "#merge turn:" + i + "#merge freq in witness:" + merge.GetFreqs() + "#exist_in_train:" + exist_in_train + "#exist_in_test:" + exist_in_test;//  + " #handled merge:" + merge
+			String merge_info = "#merge turn:" + i + "#apply join:" + MetaOfApp.ApplyTrainTestJoinTreeMerge + "#meet_join:" + meet_join + "#mm_count:" + mm_count + "#merge freq in witness:" + merge.GetFreqs() + "#exist_in_train:" + exist_in_train + "#exist_in_test:" + exist_in_test + "#r_exist_in_train:" + r_exist_in_train + "#r_exist_in_test:" + r_exist_in_test;//  + " #handled merge:" + merge
 			DebugLogger.Log(merge_info);
 		}
 		System.out.println("valid_merge_num:" + valid_merge_num);
