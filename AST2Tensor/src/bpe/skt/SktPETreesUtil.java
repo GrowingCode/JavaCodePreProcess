@@ -127,10 +127,10 @@ public class SktPETreesUtil {
 	 * @param num_merges
 	 * @return
 	 */
-	public static List<TreeNodeTwoMerge> GenerateSktPEMerges(ArrayList<Tree> vocab) {// , int num_merges
+	public static List<TreeNodeTwoMergeWithFreqs> GenerateSktPEMerges(ArrayList<Tree> vocab) {// , int num_merges
 		DebugLogger.Log("all trees size:" + vocab.size());
 //		PrintUtil.PrintMap(vocab, "to_merge_vocab");
-		Map<TreeNodeTwoMerge, Integer> merges = new TreeMap<TreeNodeTwoMerge, Integer>();
+		Map<TreeNodeTwoMergeWithFreqs, Integer> merges = new TreeMap<TreeNodeTwoMergeWithFreqs, Integer>();
 //		if (num_merges == -1) {
 //			num_merges = Integer.MAX_VALUE;
 //		}
@@ -165,7 +165,7 @@ public class SktPETreesUtil {
 			String merge_info = "already exist merge:" + best.k + " best.v:" + best.v + "#existing merge turn:" + merges.get(best.k);
 			DebugLogger.Log(merge_info);
 			Assert.isTrue(!merges.containsKey(best.k), merge_info);
-			merges.put(best.k, turn);
+			merges.put(new TreeNodeTwoMergeWithFreqs(best.k, best.v), turn);
 		}
 		
 		int pred = MetaOfApp.MinimumThresholdOfSkeletonMerge;
@@ -174,9 +174,9 @@ public class SktPETreesUtil {
 		}
 //		PrintUtil.PrintMap(vocab_r, "vocab_r_in_merging");
 //		PrintUtil.PrintList(merges, "bep_merges");
-		List<Entry<TreeNodeTwoMerge, Integer>> smbv = MapUtil.SortMapByValue(merges);
-		ArrayList<TreeNodeTwoMerge> res = new ArrayList<TreeNodeTwoMerge>();
-		for (Entry<TreeNodeTwoMerge, Integer> e : smbv) {
+		List<Entry<TreeNodeTwoMergeWithFreqs, Integer>> smbv = MapUtil.SortMapByValue(merges);
+		ArrayList<TreeNodeTwoMergeWithFreqs> res = new ArrayList<TreeNodeTwoMergeWithFreqs>();
+		for (Entry<TreeNodeTwoMergeWithFreqs, Integer> e : smbv) {
 			res.add(e.getKey());
 		}
 		return res;
@@ -194,7 +194,7 @@ public class SktPETreesUtil {
 //		return bpes;
 //	}
 	
-	public static void ApplySktPEMergesToTrees(ArrayList<Forest> pfs, List<TreeNodeTwoMerge> merges, int merge_num) {// , TreeMap<String, ArrayList<String>> token_composes
+	public static void ApplySktPEMergesToTrees(ArrayList<Forest> pfs, List<TreeNodeTwoMergeWithFreqs> merges, int merge_num) {// , TreeMap<String, ArrayList<String>> token_composes
 		/* Tree skt_first = skts.iterator().next();
 		ArrayList<TreeNode> skt_first_all_nodes = skt_first.GetAllNodes();
 		boolean encounter = false;
@@ -218,12 +218,12 @@ public class SktPETreesUtil {
 //		int t_size = skts.size();
 //			boolean merge_useful = false;
 //			TreeNodeTwoMerge marked_merge = merge;
-		int real_merge_time = 0;
+		int valid_merge_num = 0;
 		int r_m_size = Math.min(merge_num, m_size);
 		for (int i=0;i<r_m_size;i++) {
-			TreeNodeTwoMerge merge = merges.get(i);
-			boolean exist_in_train = false;
-			boolean exist_in_test = false;
+			TreeNodeTwoMergeWithFreqs merge = merges.get(i);
+			int exist_in_train = 0;
+			int exist_in_test = 0;
 			if (MetaOfApp.ApplyTrainTestJoinTreeMerge) {
 				for (int j=0;j<pf_size;j++) {
 					Forest pf = pfs.get(j);
@@ -231,15 +231,15 @@ public class SktPETreesUtil {
 					for (Tree skt : skts) {
 						if (skt.CanMerge(merge)) {
 							if (pf.GetRole() <= RoleAssigner.train_k) {
-								exist_in_train = exist_in_train | true;
+								exist_in_train += 1;
 							} else {
-								exist_in_test = exist_in_test | true;
+								exist_in_test = 1;
 							}
 						}
 					}
 				}
 			}
-			if ((exist_in_train && exist_in_test) || !MetaOfApp.ApplyTrainTestJoinTreeMerge) {
+			if ((exist_in_train > 0 && exist_in_test > 0) || !MetaOfApp.ApplyTrainTestJoinTreeMerge) {
 				boolean r_a_merge = false;
 				for (int j=0;j<pf_size;j++) {
 					Forest pf = pfs.get(j);
@@ -250,14 +250,14 @@ public class SktPETreesUtil {
 					}
 				}
 				if (r_a_merge) {
-					real_merge_time++;
+					valid_merge_num++;
 				}
 			}
 //			"All tree size:" + t_size + 
-			String merge_info = "#merge turn:" + i;//  + " #handled merge:" + merge
+			String merge_info = "#merge turn:" + i + "#merge freq in witness:" + merge.GetFreqs() + "#exist_in_train:" + exist_in_train + "#exist_in_test:" + exist_in_test;//  + " #handled merge:" + merge
 			DebugLogger.Log(merge_info);
 		}
-		System.out.println("valid_merge_num:" + real_merge_time);
+		System.out.println("valid_merge_num:" + valid_merge_num);
 //			if (merge_useful) {
 //				ArrayList<String> ll = new ArrayList<String>();
 //				String t0 = marked_merge.GetMerged();

@@ -15,7 +15,7 @@ import com.google.gson.reflect.TypeToken;
 import bpe.BPEGeneratorForProject;
 import bpe.skt.SktLogicUtil;
 import bpe.skt.SktPEGeneratorForProject;
-import bpe.skt.TreeNodeTwoMerge;
+import bpe.skt.TreeNodeTwoMergeWithFreqs;
 import bpe.skt.debug.MultiMergeDiffTest;
 import eclipse.project.AnalysisEnvironment;
 import main.util.AppRunUtil;
@@ -149,7 +149,7 @@ public class AppMainRoot implements IApplication {
 //			File sktpe_ttj = new File(sktpe_token_times_json);
 			if (sktpe_mj.exists()) {
 //				Assert.isTrue(sktpe_ttj.exists());
-				List<TreeNodeTwoMerge> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<ArrayList<TreeNodeTwoMerge>>(){}.getType());
+				List<TreeNodeTwoMergeWithFreqs> merges = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_mj), new TypeToken<ArrayList<TreeNodeTwoMergeWithFreqs>>(){}.getType());
 //				Map<String, Integer> token_times = new Gson().fromJson(FileUtil.ReadFromFile(sktpe_ttj), new TypeToken<Map<String, Integer>>(){}.getType());
 				id_tool.sktpe_mr.Initialize(merges);// , token_times
 				System.out.println("==== SktPEMerge Loaded ====");

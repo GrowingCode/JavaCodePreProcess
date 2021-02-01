@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.StringLiteral;
 
 import bpe.skt.SktPETreesUtil;
-import bpe.skt.TreeNodeTwoMerge;
+import bpe.skt.TreeNodeTwoMergeWithFreqs;
 import eclipse.project.ProjectInfo;
 import tree.Forest;
 import tree.ProjectForests;
@@ -56,7 +56,7 @@ public class SkeletonForestRecorder {
 		pfs.clear();
 	}
 
-	public void ApplySktPEMerges(List<TreeNodeTwoMerge> merges, int merge_num) {
+	public void ApplySktPEMerges(List<TreeNodeTwoMergeWithFreqs> merges, int merge_num) {
 		GetAllTrees();
 		SktPETreesUtil.ApplySktPEMergesToTrees(all_forests, merges, merge_num);// , token_composes
 	}
