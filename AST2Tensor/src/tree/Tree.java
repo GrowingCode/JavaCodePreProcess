@@ -385,8 +385,29 @@ public class Tree implements Comparable<Tree> {
 		return really_merged;
 	}
 	
-	public boolean CanMerge(TreeNodeTwoMerge pair) {
-		return GetMatchedPC(pair) != null;
+	public int PossibleMergeCount(TreeNodeTwoMerge pair) {
+		ArrayList<PairContainer<TreeNode, TreeNode>> pairs = parent_child_node_pairs.get(pair.GetParentChildPairPresentation());
+		if (pairs == null || pairs.size() == 0) {
+			return 0;
+		}
+		int count = 0;
+		for (PairContainer<TreeNode, TreeNode> pc : pairs) {
+			String parent_str = pair.GetParent();
+			String node_str = pair.GetNode();
+			
+			TreeNode tn_par = pc.k;
+			TreeNode tn = pc.v;
+			
+			if (parent_str.equals(tn_par.GetContent()) && node_str.equals(tn.GetContent())) {
+				int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+//				System.out.println("tn_sib_index:" + tn_sib_index);
+				Assert.isTrue(tn_sib_index > -1);
+				if (pair.GetNodeIndex() == tn_sib_index) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 	private PairContainer<TreeNode, TreeNode> GetMatchedPC(TreeNodeTwoMerge pair) {

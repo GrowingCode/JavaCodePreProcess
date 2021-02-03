@@ -283,20 +283,21 @@ public class SktPETreesUtil {
 				Forest pf = pfs.get(j);
 				ArrayList<Tree> skts = pf.GetAllTrees();
 				for (Tree skt : skts) {
-					if (skt.CanMerge(merge)) {
+					int pmc = skt.PossibleMergeCount(merge);
+					if (pmc > 0) {
 						if (pf.GetRole() <= RoleAssigner.train_k) {
-							exist_in_train += 1;
+							exist_in_train += pmc;
 						} else {
-							exist_in_test += 1;
+							exist_in_test += pmc;
 						}
 					}
 				}
 			}
 //			}
+			int mm_count = 0;
+			boolean meet_join = SktMergeApplyCondition.MeetTrainTestJoinCondition(exist_in_train, exist_in_test);
 			int r_exist_in_train = 0;
 			int r_exist_in_test = 0;
-			int mm_count = 0;
-			boolean meet_join = SktMergeApplyCondition.MeetTrainTestJoinCondition(r_exist_in_train, r_exist_in_test);
 			if (meet_join || !MetaOfApp.ApplyTrainTestJoinTreeMerge) {
 				for (int j=0;j<pf_size;j++) {
 					Forest pf = pfs.get(j);
