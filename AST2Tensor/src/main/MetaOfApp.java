@@ -35,6 +35,7 @@ public class MetaOfApp {
 	
 	public static boolean GenFilterTrainTestJoinTreeMerge = true;
 	public static boolean ApplyTrainTestJoinTreeMerge = true;
+	public static double TrainTestJoinCondition = 0.35;
 
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10
 //	public final static double TreeShouldSplitNodeNumRate = 1.2;

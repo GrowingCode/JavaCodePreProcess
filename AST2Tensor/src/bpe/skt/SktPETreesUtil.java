@@ -170,20 +170,20 @@ public class SktPETreesUtil {
 //				break;
 //			}
 //			MapUtil.FindKeyWithMaxValue(pairs);
-			PairContainer<TreeNodeTwoMerge, Integer> best = FindKeyValuePairWithMaxValueWithFiltering(pairs);
+			PairContainer<TreeNodeTwoMerge, PairContainer<Integer, Integer>> best = FindKeyValuePairWithMaxValueWithFiltering(pairs);
 			if (best == null) {
 				break;
 			}
-			if (best.v < MetaOfApp.MinimumThresholdOfSkeletonMerge) {
+			int merge_total_exist = best.v.k + best.v.v;
+			if (merge_total_exist < MetaOfApp.MinimumThresholdOfSkeletonMerge) {
 				break;
 			}
 			turn++;
-			DebugLogger.Log("best.v:" + best.v + " turn " + turn + " stats over");
 			MergeVocab(best.k, pfs);
-			String merge_info = "already exist merge:" + best.k + " best.v:" + best.v + "#existing merge turn:" + merges.get(best.k);
+			String merge_info = "turn " + turn + "#best.v exist in train:" + best.v.k + "#best.v exist in test:" + best.v.v + "#current merge:" + best.k;
 			DebugLogger.Log(merge_info);
-			Assert.isTrue(!merges.containsKey(best.k), merge_info);
-			merges.put(new TreeNodeTwoMergeWithFreqs(best.k, best.v), turn);
+			Assert.isTrue(!merges.containsKey(best.k), merge_info + "#existed turn:" + merges.get(best.k));
+			merges.put(new TreeNodeTwoMergeWithFreqs(best.k, merge_total_exist), turn);
 		}
 		
 		int pred = MetaOfApp.MinimumThresholdOfSkeletonMerge;
@@ -200,37 +200,40 @@ public class SktPETreesUtil {
 		return res;
 	}
 	
-	private static PairContainer<TreeNodeTwoMerge, Integer> FindKeyValuePairWithMaxValueWithFiltering(Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> pairs) {
-		TreeNodeTwoMerge max_k = null;
+	private static PairContainer<TreeNodeTwoMerge, PairContainer<Integer, Integer>> FindKeyValuePairWithMaxValueWithFiltering(Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> pairs) {
+		TreeNodeTwoMerge max_tn = null;
+		Integer max_k = null;
 		Integer max_t = null;
 		Integer max = null;
-		Set<TreeNodeTwoMerge> ks = pairs.keySet();
-		Iterator<TreeNodeTwoMerge> k_itr = ks.iterator();
-		while (k_itr.hasNext()) {
-			TreeNodeTwoMerge k = k_itr.next();
-			PairContainer<Integer, Integer> p_t = pairs.get(k);
+		Set<TreeNodeTwoMerge> tns = pairs.keySet();
+		Iterator<TreeNodeTwoMerge> tn_itr = tns.iterator();
+		while (tn_itr.hasNext()) {
+			TreeNodeTwoMerge tn = tn_itr.next();
+			PairContainer<Integer, Integer> p_t = pairs.get(tn);
 			boolean apply_meet = SktMergeApplyCondition.MeetTrainTestJoinCondition(p_t.k, p_t.v);
 			if (!MetaOfApp.GenFilterTrainTestJoinTreeMerge || apply_meet) {
 				Integer t = p_t.k + p_t.v;
 //				Integer cmp = t;
 				if (max == null) {
-					max_k = k;
-					max_t = t;
+					max_tn = tn;
+					max_k = p_t.k;
+					max_t = p_t.v;
 					max = t;
 				} else {
 					if (max.compareTo(t) < 0) {
-						max_k = k;
-						max_t = t;
+						max_tn = tn;
+						max_k = p_t.k;
+						max_t = p_t.v;
 						max = t;
 					}
 				}
 			}
 		}
-		if (max_k == null || max_t == null) {
-			Assert.isTrue(max_k == null && max_t == null);
+		if (max_tn == null || max_k == null || max_t == null || max == null) {
+			Assert.isTrue(max_tn == null && max_k == null && max_t == null && max == null);
 			return null;
 		}
-		return new PairContainer<TreeNodeTwoMerge, Integer>(max_k, max_t);
+		return new PairContainer<TreeNodeTwoMerge, PairContainer<Integer, Integer>>(max_tn, new PairContainer<Integer, Integer>(max_k, max_t));
 	}
 	
 //	public static Set<String> ExtractAllSktPEUnits(Collection<Tree> sktpe_raws) {
