@@ -105,9 +105,9 @@ public class MetaOfApp {
 	
 	public static boolean OutOfScopeReplacedByUnk = true;
 	public final static int NumberOfSkeletonUnk = 0;
-	public final static int MinimumNumberOfSkeletonVocabulary = 500;
+	public final static int MinimumNumberOfSkeletonVocabulary = 10;
 	public final static int NumberOfUnk = 0;
-	public final static int MinimumNumberOfVocabulary = 500;
+	public final static int MinimumNumberOfVocabulary = 10;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;
