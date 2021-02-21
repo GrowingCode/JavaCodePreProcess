@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
@@ -25,6 +25,7 @@ import util.YStringUtil;
 public class SktPETreesUtil {
 
 	private static Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> GetStats(ArrayList<Forest> pfs) {// ArrayList<Tree> vocab
+//		Set<String> leafs = new TreeSet<String>();
 		Map<TreeNodeTwoMerge, PairContainer<Integer, Integer>> pairs = new TreeMap<TreeNodeTwoMerge, PairContainer<Integer, Integer>>();
 //		Set<Tree> vks = vocab.keySet();
 		for (Forest pf : pfs) {
@@ -37,6 +38,11 @@ public class SktPETreesUtil {
 				TreeNode rt = vk.GetRootNode();
 				int freq = 1;// vocab.get(vk);
 	//			Set<String> all_keys = all_nodes.keySet();
+//				for (TreeNode val : all_nodes) {
+//					if (JDTASTHelper.IsIDLeafNode(val.GetClazz())) {
+//						leafs.add(val.GetContent());
+//					}
+//				}
 	//			Iterator<String> ai = all_keys.iterator();
 	//			while (ai.hasNext()) {
 				for (TreeNode val : all_nodes) {
@@ -44,7 +50,10 @@ public class SktPETreesUtil {
 	//				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
 	//				TreeNode val = all_nodes.get(key);
 					TreeNode par_val = val.GetParent();
-					boolean not_merge = MetaOfApp.NotMergeIDLeaf && JDTASTHelper.IsIDLeafNode(val.GetClazz());
+					boolean not_merge = JDTASTHelper.IsIDLeafNode(val.GetClazz()) && MetaOfApp.NotMergeIDLeaf;
+//					if (val.GetContent().equals("void")) {
+//						System.out.println("val_clz:" + val.GetClazz());
+//					}
 					if (par_val != null && !not_merge) {
 						ArrayList<TreeNode> childs = par_val.GetChildren();
 						int idx = childs.indexOf(val);
@@ -72,6 +81,7 @@ public class SktPETreesUtil {
 				}
 			}
 		}
+//		PrintUtil.PrintSet(leafs, "==all leafs==");
 		return pairs;
 	}
 	
