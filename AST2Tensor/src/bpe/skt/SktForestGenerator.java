@@ -273,8 +273,13 @@ class SktTreeGenerator extends ASTVisitor {
 						node_cnt = StringUtil.EliminateNonStrSplitWhiteSpace(node_cnt);
 					} else {
 						Assert.isTrue(node instanceof StringLiteral || node instanceof CharacterLiteral);
-						node_cnt = node_cnt.replaceAll("#h", "$h");
-						node_cnt = node_cnt.replaceAll("#v", "$v");
+//						try {
+						node_cnt = node_cnt.replaceAll("#h", "\\$h");
+						node_cnt = node_cnt.replaceAll("#v", "\\$v");
+//						} catch (Exception e) {
+//							System.out.println("node_cnt:" + node_cnt);
+//							System.exit(1);
+//						}
 					}
 					TreeNode tn = null;
 					if (JDTASTHelper.IsExprSpecPattern(node)) {
