@@ -317,7 +317,7 @@ public class SktPETreesUtil {
 				}
 			}
 //			"All tree size:" + t_size + 
-			String merge_info = "#merge turn:" + i + "#apply join:" + MetaOfApp.ApplyTrainTestJoinTreeMerge + "#meet_join:" + meet_join + "#mm_count:" + mm_count + "#merge freq in witness:" + merge.GetFreqs() + "#exist_in_train:" + exist_in_train + "#exist_in_test:" + exist_in_test + "#r_exist_in_train:" + r_exist_in_train + "#r_exist_in_test:" + r_exist_in_test;//  + " #handled merge:" + merge
+			String merge_info = "#merge turn:" + i + "#apply join:" + MetaOfApp.ApplyTrainTestJoinTreeMerge + "#meet_join:" + meet_join + "#mm_count:" + mm_count + "#merge freq in witness:" + merge.GetFreqs() + "#exist_in_train:" + exist_in_train + "#exist_in_test:" + exist_in_test + "#r_exist_in_train:" + r_exist_in_train + "#r_exist_in_test:" + r_exist_in_test + " #handled merge:" + merge;
 			DebugLogger.Log(merge_info);
 		}
 		System.out.println("valid_merge_num:" + valid_merge_num);
