@@ -301,7 +301,7 @@ class SktTreeGenerator extends ASTVisitor {
 	public String GetHolder(ASTNode c) {
 		String holder = "#h";
 		ASTNode r_c = JDTASTHelper.SkipPassThroughNodes(c);
-		if (JDTASTHelper.IsIDLeafNode(r_c.getClass())) {
+		if (JDTSearchForChildrenOfASTNode.GetChildren(r_c).size() == 0) {// JDTASTHelper.IsIDLeafNode(r_c.getClass())
 			holder = "#v";
 		}
 		return holder;
