@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.Assert;
 
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.jdt.JDTASTHelper;
+import main.MetaOfApp;
 import translation.tensor.util.TokenKindUtil;
 import tree.util.TreeNodePairUtil;
 import unit.PairContainer;
@@ -172,8 +173,8 @@ public class Tree implements Comparable<Tree> {
 //			System.err.println("rt {} children size:" + childs.size());
 			Assert.isTrue(childs.size() == 0);
 		}
-		Class<?> clz = rt.GetClazz();
-		if (JDTASTHelper.IsIDLeafNode(clz)) {
+//		Class<?> clz = rt.GetClazz();
+		if (childs.size() == 0) {// .IsIDLeafNode(clz)
 //			tf.skt_one_struct_v_count = tf.skt_one_struct_v_count + 1;
 //			tf.skt_one_struct_v_tree_uid.add(rt.GetTreeUid());
 		} else {
@@ -181,8 +182,14 @@ public class Tree implements Comparable<Tree> {
 			for (int i = i_len-1; i >= 0; i--) {
 				TreeNode child = childs.get(i);
 				FlattenTreeNodeIntoOne(tf, child);
-				if (!JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
-//					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
+				boolean to_merge = true;
+				if (child.GetChildren().size() == 0) {
+					if (MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf || JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+						to_merge = false;
+					}
+				}
+				if (to_merge) {
+					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
 					Assert.isTrue(!rt.GetContent().equals("{}"));
 //					System.err.println("==== before merge:" + rt.GetContent() + " ====");
 					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rt.GetContent(), child.GetContent(), i);
@@ -190,6 +197,15 @@ public class Tree implements Comparable<Tree> {
 					rt.SetContent(mgd);
 					childs.remove(i);
 				}
+//				if (!JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+////					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
+//					Assert.isTrue(!rt.GetContent().equals("{}"));
+////					System.err.println("==== before merge:" + rt.GetContent() + " ====");
+//					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rt.GetContent(), child.GetContent(), i);
+////					System.err.println("==== after merge:" + mgd + " ====");
+//					rt.SetContent(mgd);
+//					childs.remove(i);
+//				}
 			}
 		}
 //		if (tf.skt_one_struct.size() == 0) {
@@ -203,7 +219,7 @@ public class Tree implements Comparable<Tree> {
 		String rt_cnt = rt.GetContent();
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
-		if (JDTASTHelper.IsIDLeafNode(clz)) {
+		if (childs.size() == 0 && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)) {
 			Assert.isTrue(childs.size() == 0);
 			tf.skt_token.add(rt_cnt);
 			tf.skt_token_kind.add(TokenKindUtil.GetTokenKind(rt));

@@ -53,6 +53,7 @@ public class MetaOfApp {
 	public final static int MaximumFollowingStatements = 5;
 
 	public static boolean NotMergeIDLeaf = true;
+	public static boolean SktNotOnlyExcludeIDLeafButAllLeaf = true;
 	
 //	public static int AddZeroIfNoVariable = 0;
 
