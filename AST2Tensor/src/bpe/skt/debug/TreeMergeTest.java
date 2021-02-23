@@ -19,23 +19,23 @@ import util.PrintUtil;
 public class TreeMergeTest {
 	
 	public static void main(String[] args) {
-		TreeNode root = new TreeNode(InfixExpression.class, null, "#h+#h", null);
+		TreeNode root = new TreeNode(InfixExpression.class, false, null, "#h+#h", null);
 		
-		TreeNode l1_1 = new TreeNode(InfixExpression.class, null, "#h+#h", null);
-		TreeNode l1_2 = new TreeNode(InfixExpression.class, null, "#h+#h", null);
-		TreeNode l2_1 = new TreeNode(InfixExpression.class, null, "#v+#v", null);
-		TreeNode l2_2 = new TreeNode(InfixExpression.class, null, "#v+#v", null);
-		TreeNode l2_3 = new TreeNode(InfixExpression.class, null, "#v+#v", null);
-		TreeNode l2_4 = new TreeNode(InfixExpression.class, null, "#v+#v", null);
+		TreeNode l1_1 = new TreeNode(InfixExpression.class, false, null, "#h+#h", null);
+		TreeNode l1_2 = new TreeNode(InfixExpression.class, false, null, "#h+#h", null);
+		TreeNode l2_1 = new TreeNode(InfixExpression.class, false, null, "#v+#v", null);
+		TreeNode l2_2 = new TreeNode(InfixExpression.class, false, null, "#v+#v", null);
+		TreeNode l2_3 = new TreeNode(InfixExpression.class, false, null, "#v+#v", null);
+		TreeNode l2_4 = new TreeNode(InfixExpression.class, false, null, "#v+#v", null);
 		
-		TreeNode c_1 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_2 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_3 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_4 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_5 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_6 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_7 = new TreeNode(SimpleName.class, null, "abc1", null);
-		TreeNode c_8 = new TreeNode(SimpleName.class, null, "abc1", null);
+		TreeNode c_1 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_2 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_3 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_4 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_5 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_6 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_7 = new TreeNode(SimpleName.class, true, null, "abc1", null);
+		TreeNode c_8 = new TreeNode(SimpleName.class, true, null, "abc1", null);
 		
 		root.AppendToChildren(l1_1);
 		root.AppendToChildren(l1_2);

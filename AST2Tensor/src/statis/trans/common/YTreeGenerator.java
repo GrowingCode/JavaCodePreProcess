@@ -65,9 +65,9 @@ public class YTreeGenerator extends BasicGenerator {
 			
 			TreeNode tn = null;
 			if (JDTASTHelper.IsExprSpecPattern(node)) {
-				tn = new ExprSpecTreeNode(node.getClass(), BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
+				tn = new ExprSpecTreeNode(node.getClass(), is_leaf, BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
 				} else {
-				tn = new TreeNode(node.getClass(), BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content);//, sib_index
+				tn = new TreeNode(node.getClass(), is_leaf, BindingResolveUtil.ResolveVariableBinding(node), r_content, stmt_content);//, sib_index
 			}
 			tree.put(node, tn);
 			if (parent_tn != null) {
@@ -76,7 +76,7 @@ public class YTreeGenerator extends BasicGenerator {
 			
 			if (is_leaf && MetaOfApp.LeafTypeContentSeparate) {
 				String content = JDTASTHelper.GetContentRepresentationForASTNode(node);
-				TreeNode chd_tn = new TreeNode(String.class, null, content, stmt_content);//, tn.GetChildren().size()
+				TreeNode chd_tn = new TreeNode(String.class, is_leaf, null, content, stmt_content);//, tn.GetChildren().size()
 				tn.AppendToChildren(chd_tn);
 			}
 		}

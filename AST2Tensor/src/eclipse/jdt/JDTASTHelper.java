@@ -6,18 +6,34 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.core.dom.BreakStatement;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.ContinueStatement;
+import org.eclipse.jdt.core.dom.Dimension;
+import org.eclipse.jdt.core.dom.EmptyStatement;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.SwitchCase;
+import org.eclipse.jdt.core.dom.ThisExpression;
+import org.eclipse.jdt.core.dom.WildcardType;
 
 import eclipse.search.JDTSearchForChildrenOfASTNode;
 import main.MetaOfApp;
@@ -131,6 +147,17 @@ public class JDTASTHelper {
 			return ((SuperMethodInvocation) node).getQualifier();
 		}
 		return null;
+	}
+	
+	public static boolean IsComplexLeafNode(boolean is_leaf, Class<?> node_class) {
+		if (is_leaf) {
+			if (node_class.equals(BreakStatement.class) || node_class.equals(ContinueStatement.class) || node_class.equals(ReturnStatement.class) || node_class.equals(SwitchCase.class) || node_class.equals(EmptyStatement.class) || node_class.equals(ConstructorInvocation.class) || node_class.equals(SuperConstructorInvocation.class)) {
+				return true;
+			} else {
+				Assert.isTrue(IsIDLeafNode(node_class) || node_class.equals(PrimitiveType.class) || node_class.equals(Modifier.class) || node_class.equals(NullLiteral.class) || node_class.equals(BooleanLiteral.class) || node_class.equals(ThisExpression.class) || node_class.equals(Dimension.class) || node_class.equals(Block.class) || node_class.equals(AnonymousClassDeclaration.class) || node_class.equals(WildcardType.class) || node_class.equals(ArrayInitializer.class), "Strange Leaf Class:" + node_class);
+			}
+		}
+		return false;
 	}
 	
 	public static boolean IsIDLeafNode(Class<?> node_class) {

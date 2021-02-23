@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -75,6 +76,7 @@ public class SktForestGenerator extends BasicGenerator {
 			stmt_root.accept(stg);
 			TreeNode root_tree_node = stg.node_record.get(stg.t_root);
 			Tree t = new Tree(root_tree_node);
+//			t.EnsureLeafNodesInTree();
 //			t.AddTreeNodes(stg.node_record.values());
 			stmts.add(t);
 		}
@@ -282,10 +284,15 @@ class SktTreeGenerator extends ASTVisitor {
 //						}
 					}
 					TreeNode tn = null;
+					boolean is_non_comp_leaf = is_leaf && !JDTASTHelper.IsComplexLeafNode(is_leaf, node.getClass());
+					if (node.getClass().equals(Block.class) || node.getClass().equals(AnonymousClassDeclaration.class)) {
+						Assert.isTrue(node_cnt.equals("{}"));
+						is_non_comp_leaf = true;
+					}
 					if (JDTASTHelper.IsExprSpecPattern(node)) {
-						tn = new ExprSpecTreeNode(node.getClass(), null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
+						tn = new ExprSpecTreeNode(node.getClass(), is_non_comp_leaf, null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
 					} else {
-						tn = new TreeNode(node.getClass(), null, node_cnt, node_whole_cnt);//, sib_index
+						tn = new TreeNode(node.getClass(), is_non_comp_leaf, null, node_cnt, node_whole_cnt);//, sib_index
 					}
 					node_record.put(node, tn);
 					
@@ -298,10 +305,10 @@ class SktTreeGenerator extends ASTVisitor {
 		return ctn;
 	}
 	
-	public String GetHolder(ASTNode c) {
+	private String GetHolder(ASTNode c) {
 		String holder = "#h";
 		ASTNode r_c = JDTASTHelper.SkipPassThroughNodes(c);
-		if (JDTSearchForChildrenOfASTNode.GetChildren(r_c).size() == 0) {// JDTASTHelper.IsIDLeafNode(r_c.getClass())
+		if (JDTSearchForChildrenOfASTNode.GetChildren(r_c).size() == 0 || r_c.getClass().equals(Block.class) || r_c.getClass().equals(AnonymousClassDeclaration.class)) {// JDTASTHelper.IsIDLeafNode(r_c.getClass())
 			holder = "#v";
 		}
 		return holder;

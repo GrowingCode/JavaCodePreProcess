@@ -12,6 +12,7 @@ import unit.PairContainer;
 public class TreeNode {
 	
 	Class<?> clazz = null;
+	boolean ori_is_non_comp_leaf = false;
 	IBinding bind = null;
 	String content = null;
 	String tree_whole_content = null;
@@ -21,8 +22,9 @@ public class TreeNode {
 	
 	String tree_uid = null;
 	
-	public TreeNode(Class<?> clazz, IBinding bind, String content, String tree_whole_content) {//, int sib_index
+	public TreeNode(Class<?> clazz, boolean ori_is_non_comp_leaf, IBinding bind, String content, String tree_whole_content) {//, int sib_index
 		this.clazz = clazz;
+		this.ori_is_non_comp_leaf = ori_is_non_comp_leaf;
 		this.bind = bind;
 		this.content = content;
 		this.tree_whole_content = tree_whole_content;
@@ -44,6 +46,10 @@ public class TreeNode {
 	
 	public Class<?> GetClazz() {
 		return clazz;
+	}
+	
+	public boolean OriginIsNonCompositeLeaf() {
+		return ori_is_non_comp_leaf;
 	}
 	
 	public IBinding GetBinding() {
@@ -112,5 +118,21 @@ public class TreeNode {
 			child.PreProcessTreeNode(t_path + " " + sib_index, parent_child_node_pairs);
 		}
 	}
+
+//	public void EnsureLeafNode() {
+//		if (ori_is_non_comp_leaf) {
+//			Assert.isTrue(children.size() == 0);
+//		}
+//		if (children.size() == 0) {
+//			if (!ori_is_non_comp_leaf) {
+//				Assert.isTrue(clazz.equals(Block.class) || clazz.equals(AnonymousClassDeclaration.class), "Strange block:" + clazz);
+//				ori_is_non_comp_leaf = true;
+//			}
+//		}
+//		ArrayList<TreeNode> childs = this.GetChildren();
+//		for (TreeNode child : childs) {
+//			child.EnsureLeafNode();
+//		}
+//	}
 	
 }
