@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.StringLiteral;
 import bpe.skt.SktPETreesUtil;
 import bpe.skt.TreeNodeTwoMergeWithFreqs;
 import eclipse.project.ProjectInfo;
+import translation.SktTensorTools;
 import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
@@ -61,6 +62,13 @@ public class SkeletonForestRecorder {
 		SktPETreesUtil.ApplySktPEMergesToTrees(all_forests, merges, merge_num);// , token_composes
 	}
 	
+	public void ApplySktMergeIntoOne() {
+		GetAllTrees();
+		for (Tree o_tree : all_trees) {
+			o_tree.SktMergeIntoOne();
+		}
+	}
+	
 	public void PreProcessAllForests() {
 		GetAllTrees();
 		SktPETreesUtil.PreProcessAllTrees(all_trees);
@@ -73,10 +81,24 @@ public class SkeletonForestRecorder {
 //		}
 //	}
 	
-	public void FlattenAllTrees() {
+	public void TraverseAndRecordOneInfo(SktTensorTools stt) {
 		GetAllTrees();
 		for (Tree o_tree : all_trees) {
-			o_tree.FlattenTree(true);
+			o_tree.TraverseAndRecordTreeNode(stt, "skt_one");
+		}
+	}
+	
+	public void TraverseAndRecordPEInfo(SktTensorTools stt) {
+		GetAllTrees();
+		for (Tree o_tree : all_trees) {
+			o_tree.TraverseAndRecordTreeNode(stt, "skt_pe");
+		}
+	}
+	
+	public void TraverseAndRecordEInfo(SktTensorTools stt) {
+		GetAllTrees();
+		for (Tree o_tree : all_trees) {
+			o_tree.TraverseAndRecordTreeNode(stt, "skt_e");
 		}
 	}
 	

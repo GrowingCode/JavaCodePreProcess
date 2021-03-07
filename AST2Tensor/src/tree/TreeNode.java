@@ -1,13 +1,17 @@
 package tree;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.IBinding;
 
+import main.MetaOfApp;
+import statistic.id.IDManager;
 import tree.util.TreeNodePairUtil;
 import unit.PairContainer;
+import util.YStringUtil;
 
 public class TreeNode {
 	
@@ -21,6 +25,12 @@ public class TreeNode {
 	ArrayList<TreeNode> children = new ArrayList<TreeNode>();
 	
 	String tree_uid = null;
+	
+	ArrayList<TreeNodeParentInfo> skt_e_par_info = new ArrayList<TreeNodeParentInfo>();
+	ArrayList<TreeNodeParentInfo> skt_pe_par_info = new ArrayList<TreeNodeParentInfo>();
+	ArrayList<TreeNodeParentInfo> skt_one_par_info = new ArrayList<TreeNodeParentInfo>();
+	
+	int node_count = 1;
 	
 	public TreeNode(Class<?> clazz, boolean ori_is_non_comp_leaf, IBinding bind, String content, String tree_whole_content) {//, int sib_index
 		this.clazz = clazz;
@@ -97,6 +107,10 @@ public class TreeNode {
 		return tree_uid;
 	}
 	
+	public int GetNodeCount() {
+		return node_count;
+	}
+	
 	public void PreProcessTreeNode(String t_path, TreeMap<String, ArrayList<PairContainer<TreeNode, TreeNode>>> parent_child_node_pairs) {
 		Assert.isTrue(this.GetTreeUid() == null);
 		Assert.isTrue(!this.GetContent().contains("\n"));
@@ -134,5 +148,68 @@ public class TreeNode {
 //			child.EnsureLeafNode();
 //		}
 //	}
+	
+	public void SetUpParentInfoOfChildren(String par_info) {
+		try {
+			Field field = this.getClass().getField(par_info);
+			@SuppressWarnings("unchecked")
+			ArrayList<TreeNodeParentInfo> this_p_info = (ArrayList<TreeNodeParentInfo>) field.get(this);
+			if (this_p_info.size() == 0) {
+				Assert.isTrue(parent == null);
+				for (int i=0;i<MetaOfApp.ParentInfoLength;i++) {
+					this_p_info.add(new TreeNodeParentInfo(IDManager.ZDft, -1, -1));
+				}
+			} else {
+				Assert.isTrue(parent != null);
+			}
+			
+			int csize = children.size();
+			ArrayList<Integer> in_indexes = new ArrayList<Integer>();
+			ArrayList<Integer> types = new ArrayList<Integer>();
+			
+			ArrayList<String> hv_list = YStringUtil.GenerateArrayListOfHV(content);
+			
+			int h = 0;
+			int v = 0;
+			for (int i=0;i<csize;i++) {
+				String hv = hv_list.get(i);
+				if (hv.equals("#h")) {
+					types.add(TreeNodeParentInfo.h_type);
+					in_indexes.add(h);
+					h++;
+				}
+				if (hv.equals("#v")) {
+					types.add(TreeNodeParentInfo.v_type);
+					in_indexes.add(v);
+					v++;
+				}
+			}
+			
+			for (int i=0;i<csize;i++) {
+				SetUpParentInfoOfChildren(par_info, children.get(i), in_indexes.get(i), types.get(i));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void SetUpParentInfoOfChildren(String par_info, TreeNode child_tn, int in_index, int type) {
+		try {
+			Field field = this.getClass().getField(par_info);
+			@SuppressWarnings("unchecked")
+			ArrayList<TreeNodeParentInfo> this_p_info = (ArrayList<TreeNodeParentInfo>) field.get(this);
+			@SuppressWarnings("unchecked")
+			ArrayList<TreeNodeParentInfo> child_p_info = (ArrayList<TreeNodeParentInfo>) field.get(child_tn);
+			Assert.isTrue(child_p_info.size() == 0);
+			
+			Assert.isTrue(this_p_info.size() > 0);
+			child_p_info.addAll(this_p_info);
+			child_p_info.remove(child_p_info.size()-1);
+			child_p_info.add(0, new TreeNodeParentInfo(content, in_index, type));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

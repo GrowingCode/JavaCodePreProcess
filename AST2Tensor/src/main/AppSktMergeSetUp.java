@@ -24,7 +24,7 @@ public class AppSktMergeSetUp {
 		IDTools id_tool = null;
 		{
 			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
-			id_tool = new IDTools(null, null, null, null, null, null, null, null, null, sktpe_mr);
+			id_tool = new IDTools(null, null, null, null, null, null, null, null, null, sktpe_mr, null);
 		}
 		
 		System.out.println("==== SktPECount Begin ====");

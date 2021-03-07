@@ -16,7 +16,6 @@ import bpe.BPEGeneratorForProject;
 import bpe.skt.SktLogicUtil;
 import bpe.skt.SktPEGeneratorForProject;
 import bpe.skt.TreeNodeTwoMergeWithFreqs;
-import bpe.skt.debug.MultiMergeDiffTest;
 import eclipse.project.AnalysisEnvironment;
 import main.util.AppRunUtil;
 import main.util.HandleOneProject;
@@ -29,6 +28,8 @@ import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
+import statistic.id.ParentSktHintManager;
+import statistic.id.ParentSktHintRecorder;
 import statistic.id.SktPEMergeRecorder;
 import statistic.id.TokenRecorder;
 import translation.SktTensorTools;
@@ -100,6 +101,7 @@ public class AppMainRoot implements IApplication {
 //		if (args.length >= 2) {
 //			max_handle_projs = Integer.parseInt(args[1]);
 //		}
+		
 		IDTools id_tool = null;
 		{
 			BPEMergeRecorder bpe_mr = null;
@@ -114,8 +116,9 @@ public class AppMainRoot implements IApplication {
 			APIRecorder ar = new APIRecorder();
 			ChildrenNumCounter cnc = new ChildrenNumCounter();
 			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
+			ParentSktHintRecorder hint_recorder = new ParentSktHintRecorder();
 //			stf_r, 
-			id_tool = new IDTools(bpe_mr, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc, sktpe_mr);
+			id_tool = new IDTools(bpe_mr, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc, sktpe_mr, hint_recorder);
 		}
 //		{
 //			File bpe_mj = new File(bpe_merges_json);
@@ -160,7 +163,7 @@ public class AppMainRoot implements IApplication {
 			}
 		}
 		if (MetaOfApp.OnlyDebugTreeMerge) {
-			MultiMergeDiffTest.Test(id_tool.sktpe_mr);
+//			MultiMergeDiffTest.Test(id_tool.sktpe_mr);
 			return IApplication.EXIT_OK;
 		}
 		List<STProject> all_projs = AnalysisEnvironment.LoadAllProjects(root_dir);
@@ -196,6 +199,8 @@ public class AppMainRoot implements IApplication {
 			System.out.println("==== IDCount End ====");
 		}
 		IDManager im = new IDManager(id_tool);
+		ParentSktHintManager pshm = new ParentSktHintManager(im, id_tool);
+		
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);
 //			tr.FullFillIDManager(im);
@@ -208,7 +213,7 @@ public class AppMainRoot implements IApplication {
 			 * store the map of skeleton one token to scatter tokens. 
 			 */
 			if (MetaOfApp.GenerateSkeletonToken) {
-				SktTensorTools skt_tensor_tool = new SktTensorTools(im);
+				SktTensorTools skt_tensor_tool = new SktTensorTools(im, pshm);
 				SktPETranslateOneProjectHandle handle = new SktPETranslateOneProjectHandle();
 				AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, skt_tensor_tool);
 				skt_tensor_tool.SaveSkeletonComposeData();
@@ -270,6 +275,7 @@ public class AppMainRoot implements IApplication {
 			id_tool.cnc.SaveToDirectory(MetaOfApp.DataDirectory);
 			im.SaveToDirectory(MetaOfApp.DataDirectory);
 //			gr.SaveToDirectory(MetaOfApp.DataDirectory, im);
+			pshm.SaveToDirectory(MetaOfApp.DataDirectory);
 		}
 		
 		SystemUtil.Flush();
@@ -280,6 +286,7 @@ public class AppMainRoot implements IApplication {
 	
 	static int SktPECountOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
 		int project_size = 0;
+		SktTensorTools stt = (SktTensorTools) tensor_tool;
 		try {
 			SystemUtil.Delay(1000);
 			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
@@ -288,9 +295,11 @@ public class AppMainRoot implements IApplication {
 			stf_r.EncounterNewProject(proj.GetInfo());
 			project_size = irgfop.GenerateForOneProject(stf_r);
 			stf_r.PreProcessAllForests();
-//			id_tool.stf_r.FlattenAllOriginTrees();
+			stf_r.TraverseAndRecordEInfo(stt);
 			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges(), MetaOfApp.MaximumNumberOfApplyingSkeletonMerge);
-			stf_r.FlattenAllTrees();
+			stf_r.TraverseAndRecordPEInfo(stt);
+			stf_r.ApplySktMergeIntoOne();
+			stf_r.TraverseAndRecordOneInfo(stt);
 			SktLogicUtil.CountPairEncodedSkeletons(id_tool, stf_r);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -300,6 +309,7 @@ public class AppMainRoot implements IApplication {
 
 	static int SktPETranslateOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
 		int project_size = 0;
+		SktTensorTools stt = (SktTensorTools) tensor_tool;
 		try {
 			SystemUtil.Delay(1000);
 			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
@@ -309,10 +319,13 @@ public class AppMainRoot implements IApplication {
 			project_size = irgfop.GenerateForOneProject(stf_r);
 			stf_r.PreProcessAllForests();
 //			id_tool.stf_r.FlattenAllOriginTrees();
+			stf_r.TraverseAndRecordEInfo(stt);
 			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges(), MetaOfApp.MaximumNumberOfApplyingSkeletonMerge);
-			stf_r.FlattenAllTrees();
+			stf_r.TraverseAndRecordPEInfo(stt);
+			stf_r.ApplySktMergeIntoOne();
+			stf_r.TraverseAndRecordOneInfo(stt);
 //			SktLogicUtil.FilterPairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
-			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens((SktTensorTools) tensor_tool, stf_r);
+			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(stt, stf_r);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

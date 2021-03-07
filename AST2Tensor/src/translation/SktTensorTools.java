@@ -6,11 +6,14 @@ import java.util.TreeMap;
 
 import main.MetaOfApp;
 import statistic.id.IDManager;
+import statistic.id.ParentSktHintManager;
 import util.FileUtil;
 import util.IntegerMapUtil;
 
 public class SktTensorTools extends TensorTools {
 
+	public ParentSktHintManager pshm = null;
+	
 	public Map<String, ArrayList<String>> one_to_each_str = new TreeMap<String, ArrayList<String>>();
 	public Map<Integer, ArrayList<Integer>> one_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 
@@ -20,8 +23,9 @@ public class SktTensorTools extends TensorTools {
 	public Map<String, ArrayList<String>> pe_to_each_str = new TreeMap<String, ArrayList<String>>();
 	public Map<Integer, ArrayList<Integer>> pe_to_each = new TreeMap<Integer, ArrayList<Integer>>();
 	
-	public SktTensorTools(IDManager im) {
+	public SktTensorTools(IDManager im, ParentSktHintManager pshm) {
 		super(im);
+		this.pshm = pshm;
 	}
 
 	public void SaveSkeletonComposeData() {

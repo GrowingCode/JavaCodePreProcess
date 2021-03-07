@@ -9,8 +9,9 @@ public class MergedTreeNode extends TreeNode {
 	TreeNode base_parent = null;
 	TreeNode merged_child = null;
 	
-	public MergedTreeNode(Class<?> clazz, boolean is_non_comp_leaf, IBinding bind, String content, String tree_whole_content) {
+	public MergedTreeNode(Class<?> clazz, boolean is_non_comp_leaf, IBinding bind, String content, String tree_whole_content, int node_count) {
 		super(clazz, is_non_comp_leaf, bind, content, tree_whole_content);
+		this.node_count = node_count;
 	}
 	
 	public void SetUpMergedInformation(TreeNode base_parent, TreeNode merged_child) {

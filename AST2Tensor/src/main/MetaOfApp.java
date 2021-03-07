@@ -28,6 +28,7 @@ public class MetaOfApp {
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
 //	public final static int ContentHuffTreeStandardChildrenNum = 1000;
 //	public final static int TypeContentHuffTreeStandardChildrenNum = 10000;
+	public static int ParentInfoLength = 1;
 
 	public static boolean ClassLevelTensorGeneration = false;
 	

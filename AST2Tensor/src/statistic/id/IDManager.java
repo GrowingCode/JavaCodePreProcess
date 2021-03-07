@@ -4,13 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -24,6 +22,7 @@ import bpe.BPEWordsUtil;
 import main.MetaOfApp;
 import statistic.IDTools;
 import statistic.id.util.DCapacityMap;
+import statistic.id.util.RegistUtil;
 import util.FileUtil;
 import util.MapUtil;
 import util.PrintUtil;
@@ -146,29 +145,29 @@ public class IDManager {
 //			pair_encoded_skeleton_hit_num = RegistUtil(pair_encoded_skeleton_id_map, id_tool.str.hit_train, id_tool.str.not_hit_train, MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "PairEncodedSkeleton");
 //		}
 		if (MetaOfApp.GenerateSkeletonToken) {
-			Regist(each_skeleton_id_map, reserved_words);
+			RegistUtil.Regist(each_skeleton_id_map, reserved_words);
 //			id_tool.e_struct_r.not_hit_train.GetOriginMap(),
 //			id_tool.e_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.e_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			each_skeleton_hit_num = RegistUtil(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, id_tool.e_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
+			each_skeleton_hit_num = RegistUtil.Regist(each_skeleton_id_map, id_tool.e_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, id_tool.e_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonEach");
 			
 //			id_tool.pe_struct_r.not_hit_train.GetOriginMap(), 
-			Regist(pe_skeleton_id_map, reserved_words);
+			RegistUtil.Regist(pe_skeleton_id_map, reserved_words);
 //			id_tool.pe_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.pe_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			pe_skeleton_hit_num = RegistUtil(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumPESkeletonNotUnkAppearTime, id_tool.pe_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
+			pe_skeleton_hit_num = RegistUtil.Regist(pe_skeleton_id_map, id_tool.pe_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumPESkeletonNotUnkAppearTime, id_tool.pe_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonPE");
 			
 //			id_tool.one_struct_r.not_hit_train.GetOriginMap(), 
-			Regist(skeleton_id_map, reserved_words);
+			RegistUtil.Regist(skeleton_id_map, reserved_words);
 //			id_tool.one_struct_r.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumSkeletonNotUnkAppearTime);
 //			TrimUtil(id_tool.one_struct_r.hit_train, MetaOfApp.MinimumSkeletonNotUnkAppearTime);
-			skeleton_hit_num = RegistUtil(skeleton_id_map, id_tool.one_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.one_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
+			skeleton_hit_num = RegistUtil.Regist(skeleton_id_map, id_tool.one_struct_r.hit_train.GetOriginMap(), MetaOfApp.MinimumSkeletonNotUnkAppearTime, id_tool.one_struct_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "Skeleton");
 			
 //			id_tool.s_tr.not_hit_train.GetOriginMap(), 
-			Regist(skt_token_id_map, reserved_words);
+			RegistUtil.Regist(skt_token_id_map, reserved_words);
 //			id_tool.s_tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
 //			TrimUtil(id_tool.s_tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
-			skt_token_hit_num = RegistUtil(skt_token_id_map, id_tool.s_tr.hit_train.GetOriginMap(), MetaOfApp.MinimumNotUnkAppearTime, id_tool.s_tr.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
+			skt_token_hit_num = RegistUtil.Regist(skt_token_id_map, id_tool.s_tr.hit_train.GetOriginMap(), MetaOfApp.MinimumNotUnkAppearTime, id_tool.s_tr.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "SkeletonToken");
 		}
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.hit_train.entrkeySet()));
 //		Regist(skeleton_id_map, new ArrayList<String>(id_tool.sr.not_hit_train.keySet()));
@@ -187,11 +186,11 @@ public class IDManager {
 //			Regist(token_id_map, new ArrayList<String>(id_tool.tr.RefineHitTrain(MetaOfApp.NumberOfUnk)));
 //		} else 
 		{
-			Regist(token_id_map, reserved_words);
+			RegistUtil.Regist(token_id_map, reserved_words);
 //			id_tool.tr.hit_train.TrimBasedOnValueInNaturalOrder(MetaOfApp.MinimumNotUnkAppearTime);
 //			TrimUtil(id_tool.tr.hit_train, MetaOfApp.MinimumNotUnkAppearTime);
 //			id_tool.tr.not_hit_train.GetOriginMap(), 
-			token_hit_num = RegistUtil(token_id_map, id_tool.tr.hit_train.GetOriginMap(), MetaOfApp.MinimumNotUnkAppearTime, id_tool.tr.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
+			token_hit_num = RegistUtil.Regist(token_id_map, id_tool.tr.hit_train.GetOriginMap(), MetaOfApp.MinimumNotUnkAppearTime, id_tool.tr.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfUnk, MetaOfApp.MinimumNumberOfVocabulary, "Token");
 //			ArrayList<Entry<String, Integer>> tk_ht = new ArrayList<Entry<String, Integer>>(
 //					MapUtil.SortMapByValue(id_tool.tr.hit_train));
 //			Collections.reverse(tk_ht);
@@ -218,8 +217,8 @@ public class IDManager {
 //		Assert.isTrue(token_hit_num > 0);
 //		Regist(token_id_map, id_tool.tr.not_hit_train);
 		{
-			Regist(grammar_id_map, reserved_words);
-			Regist(grammar_id_map, new ArrayList<String>(id_tool.gr.self_children_map.keySet()));
+			RegistUtil.Regist(grammar_id_map, reserved_words);
+			RegistUtil.Regist(grammar_id_map, new ArrayList<String>(id_tool.gr.self_children_map.keySet()));
 			{
 				TreeSet<Integer> children_ids = new TreeSet<Integer>();
 				for (int i = 0; i < token_hit_num; i++) {
@@ -272,64 +271,6 @@ public class IDManager {
 //		ast_type_id_map.put(Block.class.getSimpleName(), type_id++);
 	}
 	
-	
-	private static int RegistUtil(TreeMap<String, Integer> id_map, Map<String, Integer> hit, int minimum_value_threshold, Map<String, Integer> not_hit, int unk_num, int minimum_num, String desc) {
-		int pre_size = id_map.size();
-		ArrayList<Entry<String, Integer>> raw_sk_ht = new ArrayList<Entry<String, Integer>>(
-				MapUtil.SortMapByValue(hit));
-		Collections.reverse(raw_sk_ht);
-		
-		int i=0;
-		int prev_val = Integer.MAX_VALUE;
-		for (;i<raw_sk_ht.size();i++) {
-			Entry<String, Integer> ent = raw_sk_ht.get(i);
-			int e_val = ent.getValue();
-			Assert.isTrue(prev_val >= e_val);
-			prev_val = e_val;
-			if (e_val < minimum_value_threshold) {
-				break;
-			}
-		}
-//		ArrayList<Entry<String, Integer>> sk_ht = new ArrayList<Entry<String, Integer>>(raw_sk_ht.subList(i, raw_sk_ht.size()));
-//		Collections.reverse(sk_ht);
-		
-		int hit_num = i - unk_num;
-		if (hit_num < minimum_num) {
-			hit_num = minimum_num;
-		}
-		if (hit_num > raw_sk_ht.size()) {
-			hit_num = raw_sk_ht.size();
-		}
-//		System.out.println(desc + " hit_num:" + hit_num + "#id_map.size():" + id_map.size());
-		Regist(id_map, MapUtil.EntryListToKeyList(raw_sk_ht.subList(0, hit_num)));
-
-		int r_hit_num = id_map.size();
-		Assert.isTrue(hit_num <= r_hit_num && r_hit_num <= pre_size + hit_num, "r_hit_num:" + r_hit_num +"#pre_size + hit_num:" + (pre_size + hit_num));
-		
-		if (hit_num < raw_sk_ht.size()) {
-			Regist(id_map, MapUtil.EntryListToKeyList(raw_sk_ht.subList(hit_num, raw_sk_ht.size())));
-		}
-//		PrintUtil.PrintPartOfEntryList(raw_sk_ht, hit_num, raw_sk_ht.size(), "SetUnk" + desc,
-//				desc, "count");
-		
-		ArrayList<Entry<String, Integer>> sk_nht = new ArrayList<Entry<String, Integer>>(
-				MapUtil.SortMapByValue(not_hit));
-		Collections.reverse(sk_nht);
-		Regist(id_map, MapUtil.EntryListToKeyList(sk_nht));
-		
-		return r_hit_num;
-	}
-
-	private static void Regist(Map<String, Integer> reg_map, List<String> ele_set) {
-		Iterator<String> ele_itr = ele_set.iterator();
-		while (ele_itr.hasNext()) {
-			String ele = ele_itr.next();
-			if (!reg_map.containsKey(ele)) {
-				reg_map.put(ele, reg_map.size());
-			}
-		}
-	}
-
 //	private int RegistTypeContentID(String type_content) {// , boolean is_leaf, int count
 //		Integer id = ast_type_content_id_map.get(type_content);
 //		if (id == null) {

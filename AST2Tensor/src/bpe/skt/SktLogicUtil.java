@@ -21,6 +21,7 @@ import statis.trans.common.RoleAssigner;
 import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
 import statistic.id.IDManager;
+import statistic.id.ParentSktHintManager;
 import translation.SktTensorTools;
 import translation.TensorTools;
 import translation.ast.StatementScoreGenerator;
@@ -34,6 +35,7 @@ import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
 import unit.PairContainer;
+import util.ListUtil;
 import util.MapUtil;
 import util.PrintUtil;
 import util.YStringUtil;
@@ -66,7 +68,7 @@ public class SktLogicUtil {
 					}
 				}
 				{
-					for (String an : tf.skt_one_e_struct) {
+					for (String an : tf.skt_e_struct) {
 						if (role <= RoleAssigner.train_seen_k) {
 							id_tool.e_struct_r.TokenHitInTrainSet(an, 1);
 						} else {
@@ -75,11 +77,55 @@ public class SktLogicUtil {
 					}
 				}
 				{
-					for (String an : tf.skt_token) {
+					for (String an : tf.skt_e_token) {
 						if (role <= RoleAssigner.train_seen_k) {
 							id_tool.s_tr.TokenHitInTrainSet(an, 1);
 						} else {
 							id_tool.s_tr.TokenNotHitInTrainSet(an, 1);
+						}
+					}
+				}
+				{
+					for (String h : tf.skt_one_struct_hint) {
+						if (role <= RoleAssigner.train_seen_k) {
+							id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
+						} else {
+							id_tool.hint_recorder.one_r.TokenNotHitInTrainSet(h, 1);
+						}
+					}
+					for (String h : tf.skt_one_token_hint) {
+						if (role <= RoleAssigner.train_seen_k) {
+							id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
+						} else {
+							id_tool.hint_recorder.one_r.TokenNotHitInTrainSet(h, 1);
+						}
+					}
+					for (String h : tf.skt_pe_struct_hint) {
+						if (role <= RoleAssigner.train_seen_k) {
+							id_tool.hint_recorder.pe_r.TokenHitInTrainSet(h, 1);
+						} else {
+							id_tool.hint_recorder.pe_r.TokenNotHitInTrainSet(h, 1);
+						}
+					}
+					for (String h : tf.skt_pe_token_hint) {
+						if (role <= RoleAssigner.train_seen_k) {
+							id_tool.hint_recorder.pe_r.TokenHitInTrainSet(h, 1);
+						} else {
+							id_tool.hint_recorder.pe_r.TokenNotHitInTrainSet(h, 1);
+						}
+					}
+					for (String h : tf.skt_e_struct_hint) {
+						if (role <= RoleAssigner.train_seen_k) {
+							id_tool.hint_recorder.e_r.TokenHitInTrainSet(h, 1);
+						} else {
+							id_tool.hint_recorder.e_r.TokenNotHitInTrainSet(h, 1);
+						}
+					}
+					for (String h : tf.skt_e_token_hint) {
+						if (role <= RoleAssigner.train_seen_k) {
+							id_tool.hint_recorder.e_r.TokenHitInTrainSet(h, 1);
+						} else {
+							id_tool.hint_recorder.e_r.TokenNotHitInTrainSet(h, 1);
 						}
 					}
 				}
@@ -168,6 +214,8 @@ public class SktLogicUtil {
 	public static void TranslatePairEncodedSkeletonsAndTokens(SktTensorTools tensor_tool, SkeletonForestRecorder sfr)
 			throws Exception {
 		IDManager im = tensor_tool.im;
+		ParentSktHintManager pshm = tensor_tool.pshm;
+		
 		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
 
 		TreeMap<String, Integer> kind_index = new TreeMap<String, Integer>();
@@ -269,39 +317,50 @@ public class SktLogicUtil {
 					info.add(skt_one_id);
 					kind.add(0);
 					is_var.add(-1);
-					
+
+					Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_e_token, tf.skt_pe_token));
+					Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_token, tf.skt_one_token));
 					Assert.isTrue(YStringUtil.CountSubStringInString(one_str, "#h") == 0);
 					int count = YStringUtil.CountSubStringInString(one_str, "#v");
-					if (count != tf.skt_token.size()) {
+					if (count != tf.skt_e_token.size()) {
 						 tree.DebugPrintEachNode();
 					}
-					Assert.isTrue(count == tf.skt_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_token.size() + "#o_str:" + one_str + "#token list:" + PrintUtil.PrintListToString(tf.skt_token, "skt_tokens"));
-					info_str.addAll(tf.skt_token);
-					ArrayList<Integer> skt_token_ids = TranslateTokenToID(tf.skt_token, im, "GetSkeletonTypeContentID");
+					Assert.isTrue(count == tf.skt_e_token.size(), "count:" + count + "#tf.skt_token.size():" + tf.skt_e_token.size() + "#o_str:" + one_str + "#token list:" + PrintUtil.PrintListToString(tf.skt_e_token, "skt_e_tokens"));
+					info_str.addAll(tf.skt_e_token);
+					ArrayList<Integer> skt_token_ids = TranslateTokenToID(tf.skt_e_token, im, "GetSkeletonTypeContentID");
 					info.addAll(skt_token_ids);
-					kind.addAll(tf.skt_token_kind);
-					is_var.addAll(tf.skt_token_is_var);
+					for (String e_token : tf.skt_e_token) {
+						Integer tk = tf.token_kind.get(e_token);
+						Integer tv = tf.token_is_var.get(e_token);
+						Assert.isTrue(tk != null);
+						Assert.isTrue(tv != null);
+						kind.add(tk);
+						is_var.add(tv);
+					}
 					
 					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
 					ArrayList<Integer> exact_skt_one_ids = new ArrayList<Integer>();// (tf.skt_one_struct, im, "GetExactSkeletonID");
 					
 					int dft_exact_skt_id = im.GetExactSkeletonID(one_str);
 					
-					ArrayList<Integer> skt_each_ids = TranslateTokenToID(tf.skt_one_e_struct, im, "GetEachSkeletonID");
+					Assert.isTrue(tf.skt_one_e_struct.size() == 1);
+					ArrayList<String> one_e = tf.skt_one_e_struct.get(0);
+					
+					ArrayList<Integer> skt_each_ids = TranslateTokenToID(one_e, im, "GetEachSkeletonID");
 					
 					{
 						if (!tensor_tool.one_to_each_str.containsKey(one_str)) {
-							tensor_tool.one_to_each_str.put(one_str, tf.skt_one_e_struct);
+							tensor_tool.one_to_each_str.put(one_str, one_e);
 							tensor_tool.one_to_each.put(dft_exact_skt_id, skt_each_ids);
 						}
-						String str1 = PrintUtil.PrintListToString(tf.skt_one_e_struct, "");
+						String str1 = PrintUtil.PrintListToString(one_e, "");
 						String str2 = PrintUtil.PrintListToString(tensor_tool.one_to_each_str.get(one_str), "");
 						if (!str1.equals(str2)) {
 							String who_one = one_str + "#$#" + str1;
 							int exid = im.GetAndRegistExtraExactSkeletonID(who_one);
 							System.err.println("Warning one:" + one_str + "#exid:" + exid + "#unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
 							exact_skt_one_ids.add(exid);
-							tensor_tool.one_to_each_str.put(who_one, tf.skt_one_e_struct);
+							tensor_tool.one_to_each_str.put(who_one, one_e);
 							tensor_tool.one_to_each.put(exid, skt_each_ids);
 						} else {
 							exact_skt_one_ids.add(dft_exact_skt_id);
@@ -380,11 +439,18 @@ public class SktLogicUtil {
 						}
 //						Assert.isTrue(str1.equals(str2), "Unexpected not equal one_to_each, str1:" + str1 + "#str2:" + str2);
 					}
-
+					
+					ArrayList<Integer> one_struct_hint_id = TranslateTokenToID(tf.skt_one_struct_hint, pshm, "GetSktOneParentHintID");
+					ArrayList<Integer> one_token_hint_id = TranslateTokenToID(tf.skt_one_token_hint, pshm, "GetSktOneParentHintID");
+					ArrayList<Integer> pe_struct_hint_id = TranslateTokenToID(tf.skt_pe_struct_hint, pshm, "GetSktPeParentHintID");
+					ArrayList<Integer> pe_token_hint_id = TranslateTokenToID(tf.skt_pe_token_hint, pshm, "GetSktPeParentHintID");
+					ArrayList<Integer> e_struct_hint_id = TranslateTokenToID(tf.skt_e_struct_hint, pshm, "GetSktEParentHintID");
+					ArrayList<Integer> e_token_hint_id = TranslateTokenToID(tf.skt_e_token_hint, pshm, "GetSktEParentHintID");
+					
 					sst.StoreStatementSkeletonInfo(info_str, info, kind, is_var);
-					sst.StoreStatementSkeletonBatchInfo(im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, skt_one_ids, exact_skt_one_ids, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonPEBatchInfo(im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, skt_pe_ids, exact_skt_pe_ids, tf.skt_token, skt_token_ids);
-					sst.StoreStatementSkeletonEachBatchInfo(im.each_skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_e_struct, skt_each_ids, skt_each_ids, tf.skt_token, skt_token_ids);
+					sst.StoreStatementSkeletonBatchInfo(pshm, "One", im.skeleton_hit_num, im.skt_token_hit_num, tf.skt_one_struct, one_struct_hint_id, skt_one_ids, exact_skt_one_ids, tf.skt_one_token, one_token_hint_id, skt_token_ids);
+					sst.StoreStatementSkeletonPEBatchInfo(pshm, "Pe", im.pe_skeleton_hit_num, im.skt_token_hit_num, tf.skt_pe_struct, pe_struct_hint_id, skt_pe_ids, exact_skt_pe_ids, tf.skt_pe_token, pe_token_hint_id, skt_token_ids);
+					sst.StoreStatementSkeletonEachBatchInfo(pshm, "E", im.each_skeleton_hit_num, im.skt_token_hit_num, one_e, e_struct_hint_id, skt_each_ids, skt_each_ids, tf.skt_e_token, e_token_hint_id, skt_token_ids);
 					
 //					ArrayList<Integer> hv = new ArrayList<Integer>();
 //					hv.add(0);
@@ -460,11 +526,11 @@ public class SktLogicUtil {
 //		FileUtil.WriteJson(each_str_hv_num, MetaOfApp.DataDirectory + "/All_each_str_hv_num.json");
 	}
 
-	public static ArrayList<Integer> TranslateTokenToID(ArrayList<String> ss, IDManager im, String m_key)
+	public static ArrayList<Integer> TranslateTokenToID(ArrayList<String> ss, Object im, String m_key)
 			throws Exception {
 		ArrayList<Integer> ll = new ArrayList<Integer>();
 
-		Method method = IDManager.class.getMethod(m_key, String.class);
+		Method method = im.getClass().getMethod(m_key, String.class);
 		for (String s : ss) {
 			int r = (int) method.invoke(im, s);
 			ll.add(r);
