@@ -9,7 +9,6 @@ import bpe.skt.TreeNodeTwoMerge;
 import eclipse.jdt.JDTASTHelper;
 import main.MetaOfApp;
 import statistic.id.ParentSktHintManager;
-import translation.SktTensorTools;
 import translation.tensor.util.TokenKindUtil;
 import tree.util.TreeNodePairUtil;
 import unit.PairContainer;
@@ -239,12 +238,12 @@ public class Tree implements Comparable<Tree> {
 //			tf.skt_one_struct.set(0, tf.skt_one_struct.get(0) + "#" + rt.GetContent());
 //		}
 	}
-	
-	public void TraverseAndRecordTreeNode(SktTensorTools stt, String pfx) {
-		TraverseAndRecordTreeNode(stt, pfx, root);
+	// SktTensorTools stt, 
+	public void TraverseAndRecordTreeNode(String pfx) {
+		TraverseAndRecordTreeNode(pfx, root);// stt, 
 	}
-	
-	private void TraverseAndRecordTreeNode(SktTensorTools stt, String pfx, TreeNode rt) {
+	// SktTensorTools stt, 
+	private void TraverseAndRecordTreeNode(String pfx, TreeNode rt) {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> struct_hint = (ArrayList<String>) ReflectUtil.ReflectField(pfx + "_struct_hint", tf);
 		@SuppressWarnings("unchecked")
@@ -260,13 +259,13 @@ public class Tree implements Comparable<Tree> {
 		@SuppressWarnings("unchecked")
 		ArrayList<Integer> token_count = (ArrayList<Integer>) ReflectUtil.ReflectField(pfx + "_token_count", tf);
 		
-		ParentSktHintManager pshm = stt.pshm;
+//		ParentSktHintManager pshm = stt.pshm;
 		
 		String rt_cnt = rt.GetContent();
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
-		@SuppressWarnings("unchecked")
-		String hint_str = pshm.GenParentHint(stt.im, pfx, (ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pfx + "_par_info", rt));
+		@SuppressWarnings("unchecked") // stt.im, pfx, 
+		String hint_str = ParentSktHintManager.GenParentHint((ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pfx + "_par_info", rt));
 		if (rt.OriginIsNonCompositeLeaf() && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)) {
 			Assert.isTrue(childs.size() == 0);
 			token_hint.add(hint_str);
@@ -302,7 +301,7 @@ public class Tree implements Comparable<Tree> {
 			}
 			
 			for (TreeNode child : childs) {
-				TraverseAndRecordTreeNode(stt, pfx, child);
+				TraverseAndRecordTreeNode(pfx, child);// stt, 
 			}
 			
 			// validate

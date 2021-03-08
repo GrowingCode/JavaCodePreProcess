@@ -13,8 +13,6 @@ import statistic.IDTools;
 import statistic.id.util.RegistUtil;
 import tree.TreeNodeParentInfo;
 import util.FileUtil;
-import util.ReflectUtil;
-import util.StringEquivalentUtil;
 
 public class ParentSktHintManager {
 	
@@ -136,17 +134,17 @@ public class ParentSktHintManager {
 		FileUtil.WriteToFile(new File(json_file),
 				gson.toJson(result));
 	}
-
-	public String GenParentHint(IDManager im, String pfx, ArrayList<TreeNodeParentInfo> par_info) {
-		String infix = StringEquivalentUtil.SktIDManagerEquivalent(pfx);
-		String im_func = "Get" + infix + "SkeletonID";
+	// IDManager im, String pfx, 
+	public static String GenParentHint(ArrayList<TreeNodeParentInfo> par_info) {
+//		String infix = StringEquivalentUtil.SktIDManagerEquivalent(pfx);
+//		String im_func = "Get" + infix + "SkeletonID";
 		String hint = "";
 		for (TreeNodeParentInfo pi : par_info) {
 			String tcnt = pi.tree_node_content;
 			int index = pi.index;
 
-			int sd = (int) ReflectUtil.ReflectMethod(im_func, im, new Class<?>[] {String.class}, new Object[] {tcnt});
-			hint += sd + ":" + index + "#";
+//			int sd = (int) ReflectUtil.ReflectMethod(im_func, im, new Class<?>[] {String.class}, new Object[] {tcnt});
+			hint += tcnt + ":" + index + "#";
 		}
 		return hint;
 	}

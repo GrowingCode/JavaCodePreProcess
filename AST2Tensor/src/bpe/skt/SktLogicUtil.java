@@ -85,50 +85,6 @@ public class SktLogicUtil {
 						}
 					}
 				}
-				{
-					for (String h : tf.skt_one_struct_hint) {
-						if (role <= RoleAssigner.train_seen_k) {
-							id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
-						} else {
-							id_tool.hint_recorder.one_r.TokenNotHitInTrainSet(h, 1);
-						}
-					}
-					for (String h : tf.skt_one_token_hint) {
-						if (role <= RoleAssigner.train_seen_k) {
-							id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
-						} else {
-							id_tool.hint_recorder.one_r.TokenNotHitInTrainSet(h, 1);
-						}
-					}
-					for (String h : tf.skt_pe_struct_hint) {
-						if (role <= RoleAssigner.train_seen_k) {
-							id_tool.hint_recorder.pe_r.TokenHitInTrainSet(h, 1);
-						} else {
-							id_tool.hint_recorder.pe_r.TokenNotHitInTrainSet(h, 1);
-						}
-					}
-					for (String h : tf.skt_pe_token_hint) {
-						if (role <= RoleAssigner.train_seen_k) {
-							id_tool.hint_recorder.pe_r.TokenHitInTrainSet(h, 1);
-						} else {
-							id_tool.hint_recorder.pe_r.TokenNotHitInTrainSet(h, 1);
-						}
-					}
-					for (String h : tf.skt_e_struct_hint) {
-						if (role <= RoleAssigner.train_seen_k) {
-							id_tool.hint_recorder.e_r.TokenHitInTrainSet(h, 1);
-						} else {
-							id_tool.hint_recorder.e_r.TokenNotHitInTrainSet(h, 1);
-						}
-					}
-					for (String h : tf.skt_e_token_hint) {
-						if (role <= RoleAssigner.train_seen_k) {
-							id_tool.hint_recorder.e_r.TokenHitInTrainSet(h, 1);
-						} else {
-							id_tool.hint_recorder.e_r.TokenNotHitInTrainSet(h, 1);
-						}
-					}
-				}
 //				TreeMap<String, TreeNode> ans = t.GetAllNodes();
 //				Set<String> ans_keys = ans.keySet();
 //				Iterator<String> ans_itr = ans_keys.iterator();
@@ -140,6 +96,59 @@ public class SktLogicUtil {
 //						id_tool.str.TokenNotHitInTrainSet(an, 1);
 //					}
 //				}
+			}
+		}
+	}
+	
+	public static void CountParentHint(IDTools id_tool, SkeletonForestRecorder sfr) {
+		ArrayList<Forest> fs = sfr.GetAllForests();
+		for (Forest f : fs) {
+			int role = f.GetRole();
+			ArrayList<Tree> ts = f.GetAllTrees();
+			for (Tree t : ts) {
+				TreeFlatten tf = t.GetTreeFlattenResult();
+				for (String h : tf.skt_one_struct_hint) {
+					if (role <= RoleAssigner.train_seen_k) {
+						id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
+					} else {
+						id_tool.hint_recorder.one_r.TokenNotHitInTrainSet(h, 1);
+					}
+				}
+				for (String h : tf.skt_one_token_hint) {
+					if (role <= RoleAssigner.train_seen_k) {
+						id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
+					} else {
+						id_tool.hint_recorder.one_r.TokenNotHitInTrainSet(h, 1);
+					}
+				}
+				for (String h : tf.skt_pe_struct_hint) {
+					if (role <= RoleAssigner.train_seen_k) {
+						id_tool.hint_recorder.pe_r.TokenHitInTrainSet(h, 1);
+					} else {
+						id_tool.hint_recorder.pe_r.TokenNotHitInTrainSet(h, 1);
+					}
+				}
+				for (String h : tf.skt_pe_token_hint) {
+					if (role <= RoleAssigner.train_seen_k) {
+						id_tool.hint_recorder.pe_r.TokenHitInTrainSet(h, 1);
+					} else {
+						id_tool.hint_recorder.pe_r.TokenNotHitInTrainSet(h, 1);
+					}
+				}
+				for (String h : tf.skt_e_struct_hint) {
+					if (role <= RoleAssigner.train_seen_k) {
+						id_tool.hint_recorder.e_r.TokenHitInTrainSet(h, 1);
+					} else {
+						id_tool.hint_recorder.e_r.TokenNotHitInTrainSet(h, 1);
+					}
+				}
+				for (String h : tf.skt_e_token_hint) {
+					if (role <= RoleAssigner.train_seen_k) {
+						id_tool.hint_recorder.e_r.TokenHitInTrainSet(h, 1);
+					} else {
+						id_tool.hint_recorder.e_r.TokenNotHitInTrainSet(h, 1);
+					}
+				}
 			}
 		}
 	}

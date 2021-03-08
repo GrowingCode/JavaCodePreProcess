@@ -116,7 +116,7 @@ public class AppMainRoot implements IApplication {
 			APIRecorder ar = new APIRecorder();
 			ChildrenNumCounter cnc = new ChildrenNumCounter();
 			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
-			ParentSktHintRecorder hint_recorder = new ParentSktHintRecorder();
+			ParentSktHintRecorder hint_recorder = new ParentSktHintRecorder(MetaOfApp.MaximumTokenCapacity);
 //			stf_r, 
 			id_tool = new IDTools(bpe_mr, tr, one_struct_r, pe_struct_r, e_struct_r, s_t_r, gr, ar, cnc, sktpe_mr, hint_recorder);
 		}
@@ -286,7 +286,7 @@ public class AppMainRoot implements IApplication {
 	
 	static int SktPECountOneProject(STProject proj, IDTools id_tool, TensorTools tensor_tool) {
 		int project_size = 0;
-		SktTensorTools stt = (SktTensorTools) tensor_tool;
+//		SktTensorTools stt = (SktTensorTools) tensor_tool;
 		try {
 			SystemUtil.Delay(1000);
 			SktPEGeneratorForProject irgfop = new SktPEGeneratorForProject(proj.GetJavaProject(), id_tool, tensor_tool);
@@ -295,11 +295,11 @@ public class AppMainRoot implements IApplication {
 			stf_r.EncounterNewProject(proj.GetInfo());
 			project_size = irgfop.GenerateForOneProject(stf_r);
 			stf_r.PreProcessAllForests();
-			stf_r.TraverseAndRecordEInfo(stt);
+			stf_r.TraverseAndRecordEInfo();// stt
 			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges(), MetaOfApp.MaximumNumberOfApplyingSkeletonMerge);
-			stf_r.TraverseAndRecordPEInfo(stt);
+			stf_r.TraverseAndRecordPEInfo();// stt
 			stf_r.ApplySktMergeIntoOne();
-			stf_r.TraverseAndRecordOneInfo(stt);
+			stf_r.TraverseAndRecordOneInfo();// stt
 			SktLogicUtil.CountPairEncodedSkeletons(id_tool, stf_r);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -319,11 +319,11 @@ public class AppMainRoot implements IApplication {
 			project_size = irgfop.GenerateForOneProject(stf_r);
 			stf_r.PreProcessAllForests();
 //			id_tool.stf_r.FlattenAllOriginTrees();
-			stf_r.TraverseAndRecordEInfo(stt);
+			stf_r.TraverseAndRecordEInfo();// stt
 			stf_r.ApplySktPEMerges(id_tool.sktpe_mr.GetMerges(), MetaOfApp.MaximumNumberOfApplyingSkeletonMerge);
-			stf_r.TraverseAndRecordPEInfo(stt);
+			stf_r.TraverseAndRecordPEInfo();// stt
 			stf_r.ApplySktMergeIntoOne();
-			stf_r.TraverseAndRecordOneInfo(stt);
+			stf_r.TraverseAndRecordOneInfo();// stt
 //			SktLogicUtil.FilterPairEncodedSkeletonsAndTokens(tensor_tool, stf_r);
 			SktLogicUtil.TranslatePairEncodedSkeletonsAndTokens(stt, stf_r);
 		} catch (Exception e) {
