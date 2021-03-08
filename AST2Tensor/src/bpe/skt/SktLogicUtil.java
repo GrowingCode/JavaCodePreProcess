@@ -338,14 +338,16 @@ public class SktLogicUtil {
 					info_str.addAll(tf.skt_e_token);
 					ArrayList<Integer> skt_token_ids = TranslateTokenToID(tf.skt_e_token, im, "GetSkeletonTypeContentID");
 					info.addAll(skt_token_ids);
-					for (String e_token : tf.skt_e_token) {
-						Integer tk = tf.token_kind.get(e_token);
-						Integer tv = tf.token_is_var.get(e_token);
-						Assert.isTrue(tk != null);
-						Assert.isTrue(tv != null);
-						kind.add(tk);
-						is_var.add(tv);
-					}
+					kind.addAll(tf.skt_e_token_kind);
+					is_var.addAll(tf.skt_e_token_is_var);
+//					for (String e_token : tf.skt_e_token) {
+//						Integer tk = tf.token_kind.get(e_token);
+//						Integer tv = tf.token_is_var.get(e_token);
+//						Assert.isTrue(tk != null);
+//						Assert.isTrue(tv != null);
+//						kind.add(tk);
+//						is_var.add(tv);
+//					}
 					
 					ArrayList<Integer> skt_one_ids = TranslateTokenToID(tf.skt_one_struct, im, "GetSkeletonID");
 					ArrayList<Integer> exact_skt_one_ids = new ArrayList<Integer>();// (tf.skt_one_struct, im, "GetExactSkeletonID");

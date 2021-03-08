@@ -258,6 +258,10 @@ public class Tree implements Comparable<Tree> {
 		ArrayList<String> token = (ArrayList<String>) ReflectUtil.ReflectField(pfx + "_token", tf);
 		@SuppressWarnings("unchecked")
 		ArrayList<Integer> token_count = (ArrayList<Integer>) ReflectUtil.ReflectField(pfx + "_token_count", tf);
+		@SuppressWarnings("unchecked")
+		ArrayList<Integer> token_kind = (ArrayList<Integer>) ReflectUtil.ReflectField(pfx + "_token_kind", tf);
+		@SuppressWarnings("unchecked")
+		ArrayList<Integer> token_is_var = (ArrayList<Integer>) ReflectUtil.ReflectField(pfx + "_token_is_var", tf);
 		
 //		ParentSktHintManager pshm = stt.pshm;
 		
@@ -271,22 +275,23 @@ public class Tree implements Comparable<Tree> {
 			token_hint.add(hint_str);
 			token.add(rt_cnt);
 			token_count.add(rt.GetNodeCount());
-			
-			Integer kind = tf.token_kind.get(rt_cnt);
-			if (kind == null) {
-				tf.token_kind.put(rt_cnt, TokenKindUtil.GetTokenKind(rt));
-			} else {
-				Assert.isTrue(TokenKindUtil.GetTokenKind(rt) == kind);
-			}
-			
-			Integer is_var = tf.token_is_var.get(rt_cnt);
-			if (is_var == null) {
-				tf.token_is_var.put(rt_cnt, TokenKindUtil.GetTokenIsVar(rt));
-			} else {
-				Assert.isTrue(TokenKindUtil.GetTokenIsVar(rt) == is_var);
-			}
-//			tf.skt_token_kind.add(TokenKindUtil.GetTokenKind(rt));
-//			tf.skt_token_is_var.add(TokenKindUtil.GetTokenIsVar(rt));
+			token_kind.add(TokenKindUtil.GetTokenKind(rt));
+			token_is_var.add(TokenKindUtil.GetTokenIsVar(rt));
+//			
+//			Integer kind = tf.token_kind.get(rt_cnt);
+//			if (kind == null) {
+//				kind = TokenKindUtil.GetTokenKind(rt);
+//				tf.token_kind.put(rt_cnt, kind);
+//			} else {
+//				Assert.isTrue(TokenKindUtil.GetTokenKind(rt) == kind, "strange_cnt:" + rt_cnt + "#TokenKindUtil.GetTokenKind(rt):" + TokenKindUtil.GetTokenKind(rt) + "#kind:" + kind);
+//			}
+//			Integer is_var = tf.token_is_var.get(rt_cnt);
+//			if (is_var == null) {
+//				is_var = TokenKindUtil.GetTokenIsVar(rt);
+//				tf.token_is_var.put(rt_cnt, is_var);
+//			} else {
+//				Assert.isTrue(TokenKindUtil.GetTokenIsVar(rt) == is_var, "strange_cnt:" + rt_cnt + "#TokenKindUtil.GetTokenIsVar(rt):" + TokenKindUtil.GetTokenIsVar(rt) + "#is_var:" + is_var);
+//			}
 		} else {
 			struct_hint.add(hint_str);
 			struct.add(rt_cnt);

@@ -26,9 +26,9 @@ public class TreeNode {
 	
 	String tree_uid = null;
 	
-	ArrayList<TreeNodeParentInfo> skt_e_par_info = new ArrayList<TreeNodeParentInfo>();
-	ArrayList<TreeNodeParentInfo> skt_pe_par_info = new ArrayList<TreeNodeParentInfo>();
-	ArrayList<TreeNodeParentInfo> skt_one_par_info = new ArrayList<TreeNodeParentInfo>();
+	public ArrayList<TreeNodeParentInfo> skt_e_par_info = new ArrayList<TreeNodeParentInfo>();
+	public ArrayList<TreeNodeParentInfo> skt_pe_par_info = new ArrayList<TreeNodeParentInfo>();
+	public ArrayList<TreeNodeParentInfo> skt_one_par_info = new ArrayList<TreeNodeParentInfo>();
 	
 	int node_count = 1;
 	
