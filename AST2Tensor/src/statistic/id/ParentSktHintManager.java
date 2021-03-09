@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 import statistic.IDTools;
 import statistic.id.util.RegistUtil;
+import statistic.id.util.SeriesUtil;
 import tree.TreeNodeParentInfo;
 import util.FileUtil;
 
@@ -101,12 +102,16 @@ public class ParentSktHintManager {
 	}
 	
 	public void SaveToDirectory(String dir) {
-		SaveToDirectory(dir + "/" + "All_skt_one_parent_hint_mask.json", skt_one_parent_hint_id_map, skt_one_parent_hint_id_one_token_id_map, im.skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_pe_parent_hint_mask.json", skt_pe_parent_hint_id_map, skt_pe_parent_hint_id_pe_token_id_map, im.pe_skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_e_parent_hint_mask.json", skt_e_parent_hint_id_map, skt_e_parent_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_one_parent_hint_mask.json", skt_one_parent_hint_id_one_token_id_map, im.skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_pe_parent_hint_mask.json", skt_pe_parent_hint_id_pe_token_id_map, im.pe_skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_e_parent_hint_mask.json", skt_e_parent_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);
+		
+		SeriesUtil.GenerateIDJson(dir, skt_one_parent_hint_id_map, "skt_one");
+		SeriesUtil.GenerateIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe");
+		SeriesUtil.GenerateIDJson(dir, skt_e_parent_hint_id_map, "skt_e");
 	}
 	
-	private void SaveToDirectory(String json_file, TreeMap<String, Integer> skt_parent_hint_id_map, TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map, int n_token) {
+	private void SaveToDirectory(String json_file, TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map, int n_token) {
 		ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
 		
 		Set<Integer> k_set = skt_parent_hint_id_token_id_map.keySet();

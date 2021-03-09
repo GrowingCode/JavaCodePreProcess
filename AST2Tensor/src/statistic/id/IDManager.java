@@ -23,6 +23,7 @@ import main.MetaOfApp;
 import statistic.IDTools;
 import statistic.id.util.DCapacityMap;
 import statistic.id.util.RegistUtil;
+import statistic.id.util.SeriesUtil;
 import util.FileUtil;
 import util.MapUtil;
 import util.PrintUtil;
@@ -539,20 +540,7 @@ public class IDManager {
 		Gson gson = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_is_hit.json"), gson.toJson(id_is_hit));// type_id_json.toString()
 	}
-
-	private void GenerateIDJson(String dir, TreeMap<String, Integer> to_gen, String desc) {
-//		Map<Object, Object> ati_objs = new HashMap<Object, Object>();
-		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(to_gen);
-//		Set<Object> ati_keys = ati_out.keySet();
-//		Iterator<Object> ati_key_itr = ati_keys.iterator();
-//		while (ati_key_itr.hasNext()) {
-//			Object key = ati_key_itr.next();
-//			ati_objs.put(key, ati_out.get(key));
-//		}
-		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_id.json"), gson.toJson(ati_out));// type_id_json.toString()
-	}
-
+	
 //	private void GenerateTypeAndSummaryJson(String dir, TreeMap<String, Integer> to_gen, String desc) {
 //		Gson gson = new Gson();
 //		FileUtil.WriteToFile(new File(dir + "/" + "All_type_content_type_id.json"), gson.toJson(ast_type_content_type_id_map));
@@ -988,7 +976,7 @@ public class IDManager {
 		Gson gson6 = new Gson();
 		FileUtil.WriteToFile(new File(dir + "/" + "All_token_each_subword_sequence_end.json"),
 				gson6.toJson(each_subword_sequence_end));
-		GenerateIDJson(dir, subword_index, "subword");
+		SeriesUtil.GenerateIDJson(dir, subword_index, "subword");
 		ArrayList<Integer> subword_is_start_end = new ArrayList<Integer>();
 		TreeMap<Integer, String> idx_subword = MapUtil.ReverseKeyValueInMap(subword_index);
 		Set<Integer> idxs = idx_subword.keySet();
@@ -1275,14 +1263,14 @@ public class IDManager {
 //		} else {
 //		}
 		// only for debug
-		GenerateIDJson(dir, skeleton_id_map, "skeleton");
-		GenerateIDJson(dir, pe_skeleton_id_map, "skeleton_pe");
-		GenerateIDJson(dir, each_skeleton_id_map, "skeleton_each");
-		GenerateIDJson(dir, skt_token_id_map, "skt_token");
-		GenerateIDJson(dir, token_id_map, "token");
-		GenerateIDJson(dir, grammar_id_map, "grammar");
+		SeriesUtil.GenerateIDJson(dir, skeleton_id_map, "skeleton");
+		SeriesUtil.GenerateIDJson(dir, pe_skeleton_id_map, "skeleton_pe");
+		SeriesUtil.GenerateIDJson(dir, each_skeleton_id_map, "skeleton_each");
+		SeriesUtil.GenerateIDJson(dir, skt_token_id_map, "skt_token");
+		SeriesUtil.GenerateIDJson(dir, token_id_map, "token");
+		SeriesUtil.GenerateIDJson(dir, grammar_id_map, "grammar");
 		SaveGrammarToDirectory(dir);
-		GenerateIDJson(dir, api_comb_id_map, "api_comb");
+		SeriesUtil.GenerateIDJson(dir, api_comb_id_map, "api_comb");
 		// for real tensor usage
 		GenerateIDHitJson(dir);
 		GenerateIDSummary(dir);
