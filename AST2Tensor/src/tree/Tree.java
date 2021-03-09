@@ -5,9 +5,9 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
 
+import bpe.skt.ExactTreeNodeTwoMerge;
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.jdt.JDTASTHelper;
-import main.MetaOfApp;
 import statistic.id.ParentSktHintManager;
 import translation.tensor.util.TokenKindUtil;
 import tree.util.TreeNodePairUtil;
@@ -188,40 +188,74 @@ public class Tree implements Comparable<Tree> {
 //	}
 	
 	public void SktMergeIntoOne() {
-		SktMergeIntoOne(root);
+		ExactTreeNodeTwoMerge etntm = null;
+		do {
+			etntm = SearchForExactMergeIntoOneNodePair(root);
+			if (etntm != null) {
+				ApplyExactOneMerge(etntm);
+			}
+		} while (etntm != null);
 	}
-
-	private void SktMergeIntoOne(TreeNode rt) {
+	
+	private ExactTreeNodeTwoMerge SearchForExactMergeIntoOneNodePair(TreeNode rt) {
+		ExactTreeNodeTwoMerge res = null;
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		if (rt.GetContent().equals("{}")) {
-//			System.err.println("rt {} children size:" + childs.size());
 			Assert.isTrue(childs.size() == 0);
 		}
-//		Class<?> clz = rt.GetClazz();
-		if (childs.size() == 0) {// .IsIDLeafNode(clz)
-//			tf.skt_one_struct_v_count = tf.skt_one_struct_v_count + 1;
-//			tf.skt_one_struct_v_tree_uid.add(rt.GetTreeUid());
+		if (childs.size() == 0) {
 		} else {
 			int i_len = childs.size();
 			for (int i = i_len-1; i >= 0; i--) {
 				TreeNode child = childs.get(i);
-				SktMergeIntoOne(child);
+				
 				boolean to_merge = true;
-				if (child.OriginIsNonCompositeLeaf()) {
-					if (MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf || JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
-						to_merge = false;
-					}
+				if (JDTASTHelper.IsV(child.OriginIsNonCompositeLeaf(), child.GetClazz())) {
+					to_merge = false;
 				}
 				if (to_merge) {
-//					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
 					Assert.isTrue(!rt.GetContent().equals("{}"));
-//					System.err.println("==== before merge:" + rt.GetContent() + " ====");
 					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rt.GetContent(), child.GetContent(), i);
-//					System.err.println("==== after merge:" + mgd + " ====");
-					rt.SetContent(mgd);
-					childs.remove(i);
+					res = new ExactTreeNodeTwoMerge(rt, child, mgd);
+					break;
+//					rt.SetContent(mgd);
+//					childs.remove(i);
 				}
-//				if (!JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+			}
+			
+			if (res == null) {
+				for (int i = i_len-1; i >= 0; i--) {
+					TreeNode child = childs.get(i);
+					res = SearchForExactMergeIntoOneNodePair(child);
+					if (res != null) {
+						break;
+					}
+				}
+			}
+		}
+		return res;
+	}
+
+//	private void SktMergeIntoOne(TreeNode rt) {
+//		ArrayList<TreeNode> childs = rt.GetChildren();
+//		if (rt.GetContent().equals("{}")) {
+////			System.err.println("rt {} children size:" + childs.size());
+//			Assert.isTrue(childs.size() == 0);
+//		}
+////		Class<?> clz = rt.GetClazz();
+//		if (childs.size() == 0) {// .IsIDLeafNode(clz)
+////			tf.skt_one_struct_v_count = tf.skt_one_struct_v_count + 1;
+////			tf.skt_one_struct_v_tree_uid.add(rt.GetTreeUid());
+//		} else {
+//			int i_len = childs.size();
+//			for (int i = i_len-1; i >= 0; i--) {
+//				TreeNode child = childs.get(i);
+//				SktMergeIntoOne(child);
+//				boolean to_merge = true;
+//				if (JDTASTHelper.IsV(child.OriginIsNonCompositeLeaf(), child.GetClazz())) {
+//					to_merge = false;
+//				}
+//				if (to_merge) {
 ////					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
 //					Assert.isTrue(!rt.GetContent().equals("{}"));
 ////					System.err.println("==== before merge:" + rt.GetContent() + " ====");
@@ -230,14 +264,23 @@ public class Tree implements Comparable<Tree> {
 //					rt.SetContent(mgd);
 //					childs.remove(i);
 //				}
-			}
-		}
-//		if (tf.skt_one_struct.size() == 0) {
-//			tf.skt_one_struct.add(rt.GetContent());
-//		} else {
-//			tf.skt_one_struct.set(0, tf.skt_one_struct.get(0) + "#" + rt.GetContent());
+////				if (!JDTASTHelper.IsIDLeafNode(child.GetClazz())) {
+//////					Assert.isTrue(child.GetChildren().size() > 0, "wrong content:" + rt.GetContent() + "#wrong type:" + child.GetClazz());
+////					Assert.isTrue(!rt.GetContent().equals("{}"));
+//////					System.err.println("==== before merge:" + rt.GetContent() + " ====");
+////					String mgd = YStringUtil.ReplaceSpecifiedContentInSpecifiedPosition(rt.GetContent(), child.GetContent(), i);
+//////					System.err.println("==== after merge:" + mgd + " ====");
+////					rt.SetContent(mgd);
+////					childs.remove(i);
+////				}
+//			}
 //		}
-	}
+////		if (tf.skt_one_struct.size() == 0) {
+////			tf.skt_one_struct.add(rt.GetContent());
+////		} else {
+////			tf.skt_one_struct.set(0, tf.skt_one_struct.get(0) + "#" + rt.GetContent());
+////		}
+//	}
 	// SktTensorTools stt, 
 	public void TraverseAndRecordTreeNode(String pfx) {
 		TraverseAndRecordTreeNode(pfx, root);// stt, 
@@ -270,7 +313,7 @@ public class Tree implements Comparable<Tree> {
 		Class<?> clz = rt.GetClazz();
 		@SuppressWarnings("unchecked") // stt.im, pfx, 
 		String hint_str = ParentSktHintManager.GenParentHint((ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pfx + "_par_info", rt));
-		if (rt.OriginIsNonCompositeLeaf() && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)) {
+		if (JDTASTHelper.IsV(rt.OriginIsNonCompositeLeaf(), clz)) {// rt.OriginIsNonCompositeLeaf() && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)
 			Assert.isTrue(childs.size() == 0);
 			token_hint.add(hint_str);
 			token.add(rt_cnt);
@@ -459,65 +502,78 @@ public class Tree implements Comparable<Tree> {
 		return count;
 	}
 	
+	public int ApplyExactOneMerge(ExactTreeNodeTwoMerge pair) {
+		ApplyOneMergeInDetail(pair.parent, pair.node, pair.merged_cnt);
+		return 1;
+	}
+	
 	public int ApplyOneMerge(TreeNodeTwoMerge pair) {
-		int really_merged = 0;
 		PairContainer<TreeNode, TreeNode> match_pc = GetMatchedPC(pair);
 		if (match_pc != null) {
 			TreeNode tn_par = match_pc.k;
 			TreeNode tn = match_pc.v;
-			int tn_sib_index = tn_par.GetChildren().indexOf(tn);
-			Assert.isTrue(tn_sib_index > -1);
-			// exactly matched
-			TreeNode tn_par_par = tn_par.GetParent();
-			if (tn_par_par != null) {
-				RemoveFromParentChildNodePairs(tn_par_par, tn_par);
-			}
-			MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.OriginIsNonCompositeLeaf(), tn_par.GetBinding(), pair.GetMerged(), tn_par.GetTreeWholeContent(), tn_par.GetNodeCount() + tn.GetNodeCount());
-			
+			ApplyOneMergeInDetail(tn_par, tn, pair.GetMerged());
+			return 1;
+		}
+		return 0;
+	}
+	
+	public void ApplyOneMergeInDetail(TreeNode tn_par, TreeNode tn, String merged_tn_par_cnt) {
+//		int really_merged = 0;
+//		if (match_pc != null) {
+		int tn_sib_index = tn_par.GetChildren().indexOf(tn);
+		Assert.isTrue(tn_sib_index > -1);
+		// exactly matched
+		TreeNode tn_par_par = tn_par.GetParent();
+		if (tn_par_par != null) {
+			RemoveFromParentChildNodePairs(tn_par_par, tn_par);
+		}
+		MergedTreeNode m_tn_par = new MergedTreeNode(tn_par.GetClazz(), tn_par.OriginIsNonCompositeLeaf(), tn_par.GetBinding(), merged_tn_par_cnt, tn_par.GetTreeWholeContent(), tn_par.GetNodeCount() + tn.GetNodeCount());
+		
 //			if (m_tn_par.GetContent().equals("#h&&#h&&#h")) {
 //				System.err.println("#h&&#h&&#h merge tree whole content:" + m_tn_par.GetTreeWholeContent());
 //				System.exit(1);
 //			}
-			
-			m_tn_par.SetParent(tn_par_par);
-			m_tn_par.AppendAllChildren(tn_par.GetChildren());
-			ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();
-			for (TreeNode m_child : m_childs) {
-				m_child.SetParent(m_tn_par);
-				RemoveFromParentChildNodePairs(tn_par, m_child);
-			}
-			TreeNode child = m_childs.remove(tn_sib_index);
-			Assert.isTrue(child == tn);
-			m_tn_par.SetUpMergedInformation(tn_par, child);
-			ArrayList<TreeNode> ccs = child.GetChildren();
-			int ccs_len = ccs.size();
-			for (int cl = ccs_len - 1; cl >= 0; cl--) {
-				TreeNode child_child = ccs.get(cl);
-				m_childs.add(tn_sib_index, child_child);
-				child_child.SetParent(m_tn_par);
-				RemoveFromParentChildNodePairs(child, child_child);
-			}
-			
-			for (TreeNode m_child : m_childs) {
-				AddToParentChildNodePairs(m_tn_par, m_child);
-			}
-			
-			if (tn_par_par == null) {
-				// tn_par is the root node and tn_par_par is null. 
-				Assert.isTrue(this.GetRootNode() == tn_par);
-				this.SetRootNode(m_tn_par);
-			} else {
-				ArrayList<TreeNode> sibs = tn_par_par.GetChildren();
-				int tn_sib_idx = sibs.indexOf(tn_par);
-				Assert.isTrue(tn_sib_idx >= 0);
-				sibs.set(tn_sib_idx, m_tn_par);
-				
-				AddToParentChildNodePairs(tn_par_par, m_tn_par);
-			}
-			
-			really_merged = 1;
+		
+		m_tn_par.SetParent(tn_par_par);
+		m_tn_par.AppendAllChildren(tn_par.GetChildren());
+		ArrayList<TreeNode> m_childs = m_tn_par.GetChildren();
+		for (TreeNode m_child : m_childs) {
+			m_child.SetParent(m_tn_par);
+			RemoveFromParentChildNodePairs(tn_par, m_child);
 		}
-		return really_merged;
+		TreeNode child = m_childs.remove(tn_sib_index);
+		Assert.isTrue(child == tn);
+		m_tn_par.SetUpMergedInformation(tn_par, child);
+		ArrayList<TreeNode> ccs = child.GetChildren();
+		int ccs_len = ccs.size();
+		for (int cl = ccs_len - 1; cl >= 0; cl--) {
+			TreeNode child_child = ccs.get(cl);
+			m_childs.add(tn_sib_index, child_child);
+			child_child.SetParent(m_tn_par);
+			RemoveFromParentChildNodePairs(child, child_child);
+		}
+		
+		for (TreeNode m_child : m_childs) {
+			AddToParentChildNodePairs(m_tn_par, m_child);
+		}
+		
+		if (tn_par_par == null) {
+			// tn_par is the root node and tn_par_par is null. 
+			Assert.isTrue(this.GetRootNode() == tn_par);
+			this.SetRootNode(m_tn_par);
+		} else {
+			ArrayList<TreeNode> sibs = tn_par_par.GetChildren();
+			int tn_sib_idx = sibs.indexOf(tn_par);
+			Assert.isTrue(tn_sib_idx >= 0);
+			sibs.set(tn_sib_idx, m_tn_par);
+			
+			AddToParentChildNodePairs(tn_par_par, m_tn_par);
+		}
+		
+//		really_merged = 1;
+//		}
+//		return really_merged;
 	}
 	
 	public int PossibleMergeCount(TreeNodeTwoMerge pair) {

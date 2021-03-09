@@ -80,7 +80,7 @@ public class TreeNode {
 	
 	@Override
 	public String toString() {
-		return content + "#" + hashCode();
+		return content;// + "#" + hashCode()
 	}
 	
 //	public int GetSiblingIndex() {

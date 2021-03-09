@@ -135,6 +135,19 @@ public class JDTASTHelper {
 		return false;
 	}
 	
+	public static boolean IsV(boolean is_non_comp_leaf, Class<?> node_clz) {
+		return is_non_comp_leaf && (JDTASTHelper.IsIDLeafNode(node_clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf);
+	}
+	
+	public static boolean IsNonCompLeaf(ASTNode node, boolean is_leaf) {// , String filter_substmt_cnt
+		boolean is_non_comp_leaf = is_leaf && !JDTASTHelper.IsComplexLeafNode(is_leaf, node.getClass());
+		if (node.getClass().equals(Block.class) || node.getClass().equals(AnonymousClassDeclaration.class)) {
+//			Assert.isTrue(filter_substmt_cnt.equals("{}"));
+			is_non_comp_leaf = true;
+		}
+		return is_non_comp_leaf;
+	}
+	
 	public static Expression GetExprSpec(ASTNode node) {
 		Assert.isTrue(IsExprSpecPattern(node));
 		if (node instanceof MethodInvocation) {

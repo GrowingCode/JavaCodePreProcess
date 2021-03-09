@@ -50,7 +50,9 @@ public class SktPETreesUtil {
 	//				Assert.isTrue(!key.equals("#h") && !key.equals("#v"), "wrong key:" + key);
 	//				TreeNode val = all_nodes.get(key);
 					TreeNode par_val = val.GetParent();
-					boolean not_merge = JDTASTHelper.IsIDLeafNode(val.GetClazz()) && MetaOfApp.NotMergeIDLeaf;
+					
+//					boolean not_merge = JDTASTHelper.IsIDLeafNode(val.GetClazz()) && MetaOfApp.NotMergeIDLeaf;
+					boolean not_merge = JDTASTHelper.IsV(val.OriginIsNonCompositeLeaf(), val.GetClazz());
 //					if (val.GetContent().equals("void")) {
 //						System.out.println("val_clz:" + val.GetClazz());
 //					}

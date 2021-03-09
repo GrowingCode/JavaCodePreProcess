@@ -326,9 +326,9 @@ public class SktLogicUtil {
 					info.add(skt_one_id);
 					kind.add(0);
 					is_var.add(-1);
-
-					Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_e_token, tf.skt_pe_token));
-					Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_token, tf.skt_one_token));
+					
+					Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_e_token, tf.skt_pe_token), PrintUtil.PrintListToString(tf.skt_e_struct, "skt_e_struct") + "======" + PrintUtil.PrintListToString(tf.skt_e_token, "skt_e_token") + "#####" + PrintUtil.PrintListToString(tf.skt_pe_struct, "skt_pe_struct") + "======" + PrintUtil.PrintListToString(tf.skt_pe_token, "skt_pe_token"));
+					Assert.isTrue(ListUtil.TwoListEachElementEqual(tf.skt_pe_token, tf.skt_one_token), PrintUtil.PrintListToString(tf.skt_pe_token, "skt_pe_token") + "#####" + PrintUtil.PrintListToString(tf.skt_one_token, "skt_one_token"));
 					Assert.isTrue(YStringUtil.CountSubStringInString(one_str, "#h") == 0);
 					int count = YStringUtil.CountSubStringInString(one_str, "#v");
 					if (count != tf.skt_e_token.size()) {

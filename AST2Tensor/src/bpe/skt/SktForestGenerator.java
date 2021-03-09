@@ -13,7 +13,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -284,11 +283,9 @@ class SktTreeGenerator extends ASTVisitor {
 //						}
 					}
 					TreeNode tn = null;
-					boolean is_non_comp_leaf = is_leaf && !JDTASTHelper.IsComplexLeafNode(is_leaf, node.getClass());
-					if (node.getClass().equals(Block.class) || node.getClass().equals(AnonymousClassDeclaration.class)) {
-						Assert.isTrue(node_cnt.equals("{}"));
-						is_non_comp_leaf = true;
-					}
+					
+					boolean is_non_comp_leaf = JDTASTHelper.IsNonCompLeaf(node, is_leaf);
+					
 					if (JDTASTHelper.IsExprSpecPattern(node)) {
 						tn = new ExprSpecTreeNode(node.getClass(), is_non_comp_leaf, null, node_cnt, node_whole_cnt, JDTASTHelper.GetExprSpec(node) != null);//, sib_index
 					} else {
@@ -308,7 +305,13 @@ class SktTreeGenerator extends ASTVisitor {
 	private String GetHolder(ASTNode c) {
 		String holder = "#h";
 		ASTNode r_c = JDTASTHelper.SkipPassThroughNodes(c);
-		if (JDTSearchForChildrenOfASTNode.GetChildren(r_c).size() == 0 || r_c.getClass().equals(Block.class) || r_c.getClass().equals(AnonymousClassDeclaration.class)) {// JDTASTHelper.IsIDLeafNode(r_c.getClass())
+		ArrayList<ASTNode> children = JDTSearchForChildrenOfASTNode.GetChildren(r_c);
+		boolean is_leaf = children.size() == 0;
+		boolean is_non_comp_leaf = JDTASTHelper.IsNonCompLeaf(r_c, is_leaf);
+//		if (children.size() == 0 || r_c.getClass().equals(Block.class) || r_c.getClass().equals(AnonymousClassDeclaration.class)) {// JDTASTHelper.IsIDLeafNode(r_c.getClass())
+//			holder = "#v";
+//		}
+		if (JDTASTHelper.IsV(is_non_comp_leaf, r_c.getClass())) {
 			holder = "#v";
 		}
 		return holder;
