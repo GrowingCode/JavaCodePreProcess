@@ -107,8 +107,11 @@ public class ParentSktHintManager {
 		SaveToDirectory(dir + "/" + "All_skt_e_parent_hint_mask.json", skt_e_parent_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);
 		
 		SeriesUtil.GenerateIDJson(dir, skt_one_parent_hint_id_map, "skt_one_par_hint");
+		SeriesUtil.GenerateStrIDJson(dir, skt_one_parent_hint_id_map, "skt_one_par_hint");
 		SeriesUtil.GenerateIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe_par_hint");
+		SeriesUtil.GenerateStrIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe_par_hint");
 		SeriesUtil.GenerateIDJson(dir, skt_e_parent_hint_id_map, "skt_e_par_hint");
+		SeriesUtil.GenerateStrIDJson(dir, skt_e_parent_hint_id_map, "skt_e_par_hint");
 	}
 	
 	private void SaveToDirectory(String json_file, TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map, int n_token) {

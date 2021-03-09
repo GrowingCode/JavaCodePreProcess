@@ -24,7 +24,7 @@ public class SeriesUtil {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_id.json"), gson.toJson(ati_out));// type_id_json.toString()
 	}
 	
-	public static void GenerateOriMapJson(String dir, TreeMap<String, Integer> to_gen, String desc) {
+	public static void GenerateStrIDJson(String dir, TreeMap<String, Integer> to_gen, String desc) {
 //		Map<Object, Object> ati_objs = new HashMap<Object, Object>();
 //		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(to_gen);
 //		Set<Object> ati_keys = ati_out.keySet();
