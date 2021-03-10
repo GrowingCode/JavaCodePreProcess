@@ -1263,9 +1263,9 @@ public class IDManager {
 //		} else {
 //		}
 		// only for debug
-		SeriesUtil.GenerateIDJson(dir, skeleton_id_map, "skeleton");
-		SeriesUtil.GenerateIDJson(dir, pe_skeleton_id_map, "skeleton_pe");
-		SeriesUtil.GenerateIDJson(dir, each_skeleton_id_map, "skeleton_each");
+		SeriesUtil.GenerateSkeletonIDJson(dir, skeleton_id_map, "skeleton");
+		SeriesUtil.GenerateSkeletonIDJson(dir, pe_skeleton_id_map, "skeleton_pe");
+		SeriesUtil.GenerateSkeletonIDJson(dir, each_skeleton_id_map, "skeleton_each");
 		SeriesUtil.GenerateIDJson(dir, skt_token_id_map, "skt_token");
 		SeriesUtil.GenerateIDJson(dir, token_id_map, "token");
 		SeriesUtil.GenerateIDJson(dir, grammar_id_map, "grammar");
