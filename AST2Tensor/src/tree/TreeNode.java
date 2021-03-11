@@ -157,7 +157,7 @@ public class TreeNode {
 			if (this_p_info.size() == 0) {
 				Assert.isTrue(parent == null);
 				for (int i=0;i<MetaOfApp.ParentInfoLength;i++) {
-					this_p_info.add(new TreeNodeParentInfo(IDManager.ZDft, -1, -1));
+					this_p_info.add(new TreeNodeParentInfo(IDManager.ZDft, 0, 0));
 				}
 			} else {
 				Assert.isTrue(parent != null);
