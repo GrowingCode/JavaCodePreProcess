@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import com.google.gson.Gson;
 
+import main.MetaOfApp;
 import statistic.IDTools;
 import statistic.id.util.RegistUtil;
 import statistic.id.util.SeriesUtil;
@@ -39,10 +40,9 @@ public class ParentSktHintManager {
 		RegistUtil.Regist(skt_one_parent_hint_id_map, IDManager.reserved_words);
 		RegistUtil.Regist(skt_pe_parent_hint_id_map, IDManager.reserved_words);
 		RegistUtil.Regist(skt_e_parent_hint_id_map, IDManager.reserved_words);
-		
-		one_hint_hit_num = RegistUtil.Regist(skt_one_parent_hint_id_map, recorder.one_r.hit_train.GetOriginMap(), 0, recorder.one_r.not_hit_train.GetOriginMap(), 0, 0, "one_hit");
-		pe_hint_hit_num = RegistUtil.Regist(skt_pe_parent_hint_id_map, recorder.pe_r.hit_train.GetOriginMap(), 0, recorder.pe_r.not_hit_train.GetOriginMap(), 0, 0, "pe_hit");
-		e_hint_hit_num = RegistUtil.Regist(skt_e_parent_hint_id_map, recorder.e_r.hit_train.GetOriginMap(), 0, recorder.e_r.not_hit_train.GetOriginMap(), 0, 0, "e_hit");
+		one_hint_hit_num = RegistUtil.Regist(skt_one_parent_hint_id_map, recorder.one_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, recorder.one_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "one_hit");
+		pe_hint_hit_num = RegistUtil.Regist(skt_pe_parent_hint_id_map, recorder.pe_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, recorder.pe_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "pe_hit");
+		e_hint_hit_num = RegistUtil.Regist(skt_e_parent_hint_id_map, recorder.e_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, recorder.e_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "e_hit");
 	}
 	
 	public int GetSktOneParentHintID(String parent_hint) {
@@ -69,7 +69,6 @@ public class ParentSktHintManager {
 		RegistParentHintIDTokenID(skt_e_parent_hint_id_e_token_id_map, parent_hint_id, otid);
 	}
 	
-
 	public int GetHintID(TreeMap<String, Integer> hint_id_map, String hint, int hint_hit_num) {
 		Integer id = hint_id_map.get(hint);
 //		Assert.isTrue(id != null, "unseen skeleton:" + skeleton);
