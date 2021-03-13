@@ -98,6 +98,7 @@ public class SktLogicUtil {
 //				}
 			}
 		}
+		CountParentHint(id_tool, sfr);
 	}
 	
 	public static void CountParentHint(IDTools id_tool, SkeletonForestRecorder sfr) {
@@ -115,6 +116,7 @@ public class SktLogicUtil {
 					}
 				}
 				for (String h : tf.skt_one_token_hint) {
+//					System.out.println("tf.skt_one_token_hint.size():" + tf.skt_one_token_hint.size());
 					if (role <= RoleAssigner.train_seen_k) {
 						id_tool.hint_recorder.one_r.TokenHitInTrainSet(h, 1);
 					} else {
