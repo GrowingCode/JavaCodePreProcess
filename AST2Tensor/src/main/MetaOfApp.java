@@ -105,6 +105,13 @@ public class MetaOfApp {
 	public final static int MinimumPESkeletonNotUnkAppearTime = 2;
 	public final static int MinimumEachSkeletonNotUnkAppearTime = 2;
 	
+	public final static int MinimumParentHintNotUnkAppearTime = 2;
+	public final static int MinimumPEParentHintNotUnkAppearTime = 2;
+	public final static int MinimumEachParentHintNotUnkAppearTime = 2;
+	
+	public final static int NumberOfParentHintUnk = 0;
+	public final static int MinimumNumberOfParentHintVocabulary = 10;
+	
 	public static boolean OutOfScopeReplacedByUnk = true;
 	public final static int NumberOfSkeletonUnk = 0;
 	public final static int MinimumNumberOfSkeletonVocabulary = 10;

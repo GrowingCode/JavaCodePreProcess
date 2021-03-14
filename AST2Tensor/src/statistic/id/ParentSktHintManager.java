@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.Assert;
+
 import com.google.gson.Gson;
 
 import main.MetaOfApp;
@@ -40,9 +42,9 @@ public class ParentSktHintManager {
 		RegistUtil.Regist(skt_one_parent_hint_id_map, IDManager.reserved_words);
 		RegistUtil.Regist(skt_pe_parent_hint_id_map, IDManager.reserved_words);
 		RegistUtil.Regist(skt_e_parent_hint_id_map, IDManager.reserved_words);
-		one_hint_hit_num = RegistUtil.Regist(skt_one_parent_hint_id_map, recorder.one_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, recorder.one_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "one_hit");
-		pe_hint_hit_num = RegistUtil.Regist(skt_pe_parent_hint_id_map, recorder.pe_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, recorder.pe_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "pe_hit");
-		e_hint_hit_num = RegistUtil.Regist(skt_e_parent_hint_id_map, recorder.e_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachSkeletonNotUnkAppearTime, recorder.e_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfSkeletonUnk, MetaOfApp.MinimumNumberOfSkeletonVocabulary, "e_hit");
+		one_hint_hit_num = RegistUtil.Regist(skt_one_parent_hint_id_map, recorder.one_r.hit_train.GetOriginMap(), MetaOfApp.MinimumParentHintNotUnkAppearTime, recorder.one_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfParentHintUnk, MetaOfApp.MinimumNumberOfParentHintVocabulary, "one_hit");
+		pe_hint_hit_num = RegistUtil.Regist(skt_pe_parent_hint_id_map, recorder.pe_r.hit_train.GetOriginMap(), MetaOfApp.MinimumPEParentHintNotUnkAppearTime, recorder.pe_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfParentHintUnk, MetaOfApp.MinimumNumberOfParentHintVocabulary, "pe_hit");
+		e_hint_hit_num = RegistUtil.Regist(skt_e_parent_hint_id_map, recorder.e_r.hit_train.GetOriginMap(), MetaOfApp.MinimumEachParentHintNotUnkAppearTime, recorder.e_r.not_hit_train.GetOriginMap(), MetaOfApp.NumberOfParentHintUnk, MetaOfApp.MinimumNumberOfParentHintVocabulary, "e_hit");
 	}
 	
 	public int GetSktOneParentHintID(String parent_hint) {
@@ -145,6 +147,7 @@ public class ParentSktHintManager {
 	public static String GenParentHint(ArrayList<TreeNodeParentInfo> par_info) {
 //		String infix = StringEquivalentUtil.SktIDManagerEquivalent(pfx);
 //		String im_func = "Get" + infix + "SkeletonID";
+		Assert.isTrue(par_info.size() == MetaOfApp.ParentInfoLength);
 		String hint = "";
 		for (TreeNodeParentInfo pi : par_info) {
 			String tcnt = pi.tree_node_content;
@@ -153,6 +156,7 @@ public class ParentSktHintManager {
 //			int sd = (int) ReflectUtil.ReflectMethod(im_func, im, new Class<?>[] {String.class}, new Object[] {tcnt});
 			hint += tcnt + ":" + index + "#";
 		}
+		Assert.isTrue(!hint.isEmpty());
 		return hint;
 	}
 	
