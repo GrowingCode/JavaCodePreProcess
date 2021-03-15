@@ -207,9 +207,9 @@ public class TreeNode {
 
 			Assert.isTrue(this_p_info.size() > 0);
 			child_p_info.addAll(this_p_info);
-			child_p_info.remove(child_p_info.size() - 1);
-			child_p_info.add(0, new TreeNodeParentInfo(content, in_index, type));
-		} catch (Exception e) {
+			child_p_info.add(new TreeNodeParentInfo(content, in_index, type));
+			child_p_info.remove(0);// child_p_info.size() - 1
+			} catch (Exception e) {
 			e.printStackTrace();
 		}
 
