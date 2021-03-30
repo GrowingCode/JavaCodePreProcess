@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.Assert;
 import com.google.gson.Gson;
 
 import main.MetaOfApp;
-import statistic.id.ParentSktHintManager;
+import statistic.id.SktHintManager;
 import translation.tensor.util.ConservedMemoryUtil;
 import translation.tensor.util.IntsWrapper;
 import translation.tensor.util.RepetitionUtil;
@@ -97,7 +97,7 @@ public class StatementSkeletonTensor extends Tensor {
 	 * all these 4 arrays need to insert 0th element in the array
 	 */
 	
-	public void StoreStatementSkeletonBatchInfo(ParentSktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
+	public void StoreStatementSkeletonBatchInfo(SktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
 		SktBatchTensor one_stmt = HandleSktInfo(pshm, ifx, skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
 		skt_batch_info.Merge(one_stmt);
 		
@@ -105,7 +105,7 @@ public class StatementSkeletonTensor extends Tensor {
 		max_token_number_of_one_statement = Math.max(max_token_number_of_one_statement, token_str.size());
 	}
 	
-	public void StoreStatementSkeletonPEBatchInfo(ParentSktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
+	public void StoreStatementSkeletonPEBatchInfo(SktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
 		SktBatchTensor one_stmt = HandleSktInfo(pshm, ifx, skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
 		skt_pe_batch_info.Merge(one_stmt);
 		
@@ -113,7 +113,7 @@ public class StatementSkeletonTensor extends Tensor {
 		max_token_number_of_pe_statement = Math.max(max_token_number_of_pe_statement, token_str.size());
 	}
 	
-	public void StoreStatementSkeletonEachBatchInfo(ParentSktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
+	public void StoreStatementSkeletonEachBatchInfo(SktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
 		SktBatchTensor one_stmt = HandleSktInfo(pshm, ifx, skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
 		skt_each_batch_info.Merge(one_stmt);
 		
@@ -121,7 +121,7 @@ public class StatementSkeletonTensor extends Tensor {
 		max_token_number_of_e_statement = Math.max(max_token_number_of_e_statement, token_str.size());
 	}
 	
-	private SktBatchTensor HandleSktInfo(ParentSktHintManager pshm, String ifx, IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
+	private SktBatchTensor HandleSktInfo(SktHintManager pshm, String ifx, IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
 		
 		SktBatchTensor sbt = new SktBatchTensor(ti, false);
 		
@@ -136,7 +136,16 @@ public class StatementSkeletonTensor extends Tensor {
 		}
 		
 		sbt.origin_sequence.addAll(skt);
+		for (int j=0;j<skt.size();j++) {
+			int os = skt.get(j);
+			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j, os});
+		}
+		
 		sbt.origin_sequence.addAll(r_tokens);
+		for (int j=0;j<r_tokens.size();j++) {
+			int os = r_tokens.get(j);
+			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j + MetaOfApp.TokenPositionHintBase, os});
+		}
 		
 		int r = 0;
 		for (int s : skt) {

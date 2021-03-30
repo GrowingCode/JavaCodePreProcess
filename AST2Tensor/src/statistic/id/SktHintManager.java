@@ -16,7 +16,7 @@ import statistic.id.util.SeriesUtil;
 import tree.TreeNodeParentInfo;
 import util.FileUtil;
 
-public class ParentSktHintManager {
+public class SktHintManager {
 	
 	private IDManager im = null;
 	
@@ -29,11 +29,15 @@ public class ParentSktHintManager {
 	private TreeMap<String, Integer> skt_e_parent_hint_id_map = new TreeMap<String, Integer>();
 	private TreeMap<Integer, TreeSet<Integer>> skt_e_parent_hint_id_e_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
 	
+	private TreeMap<Integer, TreeSet<Integer>> skt_one_position_hint_id_one_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+	private TreeMap<Integer, TreeSet<Integer>> skt_pe_position_hint_id_pe_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+	private TreeMap<Integer, TreeSet<Integer>> skt_e_position_hint_id_e_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+	
 	private int one_hint_hit_num = -1;
 	private int pe_hint_hit_num = -1;
 	private int e_hint_hit_num = -1;
 	
-	public ParentSktHintManager(IDManager im, IDTools tool) {
+	public SktHintManager(IDManager im, IDTools tool) {
 		this.im = im;
 		ParentSktHintRecorder recorder = tool.hint_recorder;
 		
@@ -50,7 +54,11 @@ public class ParentSktHintManager {
 	}
 	
 	public void RegistOneParentHintIDOneTokenID(int parent_hint_id, int otid) {
-		RegistParentHintIDTokenID(skt_one_parent_hint_id_one_token_id_map, parent_hint_id, otid);
+		RegistHintIDTokenID(skt_one_parent_hint_id_one_token_id_map, parent_hint_id, otid);
+	}
+	
+	public void RegistOnePositionHintIDOneTokenID(int position_hint_id, int otid) {
+		RegistHintIDTokenID(skt_one_position_hint_id_one_token_id_map, position_hint_id, otid);
 	}
 	
 	public int GetSktPeParentHintID(String parent_hint) {
@@ -58,7 +66,11 @@ public class ParentSktHintManager {
 	}
 	
 	public void RegistPeParentHintIDPeTokenID(int parent_hint_id, int otid) {
-		RegistParentHintIDTokenID(skt_pe_parent_hint_id_pe_token_id_map, parent_hint_id, otid);
+		RegistHintIDTokenID(skt_pe_parent_hint_id_pe_token_id_map, parent_hint_id, otid);
+	}
+
+	public void RegistPePositionHintIDPeTokenID(int position_hint_id, int otid) {
+		RegistHintIDTokenID(skt_pe_position_hint_id_pe_token_id_map, position_hint_id, otid);
 	}
 	
 	public int GetSktEParentHintID(String parent_hint) {
@@ -66,7 +78,11 @@ public class ParentSktHintManager {
 	}
 	
 	public void RegistEParentHintIDETokenID(int parent_hint_id, int otid) {
-		RegistParentHintIDTokenID(skt_e_parent_hint_id_e_token_id_map, parent_hint_id, otid);
+		RegistHintIDTokenID(skt_e_parent_hint_id_e_token_id_map, parent_hint_id, otid);
+	}
+
+	public void RegistEPositionHintIDETokenID(int position_hint_id, int otid) {
+		RegistHintIDTokenID(skt_e_position_hint_id_e_token_id_map, position_hint_id, otid);
 	}
 	
 	public int GetHintID(TreeMap<String, Integer> hint_id_map, String hint, int hint_hit_num) {
@@ -91,7 +107,7 @@ public class ParentSktHintManager {
 //		return hint_id;
 //	}
 	
-	public void RegistParentHintIDTokenID(TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map, int parent_hint_id, int otid) {
+	private void RegistHintIDTokenID(TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map, int parent_hint_id, int otid) {
 		TreeSet<Integer> iset = skt_parent_hint_id_token_id_map.get(parent_hint_id);
 		if (iset == null) {
 			iset = new TreeSet<Integer>();
@@ -101,6 +117,10 @@ public class ParentSktHintManager {
 	}
 	
 	public void SaveToDirectory(String dir) {
+		SaveToDirectory(dir + "/" + "All_skt_one_position_hint_mask.json", skt_one_position_hint_id_one_token_id_map, im.skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_pe_position_hint_mask.json", skt_pe_position_hint_id_pe_token_id_map, im.pe_skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_e_position_hint_mask.json", skt_e_position_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);
+		
 		SaveToDirectory(dir + "/" + "All_skt_one_parent_hint_mask.json", skt_one_parent_hint_id_one_token_id_map, im.skeleton_hit_num + im.skt_token_hit_num);
 		SaveToDirectory(dir + "/" + "All_skt_pe_parent_hint_mask.json", skt_pe_parent_hint_id_pe_token_id_map, im.pe_skeleton_hit_num + im.skt_token_hit_num);
 		SaveToDirectory(dir + "/" + "All_skt_e_parent_hint_mask.json", skt_e_parent_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);

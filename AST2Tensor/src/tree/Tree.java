@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.Assert;
 import bpe.skt.ExactTreeNodeTwoMerge;
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.jdt.JDTASTHelper;
-import statistic.id.ParentSktHintManager;
+import statistic.id.SktHintManager;
 import translation.tensor.util.TokenKindUtil;
 import tree.util.TreeNodePairUtil;
 import unit.PairContainer;
@@ -312,7 +312,7 @@ public class Tree implements Comparable<Tree> {
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
 		@SuppressWarnings("unchecked") // stt.im, pfx, 
-		String hint_str = ParentSktHintManager.GenParentHint((ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pfx + "_par_info", rt));
+		String hint_str = SktHintManager.GenParentHint((ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pfx + "_par_info", rt));
 		if (JDTASTHelper.IsV(rt.OriginIsNonCompositeLeaf(), clz)) {// rt.OriginIsNonCompositeLeaf() && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)
 			Assert.isTrue(childs.size() == 0);
 			token_hint.add(hint_str);

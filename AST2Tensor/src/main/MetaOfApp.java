@@ -38,6 +38,8 @@ public class MetaOfApp {
 	public static boolean ApplyTrainTestJoinTreeMerge = true;
 	public static double TrainTestJoinCondition = 0.35;
 
+	public static int TokenPositionHintBase = 100000;
+	
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10
 //	public final static double TreeShouldSplitNodeNumRate = 1.2;
 //	public final static double TreeShouldCheckIntoNodeNumRate = 0.8;
@@ -141,6 +143,8 @@ public class MetaOfApp {
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);
 		
 		meta_of_ast2tensor.put("ParentInfoLength", ParentInfoLength);
+		
+		meta_of_ast2tensor.put("TokenPositionHintBase", TokenPositionHintBase);
 //		String dir = System.getProperty("user.home") + "/AST_Metas";
 //		File f = new File(MetaDirectory);
 //		if (!f.exists()) {
