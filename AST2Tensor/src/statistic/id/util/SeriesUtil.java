@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.eclipse.core.runtime.Assert;
+
 import com.google.gson.Gson;
 
 import util.FileUtil;
@@ -27,7 +29,7 @@ public class SeriesUtil {
 		FileUtil.WriteToFile(new File(dir + "/" + "All_" + desc + "_id.json"), gson.toJson(ati_out));// type_id_json.toString()
 	}
 	
-	public static void GenerateSkeletonIDJson(String dir, TreeMap<String, Integer> to_gen, String desc) {
+	public static void GenerateSkeletonIDJson(String dir, int hit_num, TreeMap<String, Integer> to_gen, String desc) {
 //		Map<Object, Object> ati_objs = new HashMap<Object, Object>();
 		Map<Integer, String> ati_out = MapUtil.ReverseKeyValueInMap(to_gen);
 		Map<Integer, Integer> ati_h_num = new TreeMap<Integer, Integer>();
@@ -35,10 +37,14 @@ public class SeriesUtil {
 		Iterator<Integer> a_itr = a_set.iterator();
 		while (a_itr.hasNext()) {
 			Integer a = a_itr.next();
+			if (a >= hit_num) {
+				break;
+			}
 			String str = ati_out.get(a);
 			int h_count = YStringUtil.CountSubStringInString(str, "#h");
 			ati_h_num.put(a, h_count);
 		}
+		Assert.isTrue(ati_h_num.size() == hit_num);
 //		Set<Object> ati_keys = ati_out.keySet();
 //		Iterator<Object> ati_key_itr = ati_keys.iterator();
 //		while (ati_key_itr.hasNext()) {

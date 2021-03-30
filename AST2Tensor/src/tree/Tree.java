@@ -306,13 +306,18 @@ public class Tree implements Comparable<Tree> {
 		@SuppressWarnings("unchecked")
 		ArrayList<Integer> token_is_var = (ArrayList<Integer>) ReflectUtil.ReflectField(pfx + "_token_is_var", tf);
 		
+		String pinfo = pfx + "_par_info";
+		rt.SetUpParentInfoOfChildren(pinfo);
 //		ParentSktHintManager pshm = stt.pshm;
+		@SuppressWarnings("unchecked")
+		ArrayList<TreeNodeParentInfo> par_info = (ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pinfo, rt);
 		
 		String rt_cnt = rt.GetContent();
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
-		@SuppressWarnings("unchecked") // stt.im, pfx, 
-		String hint_str = SktHintManager.GenParentHint((ArrayList<TreeNodeParentInfo>) ReflectUtil.ReflectField(pfx + "_par_info", rt));
+		
+		String hint_str = SktHintManager.GenParentHint(par_info);
+
 		if (JDTASTHelper.IsV(rt.OriginIsNonCompositeLeaf(), clz)) {// rt.OriginIsNonCompositeLeaf() && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)
 			Assert.isTrue(childs.size() == 0);
 			token_hint.add(hint_str);
