@@ -138,13 +138,17 @@ public class StatementSkeletonTensor extends Tensor {
 		sbt.origin_sequence.addAll(skt);
 		for (int j=0;j<skt.size();j++) {
 			int os = skt.get(j);
-			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j * 2, os});
+			int pos_hint = j * 2;
+			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {pos_hint, os});
+			sbt.parent_hint.add(pos_hint);
 		}
 		
 		sbt.origin_sequence.addAll(r_tokens);
 		for (int j=0;j<r_tokens.size();j++) {
 			int os = r_tokens.get(j);
-			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j * 2 + 1, os});
+			int pos_hint = j * 2 + 1;
+			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {pos_hint, os});
+			sbt.parent_hint.add(pos_hint);
 		}
 		
 		int r = 0;
