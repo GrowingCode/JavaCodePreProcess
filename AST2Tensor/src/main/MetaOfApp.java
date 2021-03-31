@@ -152,7 +152,6 @@ public class MetaOfApp {
 		
 		meta_of_ast2tensor.put("ParentInfoLength", ParentInfoLength);
 		
-		meta_of_ast2tensor.put("TokenPositionHintBase", TokenPositionHintBase);
 //		String dir = System.getProperty("user.home") + "/AST_Metas";
 //		File f = new File(MetaDirectory);
 //		if (!f.exists()) {

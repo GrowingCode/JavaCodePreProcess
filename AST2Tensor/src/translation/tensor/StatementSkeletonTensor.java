@@ -138,13 +138,13 @@ public class StatementSkeletonTensor extends Tensor {
 		sbt.origin_sequence.addAll(skt);
 		for (int j=0;j<skt.size();j++) {
 			int os = skt.get(j);
-			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j, os});
+			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j * 2, os});
 		}
 		
 		sbt.origin_sequence.addAll(r_tokens);
 		for (int j=0;j<r_tokens.size();j++) {
 			int os = r_tokens.get(j);
-			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j + MetaOfApp.TokenPositionHintBase, os});
+			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {j * 2 + 1, os});
 		}
 		
 		int r = 0;
@@ -330,6 +330,7 @@ class SktBatchTensor extends Tensor {
 	ArrayList<Integer> relative_to_part_first = new ArrayList<Integer>();
 	ArrayList<Integer> valid_mask = new ArrayList<Integer>();
 	ArrayList<Integer> parent_hint = new ArrayList<Integer>();
+	ArrayList<Integer> position_hint = new ArrayList<Integer>();
 	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
 	ArrayList<Integer> token_type = new ArrayList<Integer>();
 	ArrayList<Integer> origin_sequence_exact = new ArrayList<Integer>();
@@ -344,6 +345,7 @@ class SktBatchTensor extends Tensor {
 			this.relative_to_part_first.add(0);
 			this.valid_mask.add(0);
 			this.parent_hint.add(0);
+			this.position_hint.add(-1);
 			this.seq_part_skip.add(0);
 			this.token_type.add(-1);
 			this.origin_sequence_exact.add(0);
@@ -356,6 +358,7 @@ class SktBatchTensor extends Tensor {
 		relative_to_part_first.addAll(sbt.relative_to_part_first);
 		valid_mask.addAll(sbt.valid_mask);
 		parent_hint.addAll(sbt.parent_hint);
+		position_hint.addAll(sbt.position_hint);
 		seq_part_skip.addAll(sbt.seq_part_skip);
 		token_type.addAll(sbt.token_type);
 		origin_sequence_exact.addAll(sbt.origin_sequence_exact);
@@ -377,6 +380,7 @@ class SktBatchTensor extends Tensor {
 				+ StringUtils.join(relative_to_part_first.toArray(), " ") + separator
 				+ StringUtils.join(valid_mask.toArray(), " ") + separator
 				+ StringUtils.join(parent_hint.toArray(), " ") + separator
+				+ StringUtils.join(position_hint.toArray(), " ") + separator
 				+ StringUtils.join(seq_part_skip.toArray(), " ") + separator
 				+ StringUtils.join(token_type.toArray(), " ") + separator
 				+ StringUtils.join(origin_sequence_exact.toArray(), " ");
@@ -389,6 +393,7 @@ class SktBatchTensor extends Tensor {
 				+ StringUtil.FixedLengthString("relative_first:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("valid_mask:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("parent_hint:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(parent_hint, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("position_hint:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(position_hint, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ");
@@ -402,6 +407,7 @@ class SktBatchTensor extends Tensor {
 				+ StringUtil.FixedLengthString("relative_first:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(relative_to_part_first, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("valid_mask:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(valid_mask, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("parent_hint:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(parent_hint, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("position_hint:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(position_hint, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ");
