@@ -138,7 +138,7 @@ public class StatementSkeletonTensor extends Tensor {
 		sbt.origin_sequence.addAll(skt);
 		for (int j=0;j<skt.size();j++) {
 			int os = skt.get(j);
-			int pos_hint = j * 2;
+			int pos_hint = j * 2 + 1;
 			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {pos_hint, os});
 			sbt.position_hint.add(pos_hint);
 		}
@@ -146,7 +146,7 @@ public class StatementSkeletonTensor extends Tensor {
 		sbt.origin_sequence.addAll(r_tokens);
 		for (int j=0;j<r_tokens.size();j++) {
 			int os = r_tokens.get(j);
-			int pos_hint = j * 2 + 1;
+			int pos_hint = j * 2 + 2;
 			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {pos_hint, os});
 			sbt.position_hint.add(pos_hint);
 		}
@@ -349,7 +349,7 @@ class SktBatchTensor extends Tensor {
 			this.relative_to_part_first.add(0);
 			this.valid_mask.add(0);
 			this.parent_hint.add(0);
-			this.position_hint.add(-1);
+			this.position_hint.add(0);
 			this.seq_part_skip.add(0);
 			this.token_type.add(-1);
 			this.origin_sequence_exact.add(0);
