@@ -34,8 +34,8 @@ public class MetaOfApp {
 	
 	public static boolean OnlyDebugTreeMerge = false;
 	
-	public static boolean GenFilterTrainTestJoinTreeMerge = false;
-	public static boolean ApplyTrainTestJoinTreeMerge = false;
+	public static boolean GenFilterTrainTestJoinTreeMerge = true;
+	public static boolean ApplyTrainTestJoinTreeMerge = true;
 	public static double TrainTestJoinCondition = 0.35;
 
 //	public static int TokenPositionHintBase = 100000;
