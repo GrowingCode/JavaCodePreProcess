@@ -20,6 +20,10 @@ public class SktHintManager {
 	
 	private IDManager im = null;
 	
+	private TreeMap<Integer, TreeSet<Integer>> skt_one_type_hint_id_one_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+	private TreeMap<Integer, TreeSet<Integer>> skt_pe_type_hint_id_pe_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+	private TreeMap<Integer, TreeSet<Integer>> skt_e_type_hint_id_e_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
+	
 	private TreeMap<String, Integer> skt_one_parent_hint_id_map = new TreeMap<String, Integer>();
 	private TreeMap<Integer, TreeSet<Integer>> skt_one_parent_hint_id_one_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
 	
@@ -53,6 +57,10 @@ public class SktHintManager {
 		return GetHintID(skt_one_parent_hint_id_map, parent_hint, one_hint_hit_num);
 	}
 	
+	public void RegistOneTypeHintIDOneTokenID(int type_hint_id, int otid) {
+		RegistHintIDTokenID(skt_one_type_hint_id_one_token_id_map, type_hint_id, otid);
+	}
+	
 	public void RegistOneParentHintIDOneTokenID(int parent_hint_id, int otid) {
 		RegistHintIDTokenID(skt_one_parent_hint_id_one_token_id_map, parent_hint_id, otid);
 	}
@@ -65,16 +73,24 @@ public class SktHintManager {
 		return GetHintID(skt_pe_parent_hint_id_map, parent_hint, pe_hint_hit_num);
 	}
 	
+	public void RegistPeTypeHintIDPeTokenID(int type_hint_id, int otid) {
+		RegistHintIDTokenID(skt_pe_type_hint_id_pe_token_id_map, type_hint_id, otid);
+	}
+	
 	public void RegistPeParentHintIDPeTokenID(int parent_hint_id, int otid) {
 		RegistHintIDTokenID(skt_pe_parent_hint_id_pe_token_id_map, parent_hint_id, otid);
 	}
-
+	
 	public void RegistPePositionHintIDPeTokenID(int position_hint_id, int otid) {
 		RegistHintIDTokenID(skt_pe_position_hint_id_pe_token_id_map, position_hint_id, otid);
 	}
 	
 	public int GetSktEParentHintID(String parent_hint) {
 		return GetHintID(skt_e_parent_hint_id_map, parent_hint, e_hint_hit_num);
+	}
+
+	public void RegistETypeHintIDETokenID(int type_hint_id, int otid) {
+		RegistHintIDTokenID(skt_e_type_hint_id_e_token_id_map, type_hint_id, otid);
 	}
 	
 	public void RegistEParentHintIDETokenID(int parent_hint_id, int otid) {
@@ -117,6 +133,10 @@ public class SktHintManager {
 	}
 	
 	public void SaveToDirectory(String dir) {
+		SaveToDirectory(dir + "/" + "All_skt_one_type_hint_mask.json", skt_one_type_hint_id_one_token_id_map, im.skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_pe_type_hint_mask.json", skt_pe_type_hint_id_pe_token_id_map, im.pe_skeleton_hit_num + im.skt_token_hit_num);
+		SaveToDirectory(dir + "/" + "All_skt_e_type_hint_mask.json", skt_e_type_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);
+		
 		SaveToDirectory(dir + "/" + "All_skt_one_position_hint_mask.json", skt_one_position_hint_id_one_token_id_map, im.skeleton_hit_num + im.skt_token_hit_num);
 		SaveToDirectory(dir + "/" + "All_skt_pe_position_hint_mask.json", skt_pe_position_hint_id_pe_token_id_map, im.pe_skeleton_hit_num + im.skt_token_hit_num);
 		SaveToDirectory(dir + "/" + "All_skt_e_position_hint_mask.json", skt_e_position_hint_id_e_token_id_map, im.each_skeleton_hit_num + im.skt_token_hit_num);

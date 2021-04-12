@@ -215,10 +215,12 @@ public class StatementSkeletonTensor extends Tensor {
 		for (int s : skt) {
 			assert s >= 0;
 			sbt.token_type.add(0);
+			ReflectUtil.ReflectMethod("Regist" + ifx + "TypeHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {0, s});
 		}
-		for (int t : token) {
-			assert t >= 0;
+		for (int t : r_tokens) {
+//			assert t >= 0;
 			sbt.token_type.add(1);
+			ReflectUtil.ReflectMethod("Regist" + ifx + "TypeHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {1, t});
 		}
 		
 		sbt.origin_sequence_exact.addAll(skt_exact);
