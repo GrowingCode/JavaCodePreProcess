@@ -372,7 +372,7 @@ public class Tree implements Comparable<Tree> {
 //			tf.skt_pe_struct_v_tree_uid.add(v_tids);
 			for (TreeNode child : childs) {
 //				String r_cid = ExtractRelativeTreeUid(child.GetTreeUid(), rt.GetTreeUid());
-				if (child.OriginIsNonCompositeLeaf()) {// JDTASTHelper.IsIDLeafNode(child.GetClazz())
+				if (JDTASTHelper.IsV(child.OriginIsNonCompositeLeaf(), child.GetClazz())) {// JDTASTHelper.IsIDLeafNode(child.GetClazz())
 //					v_tids.add(r_cid);
 					r_v_count++;
 				} else {
