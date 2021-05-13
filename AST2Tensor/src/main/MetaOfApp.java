@@ -38,6 +38,8 @@ public class MetaOfApp {
 	public static boolean ApplyTrainTestJoinTreeMerge = true;
 	public static double TrainTestJoinCondition = 0.35;
 
+//	public static int TokenPositionHintBase = 100000;
+	
 //	public final static int MaximumHandlingNodeNumInOneTree = 500;// 10
 //	public final static double TreeShouldSplitNodeNumRate = 1.2;
 //	public final static double TreeShouldCheckIntoNodeNumRate = 0.8;
@@ -62,9 +64,9 @@ public class MetaOfApp {
 
 //	public final static boolean CharInCascadeForm = false;
 	
-	public final static int MinimumThresholdOfMerge = 250;
-	public final static int MinimumThresholdOfSkeletonMerge = 250;
-	public final static int MinimumThresholdOfAppyingSkeletonMerge = 250;
+	public final static int MinimumThresholdOfMerge = 1000;
+	public final static int MinimumThresholdOfSkeletonMerge = 1000;
+	public final static int MinimumThresholdOfAppyingSkeletonMerge = 1000;
 	public final static int MaximumNumberOfApplyingSkeletonMerge = 2000;
 //	public final static int NumberOfMerges = 2000;
 //	public final static int NumberOfSkeletonMerges = 1000;
@@ -149,6 +151,7 @@ public class MetaOfApp {
 		meta_of_ast2tensor.put("JavaFileNoLimit", JavaFileNoLimit ? 1 : 0);
 		
 		meta_of_ast2tensor.put("ParentInfoLength", ParentInfoLength);
+		
 //		String dir = System.getProperty("user.home") + "/AST_Metas";
 //		File f = new File(MetaDirectory);
 //		if (!f.exists()) {

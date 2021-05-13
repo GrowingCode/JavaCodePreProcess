@@ -28,7 +28,7 @@ import statistic.id.APIRecorder;
 import statistic.id.BPEMergeRecorder;
 import statistic.id.GrammarRecorder;
 import statistic.id.IDManager;
-import statistic.id.ParentSktHintManager;
+import statistic.id.SktHintManager;
 import statistic.id.ParentSktHintRecorder;
 import statistic.id.SktPEMergeRecorder;
 import statistic.id.TokenRecorder;
@@ -199,7 +199,7 @@ public class AppMainRoot implements IApplication {
 			System.out.println("==== IDCount End ====");
 		}
 		IDManager im = new IDManager(id_tool);
-		ParentSktHintManager pshm = new ParentSktHintManager(im, id_tool);
+		SktHintManager pshm = new SktHintManager(im, id_tool);
 		
 //		{
 //			tr.RefineAllStatistics(MinSupport, MaxCapacity);

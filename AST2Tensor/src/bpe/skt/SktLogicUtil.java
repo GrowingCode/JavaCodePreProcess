@@ -21,7 +21,7 @@ import statis.trans.common.RoleAssigner;
 import statis.trans.common.SkeletonForestRecorder;
 import statistic.IDTools;
 import statistic.id.IDManager;
-import statistic.id.ParentSktHintManager;
+import statistic.id.SktHintManager;
 import translation.SktTensorTools;
 import translation.TensorTools;
 import translation.ast.StatementScoreGenerator;
@@ -225,7 +225,7 @@ public class SktLogicUtil {
 	public static void TranslatePairEncodedSkeletonsAndTokens(SktTensorTools tensor_tool, SkeletonForestRecorder sfr)
 			throws Exception {
 		IDManager im = tensor_tool.im;
-		ParentSktHintManager pshm = tensor_tool.pshm;
+		SktHintManager pshm = tensor_tool.pshm;
 		
 		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
 

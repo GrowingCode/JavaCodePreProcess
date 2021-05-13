@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.Assert;
 import bpe.skt.ExactTreeNodeTwoMerge;
 import bpe.skt.TreeNodeTwoMerge;
 import eclipse.jdt.JDTASTHelper;
-import statistic.id.ParentSktHintManager;
+import statistic.id.SktHintManager;
 import translation.tensor.util.TokenKindUtil;
 import tree.util.TreeNodePairUtil;
 import unit.PairContainer;
@@ -315,7 +315,9 @@ public class Tree implements Comparable<Tree> {
 		String rt_cnt = rt.GetContent();
 		ArrayList<TreeNode> childs = rt.GetChildren();
 		Class<?> clz = rt.GetClazz();
-		String hint_str = ParentSktHintManager.GenParentHint(par_info);
+		
+		String hint_str = SktHintManager.GenParentHint(par_info);
+
 		if (JDTASTHelper.IsV(rt.OriginIsNonCompositeLeaf(), clz)) {// rt.OriginIsNonCompositeLeaf() && (JDTASTHelper.IsIDLeafNode(clz) || MetaOfApp.SktNotOnlyExcludeIDLeafButAllLeaf)
 			Assert.isTrue(childs.size() == 0);
 			token_hint.add(hint_str);
@@ -370,7 +372,7 @@ public class Tree implements Comparable<Tree> {
 //			tf.skt_pe_struct_v_tree_uid.add(v_tids);
 			for (TreeNode child : childs) {
 //				String r_cid = ExtractRelativeTreeUid(child.GetTreeUid(), rt.GetTreeUid());
-				if (child.OriginIsNonCompositeLeaf()) {// JDTASTHelper.IsIDLeafNode(child.GetClazz())
+				if (JDTASTHelper.IsV(child.OriginIsNonCompositeLeaf(), child.GetClazz())) {// JDTASTHelper.IsIDLeafNode(child.GetClazz())
 //					v_tids.add(r_cid);
 					r_v_count++;
 				} else {
