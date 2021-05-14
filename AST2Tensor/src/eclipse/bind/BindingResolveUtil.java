@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.MethodReference;
@@ -17,7 +18,7 @@ public class BindingResolveUtil {
 			SimpleName sn = (SimpleName) node;
 			bind = sn.resolveBinding();
 			if (bind != null) {
-				Assert.isTrue(bind instanceof IVariableBinding, "wrong binding type:" + bind.getClass() + "#is:" + bind);
+				Assert.isTrue(bind instanceof IVariableBinding || bind instanceof ITypeBinding || bind instanceof IMethodBinding, "wrong binding type:" + bind.getClass() + "#is:" + bind);
 				System.out.println("Variable Binding discovered:" + bind);
 			}
 		} else if (node instanceof MethodInvocation) {
