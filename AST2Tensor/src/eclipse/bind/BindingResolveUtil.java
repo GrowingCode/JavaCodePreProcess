@@ -22,8 +22,8 @@ public class BindingResolveUtil {
 			bind = sn.resolveBinding();
 			if (bind != null) {
 				Assert.isTrue(bind instanceof IVariableBinding || bind instanceof ITypeBinding || bind instanceof IMethodBinding || bind instanceof IPackageBinding, "wrong binding type:" + bind.getClass() + "#is:" + bind);
-				if (MetaOfApp.PrintBindingInfo) {
-					System.out.println("Binding discovered:" + bind.getClass().getName() + "#Binding:" + bind);
+				if (MetaOfApp.PrintInfo && MetaOfApp.PrintBindingInfo) {
+//					System.out.println("Binding discovered:" + bind.getClass().getName() + "#Binding:" + bind.getName() + "$" + bind.getKey());
 				}
 			}
 		} else if (node instanceof MethodInvocation) {
@@ -31,8 +31,15 @@ public class BindingResolveUtil {
 			bind = mi.resolveMethodBinding();
 			if (bind != null) {
 				Assert.isTrue(bind instanceof IMethodBinding);
-				if (MetaOfApp.PrintBindingInfo) {
-					System.out.println("MethodInvocation Binding discovered:" + bind);
+				if (MetaOfApp.PrintInfo && MetaOfApp.PrintBindingInfo) {
+					System.out.println("MethodInvocation Binding discovered:" + bind.getClass().getName() + "#Binding:" + bind.getName() + "$" + bind.getKey());
+					IMethodBinding imb = (IMethodBinding) bind;
+					ITypeBinding drt = imb.getDeclaredReceiverType();
+					ITypeBinding dc = imb.getDeclaringClass();
+					IBinding dm = imb.getDeclaringMember();
+					System.out.println("ITypeBinding ReceiverType:" + (drt != null ? drt.getKey() : "null"));
+					System.out.println("ITypeBinding DeclaringClass:" + (dc != null ? dc.getKey() : "null"));
+					System.out.println("IBinding DeclaringMember:" + (dm != null ? dm.getKey() : "null"));
 				}
 			}
 		} else if (node instanceof MethodReference) {
@@ -40,8 +47,8 @@ public class BindingResolveUtil {
 			bind = mr.resolveMethodBinding();
 			if (bind != null) {
 				Assert.isTrue(bind instanceof IMethodBinding);
-				if (MetaOfApp.PrintBindingInfo) {
-					System.out.println("MethodReference Binding discovered:" + bind);
+				if (MetaOfApp.PrintInfo && MetaOfApp.PrintBindingInfo) {
+					System.out.println("MethodReference Binding discovered:" + bind.getClass().getName() + "#Binding:" + bind.getName() + "$" + bind.getKey());
 				}
 			}
 		}

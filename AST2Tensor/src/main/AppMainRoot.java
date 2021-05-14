@@ -181,8 +181,10 @@ public class AppMainRoot implements IApplication {
 			 * normal handle
 			 */
 			{
+				MetaOfApp.PrintInfo = true;
 				CountOneProjectHandle handle = new CountOneProjectHandle();
 				AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, null);
+				MetaOfApp.PrintInfo = false;
 			}
 			// max_handle_projs,
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
