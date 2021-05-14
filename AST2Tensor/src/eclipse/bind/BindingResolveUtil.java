@@ -23,7 +23,7 @@ public class BindingResolveUtil {
 			if (bind != null) {
 				Assert.isTrue(bind instanceof IVariableBinding || bind instanceof ITypeBinding || bind instanceof IMethodBinding || bind instanceof IPackageBinding, "wrong binding type:" + bind.getClass() + "#is:" + bind);
 				if (MetaOfApp.PrintBindingInfo) {
-					System.out.println("Variable Binding discovered:" + bind);
+					System.out.println("Binding discovered:" + bind.getClass().getName() + "#Binding:" + bind);
 				}
 			}
 		} else if (node instanceof MethodInvocation) {
