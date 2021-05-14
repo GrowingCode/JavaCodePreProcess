@@ -35,8 +35,8 @@ public class MetaOfApp {
 	public static boolean OnlyDebugTreeMerge = false;
 	
 	public static boolean GenFilterTrainTestJoinTreeMerge = true;
-	public static boolean ApplyTrainTestJoinTreeMerge = true;
-	public static double TrainTestJoinCondition = 0.35;
+	public static boolean ApplyTrainTestJoinTreeMerge = false;
+	public static double TrainTestJoinCondition = 0.2;
 
 //	public static int TokenPositionHintBase = 100000;
 	
@@ -64,9 +64,9 @@ public class MetaOfApp {
 
 //	public final static boolean CharInCascadeForm = false;
 	
-	public final static int MinimumThresholdOfMerge = 1000;
-	public final static int MinimumThresholdOfSkeletonMerge = 1000;
-	public final static int MinimumThresholdOfAppyingSkeletonMerge = 1000;
+	public final static int MinimumThresholdOfMerge = 250;
+	public final static int MinimumThresholdOfSkeletonMerge = 250;
+	public final static int MinimumThresholdOfAppyingSkeletonMerge = 250;
 	public final static int MaximumNumberOfApplyingSkeletonMerge = 2000;
 //	public final static int NumberOfMerges = 2000;
 //	public final static int NumberOfSkeletonMerges = 1000;
@@ -103,10 +103,10 @@ public class MetaOfApp {
 	public final static int MaximumTokenCapacity = 10000;
 	public final static int MaximumSkeletonTokenCapacity = 5000;
 	
-	public final static int MinimumNotUnkAppearTime = 2;
-	public final static int MinimumSkeletonNotUnkAppearTime = 2;
-	public final static int MinimumPESkeletonNotUnkAppearTime = 2;
-	public final static int MinimumEachSkeletonNotUnkAppearTime = 2;
+	public final static int MinimumNotUnkAppearTime = 5;
+	public final static int MinimumSkeletonNotUnkAppearTime = 3;
+	public final static int MinimumPESkeletonNotUnkAppearTime = 3;
+	public final static int MinimumEachSkeletonNotUnkAppearTime = 3;
 	
 	public final static int MinimumParentHintNotUnkAppearTime = 2;
 	public final static int MinimumPEParentHintNotUnkAppearTime = 2;
