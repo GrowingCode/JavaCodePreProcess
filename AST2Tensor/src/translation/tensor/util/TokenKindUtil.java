@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.SimpleName;
 
 import eclipse.bind.BindingResolveUtil;
@@ -355,7 +356,7 @@ public class TokenKindUtil {
 	}
 	
 	public static int GetTokenIsVar(TreeNode tn) {
-		int token_is_var = tn.GetBinding() != null ? 1 : 0;
+		int token_is_var = tn.GetBinding() != null && tn.GetBinding() instanceof IVariableBinding ? 1 : 0;
 		if (MetaOfApp.UseApproximateVariable) {
 			int base = 1;
 			if (MetaOfApp.FurtherUseStrictVariable) {
@@ -403,9 +404,9 @@ public class TokenKindUtil {
 		Condition cls_pet = GetNodeClassRepresentation(tn);
 		Class<?> cls = tn.getClass();
 		if (cls.equals(SimpleName.class)) {
-			IBinding bind = BindingResolveUtil.ResolveVariableBinding(tn);
+			IBinding bind = BindingResolveUtil.ResolveBinding(tn);
 //			System.err.println("is_var:" + (bind != null) + "#cls_pet:" + cls_pet);
-			if (bind != null) {
+			if (bind != null && bind instanceof IVariableBinding) {
 				MapUtil.CountOneKey(is_var_cls_pet_count, cls_pet.toString(), 1);
 //				ASTNode tn_par = tn.getParent();
 //				if (tn_par instanceof MethodInvocation) {

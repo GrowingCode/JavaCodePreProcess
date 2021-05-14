@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import statistic.id.IDManager;
 import translation.helper.TypeContentID;
@@ -52,7 +53,7 @@ public class StatementTensorGenerator extends TreeVisitor {
 		} else {
 //			int api_comb_id = -1;
 //			int api_relative_id = -1;
-			if (node.GetBinding() != null) {
+			if (node.GetBinding() != null && node.GetBinding() instanceof IVariableBinding) {
 //				SimpleName sn = (SimpleName) node;
 //				var_index = HandleVariableIndex(sn.toString());
 //				var = sn.toString();

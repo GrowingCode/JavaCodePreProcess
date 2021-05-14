@@ -3,6 +3,8 @@ package util.visitor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import eclipse.bind.BindingResolveUtil;
 import eclipse.jdt.JDTASTHelper;
@@ -35,7 +37,8 @@ public class TokenHandleSkeletonVisitor extends SkeletonVisitor {
 			if (ei == null) {
 				int index = record.size();
 				int is_var = 0;
-				if (BindingResolveUtil.ResolveVariableBinding(node) != null) {
+				IBinding bind = BindingResolveUtil.ResolveBinding(node);
+				if (bind != null && bind instanceof IVariableBinding) {
 					is_var = 1;
 				}
 				int kind = TokenKindUtil.GetTokenKind(node);

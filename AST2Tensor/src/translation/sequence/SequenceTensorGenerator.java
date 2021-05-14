@@ -1,5 +1,7 @@
 package translation.sequence;
 
+import org.eclipse.jdt.core.dom.IVariableBinding;
+
 import statistic.id.IDManager;
 import translation.tensor.SequenceTensor;
 import translation.tensor.StringTensor;
@@ -20,7 +22,7 @@ public class SequenceTensorGenerator extends TreeVisitor {
 	public boolean PreVisit(TreeNode node) {
 		int type_content_id = im.GetTypeContentID(node.GetContent());
 		String var = null;
-		if (node.GetBinding() != null) {
+		if (node.GetBinding() != null && node.GetBinding() instanceof IVariableBinding) {
 //			SimpleName.class.isAssignableFrom(node.GetClazz()) || SimpleType.class.isAssignableFrom(node.GetClazz())
 			var = node.GetContent();
 		}
