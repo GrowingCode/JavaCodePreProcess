@@ -16,6 +16,7 @@ public class MetaOfApp {
 	public final static String MethodDeclarationSignaturePrefix = "$YStatementSig$:";
 	public final static String ProjectDeclarationSignaturePrefix = "$YProjectSig$:";
 	
+	public static boolean PrintBindingInfo = false;
 	public static boolean PrintTensorInfoForEachExampleInTestSet = false;
 	public final static String[] PrintTensorInfoKind = new String[] {"stmt"};
 	
