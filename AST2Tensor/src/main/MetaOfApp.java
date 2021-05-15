@@ -19,6 +19,7 @@ public class MetaOfApp {
 	// initial is false, but will be set to true at middle, then set to false. 
 	public static boolean PrintInfo = false;
 	public static boolean PrintBindingInfo = false;
+	public static boolean PrintSimpleNameBindingInfo = false;
 	public static boolean PrintTensorInfoForEachExampleInTestSet = false;
 	public final static String[] PrintTensorInfoKind = new String[] {"stmt"};
 	
@@ -116,13 +117,13 @@ public class MetaOfApp {
 	public final static int MinimumEachParentHintNotUnkAppearTime = 2;
 	
 	public final static int NumberOfParentHintUnk = 0;
-	public final static int MinimumNumberOfParentHintVocabulary = 25;
+	public final static int MinimumNumberOfParentHintVocabulary = 20;
 	
 	public static boolean OutOfScopeReplacedByUnk = true;
 	public final static int NumberOfSkeletonUnk = 0;
-	public final static int MinimumNumberOfSkeletonVocabulary = 25;
+	public final static int MinimumNumberOfSkeletonVocabulary = 20;
 	public final static int NumberOfUnk = 0;
-	public final static int MinimumNumberOfVocabulary = 25;
+	public final static int MinimumNumberOfVocabulary = 20;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
 	public static boolean GenerateSkeletonToken = true;

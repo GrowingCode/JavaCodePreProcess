@@ -16,6 +16,7 @@ import bpe.BPEGeneratorForProject;
 import bpe.skt.SktLogicUtil;
 import bpe.skt.SktPEGeneratorForProject;
 import bpe.skt.TreeNodeTwoMergeWithFreqs;
+import eclipse.bind.BindingResolveUtil;
 import eclipse.project.AnalysisEnvironment;
 import main.util.AppRunUtil;
 import main.util.HandleOneProject;
@@ -181,10 +182,13 @@ public class AppMainRoot implements IApplication {
 			 * normal handle
 			 */
 			{
+				BindingResolveUtil.ClearStorage();
 				MetaOfApp.PrintInfo = true;
 				CountOneProjectHandle handle = new CountOneProjectHandle();
 				AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, null);
 				MetaOfApp.PrintInfo = false;
+				BindingResolveUtil.PrintBindingAssignment();
+				BindingResolveUtil.ClearStorage();
 			}
 			// max_handle_projs,
 //			List<String> proj_paths = FileUtil.ReadLineFromFile(new File(all_proj_paths));
