@@ -210,6 +210,7 @@ public class StatementSkeletonTensor extends Tensor {
 			} else {
 				sbt.seq_part_skip.add(0);
 			}
+			q++;
 		}
 		
 		for (int s : skt) {
