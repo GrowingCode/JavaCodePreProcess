@@ -2,6 +2,7 @@ package translation.tensor;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -98,32 +99,35 @@ public class StatementSkeletonTensor extends Tensor {
 	 */
 	
 	public void StoreStatementSkeletonBatchInfo(SktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(pshm, ifx, skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
-		skt_batch_info.Merge(one_stmt);
+//		SktBatchTensor one_stmt = ;
+		HandleSktInfo(skt_batch_info, pshm, ifx, skt_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
+//		skt_batch_info.Merge(one_stmt);
 		
 		max_skt_number_of_one_statement = Math.max(max_skt_number_of_one_statement, skt_str.size());
 		max_token_number_of_one_statement = Math.max(max_token_number_of_one_statement, token_str.size());
 	}
 	
 	public void StoreStatementSkeletonPEBatchInfo(SktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(pshm, ifx, skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
-		skt_pe_batch_info.Merge(one_stmt);
+//		SktBatchTensor one_stmt = ;
+		HandleSktInfo(skt_pe_batch_info, pshm, ifx, skt_pe_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
+//		skt_pe_batch_info.Merge(one_stmt);
 		
 		max_skt_number_of_pe_statement = Math.max(max_skt_number_of_pe_statement, skt_str.size());
 		max_token_number_of_pe_statement = Math.max(max_token_number_of_pe_statement, token_str.size());
 	}
 	
 	public void StoreStatementSkeletonEachBatchInfo(SktHintManager pshm, String ifx, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
-		SktBatchTensor one_stmt = HandleSktInfo(pshm, ifx, skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
-		skt_each_batch_info.Merge(one_stmt);
+//		SktBatchTensor one_stmt = ;
+		HandleSktInfo(skt_each_batch_info, pshm, ifx, skt_each_batch_relative_part_max, skt_hit_num, skt_token_hit_num, skt_str, parent_skt_hint, skt, skt_exact, token_str, parent_token_hint, token);
+//		skt_each_batch_info.Merge(one_stmt);
 		
 		max_skt_number_of_e_statement = Math.max(max_skt_number_of_e_statement, skt_str.size());
 		max_token_number_of_e_statement = Math.max(max_token_number_of_e_statement, token_str.size());
 	}
 	
-	private SktBatchTensor HandleSktInfo(SktHintManager pshm, String ifx, IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
+	private SktBatchTensor HandleSktInfo(SktBatchTensor sbt, SktHintManager pshm, String ifx, IntsWrapper iw, int skt_hit_num, int skt_token_hit_num, ArrayList<String> skt_str, ArrayList<Integer> parent_skt_hint, ArrayList<Integer> skt, ArrayList<Integer> skt_exact, ArrayList<String> token_str, ArrayList<Integer> parent_token_hint, ArrayList<Integer> token) {
 		
-		SktBatchTensor sbt = new SktBatchTensor(ti, false);
+//		SktBatchTensor sbt = new SktBatchTensor(ti, false);
 		
 		sbt.origin_sequence_str.addAll(skt_str);
 		sbt.origin_sequence_str.addAll(token_str);
@@ -135,20 +139,30 @@ public class StatementSkeletonTensor extends Tensor {
 			r_tokens.add(h_t);
 		}
 		
-		sbt.origin_sequence.addAll(skt);
 		for (int j=0;j<skt.size();j++) {
 			int os = skt.get(j);
+			sbt.origin_sequence.add(os);
 			int pos_hint = j * 2 + 1;
 			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {pos_hint, os});
 			sbt.position_hint.add(pos_hint);
+			sbt.token_relative_info.add(0);
 		}
 		
-		sbt.origin_sequence.addAll(r_tokens);
 		for (int j=0;j<r_tokens.size();j++) {
 			int os = r_tokens.get(j);
+			int os_index = sbt.origin_sequence.size();
+			sbt.origin_sequence.add(os);
 			int pos_hint = j * 2 + 2;
 			ReflectUtil.ReflectMethod("Regist" + ifx + "PositionHintID" + ifx + "TokenID", pshm, new Class<?>[] {int.class, int.class}, new Object[] {pos_hint, os});
 			sbt.position_hint.add(pos_hint);
+			Integer latest = sbt.token_latest_index.get(os);
+			int rel = 0;
+			if (latest != null) {
+				rel = latest - os_index;
+			}
+			latest = os_index;
+			sbt.token_latest_index.put(os_index, latest);
+			sbt.token_relative_info.add(rel);
 		}
 		
 		int r = 0;
@@ -341,6 +355,9 @@ class SktBatchTensor extends Tensor {
 	ArrayList<Integer> seq_part_skip = new ArrayList<Integer>();
 	ArrayList<Integer> token_type = new ArrayList<Integer>();
 	ArrayList<Integer> origin_sequence_exact = new ArrayList<Integer>();
+	ArrayList<Integer> token_relative_info = new ArrayList<Integer>();
+	
+	Map<Integer, Integer> token_latest_index = new TreeMap<Integer, Integer>();
 	
 	int print_fixed_len = 25;
 	
@@ -356,20 +373,22 @@ class SktBatchTensor extends Tensor {
 			this.seq_part_skip.add(0);
 			this.token_type.add(-1);
 			this.origin_sequence_exact.add(0);
+			this.token_relative_info.add(0);
 		}
 	}
 	
-	public void Merge(SktBatchTensor sbt) {
-		origin_sequence_str.addAll(sbt.origin_sequence_str);
-		origin_sequence.addAll(sbt.origin_sequence);
-		relative_to_part_first.addAll(sbt.relative_to_part_first);
-		valid_mask.addAll(sbt.valid_mask);
-		parent_hint.addAll(sbt.parent_hint);
-		position_hint.addAll(sbt.position_hint);
-		seq_part_skip.addAll(sbt.seq_part_skip);
-		token_type.addAll(sbt.token_type);
-		origin_sequence_exact.addAll(sbt.origin_sequence_exact);
-	}
+//	public void Merge(SktBatchTensor sbt) {
+//		origin_sequence_str.addAll(sbt.origin_sequence_str);
+//		origin_sequence.addAll(sbt.origin_sequence);
+//		relative_to_part_first.addAll(sbt.relative_to_part_first);
+//		valid_mask.addAll(sbt.valid_mask);
+//		parent_hint.addAll(sbt.parent_hint);
+//		position_hint.addAll(sbt.position_hint);
+//		seq_part_skip.addAll(sbt.seq_part_skip);
+//		token_type.addAll(sbt.token_type);
+//		origin_sequence_exact.addAll(sbt.origin_sequence_exact);
+//		token_relative_info.addAll(sbt.token_relative_info);
+//	}
 
 	public void HandleAllInfo() {
 		SetSize(origin_sequence.size());
@@ -390,7 +409,8 @@ class SktBatchTensor extends Tensor {
 				+ StringUtils.join(position_hint.toArray(), " ") + separator
 				+ StringUtils.join(seq_part_skip.toArray(), " ") + separator
 				+ StringUtils.join(token_type.toArray(), " ") + separator
-				+ StringUtils.join(origin_sequence_exact.toArray(), " ");
+				+ StringUtils.join(origin_sequence_exact.toArray(), " ") + separator
+				+ StringUtils.join(token_relative_info.toArray(), " ");
 		return result;
 	}
 	
@@ -403,7 +423,8 @@ class SktBatchTensor extends Tensor {
 				+ StringUtil.FixedLengthString("position_hint:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(position_hint, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ");
+				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("token_relative:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_relative_info, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
@@ -417,7 +438,8 @@ class SktBatchTensor extends Tensor {
 				+ StringUtil.FixedLengthString("position_hint:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(position_hint, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("seq_part_skip:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(seq_part_skip, print_fixed_len).toArray(), " ") + separator
 				+ StringUtil.FixedLengthString("token_type:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_type, print_fixed_len).toArray(), " ") + separator
-				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ");
+				+ StringUtil.FixedLengthString("id_exact:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(origin_sequence_exact, print_fixed_len).toArray(), " ") + separator
+				+ StringUtil.FixedLengthString("token_relative:", 20) + " " + StringUtils.join(StringUtil.ArrayElementToFixedLength(token_relative_info, print_fixed_len).toArray(), " ");
 		return result;
 	}
 	
