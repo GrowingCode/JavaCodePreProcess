@@ -26,7 +26,7 @@ public class MetaOfApp {
 	public final static int all = 5;
 	public final static int train_seen = 2;
 	public final static int train = 2;
-	public final static int valid = 2;
+	public final static int valid = 3;
 	public final static int test = 4;
 	
 //	public final static int TypeHuffTreeStandardChildrenNum = 100;
