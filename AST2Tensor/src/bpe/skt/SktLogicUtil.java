@@ -4,11 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.Assert;
@@ -23,8 +18,6 @@ import statistic.IDTools;
 import statistic.id.IDManager;
 import statistic.id.SktHintManager;
 import translation.SktTensorTools;
-import translation.TensorTools;
-import translation.ast.StatementScoreGenerator;
 import translation.tensor.StatementSkeletonTensor;
 import translation.tensor.Tensor;
 import translation.tensor.TensorForProject;
@@ -34,9 +27,7 @@ import tree.Forest;
 import tree.ProjectForests;
 import tree.Tree;
 import tree.TreeFlatten;
-import unit.PairContainer;
 import util.ListUtil;
-import util.MapUtil;
 import util.PrintUtil;
 import util.YStringUtil;
 
@@ -155,72 +146,72 @@ public class SktLogicUtil {
 		}
 	}
 	
-	public static void FilterPairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr)
-			throws Exception {
-		IDManager im = tensor_tool.im;
-		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
-		Map<PairContainer<Forest, ProjectForests>, Double> forest_score = new HashMap<PairContainer<Forest, ProjectForests>, Double>();
-		for (ProjectForests pf : aps) {
-			ArrayList<Forest> func_os = pf.GetAllForests();
-			for (Forest f : func_os) {
-				StatementScoreGenerator ssg = new StatementScoreGenerator(im);
-				ArrayList<Tree> trees = f.GetAllTrees();
-				for (Tree tree : trees) {
-					tree.Accept(ssg);
-				}
-				forest_score.put(new PairContainer<Forest, ProjectForests>(f, pf), ssg.GetScore());
-			}
-		}
-		List<Entry<PairContainer<Forest, ProjectForests>, Double>> sorted = MapUtil.SortMapByValue(forest_score);
-		Entry<PairContainer<Forest, ProjectForests>, Double> first = sorted.get(0);
-		Entry<PairContainer<Forest, ProjectForests>, Double> last = sorted.get(sorted.size()-1);
-		System.out.println("first score:" + first.getValue() + "#last score:" + last.getValue());
-		int r_start = -1;
-		int i_len = sorted.size();
-		Iterator<Entry<PairContainer<Forest, ProjectForests>, Double>> s_itr = sorted.iterator();
-		while (s_itr.hasNext()) {
-			r_start++;
-			Entry<PairContainer<Forest, ProjectForests>, Double> s = s_itr.next();
-			if (s.getValue() > MetaOfApp.FilterMinimumScore) {
-				break;
-			}
-		}
-		List<Entry<PairContainer<Forest, ProjectForests>, Double>> sub_sorts = sorted.subList(r_start, i_len);
-		int r_size = sub_sorts.size();
-		double remove_size = r_size * MetaOfApp.FilterRate;
-		
-		double train_remove_size = remove_size * (MetaOfApp.train - (-1)) / (MetaOfApp.all * 1.0);
-		double valid_remove_size = remove_size * (MetaOfApp.valid - MetaOfApp.train) / (MetaOfApp.all * 1.0);
-		double test_remove_size = remove_size * (MetaOfApp.test - MetaOfApp.valid) / (MetaOfApp.all * 1.0);
-		
-		int r_train_remove_size = (int) Math.ceil(train_remove_size);
-		int r_valid_remove_size = (int) Math.ceil(valid_remove_size);
-		int r_test_remove_size = (int) Math.ceil(test_remove_size);
-		
-		Iterator<Entry<PairContainer<Forest, ProjectForests>, Double>> ss_itr = sub_sorts.iterator();
-		while (ss_itr.hasNext()) {
-			Entry<PairContainer<Forest, ProjectForests>, Double> ss = ss_itr.next();
-			PairContainer<Forest, ProjectForests> key = ss.getKey();
-			Forest f = key.k;
-			ProjectForests pf = key.v;
-			if (f.GetRole() == RoleAssigner.train_k) {
-				if (r_train_remove_size > 0) {
-					r_train_remove_size--;
-					pf.GetAllForests().remove(f);
-				}
-			} else if (f.GetRole() == RoleAssigner.valid_k) {
-				if (r_valid_remove_size > 0) {
-					r_valid_remove_size--;
-					pf.GetAllForests().remove(f);
-				}
-			} else if (f.GetRole() == RoleAssigner.test_k) {
-				if (r_test_remove_size > 0) {
-					r_test_remove_size--;
-					pf.GetAllForests().remove(f);
-				}
-			}
-		}
-	}
+//	public static void FilterPairEncodedSkeletonsAndTokens(TensorTools tensor_tool, SkeletonForestRecorder sfr)
+//			throws Exception {
+//		IDManager im = tensor_tool.im;
+//		ArrayList<ProjectForests> aps = sfr.GetAllProjectsWithForests();
+//		Map<PairContainer<Forest, ProjectForests>, Double> forest_score = new HashMap<PairContainer<Forest, ProjectForests>, Double>();
+//		for (ProjectForests pf : aps) {
+//			ArrayList<Forest> func_os = pf.GetAllForests();
+//			for (Forest f : func_os) {
+//				StatementScoreGenerator ssg = new StatementScoreGenerator(im);
+//				ArrayList<Tree> trees = f.GetAllTrees();
+//				for (Tree tree : trees) {
+//					tree.Accept(ssg);
+//				}
+//				forest_score.put(new PairContainer<Forest, ProjectForests>(f, pf), ssg.GetScore());
+//			}
+//		}
+//		List<Entry<PairContainer<Forest, ProjectForests>, Double>> sorted = MapUtil.SortMapByValue(forest_score);
+//		Entry<PairContainer<Forest, ProjectForests>, Double> first = sorted.get(0);
+//		Entry<PairContainer<Forest, ProjectForests>, Double> last = sorted.get(sorted.size()-1);
+//		System.out.println("first score:" + first.getValue() + "#last score:" + last.getValue());
+//		int r_start = -1;
+//		int i_len = sorted.size();
+//		Iterator<Entry<PairContainer<Forest, ProjectForests>, Double>> s_itr = sorted.iterator();
+//		while (s_itr.hasNext()) {
+//			r_start++;
+//			Entry<PairContainer<Forest, ProjectForests>, Double> s = s_itr.next();
+//			if (s.getValue() > MetaOfApp.FilterMinimumScore) {
+//				break;
+//			}
+//		}
+//		List<Entry<PairContainer<Forest, ProjectForests>, Double>> sub_sorts = sorted.subList(r_start, i_len);
+//		int r_size = sub_sorts.size();
+//		double remove_size = r_size * MetaOfApp.FilterRate;
+//		
+//		double train_remove_size = remove_size * (MetaOfApp.train - (-1)) / (MetaOfApp.all * 1.0);
+//		double valid_remove_size = remove_size * (MetaOfApp.valid - MetaOfApp.train) / (MetaOfApp.all * 1.0);
+//		double test_remove_size = remove_size * (MetaOfApp.test - MetaOfApp.valid) / (MetaOfApp.all * 1.0);
+//		
+//		int r_train_remove_size = (int) Math.ceil(train_remove_size);
+//		int r_valid_remove_size = (int) Math.ceil(valid_remove_size);
+//		int r_test_remove_size = (int) Math.ceil(test_remove_size);
+//		
+//		Iterator<Entry<PairContainer<Forest, ProjectForests>, Double>> ss_itr = sub_sorts.iterator();
+//		while (ss_itr.hasNext()) {
+//			Entry<PairContainer<Forest, ProjectForests>, Double> ss = ss_itr.next();
+//			PairContainer<Forest, ProjectForests> key = ss.getKey();
+//			Forest f = key.k;
+//			ProjectForests pf = key.v;
+//			if (f.GetRole() == RoleAssigner.train_k) {
+//				if (r_train_remove_size > 0) {
+//					r_train_remove_size--;
+//					pf.GetAllForests().remove(f);
+//				}
+//			} else if (f.GetRole() == RoleAssigner.valid_k) {
+//				if (r_valid_remove_size > 0) {
+//					r_valid_remove_size--;
+//					pf.GetAllForests().remove(f);
+//				}
+//			} else if (f.GetRole() == RoleAssigner.test_k) {
+//				if (r_test_remove_size > 0) {
+//					r_test_remove_size--;
+//					pf.GetAllForests().remove(f);
+//				}
+//			}
+//		}
+//	}
 
 	public static void TranslatePairEncodedSkeletonsAndTokens(SktTensorTools tensor_tool, SkeletonForestRecorder sfr)
 			throws Exception {
