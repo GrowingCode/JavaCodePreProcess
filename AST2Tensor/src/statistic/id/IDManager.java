@@ -36,6 +36,16 @@ public class IDManager {
 	public static final String ZDft = "$Dft_";
 	public static final String Unk = "$Unk_";
 	public static final String Rep = "$Rep_";
+	public static final String Rev0 = "$Rev0_";
+	public static final String Rev1 = "$Rev1_";
+	public static final String Rev2 = "$Rev2_";
+	public static final String Rev3 = "$Rev3_";
+	public static final String Rev4 = "$Rev4_";
+	public static final String Rev5 = "$Rev5_";
+	public static final String Rev6 = "$Rev6_";
+	public static final String Rev7 = "$Rev7_";
+	public static final String Rev8 = "$Rev8_";
+	public static final String Rev9 = "$Rev9_";
 
 	public static final String SWordUNK = "$YYXSWordUNK_";
 
@@ -45,6 +55,16 @@ public class IDManager {
 		reserved_words.add(ZDft);
 		reserved_words.add(Unk);
 		reserved_words.add(Rep);
+		reserved_words.add(Rev0);
+		reserved_words.add(Rev1);
+		reserved_words.add(Rev2);
+		reserved_words.add(Rev3);
+		reserved_words.add(Rev4);
+		reserved_words.add(Rev5);
+		reserved_words.add(Rev6);
+		reserved_words.add(Rev7);
+		reserved_words.add(Rev8);
+		reserved_words.add(Rev9);
 	}
 
 //	public static String DefaultPart = "@Default";
