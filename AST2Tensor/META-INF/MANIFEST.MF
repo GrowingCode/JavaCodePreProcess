@@ -4,7 +4,7 @@ Bundle-Name: AST2Tensor
 Bundle-SymbolicName: AST4Tensor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: yyx
-Bundle-RequiredExecutionEnvironment: JavaSE-15
+Bundle-RequiredExecutionEnvironment: JavaSE-19
 Require-Bundle: org.eclipse.equinox.app,
  org.eclipse.jdt.core;bundle-version="3.13.50",
  org.eclipse.core.runtime;bundle-version="3.13.0",
