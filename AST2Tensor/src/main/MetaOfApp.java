@@ -126,7 +126,7 @@ public class MetaOfApp {
 	public final static int MinimumNumberOfVocabulary = 20;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	
-	public static boolean GenerateSkeletonToken = true;
+	public static boolean GenerateSkeletonToken = false;
 //	public static boolean GeneratePairEncodedSkeletonToken = false;
 	
 	public final static Class<?>[] ignore_ast_type = new Class<?>[] {};// StringLiteral.class
