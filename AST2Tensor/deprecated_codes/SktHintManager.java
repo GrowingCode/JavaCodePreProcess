@@ -1,24 +1,17 @@
 package statistic.id;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import com.google.gson.Gson;
 
 import main.MetaOfApp;
 import statistic.IDTools;
 import statistic.id.util.RegistUtil;
-import statistic.id.util.SeriesUtil;
 import tree.TreeNodeParentInfo;
-import util.FileUtil;
 
 public class SktHintManager {
 
-	private IDManager im = null;
+//	private IDManager im = null;
 
 	private TreeMap<Integer, TreeSet<Integer>> skt_one_type_hint_id_one_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
 	private TreeMap<Integer, TreeSet<Integer>> skt_pe_type_hint_id_pe_token_id_map = new TreeMap<Integer, TreeSet<Integer>>();
@@ -42,7 +35,7 @@ public class SktHintManager {
 	private int e_hint_hit_num = -1;
 
 	public SktHintManager(IDManager im, IDTools tool) {
-		this.im = im;
+//		this.im = im;
 		ParentSktHintRecorder recorder = tool.hint_recorder;
 
 		RegistUtil.Regist(skt_one_parent_hint_id_map, IDManager.reserved_words);
@@ -139,67 +132,67 @@ public class SktHintManager {
 		iset.add(otid);
 	}
 
-	public void SaveToDirectory(String dir) {
-		SaveToDirectory(dir + "/" + "All_skt_one_type_hint_mask.json", skt_one_type_hint_id_one_token_id_map,
-				im.skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_pe_type_hint_mask.json", skt_pe_type_hint_id_pe_token_id_map,
-				im.pe_skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_e_type_hint_mask.json", skt_e_type_hint_id_e_token_id_map,
-				im.each_skeleton_hit_num + im.skt_token_hit_num);
+//	public void SaveToDirectory(String dir) {
+//		SaveToDirectory(dir + "/" + "All_skt_one_type_hint_mask.json", skt_one_type_hint_id_one_token_id_map,
+//				im.skeleton_hit_num + im.skt_token_hit_num);
+//		SaveToDirectory(dir + "/" + "All_skt_pe_type_hint_mask.json", skt_pe_type_hint_id_pe_token_id_map,
+//				im.pe_skeleton_hit_num + im.skt_token_hit_num);
+//		SaveToDirectory(dir + "/" + "All_skt_e_type_hint_mask.json", skt_e_type_hint_id_e_token_id_map,
+//				im.each_skeleton_hit_num + im.skt_token_hit_num);
+//
+//		SaveToDirectory(dir + "/" + "All_skt_one_position_hint_mask.json", skt_one_position_hint_id_one_token_id_map,
+//				im.skeleton_hit_num + im.skt_token_hit_num);
+//		SaveToDirectory(dir + "/" + "All_skt_pe_position_hint_mask.json", skt_pe_position_hint_id_pe_token_id_map,
+//				im.pe_skeleton_hit_num + im.skt_token_hit_num);
+//		SaveToDirectory(dir + "/" + "All_skt_e_position_hint_mask.json", skt_e_position_hint_id_e_token_id_map,
+//				im.each_skeleton_hit_num + im.skt_token_hit_num);
+//
+//		SaveToDirectory(dir + "/" + "All_skt_one_parent_hint_mask.json", skt_one_parent_hint_id_one_token_id_map,
+//				im.skeleton_hit_num + im.skt_token_hit_num);
+//		SaveToDirectory(dir + "/" + "All_skt_pe_parent_hint_mask.json", skt_pe_parent_hint_id_pe_token_id_map,
+//				im.pe_skeleton_hit_num + im.skt_token_hit_num);
+//		SaveToDirectory(dir + "/" + "All_skt_e_parent_hint_mask.json", skt_e_parent_hint_id_e_token_id_map,
+//				im.each_skeleton_hit_num + im.skt_token_hit_num);
 
-		SaveToDirectory(dir + "/" + "All_skt_one_position_hint_mask.json", skt_one_position_hint_id_one_token_id_map,
-				im.skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_pe_position_hint_mask.json", skt_pe_position_hint_id_pe_token_id_map,
-				im.pe_skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_e_position_hint_mask.json", skt_e_position_hint_id_e_token_id_map,
-				im.each_skeleton_hit_num + im.skt_token_hit_num);
+//		SeriesUtil.GenerateIDJson(dir, skt_one_parent_hint_id_map, "skt_one_par_hint");
+//		SeriesUtil.GenerateStrIDJson(dir, skt_one_parent_hint_id_map, "skt_one_par_hint");
+//		SeriesUtil.GenerateIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe_par_hint");
+//		SeriesUtil.GenerateStrIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe_par_hint");
+//		SeriesUtil.GenerateIDJson(dir, skt_e_parent_hint_id_map, "skt_e_par_hint");
+//		SeriesUtil.GenerateStrIDJson(dir, skt_e_parent_hint_id_map, "skt_e_par_hint");
+//	}
 
-		SaveToDirectory(dir + "/" + "All_skt_one_parent_hint_mask.json", skt_one_parent_hint_id_one_token_id_map,
-				im.skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_pe_parent_hint_mask.json", skt_pe_parent_hint_id_pe_token_id_map,
-				im.pe_skeleton_hit_num + im.skt_token_hit_num);
-		SaveToDirectory(dir + "/" + "All_skt_e_parent_hint_mask.json", skt_e_parent_hint_id_e_token_id_map,
-				im.each_skeleton_hit_num + im.skt_token_hit_num);
-
-		SeriesUtil.GenerateIDJson(dir, skt_one_parent_hint_id_map, "skt_one_par_hint");
-		SeriesUtil.GenerateStrIDJson(dir, skt_one_parent_hint_id_map, "skt_one_par_hint");
-		SeriesUtil.GenerateIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe_par_hint");
-		SeriesUtil.GenerateStrIDJson(dir, skt_pe_parent_hint_id_map, "skt_pe_par_hint");
-		SeriesUtil.GenerateIDJson(dir, skt_e_parent_hint_id_map, "skt_e_par_hint");
-		SeriesUtil.GenerateStrIDJson(dir, skt_e_parent_hint_id_map, "skt_e_par_hint");
-	}
-
-	private void SaveToDirectory(String json_file, TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map,
-			int n_token) {
-		ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
-
-		Set<Integer> k_set = skt_parent_hint_id_token_id_map.keySet();
-		ArrayList<Integer> k_arr = new ArrayList<Integer>(k_set);
-		int size = 0;
-		if (k_arr.size() > 0) {
-			size = k_arr.get(k_arr.size() - 1) + 1;
-		}
-		for (int i = 0; i < size; i++) {
-			ArrayList<Integer> ll = new ArrayList<Integer>();
-			result.add(ll);
-			for (int j = 0; j < n_token; j++) {
-				ll.add(0);
-			}
-		}
-
-		Iterator<Integer> k_itr = k_arr.iterator();
-		while (k_itr.hasNext()) {
-			Integer k = k_itr.next();
-			ArrayList<Integer> ll = result.get(k);
-			TreeSet<Integer> t_set = skt_parent_hint_id_token_id_map.get(k);
-			for (Integer t : t_set) {
-				ll.set(t, 1);
-			}
-		}
-
-		Gson gson = new Gson();
-		FileUtil.WriteToFile(new File(json_file), gson.toJson(result));
-	}
+//	private void SaveToDirectory(String json_file, TreeMap<Integer, TreeSet<Integer>> skt_parent_hint_id_token_id_map,
+//			int n_token) {
+//		ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+//
+//		Set<Integer> k_set = skt_parent_hint_id_token_id_map.keySet();
+//		ArrayList<Integer> k_arr = new ArrayList<Integer>(k_set);
+//		int size = 0;
+//		if (k_arr.size() > 0) {
+//			size = k_arr.get(k_arr.size() - 1) + 1;
+//		}
+//		for (int i = 0; i < size; i++) {
+//			ArrayList<Integer> ll = new ArrayList<Integer>();
+//			result.add(ll);
+//			for (int j = 0; j < n_token; j++) {
+//				ll.add(0);
+//			}
+//		}
+//
+//		Iterator<Integer> k_itr = k_arr.iterator();
+//		while (k_itr.hasNext()) {
+//			Integer k = k_itr.next();
+//			ArrayList<Integer> ll = result.get(k);
+//			TreeSet<Integer> t_set = skt_parent_hint_id_token_id_map.get(k);
+//			for (Integer t : t_set) {
+//				ll.set(t, 1);
+//			}
+//		}
+//
+//		Gson gson = new Gson();
+//		FileUtil.WriteToFile(new File(json_file), gson.toJson(result));
+//	}
 
 	// IDManager im, String pfx,
 	public static String GenParentHint(ArrayList<TreeNodeParentInfo> par_info) {

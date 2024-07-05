@@ -2,57 +2,52 @@ package main;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import bpe.skt.SktPEGeneratorForProject;
-import eclipse.project.AnalysisEnvironment;
 import logger.DebugLogger;
-import main.util.AppRunUtil;
 import main.util.HandleOneProject;
-import statis.trans.common.RoleAssigner;
 import statis.trans.common.SkeletonForestRecorder;
 import statis.trans.project.STProject;
 import statistic.IDTools;
-import statistic.id.SktPEMergeRecorder;
 import translation.TensorTools;
 import tree.Forest;
 import util.SystemUtil;
 
 public class AppSktMergeSetUp {
 	
-	public static void SetUp() {
-		IDTools id_tool = null;
-		{
-			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
-			id_tool = new IDTools(null, null, null, null, null, null, null, null, null, sktpe_mr, null);
-		}
-		
-		System.out.println("==== SktPECount Begin ====");
-		File bpe_dir = new File(AppMainRoot.witness);
-		List<STProject> all_projs = null;
-		try {
-			all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Wrong loading projects and the system will exit!");
-			System.exit(1);
-		}
-		SktPEGenerateMergeForOneProjectHandle handle = new SktPEGenerateMergeForOneProjectHandle();
-		AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, null);
-//		ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
-//		for (Forest f : fs) {
-//			ArrayList<Tree> f_trees = f.GetAllTrees();
-//			for (Tree t : f_trees) {
-//				id_tool.sktpe_mr.EncounterSkeleton(t, 1);
-//			}
+//	public static void SetUp() {
+//		IDTools id_tool = null;
+//		{
+//			SktPEMergeRecorder sktpe_mr = new SktPEMergeRecorder();
+//			id_tool = new IDTools(null, null, null, null, null, null, null, null, null, sktpe_mr, null);
 //		}
-//		id_tool.sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
-//		id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
-//		id_tool.stf_r.Clear();
-//		AnalysisEnvironment.DeleteAllProjects();
-		RoleAssigner.GetInstance().ClearRoles();
-		System.out.println("==== SktPECount End ====");
-	}
+//		
+//		System.out.println("==== SktPECount Begin ====");
+//		File bpe_dir = new File(AppMainRoot.witness);
+//		List<STProject> all_projs = null;
+//		try {
+//			all_projs = AnalysisEnvironment.LoadAllProjects(bpe_dir);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.err.println("Wrong loading projects and the system will exit!");
+//			System.exit(1);
+//		}
+//		SktPEGenerateMergeForOneProjectHandle handle = new SktPEGenerateMergeForOneProjectHandle();
+//		AppRunUtil.HandleEachProjectFramework(all_projs, handle, id_tool, null);
+////		ArrayList<Forest> fs = id_tool.stf_r.GetAllForests();
+////		for (Forest f : fs) {
+////			ArrayList<Tree> f_trees = f.GetAllTrees();
+////			for (Tree t : f_trees) {
+////				id_tool.sktpe_mr.EncounterSkeleton(t, 1);
+////			}
+////		}
+////		id_tool.sktpe_mr.GenerateSktPEMerges(MetaOfApp.NumberOfSkeletonMerges);
+////		id_tool.sktpe_mr.SaveTo(sktpe_mj);// , sktpe_ttj
+////		id_tool.stf_r.Clear();
+////		AnalysisEnvironment.DeleteAllProjects();
+//		RoleAssigner.GetInstance().ClearRoles();
+//		System.out.println("==== SktPECount End ====");
+//	}
 	
 }
 

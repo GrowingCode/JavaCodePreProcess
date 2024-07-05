@@ -120,9 +120,9 @@ public class MetaOfApp {
 	public final static int MinimumNumberOfParentHintVocabulary = 20;
 	
 	public static boolean OutOfScopeReplacedByUnk = true;
-	public final static int NumberOfSkeletonUnk = 0;
-	public final static int MinimumNumberOfSkeletonVocabulary = 20;
-	public final static int NumberOfUnk = 0;
+//	public final static int NumberOfSkeletonUnk = 0;
+//	public final static int MinimumNumberOfSkeletonVocabulary = 20;
+	public final static int NumberOfUnk = 1;
 	public final static int MinimumNumberOfVocabulary = 20;
 	public final static int MaxParentTypeRemoveTimes = 1;
 	

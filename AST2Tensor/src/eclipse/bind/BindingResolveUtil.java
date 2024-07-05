@@ -95,7 +95,7 @@ public class BindingResolveUtil {
 				}
 			}
 		}
-		System.out.println("=== split line ===");
+//		System.out.println("=== split line ===");
 		if (MetaOfApp.PrintInfo)
 		{
 			Iterator<IMethodBinding> md_itr1 = mi_bindings.iterator();
@@ -123,7 +123,7 @@ public class BindingResolveUtil {
 				}
 			}
 		}
-		System.out.println("=== split line ===");
+//		System.out.println("=== split line ===");
 		if (MetaOfApp.PrintInfo)
 		{
 			Iterator<IMethodBinding> md_itr1 = md_bindings.iterator();
@@ -151,7 +151,7 @@ public class BindingResolveUtil {
 				}
 			}
 		}
-		System.out.println("=== split line ===");
+//		System.out.println("=== split line ===");
 		if (MetaOfApp.PrintInfo)
 		{
 			Iterator<IMethodBinding> mi_itr1 = mi_bindings.iterator();
@@ -164,7 +164,7 @@ public class BindingResolveUtil {
 				}
 			}
 		}
-		System.out.println("=== split line ===");
+//		System.out.println("=== split line ===");
 	}
 	
 	public static void ClearStorage() {
